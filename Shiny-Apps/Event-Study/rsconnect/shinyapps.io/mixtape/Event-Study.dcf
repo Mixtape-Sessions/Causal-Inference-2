@@ -1,0 +1,13 @@
+name: Event-Study
+title: Event-Study
+username:
+account: mixtape
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6535876
+bundleId: 6034593
+url: https://mixtape.shinyapps.io/Event-Study/
+when: 1655957112.23783
+lastSyncTime: 1655957112.23786
+asMultiple: FALSE
+asStatic: FALSE
