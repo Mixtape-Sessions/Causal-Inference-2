@@ -47,6 +47,8 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 <a href=""></a>
 
 <b>Code</b>
+
+[Shiny App for Bacon Decomposition](https://mixtape.shinyapps.io/Bacon-Decomposition/)
            
 
 <b>Readings</b>
@@ -78,6 +80,7 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 <b>Code</b>
            
+[Shiny App for Event Study](https://mixtape.shinyapps.io/Event-Study/)
 
 <b>Readings</b>
 
