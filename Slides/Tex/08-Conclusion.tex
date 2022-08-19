@@ -1,0 +1,112 @@
+\documentclass{beamer}
+
+\input{preamble.tex}
+\usepackage{breqn} % Breaks lines
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\usepackage{pdfpages} % \includepdf
+
+\usepackage{listings} % R code
+\usepackage{verbatim} % verbatim
+
+% Video stuff
+\usepackage{media9}
+
+% packages for bibs and cites
+\usepackage{natbib}
+\usepackage{har2nat}
+\newcommand{\possessivecite}[1]{\citeauthor{#1}'s \citeyearpar{#1}}
+\usepackage{breakcites}
+\usepackage{alltt}
+
+% Setup math operators
+\DeclareMathOperator{\E}{E} \DeclareMathOperator{\tr}{tr} \DeclareMathOperator{\se}{se} \DeclareMathOperator{\I}{I} \DeclareMathOperator{\sign}{sign} \DeclareMathOperator{\supp}{supp} \DeclareMathOperator{\plim}{plim}
+\DeclareMathOperator*{\dlim}{\mathnormal{d}\mkern2mu-lim}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+   \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand*\colvec[1]{\begin{pmatrix}#1\end{pmatrix}}
+
+\newcommand{\myurlshort}[2]{\href{#1}{\textcolor{gray}{\textsf{#2}}}}
+
+
+\begin{document}
+
+\imageframe{./lecture_includes/mixtape_did_cover.png}
+
+
+% ---- Content ----
+
+
+\section{Basic suggestions going forward}
+
+\begin{frame}
+
+\begin{center}
+\includegraphics[scale=0.15]{./lecture_includes/analisa.jpg}
+\end{center}
+
+\footnotesize
+\begin{itemize}
+\item Differential timing with heterogeneity -- Bacon, Callaway and Sant'anna, etc. 
+\item Covariates -- Abadie, Sant'Anna and Zhao
+\item Fuzzy - de Chaisemartin and D'Haultfoeuille 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Concluding remarks on DD}
+
+\begin{itemize} 
+\item You're probably going to write a paper using DiD at least once in your life, but probably more
+\item Even if you don't, you're going to read a lot of papers using DiD, referee them, or advise students using them
+\item It's in your best interest to make the fixed cost investment in the new econometrics of DiD because the old methods are mostly harmful
+\item Good news is we are at the conclusion of this wave of papers, software is now widely available, solutions tend to have common features, and overall presentations (static and dynamic) aren't all that different
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Concluding remarks}
+
+\begin{itemize}
+\item Simple 2x2 has its own problems when estimated using TWFE \emph{if you include covariates}
+\item Stronger assumptions needed to include covariates, and bias can be large
+\item Don't control for covariates that could be affected by the outcome (e.g., COLLIDER BIAS!! DAG!! BOOGIEMAN!)
+\item Why pay more for the same car?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Concluding remarks}
+
+\begin{itemize}
+\item Main problem in differential timing is heterogeneity and the use of already-treated units as controls
+\item Honestly, I'll just put my neck out there -- if you have any reason to believe homogenous treatment effects hold from theory, fine.  Use TWFE
+\item But with differential timing and not a priori theory, you \emph{cannot} use TWFE.  It is biased, and it does not obey a ``no sign flip'' property, weights can be negative, etc etc.
+\item CS has additional benefits like examining heterogenous responses by timing -- this is part of the value of defining target parameters as weighted averages
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Concluding remarks}
+
+\begin{itemize}
+\item Causal claims depends on valid assumptions, high quality and appropriate data, and appropriate estimators
+\item Use this opportunity to remember how much fun econometrics is
+\item Don't sweat whether you learned everything in this seminar -- check out my substack ``Causal Inference: the Remix'' for simple explainers, go back to the papers, talk to the authors (they are all very smart, but also extremely kind people)
+\item Have fun!  Remember that applied work is exciting, so don't sweat it.  Don't forget how great it is to learn something new
+\item Don't forget that season 2 of \underline{Ted Lasso} came out yesterday.  It felt the same, but different (metaphor)
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+\end{document}
