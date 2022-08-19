@@ -41,7 +41,7 @@ df_exp_panel <- df_exp |>
   rename(
     re74 = tempre74,
     re75 = tempre75
-  )
+  ) 
 
 haven::write_dta(df_exp_panel, here::here("Labs/Lalonde/lalonde_exp_panel.dta"))
 
