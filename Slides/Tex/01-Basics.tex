@@ -1,0 +1,168 @@
+\documentclass{beamer}
+
+\input{preamble.tex}
+\usepackage{breqn} % Breaks lines
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\usepackage{pdfpages} % \includepdf
+
+\usepackage{listings} % R code
+\usepackage{verbatim} % verbatim
+
+% Video stuff
+\usepackage{media9}
+
+% packages for bibs and cites
+\usepackage{natbib}
+\usepackage{har2nat}
+\newcommand{\possessivecite}[1]{\citeauthor{#1}'s \citeyearpar{#1}}
+\usepackage{breakcites}
+\usepackage{alltt}
+
+% Setup math operators
+\DeclareMathOperator{\E}{E} \DeclareMathOperator{\tr}{tr} \DeclareMathOperator{\se}{se} \DeclareMathOperator{\I}{I} \DeclareMathOperator{\sign}{sign} \DeclareMathOperator{\supp}{supp} \DeclareMathOperator{\plim}{plim}
+\DeclareMathOperator*{\dlim}{\mathnormal{d}\mkern2mu-lim}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+   \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand*\colvec[1]{\begin{pmatrix}#1\end{pmatrix}}
+
+\newcommand{\myurlshort}[2]{\href{#1}{\textcolor{gray}{\textsf{#2}}}}
+
+
+\begin{document}
+
+\imageframe{./lecture_includes/mixtape_did_cover.png}
+
+
+% ---- Content ----
+
+
+\begin{frame}{Introduction}
+
+\begin{itemize}
+\item Welcome to Mixtape Sessions workshop on difference-in-differences and synthetic control
+\item 8:00am to 5:00pm CST, 15 min breaks every hour, 1 hour lunch
+\item Lecture, discussion and exercises
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Workshop outline}
+
+Introduction to DiD basics 
+	\begin{itemize}
+	\item Potential outcomes review
+	\item DiD equation and OLS
+	\item Triple differences, event studies
+	\item Including covariates
+	\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Workshop outline}
+
+ Differential timing
+	\begin{itemize}
+	\item Decomposing constant treatment effect model (TWFE)
+	\item Aggregating group-time ATTs
+	\item Issues and solutions with event studies
+	\item Turning treatments on and off
+	\item Stacked regression
+	\item Explicit Imputation
+	\item Continuous treatments
+	\item Spatial DiD
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Workshop outline}
+
+Synthetic control
+
+\begin{itemize}
+\item Canonical synth
+\item Matrix completion with nuclear norm regularization
+\item Augmented synthetic control 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Natural experiments}
+
+\begin{quote}
+``A good way to do econometrics is to look for good natural experiments and use statistical methods that can tidy up the confounding factors that nature has not controlled for us.'' -- Daniel McFadden (Nobel Laureate recipient with Heckman 1992)
+\end{quote}
+
+\end{frame}
+
+
+\imageframe{./lecture_includes/bumpersticker.jpeg}
+
+
+\begin{frame}{What is difference-in-differences (DiD)}
+
+\begin{itemize}
+\item DiD is a very old, relatively straightforward, intuitive research design
+\item A group of units are assigned some treatment and then compared to a group of units that weren't
+\item Closely associated with 1980s Princeton Industrial Relations Section (Orley Ashenfelter, David Card, Alan Krueger, Bob LaLonde)
+\item Unclear when key identifying assumptions like parallel trends are worked out (as originally there is no potential outcomes in play), but Angrist says he invented the term with Pischke
+\item Most widely used quasi-experimental method
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+
+	\begin{figure}
+	\caption{Currie, et al. (2020)}
+	\includegraphics[scale=0.25]{./lecture_includes/currie_did.png}
+	\end{figure}
+
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Why an entire workshop on DiD?}
+
+\begin{itemize}
+\item \textbf{Research advantages}: DiD is sometimes the only way we have to study large social policies 
+\item \textbf{Time to retool}: Recent wave of scholarship suggest model misspecification has been pronounced
+\item \textbf{Good news}: Better understanding of our models, new tools, new programs
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Let's begin with DiD}
+
+\begin{itemize}
+\item With all this out of the way, let's dig into the DiD material
+\item We will start with the simplest situation using simple difference in means without covariates
+\item We will then move into OLS with covariates
+\item And then move into alternatives to OLS when we have covariates
+\item Later we go into the more advanced material (e.g., differential timing, continuous treatments)
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+\end{document}

@@ -1,0 +1,659 @@
+08:00:36 From kevin williams to Everyone:
+	Hi Prof. Scott. I have challenges installing Discord, so I will have to use my zoom to communicate. Could please also post information to zoom? Thanks
+08:01:03 From Luis Quintero to Everyone:
+	Discord? I did not get those instructions… anythingn we have to install before hand?
+08:01:48 From Luis Quintero to Everyone:
+	once discord is installed.. how do we connect to the course?
+08:01:54 From Zheng Zhang to Everyone:
+	It
+08:02:08 From Scott Cunningham to Everyone:
+	https://discord.gg/eNmATTWP
+08:02:28 From Zheng Zhang to Everyone:
+	It’s in the introductory information document.
+08:02:49 From Luis Quintero to Everyone:
+	thanks. i did not get the introductory doc. thanks. yeah.
+08:03:34 From Camille Doche to Everyone:
+	Hello, I also do have some trouble connecting to discord
+08:03:42 From Rahma Ahmed to Everyone:
+	Me too!
+08:03:45 From Karla Savina to Everyone:
+	It won't let me in the dicord group either - it tells me unable to let me in
+08:04:39 From Rahma Ahmed to Everyone:
+	mine is an infinite loop of captcha authentication
+08:04:58 From Rahma Ahmed to Everyone:
+	so I can’t even install it as someone else mentioned
+08:05:21 From Setu Pelz to Everyone:
+	I used this rather than installed: discord.com/app
+08:05:40 From Joe to Everyone:
+	Can we start the course soon?
+08:05:46 From Scott Cunningham to Everyone:
+	Yes we are about to now
+08:06:47 From Scott Cunningham to Everyone:
+	https://github.com/Mixtape-Sessions/Difference-in-Differences
+08:07:58 From Karla Savina to Everyone:
+	I just emailed you the error I keep getting from DIscord
+08:11:12 From Karla Savina to Everyone:
+	Yes!  Thank you!
+08:11:34 From Scott Cunningham to Everyone:
+	https://discord.gg/eNmATTWP
+08:11:39 From Karla Savina to Everyone:
+	I logged into Discord first - and then it let me in
+08:16:37 From QL to Scott Cunningham(Direct Message):
+	Hi Dr. Cunningham, is your lecture recorded?
+08:16:53 From QL to Scott Cunningham(Direct Message):
+	Thank you!
+08:52:44 From Carlos Vega to Everyone:
+	pipe material?
+08:53:20 From Soodeh Saberian to Everyone:
+	Can it be residential sorting?
+08:53:21 From Joe to Scott Cunningham(Direct Message):
+	What D stands for here?
+08:53:42 From kevin williams to Everyone:
+	pollution in the air
+08:55:02 From Tomer Stern to Everyone:
+	In other words, the time invariant fixed effect?
+08:57:11 From Christian Caballero to Everyone:
+	Would this be valid if they could have chosen between the two companies?
+08:57:58 From kevin williams to Everyone:
+	positive selection
+08:59:12 From Luis Quintero to Everyone:
+	but they did not know this would have an effect in cholera mortaility when choosing the company
+08:59:14 From Emily Conover to Everyone:
+	Is there any information on whether one company was charging lower rates?
+09:00:37 From Joe to Scott Cunningham(Direct Message):
+	What’s the difference between DiD and the lab experiment? DiD has a higher external validity?
+09:05:19 From Richard Gretz to Scott Cunningham(Direct Message):
+	Hey Scott. Fantastic course!! Thanks so much for having us. Quick non-Diff in Diff question -- what software are you using to show your slides? I very much like how you write/draw on them on the fly. It's something I'd like to do when I teach. Thanks.
+09:13:17 From Purushottam Mohanty to Everyone:
+	Did not think that I’ll be listening to Eminem in an Econ workshop
+09:18:00 From Richard Gretz to Scott Cunningham(Direct Message):
+	Thanks!
+09:20:19 From Luis Quintero to Everyone:
+	something that changed over time
+09:20:30 From Carlos Vega to Everyone:
+	trend
+09:20:31 From Christian Caballero to Everyone:
+	the natural change on mortality through time
+09:20:35 From Gabriele Piazza to Everyone:
+	the trend
+09:20:35 From Emily Conover to Everyone:
+	Other changes associated with cholera over time. Anything else affecting cholera rates before and after.
+09:20:38 From kevin williams to Everyone:
+	time trend
+09:20:38 From Zheng Zhang to Everyone:
+	Improvement of mortality over time.
+09:21:33 From Mario Alberto García Meza to Everyone:
+	So I understand saying “Fixed effects” I different conceptually somehow?
+09:21:53 From Tomer Stern to Everyone:
+	Changes to mortality over time that is common to both companies
+09:22:28 From Shae Ayse Cetinel to Scott Cunningham(Direct Message):
+	trend
+09:24:20 From Joe to Scott Cunningham(Direct Message):
+	What’s the difference between DiD and the lab experiment? DiD has a higher external validity?
+09:24:43 From Luis Quintero to Everyone:
+	that it be zero
+09:24:47 From Christian Caballero to Everyone:
+	T=0, so no chnage in time
+09:24:55 From Melissa Staha to Everyone:
+	Could you say the unobserved counterfactual trend is independent of moving the pipe?
+09:27:52 From Kiril Chilingarashvili to Scott Cunningham(Direct Message):
+	Is "Trend" here related to term "trend" and "seasonality" in time series?
+09:28:40 From Kiril Chilingarashvili to Scott Cunningham(Direct Message):
+	Thanks
+09:32:27 From Jacob Moore to Everyone:
+	No
+09:32:32 From Luis Quintero to Everyone:
+	no
+09:32:33 From Karla Savina to Everyone:
+	Aren't they unobserved?
+09:32:34 From Jacob Moore to Everyone:
+	They are unobservable trends
+09:32:37 From Zheng Zhang to Everyone:
+	no
+09:32:38 From Luis Quintero to Everyone:
+	theyre counterfactual right?
+09:32:40 From Christian Caballero to Everyone:
+	It's the same case as in the cs
+09:35:03 From Luis Quintero to Everyone:
+	that they be the same (i.e. parallel)
+09:35:05 From Zheng Zhang to Everyone:
+	TL = TSV
+09:35:06 From Jacob Moore to Everyone:
+	T_L = T_SV
+09:35:07 From Gabriele Piazza to Everyone:
+	TL=TSV
+09:35:08 From Pallav Routh to Everyone:
+	TL = TSV
+09:35:08 From Christian Caballero to Everyone:
+	the temporal changes must be the same
+09:35:11 From Roberto González to Everyone:
+	T_L = T_SV
+09:35:14 From Tomer Stern to Everyone:
+	TL - TSV = 0
+09:42:25 From Setu Pelz to Everyone:
+	is Y(1) and Y^1 describing the same outcome with slightly different notation?
+09:43:11 From Christian Caballero to Everyone:
+	and Y_i also
+09:47:15 From Luis Quintero to Everyone:
+	so, conceptually, if the individual effect is unknowable, how can the aggregate effect be knowable?
+09:47:25 From Christian Caballero to Everyone:
+	#magic
+09:47:35 From Luis Quintero to Everyone:
+	if the aggregate is the sum of the individual
+09:48:27 From Christian Caballero to Everyone:
+	Fundamental problem of CI (Holland, 1986)
+09:49:08 From kevin williams to Everyone:
+	both cannot be observed for the same person
+10:04:38 From Saied Toossi to Everyone:
+	that's the counterfactual
+10:04:39 From Setu Pelz to Everyone:
+	because they were treated
+10:04:41 From Christian Caballero to Everyone:
+	it's the counterfactual
+10:04:44 From kevin williams to Everyone:
+	not observed, never happen
+10:04:51 From Zheng Zhang to Everyone:
+	It has been treated.
+10:05:08 From Saied Toossi to Everyone:
+	changes to mortality not having to do with the treatment
+10:05:14 From Richard Gretz to Everyone:
+	change in Lambeth mortality had it not been treated
+10:05:16 From Luis Quintero to Everyone:
+	should be what would have happened in lambeth with no treatment
+10:05:18 From Huang to Everyone:
+	potential outcome of untreated
+10:05:36 From Mario Alberto García Meza to Everyone:
+	Randomized
+10:05:42 From kevin williams to Everyone:
+	zero
+10:05:45 From Roberto González to Everyone:
+	When the trend in treated and untreated is the same
+10:05:58 From Pallav Routh to Everyone:
+	Comparable groups
+10:07:16 From Luis Quintero to Everyone:
+	in assignments?
+10:07:17 From Melissa Staha to Scott Cunningham(Direct Message):
+	You said we are differencing out the time trend but we are adding the term. I assume the term is negative?
+10:07:45 From Scott Cunningham to Melissa Staha(Direct Message):
+	Which term?
+10:07:45 From Christian Caballero to Everyone:
+	Code -> Excercises
+10:07:46 From Joe to Scott Cunningham(Direct Message):
+	What’s the difference between DiD and the lab experiment? DiD has a higher external validity?
+10:08:02 From Scott Cunningham to Joe(Direct Message):
+	Sorry — I’m getting there.
+10:08:17 From Scott Cunningham to Joe(Direct Message):
+	It’s not an easy question to answer per se
+10:08:26 From Scott Cunningham to Joe(Direct Message):
+	The lab identifies the ATE and the DiD identifies the ATT
+10:08:27 From Melissa Staha to Scott Cunningham(Direct Message):
+	All the stuff called the non-parallel trends bias in 2x2 case
+10:08:52 From Scott Cunningham to Melissa Staha(Direct Message):
+	You mean that red term?
+10:09:12 From Scott Cunningham to Melissa Staha(Direct Message):
+	Basically, that second row is the object that contaminates your estimate
+10:09:22 From Scott Cunningham to Melissa Staha(Direct Message):
+	And in order for that to not do that, you need those four things to sum to zero
+10:09:26 From Melissa Staha to Scott Cunningham(Direct Message):
+	No, the whole thing. And you asked what we are doing and someone said differencing out the time trend.
+10:09:35 From Scott Cunningham to Melissa Staha(Direct Message):
+	Yeah “differencing out the time trend” isn’t right
+10:09:38 From Joe to Scott Cunningham(Direct Message):
+	What's the full name of the two, ATE & ATT
+10:09:56 From Melissa Staha to Scott Cunningham(Direct Message):
+	thanks
+10:10:05 From Scott Cunningham to Melissa Staha(Direct Message):
+	I think what they meant to say or what I interpreted them as saying is that the counterfactual trend trend must equal the real trend for the comparison group
+10:10:22 From Scott Cunningham to Joe(Direct Message):
+	Average treatment effect (ATE) and Average treatment effect on the treated group (ATT)
+10:10:23 From Melissa Staha to Scott Cunningham(Direct Message):
+	Ok, I have that written down too. thanks!
+10:10:27 From Scott Cunningham to Joe(Direct Message):
+	The ATE is for everyone.
+10:10:38 From Scott Cunningham to Joe(Direct Message):
+	The ATT is the causal effect, though, just for our treatment group
+10:11:14 From Joe to Scott Cunningham(Direct Message):
+	@@
+10:11:55 From Joe to Scott Cunningham(Direct Message):
+	I need the example when we do the exercise
+10:14:10 From Antonio Ramos to Everyone:
+	sorry but I cannot find the readings.
+10:14:13 From Antonio Ramos to Everyone:
+	https://github.com/Mixtape-Sessions/Difference-in-Differences/tree/main/Code/Exercises
+10:15:02 From Antonio Ramos to Everyone:
+	Ah I see, it is a doc document
+10:15:04 From Antonio Ramos to Everyone:
+	thanks
+10:22:48 From Scott Cunningham to Joe(Direct Message):
+	Which example?
+10:22:56 From Joe to Scott Cunningham(Direct Message):
+	The one you
+10:23:22 From Joe to Scott Cunningham(Direct Message):
+	The one you're going to show us
+10:23:33 From Scott Cunningham to Joe(Direct Message):
+	You get it from the GitHub repo
+10:24:00 From Scott Cunningham to Joe(Direct Message):
+	https://github.com/Mixtape-Sessions/Difference-in-Differences/tree/main/Code/Exercises
+10:24:07 From Scott Cunningham to Everyone:
+	https://github.com/Mixtape-Sessions/Difference-in-Differences/tree/main/Code/Exercises
+10:25:57 From Luis Quintero to Everyone:
+	thsoe are treated in the treatmetn period
+10:25:57 From Huang to Everyone:
+	Y1 is the outcome of being treated
+10:26:09 From Sophia Hatz to Everyone:
+	beacuse we can observe the outcome given treatment for the treatment group
+10:26:14 From Mario Alberto García Meza to Everyone:
+	Because y0 in group 1 post is a counterfactual
+10:26:46 From Olga S to Everyone:
+	because Y = Y(1), not Y(0) in group 1 for 1968-1990
+10:27:19 From Setu Pelz to Everyone:
+	Y^1 - Y^0 for the treated group
+10:28:52 From Jennifer Vaughn (she/her/hers) to Everyone:
+	could you show the excel formula again please
+10:28:53 From Saied Toossi to Everyone:
+	The true treatment effect
+10:30:01 From Luis Quintero to Everyone:
+	could you show the formula for ATT again (in excel)?
+10:30:13 From Scott Cunningham to Everyone:
+	=AVERAGE(C8:C12) - AVERAGE(D8:D12)
+10:32:44 From Emily Conover to Everyone:
+	6.07
+10:33:08 From Tomer Stern to Everyone:
+	41.56
+10:35:00 From Luis Quintero to Everyone:
+	We had said before DiD identifies ATT…  in practical applications we can only calculate DiD
+10:35:11 From Luis Quintero to Everyone:
+	thanks
+10:35:55 From Roberto González to Everyone:
+	Parallel trends
+10:36:47 From Jacob Moore to Everyone:
+	plot data and look at slope
+10:36:47 From Christian Caballero to Everyone:
+	correlation?
+10:36:49 From Melissa Staha to Everyone:
+	Graph!
+10:36:53 From Luis Quintero to Everyone:
+	plot
+10:36:54 From alok Raj to Everyone:
+	slope we can find
+10:36:55 From Chip to Everyone:
+	visualization 
+10:40:33 From Antonio Ramos to Everyone:
+	we can’t
+10:41:05 From Antonio Ramos to Everyone:
+	we need to assume it for the pos treatment period
+10:41:21 From Luis Quintero to Everyone:
+	are those all y0?
+10:42:41 From Mario Alberto García Meza to Everyone:
+	yes
+10:46:00 From Antonio Ramos to Everyone:
+	yes,  it is
+10:46:10 From Luis Quintero to Everyone:
+	we dont know right?
+10:46:21 From Antonio Ramos to Everyone:
+	we  don't
+10:46:29 From Luis Quintero to Everyone:
+	those big differences could be the same post period in the parallel trends calculation
+10:46:47 From Chip to Everyone:
+	there could be selection bias in the estimator
+10:46:54 From Zheng Zhang to Everyone:
+	Unparallel pre-trends does not matter I suppose.
+10:46:56 From Antonio Ramos to Everyone:
+	yes
+10:47:34 From L Woskie to Everyone:
+	Can you share your updated excel doc when we’re done?
+10:47:51 From Antonio Ramos to Everyone:
+	if the paralel time time trends is violated after the intervention
+10:48:09 From Antonio Ramos to Everyone:
+	then we get selection bias
+10:49:15 From Setu Pelz to Everyone:
+	We can
+10:49:15 From Sophia Hatz to Everyone:
+	the probability of receiving treatment needs to be the same across the two groups. So we hope the pre-trend differences are not indicative of a difference in probability of being treated
+10:51:00 From Setu Pelz to Everyone:
+	The pre trend doesn't matter if we can somehow say that the parallel trends holds post treatment. But this is something we cant really ever prove because we don't have Y^0 for treated group post treatment.
+10:51:02 From Purushottam Mohanty to Everyone:
+	The probability of treatment need not be the same across the two groups for DID. It’s perfectly okay to choose treatment for a lower or higher level group.
+10:53:24 From Melissa Staha to Everyone:
+	Parallel trends: Post treatment, the pre-trend parallel trends should continue if there’s no treatment
+10:53:39 From Purushottam Mohanty to Everyone:
+	Parallel trends assumption just mentions that if pre-treatment period trends are similar then it might be okay to assume that the groups will trend the same post treatment. It cannot be tested of course.
+10:53:51 From Sophia Hatz to Everyone:
+	I mean that we don’t want there to be systematic differences across the two groups that could explain their selection into treatment and the difference in outcome. Isn’t checking parallel trends sort of like a balance test?
+10:54:21 From Christian Caballero to Everyone:
+	but we can not observe the parallel trend post treatment, we can only hope (asume) so if we observe parallel pre
+10:59:58 From Chip to Everyone:
+	GRoup 2 servbes as a good counterfactual in the first example but not in the new one
+11:00:27 From Tomer Stern to Everyone:
+	What’s disturbing is that, with a conventional pre-trends plot, it would look like the DiD is an unbiased estimate of the ATT!
+11:01:25 From Abdelrahman Amer to Everyone:
+	i guess pre-trends are neither necessary nor sufficient, but they can help us sell the story of parallel trends post treatment
+11:04:22 From Luis Quintero to Everyone:
+	its a ceteris paribus statement right? if it is satisfied before we assume it is satisfied afterwards
+11:04:37 From Tomer Stern to Everyone:
+	Hard to imagine a scenario where you wouldn’t have parallel pre trends BUT have 0 parallel trend bias
+11:04:50 From Luis Quintero to Everyone:
+	plus we control for anything we think is relevant and may change
+11:07:27 From Tomer Stern to Everyone:
+	Also shows the importance of “placebo outcomes.” If some outcome Z that isn’t effected by treatment also shows a jump in 1986, then thats evidence of something else going on
+11:14:04 From Christian Caballero to Everyone:
+	As I see it now, all causal inference methods (PO or SCM) rely on assumptions, and as such we can not verify them.		Here, parallen trends IS an assumption that we can not verify
+11:14:16 From Setu Pelz to Everyone:
+	You would need a case where not treat all of those people who have the same reason for being treated, are treated, right?
+11:15:12 From Soodeh Saberian to Everyone:
+	Is not this Ashenfelter dip?
+11:18:52 From Zheng Zhang to Everyone:
+	Very clear explanations, Scott
+11:19:00 From Franckie to Everyone:
+	Thanks!
+11:28:51 From Yongseok Kim to Scott Cunningham(Direct Message):
+	How confident can we be to say that if the treatment assignment is NOT randomly done, there will not be a pre-trend parallel trends. And, if we know what affects the treatment assignment so that we can tease it out, would that mean that we can correct the pre-parallel trends as parallel, conditional on those factors affecting the treatment assignment?
+11:34:07 From Yongseok Kim to Scott Cunningham(Direct Message):
+	Thanks!
+11:43:39 From Franckie to Everyone:
+	wow
+11:48:24 From Karla Savina to Everyone:
+	AWESOME!
+11:50:39 From Setu Pelz to Scott Cunningham(Direct Message):
+	This has been a step change few hours for me Prof Cunningham. I really get some of the fundamentals now. You are an amazing teacher. I think many others had this same outcome.
+12:48:17 From Scott Cunningham to Setu Pelz(Direct Message):
+	Thanks so much setu
+12:48:25 From Scott Cunningham to Setu Pelz(Direct Message):
+	I really appreciate you saying that.
+12:48:32 From Scott Cunningham to Setu Pelz(Direct Message):
+	I only added this last night (the exercise).
+12:48:46 From Scott Cunningham to Setu Pelz(Direct Message):
+	I could tell something wasn’t clicking
+12:50:43 From Setu Pelz to Scott Cunningham(Direct Message):
+	It is a powerful didactic tool Sir! I never understood the PT assumption correctly before this.
+12:51:54 From Yongseok Kim to Scott Cunningham(Direct Message):
+	Been thinking about it while eating 🙂, Let's say,
+12:52:17 From Yongseok Kim to Scott Cunningham(Direct Message):
+	1) there is a pre-parellel trand,
+12:59:38 From Yongseok Kim to Scott Cunningham(Direct Message):
+	2) but the treatment assignment is not random, say that the level difference between the treated group and the control group in the outcome in the pre-period actually motivated the treatment. (i.e., in the pre-period, the HH income was lower in the treated group and because of that, (with some mechanism) the outcome of interest for the treated group is systematically lower than that for the control group. (but they are parallel). And now because of the income difference, there will be a policy change, which is the treatment, for the treated group. So, the treatment assignment is not random. If this is the case, would the DID estimator for the ATT for the policy be biased? Please share your thought with me, when you have time for your lecture convenience!
+13:03:02 From Luis Quintero to Scott Cunningham(Direct Message):
+	scott for some reason I need to restart the computer due to zoom.. I will be back in 5 min… letting you know just in case you need to let me back in
+13:03:08 From Scott Cunningham to Setu Pelz(Direct Message):
+	ok
+13:05:30 From Joe to Scott Cunningham(Direct Message):
+	If we can do the DiD calculation directly, in what condition do we need to use OLS?
+13:12:26 From Sophia Hatz to Everyone:
+	Does this mean that any “fixed effect" regression assumes parallel trends?
+13:16:23 From Christian Caballero to Everyone:
+	teh counterfactual
+13:16:35 From Tomer Stern to Everyone:
+	The unobserved Y0 for NJ
+13:16:41 From Roberto González to Everyone:
+	What would have happened had NJ not received treatment
+13:16:54 From Zheng Zhang to Everyone:
+	Hypothetical untreated NJ average outcome.
+13:17:49 From Tomer Stern to Everyone:
+	The slope between YO pre and post PA is the same as the sloper between YO pre and hypothetical YO post NJ
+13:21:11 From Christian Caballero to Scott Cunningham(Direct Message):
+	However, the _trajectory_ between before and after doesn't have to be linear though?
+13:21:13 From Chip Vega to Everyone:
+	So it also helps to give some institutional arugments why something is a good counterfactual as well
+13:22:49 From Chip Vega to Everyone:
+	Thanks
+13:22:49 From Luis Quintero to Everyone:
+	just to reiterate… looking at the data is not a way of confirming that PT held right? it requires knowing the context (and being able to justify it)
+13:27:56 From Tomer Stern to Everyone:
+	If we were looking at state unemployment rates every month, that would be panel. But if we are using CPS data where we have the employment status of many people in every month-state, that would be repeated cross section?
+13:33:02 From Tomer Stern to Everyone:
+	We will get to this later, but this seems different from how the Calloway Santanna estimator understands these terms in Stata
+13:49:06 From Zheng Zhang to Everyone:
+	Like administrative units have been redistricted… The measure of features of interest has changed as a result. It violates PT assumption.
+13:51:00 From Tomer Stern to Everyone:
+	If treatment is occurring at the state level but you have county level variation, is this repeated cross section? The unit of analysis being more granular than the level of treatment is how I’ve heard repeated cross section vs panel discussed in the past...
+13:53:02 From Joe to Scott Cunningham(Direct Message):
+	What’s the meaning of compositional difference?
+13:54:59 From Yongseok Kim to Scott Cunningham(Direct Message):
+	I know this is not the point that you are making here, but speaking of handling that source of endogeneity in this case, can we just control for the age and call it a day?
+13:56:42 From Chip Vega to Everyone:
+	Different people/unit of observation year on year sounds like having infinitely many potential outcomes and finding a suitable comparison group becomes all the more thorny
+13:57:15 From Cameron Ellis to Everyone:
+	You can use Oster (2017) to bound the bias for compositional differences based on how the coefficients change when you control for things like age vs. when you don't
+13:57:35 From Chip Vega to Everyone:
+	Hence a violation of PT?
+13:58:57 From Jungkyu Suh to Everyone:
+	the Hong 2011 paper itself seems to recognize the compositional problem and use some kind of matching estimator (the “DDM” estimator). Do you think s/he solves the problem this way?
+13:58:59 From Chip Vega to Everyone:
+	Ok
+13:59:09 From Cameron Ellis to Everyone:
+	(Here's the Oster paper:) https://www.tandfonline.com/doi/full/10.1080/07350015.2016.1227711?casa_token=X9B4Eb_KKCgAAAAA%3AnSApIItAGu7jIkFmC4mi-vxPOuAB4OU5NdnwalcDPjU3ou2m2S87S4BMnFHyuVE7D7fYNRRG1KrC
+13:59:50 From Jungkyu Suh to Everyone:
+	ok.
+14:02:13 From Sophia Hatz to Scott Cunningham(Direct Message):
+	I'm still a little stuck thinking about measurement error 🙂 I could imagine that a policy intervention comes with some kind of increased monitoring of the treated units. The monitoring itself could affect the treatment groups trajectory, or could mean the data available on the treatment group differs systematically from the control.
+14:02:25 From Scott Cunningham to Sophia Hatz(Direct Message):
+	I think you’re on to something though
+14:02:48 From Scott Cunningham to Sophia Hatz(Direct Message):
+	I think the key may be to use that excel spreadsheet and just ask yourself if there is something that would cause Y0 to change even if the ATT=0
+14:03:04 From Sophia Hatz to Scott Cunningham(Direct Message):
+	yes, that clarifies
+14:03:17 From Scott Cunningham to Sophia Hatz(Direct Message):
+	I think that will then cause the treatment to be dependent on the error term too btw
+14:03:47 From Sophia Hatz to Scott Cunningham(Direct Message):
+	so maybe its just plain measurement error
+14:03:57 From Scott Cunningham to Sophia Hatz(Direct Message):
+	I think it creates an mechanical correlation iow between the error and the treatment bc the issue is the treatment changes values at precisely the moment when Y0 is changing anyway
+14:04:15 From Scott Cunningham to Sophia Hatz(Direct Message):
+	Yes but I think you still have to frame it as ‘measurement error starts now for this group but not this one'
+14:04:35 From Sophia Hatz to Scott Cunningham(Direct Message):
+	A very systematic measurement error
+14:06:13 From Scott Cunningham to Sophia Hatz(Direct Message):
+	Yes
+14:06:38 From Scott Cunningham to Sophia Hatz(Direct Message):
+	I would think measurement error needs to have a documented source too
+14:06:55 From Scott Cunningham to Sophia Hatz(Direct Message):
+	It might be interesting though to run a simulation and see how this works out
+14:07:31 From Scott Cunningham to Sophia Hatz(Direct Message):
+	I may play around with it and see what I can make happen.  You basically want the draws of the variable to come from maybe something with wider variance or something after treatment starts
+14:07:33 From Sophia Hatz to Scott Cunningham(Direct Message):
+	good idea
+14:10:11 From Melissa Staha to Scott Cunningham(Direct Message):
+	Brookhaven in atlanta?
+14:10:17 From Scott Cunningham to Melissa Staha(Direct Message):
+	Brookhaven MS
+14:10:41 From Scott Cunningham to Everyone:
+	https://www.popsike.com/REM-Chronic-Murmurings-Early-Demos-8081-RARE-Vinyl-Bootleg-2-Lp-Set/172226851141.html
+14:10:45 From Melissa Staha to Scott Cunningham(Direct Message):
+	👍🏻
+14:11:10 From Scott Cunningham to Everyone:
+	Was curious if that bootleg was out there.
+14:11:15 From Scott Cunningham to Everyone:
+	I should order this
+14:11:28 From Scott Cunningham to Everyone:
+	I still remember a kid in 9th grade telling me about it
+14:12:00 From Scott Cunningham to Everyone:
+	https://www.reddit.com/r/rem/comments/8022sb/chronic_murmurings_song_notes_as_requested_by/
+14:12:21 From Sophia Hatz to Scott Cunningham(Direct Message):
+	reminds me of this: https://www.tandfonline.com/doi/full/10.1080/14754835.2019.1671175
+14:13:05 From Scott Cunningham to Sophia Hatz(Direct Message):
+	Oh interesting. What is this about?
+14:13:34 From Sophia Hatz to Scott Cunningham(Direct Message):
+	measurement problems and human rights
+14:17:42 From Luis Quintero to Everyone:
+	these std errors discussion is specifically about DiD right? or are the results in that paper general?
+14:27:31 From Jacob Moore to Everyone:
+	So a convincing argument here for pre trends would be our ex-ante coefficient is estimated as zero
+14:27:39 From Jacob Moore to Everyone:
+	?
+14:32:44 From Shae Ayse Cetinel to Everyone:
+	This is what Sun&Abraham paper comes up with?
+14:34:04 From Tomer Stern to Everyone:
+	The leading event study DiD coefficients, if they equal 0, are showing that in the pre period, the treated group is where the counterfactual says they should be
+14:34:19 From Yongseok Kim to Scott Cunningham(Direct Message):
+	So, from the OLS perspective, after taking two differences with the two fixed effects, thus DiD, there is nothing left to explain before treatment, which means that they are parallel, right?
+14:38:41 From Tomer Stern to Everyone:
+	Can imagine running a traditional DiD with a post*treat estimator, but just pretending the treatment took place 2 years prior to when it really did
+14:38:50 From Franckie to Everyone:
+	Are there adjustments that can be made for differential trends?
+14:39:19 From Melissa Staha to Scott Cunningham(Direct Message):
+	Is this similar to placebo-in-time in that you’re moving the treatment back to make sure parallel trends hold with data you have
+14:39:19 From Shae Ayse Cetinel to Everyone:
+	if there are multiple treated groups then do we need to check each group's mu hat ?
+14:40:01 From Zheng Zhang to Everyone:
+	Could we briefly go through the specification of event study regression again? Thanks, Scott.
+14:42:06 From Shae Ayse Cetinel to Everyone:
+	no I think they need to be statistically insignificant
+14:49:28 From Joe to Scott Cunningham(Direct Message):
+	Earlier we discussed 2X2. Is that common to test two variables at a time in the DiD? Eg. minimum wage and location; insurance and age?
+14:54:27 From Sophia Hatz to Everyone:
+	is it kind of like showing compliance?
+14:54:30 From Jens Christian Haatvedt to Everyone:
+	Bite is like a mechanism from treatment to outcome?
+14:54:56 From kevin williams to Everyone:
+	definitely like first stage
+14:59:09 From Joe to Scott Cunningham(Direct Message):
+	For event study, can we study more than one events? Eg. Medicaid and pandemic?
+15:03:53 From Cameron Ellis to Everyone:
+	Does anyone ever do a difference in coefficients test on the lead vs. lags?
+15:03:55 From Christian Caballero to Scott Cunningham(Direct Message):
+	Does the treatment have to be 1 for all times from 0 to m? Or can we extend the estimation of the \deltas beyond the end of the treatment to estimate a kind of "residual" effect?
+15:04:35 From Cameron Ellis to Everyone:
+	just as wald test of the two coefficients
+15:04:37 From Cameron Ellis to Everyone:
+	yeah
+15:05:11 From Emily Conover to Scott Cunningham(Direct Message):
+	The SE tend to get larger further away from zero, is this due to sample size or something else?
+15:05:51 From Cameron Ellis to Everyone:
+	I'm more thinking of the case where the standard errors are larger on the leads
+15:06:44 From Muthoni Ngatia to Scott Cunningham(Direct Message):
+	Does it matter if treatment is staggered, so there are different # of observations for each lead and lag?
+15:06:52 From basuroys to Everyone:
+	is this QJE data available?
+15:07:08 From Tomer Stern to Everyone:
+	I think if it “turns off” after three years, I think you can just set lead3+ equal to 0 and then that unit drops out of your regression when estimating lag4. But not sure
+15:10:02 From Yongseok Kim to Scott Cunningham(Direct Message):
+	I wonder if there is another way to run an event study with just a list of indicators (dummies) for each period before and after the treatment. I think I have seen papers running an event study that way.
+15:11:32 From Cameron Ellis to Everyone:
+	This is the case I was thinking of for a difference in coefficients test
+15:14:45 From Zheng Zhang to Everyone:
+	Seems the scales of these two visualization are different.
+15:19:09 From Devika Hazra to Scott Cunningham(Direct Message):
+	1. For event studies, if we don’t see a jump at t=0 but let’s say at t = 4, is that a meaningful result?
+	
+	2. You explained that for the lead coefficients, we are mainly concerned about whether they are close to 0. For the lag coefficients, is the significance level important?
+15:19:43 From Zheng Zhang to Everyone:
+	Does my understanding of event study regression is correct: The event study regression is one framework to study the pre-treatment trends of the DiD model by including DID estimates for several leads (years on the left of treatment year).
+15:22:04 From Scott Cunningham to Devika Hazra(Direct Message):
+	That’s a meaningful result.  Under PT, all the lags are ATT parameters for that particular period.  It would mean the effect (under PT) occurred four years later
+15:22:22 From Scott Cunningham to Devika Hazra(Direct Message):
+	Significance will only be relevant for making statements about its sign
+15:22:30 From Chip Vega to Everyone:
+	Would the 2x2 DiD just be the average of the lag year coefficients?
+15:22:44 From Devika Hazra to Scott Cunningham(Direct Message):
+	Thanks!
+15:22:58 From Scott Cunningham to Everyone:
+	Zheng - that’s correct.
+15:23:30 From Scott Cunningham to Everyone:
+	The event study is largely a way of illustrating elements that we have tended to want to see in a DiD — similar pretends suggestive (but not guaranteeing nor necessary to have) PT.
+15:23:47 From Sophia Hatz to Scott Cunningham(Direct Message):
+	Actually this is the paper I was thinking about: https://www.cambridge.org/core/journals/british-journal-of-political-science/article/abs/changing-standard-of-accountability-and-the-positive-relationship-between-human-rights-treaty-ratification-and-compliance/46C01A80D73D90BFC73BDC88D9B4C77D
+	
+	
+	Say I want to estimate the effect of a country ratifying UN human rights treaty on its rate of human rights abuses. Different countries ratify at different points in time. But, the standard of accountability also changes over time, so that monitoring agencies increasingly hold states responsible for repression. Plus, countries that ratify are probably more likely to comply with monitoring after they ratify, so it their rate of human rights abuses are systematically higher compared to the control. or something.
+15:24:42 From Scott Cunningham to Everyone:
+	Not exactly.
+15:24:50 From Scott Cunningham to Everyone:
+	There are issues with implicit weighting procedures that are done.
+15:24:58 From Scott Cunningham to Everyone:
+	We get into this in more detail tomorrow with Callaway and sant'anna
+15:25:04 From Scott Cunningham to Everyone:
+	But you can average them
+15:25:23 From Scott Cunningham to Everyone:
+	And that would be a uniformly weighted average over all the time period ATTs
+15:25:57 From Zheng Zhang to Everyone:
+	Thanks Scott. I appreciate it.
+15:29:11 From Chip Vega to Everyone:
+	Thank you!
+15:34:56 From Christina St to Everyone:
+	Can I find the DID Summer Course of John Roth on his Twitter account? Thank you!
+15:35:04 From Scott Cunningham to Everyone:
+	Google mixtape sessions
+15:35:08 From Scott Cunningham to Everyone:
+	Scroll down to his
+15:43:27 From Jacob Moore to Everyone:
+	So the DDD part of your book is where I got a bit hung up. Can you (at some point) elaborate the practical difference between running a DD on the high income folks (instead of the original low income folks) vs the DDD approach that incorporates both group? Is the advantage of DDD more convincing falsification by jointly estimating the parameters/ standard errors in that model vs estimating two separate models w/DD?
+15:54:00 From Jacob Moore to Everyone:
+	Amazing, this is all cleared up -- cheers
+15:54:11 From Zheng Zhang to Everyone:
+	Very clear, Scott!
+15:55:53 From Lubna Naz to Everyone:
+	Excellent explanation, Scott!
+15:59:12 From Shae Ayse Cetinel to Everyone:
+	can we say that heterogeneity within each group remains the same except the effect cause by the treatment
+16:02:59 From Chip Vega to Everyone:
+	Suppose you suspect contamination from the NJ_t, high wage earners, does it make sense to do a falsification test and see if the effect is significant or not? 
+16:03:45 From Joe to Scott Cunningham(Direct Message):
+	Isn't this example using more than one event (variable)? minimum wage, L H wage, location?
+16:04:22 From Abdelrahman Amer to Everyone:
+	SUTVA?
+16:06:02 From Joe to Scott Cunningham(Direct Message):
+	What’s the D in D3 column?
+16:14:07 From Saied Toossi to Everyone:
+	you're muted
+16:14:52 From Franckie to Everyone:
+	Transcript of this meeting?
+16:24:40 From Saied Toossi to Everyone:
+	if you don't believe PT holds in panel A, presumably you don't believe it holds for panel B, so then how does doing the triple diff make you or anyone else more confident? Seems like triple diff's are more difficult to defend then diff-diff
+16:25:49 From Zheng Zhang to Everyone:
+	Assumption of PT in DiD is different… I guess it depends on which PT assumption you believe more…
+16:26:51 From Richard Gretz to Everyone:
+	ATT
+16:26:51 From Zheng Zhang to Everyone:
+	ATT
+16:28:39 From Kiril Chilingarashvili to Everyone:
+	If the conclusions are so much dependent on subjective beliefs, how the DiD technique drives the conclusion from less convincing to more convincing? 	Is the trick - we are reducing complex problem to small problem where we only have to prove PT assumption in specific setup?
+16:37:37 From Saied Toossi to Everyone:
+	I think framing it that way makes it clearer for me, thanks Scott
+16:38:52 From Saied Toossi to Everyone:
+	interesting, the placebo analogy was great, thanks!
+16:39:18 From Joe to Scott Cunningham(Direct Message):
+	Can you say the interpretation again in this DDD result?
+16:41:24 From Saied Toossi to Everyone:
+	exactly
+16:43:33 From Zheng Zhang to Everyone:
+	Very clear explanations, Scott! Thanks a lot!
+16:48:20 From Joe to Scott Cunningham(Direct Message):
+	How you interpret the DDD coefficient?
+16:48:27 From Scott Cunningham to Joe(Direct Message):
+	As the ATT
+16:51:43 From kevin williams to Everyone:
+	give me a punchline, scott
+16:52:52 From Sophia Hatz to Everyone:
+	Damned diff you do, damned diff you don’t
+16:53:34 From Nicola Nones to Everyone:
+	^!
+16:54:20 From Christian Caballero to Everyone:
+	Nice, Sophia! Did you just come up with that?
+16:54:39 From Sophia Hatz to Everyone:
+	yes 🤓
+16:54:46 From Zheng Zhang to Everyone:
+	Genius!
+16:54:47 From Nicola Nones to Everyone:
+	Fantastic ahah
+17:00:50 From kevin williams to Everyone:
+	great session!
+17:00:53 From Jennifer Vaughn (she/her/hers) to Everyone:
+	If you could give us a second to screenshot the text before you erase it that would be great :)
+17:00:53 From Christian Caballero to Everyone:
+	Thanks, Scott!
+17:00:54 From Kiril Chilingarashvili to Everyone:
+	Thank you !
+17:00:55 From Chip Vega to Everyone:
+	Thanks Scott!
+17:00:56 From Sumit Agarwal to Everyone:
+	Thanks!
+17:00:56 From Saied Toossi to Everyone:
+	Thank you!
+17:00:59 From Richard Gretz to Everyone:
+	Thanks!
+17:00:59 From Gabriele Piazza to Everyone:
+	thank you
+17:01:01 From Camille Doche to Everyone:
+	Thank you, so you tomorrow
+17:01:01 From Nayely Iturbe to Everyone:
+	thanks!

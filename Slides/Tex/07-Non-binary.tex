@@ -1,0 +1,740 @@
+\documentclass{beamer}
+
+\input{preamble.tex}
+\usepackage{breqn} % Breaks lines
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\usepackage{pdfpages} % \includepdf
+
+\usepackage{listings} % R code
+\usepackage{verbatim} % verbatim
+
+% Video stuff
+\usepackage{media9}
+
+% packages for bibs and cites
+\usepackage{natbib}
+\usepackage{har2nat}
+\newcommand{\possessivecite}[1]{\citeauthor{#1}'s \citeyearpar{#1}}
+\usepackage{breakcites}
+\usepackage{alltt}
+
+% Setup math operators
+\DeclareMathOperator{\E}{E} \DeclareMathOperator{\tr}{tr} \DeclareMathOperator{\se}{se} \DeclareMathOperator{\I}{I} \DeclareMathOperator{\sign}{sign} \DeclareMathOperator{\supp}{supp} \DeclareMathOperator{\plim}{plim}
+\DeclareMathOperator*{\dlim}{\mathnormal{d}\mkern2mu-lim}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+   \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand*\colvec[1]{\begin{pmatrix}#1\end{pmatrix}}
+
+\newcommand{\myurlshort}[2]{\href{#1}{\textcolor{gray}{\textsf{#2}}}}
+
+
+\begin{document}
+
+\imageframe{./lecture_includes/mixtape_did_cover.png}
+
+
+% ---- Content ----
+
+
+\section{Continuous DiD}
+
+\subsection{Dose causal parameter}
+
+\begin{frame}{Continuous DiD}
+
+\begin{figure}
+\begin{center}
+             \includegraphics[scale=0.4]{./lecture_includes/continuous_did_image}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Overview}
+
+\begin{enumerate}
+\item What of what we have learned carries forward to the continuous case?
+\item Some of the problems with continuous (maybe most) don't even have to do with differential timing, so I'm not going to cover it
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Framing the question}
+
+\begin{itemize}
+\item \textbf{ATT}: Extensive margin causal parameter.  Do this versus don't do this.
+\item \textbf{Dose}: Intensive margin causal parameter.  Do this much versus this much.
+\end{itemize}
+
+\bigskip
+
+The dose causal parameter will be based on Angrist and Imbens (1995)
+
+\end{frame}
+
+
+
+
+\begin{frame}{Parameters}
+
+\begin{block}{Average treated on the treated}
+$ATT(d|d) = E[Y^d_{it} - Y^0_{it} | D_{it}=d]$
+\end{block}
+
+\bigskip
+
+while the treatment, $D$, can be any amount, $d$, that amount is technically a particular dose.  We raised the minimum wage, but we raised it to a particular wage. 
+
+\end{frame}
+
+
+\begin{frame}{Parameters}
+
+\begin{block}{Average treated on the treated}
+$ATT(d|d) = E[Y^d_{it} - Y^0_{it} | D_{it}=d]$
+\end{block}
+
+\bigskip
+
+This is ``the ATT of $d$ for the groups that chose $d$ dosage'' which uses as its comparison no dose.
+
+\end{frame}
+
+\begin{frame}{ATT for a given dose}
+
+\begin{figure}
+\begin{center}
+             \includegraphics[scale=0.3]{./lecture_includes/acrt_fig1.png}
+\end{center}
+\end{figure}
+
+What is the effect of setting fees to \$100 versus nothing at all? It's ATT(\$100|a) for this city.
+
+
+\end{frame}
+
+\begin{frame}{ATT for a given dose}
+
+\begin{figure}
+\begin{center}
+             \includegraphics[scale=0.3]{./lecture_includes/acrt_fig1.png}
+\end{center}
+\end{figure}
+
+Assume city $a$ did choose $d=\$100$. Then ATT(\$50|a) just means that that is its ATT \emph{had} it chosen the lower level.  The curve, in other words, is tracing out all average causal response for this city.
+
+
+\end{frame}
+
+
+\begin{frame}{ATT for a given dose}
+
+\begin{figure}
+\begin{center}
+             \includegraphics[scale=0.3]{./lecture_includes/acrt_fig2.png}
+\end{center}
+\end{figure}
+
+What if everyone has different responses?  In other words, city $a$ has the higher curve than city $b$.  Then there are several comparisons possible.  What is the effect of \$50 on outcomes for cities that actually chose \$50 versus those than actually chose \$100?  We need a new building block than just the ATT.
+
+\end{frame}
+
+\begin{frame}{Average causal response function}
+
+\begin{figure}
+\begin{center}
+             \includegraphics[scale=0.3]{./lecture_includes/angrist_imbens_IV_intensity}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Angrist and Imbens 1995}
+
+\begin{quote}
+``We refer to the parameter $\beta$ as the \textbf{average causal response (ACR)}. This parameter captures a weighed average causal responses to a unit change in treatment, for those whose treatment status is affected by the instrument. \dots ''
+\end{quote}
+
+\end{frame}
+
+\begin{frame}{Parameters}
+
+\begin{block}{Average treated on the treated}
+$ATT(d|d) = E[Y^d_{it} - Y^0_{it} | D_{it}=d]$
+\end{block}
+
+\bigskip
+
+Notice that this is sort of an extensive margin causal response, but that isn't the only causal concept we have.  Elasticities are causal, demand curves are causal, but they aren't based on comparisons to nothing -- they are intensive margin comparisons, local comparisons, adjacencies. Zero isn't the only counterfactual in other words.
+
+\end{frame}
+
+\begin{frame}{Average causal response for discrete case vs continuous}
+
+\begin{figure}
+\begin{center}
+             \includegraphics[scale=0.3]{./lecture_includes/acrt_fig3.png}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{ACRT}
+
+\begin{itemize}
+\item Discrete/multi-valued treatment is linear difference between two ATTs for the same city
+\item Continuous treatment is the derivative of the function itself
+\end{itemize}
+
+\end{frame}
+
+\subsection{Identification}
+
+\begin{frame}{Identification for two period set up}
+
+\begin{enumerate}
+
+\item Random sampling.  
+\item No anticipation
+\item Parallel trends in $Y^0$ for units of all doses
+
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Identifying ATT}
+
+\begin{eqnarray*}
+E [ \Delta Y_{it} | D_i = d] - E[ \Delta Y_{it} | D_i = 0] &=& ATT
+\end{eqnarray*}
+
+\bigskip
+
+No anticipation and parallel trends converts this comparison of before and after into the ATT
+
+\end{frame}
+
+
+\begin{frame}{Identifying ACRT}
+
+
+\begin{eqnarray*}
+ATT(b|b) - ATT(a|a) &=& E [ \Delta Y_{it} | D_i=a] - E[\Delta Y_{it} | D_i=b]
+\end{eqnarray*}
+
+Comparing high and low dose groups.  Let's call them $d_j$ and $d_{j-1}$. 
+
+\end{frame}
+
+
+\begin{frame}{Bias and causality}
+
+\begin{figure}
+\begin{center}
+             \includegraphics[scale=0.3]{./lecture_includes/acrt_fig2.png}
+\end{center}
+\end{figure}
+
+Let me draw this.  When we 
+
+\end{frame}
+
+
+\section{Fuzzy DiD}
+
+
+
+
+
+\begin{frame}{Sharp DiD}
+
+\begin{itemize}
+\item In a ``sharp'' DiD, a group gets treated in period 1, a control group does not
+\item Parallel trends allows you to identify ATT
+\item We discussed several methods
+\item But sometimes the lines between treatment and control groups get ``fuzzy''
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Fuzziness}
+
+\begin{itemize}
+\item In a ``fuzzy'' DiD design, there's growth in treatment occurring among units for reasons other than the treatment assignment in the control group
+	\begin{itemize}
+	\item They discuss an early 2000s Duflo paper where Indonesia pushed for more primary schooling
+	\item Used earlier cohorts as controls bc they were already past the age
+	\item But they saw growth in schools too
+	\end{itemize}
+\item In many applications, the ``treatment rate'' increase more in some groups than in others but there is no group that goes from fully untreated to fully treated
+\item But there is no group that also remains fully untreated
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[shrink=10,plain]
+\begin{center}
+\textbf{Fuzzy estimators}
+\end{center}
+
+\begin{itemize}
+\item Popular fuzzy estimator (10\% of AERs from 2010-2012) divides DiD of the outcome by the DiD of the treatment 
+$$ Wald_{DiD} =  \frac{ 
+\bigg (
+E[Y_k|Post] - E[Y_k|Pre] \bigg ) - 
+\bigg ( E[Y_U|Post] - E[Y_U|Pre] \bigg)
+ }
+ { \bigg ( 
+ E[D_k|Post] - E[D_k|Pre] \bigg) - 
+ \bigg ( E[D_U | Post] - E[D_U | Pre] \bigg )} 
+$$
+\item It's Wald IV in that we scale the reduced form by the first stage but they call it Wald DiD
+\item de Chaisemartin and D'Haultfoeuille (2017) estimates the LATE for groups who go from untreated to treated
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Two proposed estimators}
+
+ Propose two other estimators
+
+	\begin{enumerate}
+	\item Time corrected Wald ratio, $Wald_{TC}$ -- relies on PT within subgroup of units sharing the same treatment at the first date
+	\item Changes in changes extension, $Wald_{CiC}$ -- extension of Athey and Imbens (2006) ``changes in changes'' paper. Generalizes CiC to fuzzy.  CiC is invariant to outcome scaling but puts restrictions on the full distribution of potential outcomes instead of the mean
+	\end{enumerate}
+	
+\end{frame}
+
+\begin{frame}{Personal takeaway}
+
+\begin{itemize}
+\item Two main values of this paper that I found:
+	\begin{itemize}
+	\item Situations where the control group is getting treated with unrelated policy shocks
+	\item Continuous treatments
+	\end{itemize}
+\item Code to do it is simple but in Stata
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Most basic notation}
+
+For any random variable, R, we interpret as $R_{dgt}$ as treatment status, treatment group, time \
+
+\bigskip
+
+$R_{101} \sim R | D=1, G=0, T=1$ \
+
+\bigskip
+
+Individual treatment status (D) is whether a unit is treated regardless of group; Group (G) is treatment or control \emph{groups}; Time (T) is before or after \
+
+\bigskip
+
+Sharp: $D = G \times T$; \
+Fuzzy: $D\neq G \times T$
+
+\end{frame}
+
+\begin{frame}{Cases under consideration}
+
+Case 1: Share of treated units in control don't change between periods $$E[D_{01}]=E[D_{00}]$$ \\
+
+\bigskip
+
+Wald$_{DiD}$ identifies the LATE parameter for ``switchers'' (i.e., people whose treatment status changed between 0 and 1) if parallel trends hols and if the ATE of treated units at both dates is stable over time; proposes new estimators that don't depend on this \\
+
+\bigskip
+
+Stable ATE isn't required in a typical ``sharp'' DiD
+
+\end{frame}
+
+\begin{frame}{Cases under consideration}
+
+Case 2: Share of treated units changes over time in control $$E[D_{01}]>E[D_{00}]$$\\
+
+\bigskip
+
+Wald$_{DiD}$ identifies the LATE of switchers under PT and stable ATE assumption and LATE of treatment and control group switchers are the same \
+
+\bigskip
+
+Under certain assumptions, their alternative estimator will only be partially identified, and it depends on the size of the change of treated units in the control.  
+
+\end{frame}
+
+\begin{frame}{Fuzzy design assumptions}
+
+
+
+
+\begin{block}{A1: Dominating growth of treated units in the treatment group}
+The treatment group is the one experiencing the larger increase in its treatment rate. 
+\end{block}
+This rules out the case where the two groups experience the same evolution of their treatment rates. Let $R_{gt} \sim R|G=g, T=t$; Assumption 1 implies the following conditions:
+
+\begin{eqnarray*}
+E(D_{11})&>&E(D_{10}) \\
+E(D_{11}) - E(D_{10}) &>& E(D_{01}) - E(D_{00})
+\end{eqnarray*}
+
+\end{frame}
+
+
+\begin{frame}{Fuzzy design assumptions}
+
+\begin{block}{A2: Stable percent of treated units in the control group}
+$0<E(D_{01} ) = E(D_{00})<1$ means there is stable percent of treatment units in the control group.
+\end{block}This is a special case where number of treatment units in control group is fixed. 
+
+\end{frame}
+
+\begin{frame}{Fuzzy design assumptions}
+
+\begin{block}{A3: Treatment participation equation}
+In the treatment group, no one switches from treatment to control. Formally this is $$D=1\text{ if } V \geq v_{gt}\text{ with every } V \independent T|G$$
+\end{block}Where $V$ is the propensity to get treatment, $v_{gt}$ is a threshold specific to each group/time
+
+
+\end{frame}
+
+\begin{frame}{A little more notation}
+
+\begin{itemize}
+\item We say a unit is treated as $D(t) = 1 \{V \geq v_{gt} \}$
+\item Switchers are units who go from control to treatment between 0 and 1 $S= \{ D(0) <D(1), G=1 \}$
+\item LATE is for switchers: $\Delta=E(Y_{11}(1) - Y_{11}(0) | S$
+\item LQTE is also for switchers: $\tau_q = f^{-1}_{y_{11}(1)|S^(q)} - F^{-1}_{y_{11}(0)|S^(q)}$
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Switcher LATE/LQTE}
+
+Why only switchers?
+
+
+\begin{itemize}
+\item Sometimes only ones affected are switchers; a policy occurs but only eligibility for some.  Switchers end up treated
+\item Identifying more than the LATE places more restrictions and this already has like 8 assumptions
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{First estimator: Wald$_{DiD}$}
+
+Commonly used strategy in these fuzzy designs is to normalize the DiD on the outcome by the DiD on the treatment status itself (because remember, in the fuzzy design, units are \emph{becoming} treated as well as \emph{being in treatment groups} \\
+
+\begin{eqnarray*}
+Wald_{DiD} = \frac{DiD_Y}{DiD_D}
+\end{eqnarray*}
+
+\bigskip
+
+
+
+\end{frame}
+
+
+\begin{frame}{Wald-DiD}
+
+Let $S'= \{ D(0) \neq D(1), G=0 \}$ be control group switchers.  Then we define relevant parameters as:
+
+\begin{eqnarray*}
+\Delta ' &=& E(Y_{01}(1) - Y_{01}(0) | S') \\
+\alpha &=& \frac{
+[P(D_{11}=1) - P(D_{10}=1)]}{DiD_D}
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{Assumptions}
+
+\begin{block}{A4: Parallel trends}
+Standard assumption. Not worth repeating for the millionth time.
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Assumptions}
+
+\begin{block}{A5: Stable treatment effect over time}
+In both groups, the average effect of going from 0 to d units of treatment among units with $D(0)=d$  is stable over time.  This is the same as assuming that among these units, the mean of $Y(d)$ and $Y(0)$ follow the same evolution over time
+\end{block}
+
+\begin{eqnarray*}
+&&E \bigg [ Y(d) - Y(0) | G, T=1, D(0) = d \bigg ] -\\
+&& E \bigg [Y(d) - Y(0) | G, T=0, D(0)=d \bigg ] =0
+\end{eqnarray*}for units in the switching population
+
+\end{frame}
+
+\begin{frame}{Assumptions}
+
+\begin{block}{A6: Homogenous treatment effect over time}
+Switchers have the same LATE in both groups.  This isn't necessary in sharp DiD, just fuzzy
+\end{block}
+
+\end{frame}
+
+
+\begin{frame}{Wald DiD theorems}
+
+There's a reason we just listed six assumptions.  We need them for this traditional scaled DiD method for fuzzy designs called the Wald DiD.  We'll go in order. 
+
+\begin{block}{Theorem 1: Wald DiD}
+If A1, A3-A5 hold, then Wald DiD equals $$\alpha \Delta + (1-\alpha) \Delta '$$but if A2 or A6, then Wald DiD equals $\Delta$
+\end{block}
+
+
+\end{frame}
+
+
+\begin{frame}{Interpretation of theorem 1: case 1}
+
+Case 1: when treatment grows in the control group, then $\alpha>1$.  Then if we assume A1, A3-A5, a lot of things cancel out under A1, A3-A5, but the Wald DiD becomes a weighted \emph{difference} of the LATEs of treatment and control group switchers in period 1. \\
+
+\bigskip
+
+Since it is a difference in LATEs, then even two positive LATEs can flip sign if the first is less than the second. \\
+
+\bigskip 
+
+But if you assume A6, you just get the LATE.  
+
+\end{frame}
+
+\begin{frame}{Interpreting theorem 1: case 2}
+
+Case 2: When treatment diminishes in controls, then $\alpha<1$. \\
+
+\bigskip
+
+Then under A1, A3-A5, Wald DiD will equal a weighted average of LATEs of treatment and control group switchers in period 1. \\
+
+\bigskip
+
+This quantity will not reverse signs, but won't equal the LATE without A6.
+
+\end{frame}
+
+\begin{frame}{Interpreting theorem 1: case 3}
+
+Case 3: Treatment rate is stable in control, then $\alpha=1$ and Wald DiD will equal LATE under A1, A3-A5. \\
+
+\bigskip
+
+This requires that the ATE among units treated at T=0 remain stable over time -- necessary condition. \\
+
+\bigskip
+
+Under A1, A3-A4, Wald DiD is equal to LATE plus a bias term involving several LATEs, and unless they cancel out exactly, Wald DiD will be different from the LATE
+
+\end{frame}
+
+\begin{frame}{Alternative estimators}
+
+\begin{itemize}
+\item Wald TC -- Time Corrected Wald DiD
+\item Wald CiC -- Changes in changes generalization to fuzzy design
+\end{itemize}
+
+Now we review alternative assumptions under which Wald TC or Wald CiC identify the LATE of switchers in the fuzzy.  First let's look at Wald TC which won't depend on A4-A5.
+
+\end{frame}
+
+\begin{frame}{Alternative assumptions for the Wald TC}
+
+\begin{block}{A4': Conditional parallel trends}
+This requires $Y(0)$ mean average follow the same trends as all the other groups.
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Wald TC estimator}
+
+Wald TC equals $$\frac{
+E(Y_{11}) - E(Y_{10} + \delta_{D_{10}})}{E(D_{11} - E(D_{10}}$$where $$\delta_d = E[Y_{d_{01}}] - E[Y_{d_{00}}]$$ which is the change in mean outcome between periods 0 and 1 for controls and treatment status $d$ (not groups T and C -- individual units $d$). 
+
+\end{frame}
+
+
+\begin{frame}{Theorem 2}
+
+\begin{block}{Theorem 2 and the Wald TC}
+If A1-A3 and A4', then Wald TC equals $\Delta$
+\end{block}
+
+Note that: Wald TC equals
+
+$$
+\frac{
+E  (Y | G=1,T=1) - 
+E(Y+ (1-D)\delta_0 + D \delta_1 | G=1, T=0 )}{
+E(D|G=1,T=1) - E(D|G=1,T=0)}$$
+
+This is almost the Wald DiD ratio except for that second term with the $Y+(1-D)\delta_0 + D\delta_1$ instead of just $Y$. \\
+
+\bigskip 
+
+This arises because time can independently affect the outcome.  \\
+
+\bigskip
+
+When treatment is stable for a group $G$, then $\delta_0=0$. \\
+
+
+\end{frame}
+
+
+\begin{frame}{Comment on Theorem 2}
+
+Wald TC equals
+
+$$
+\frac{
+E  (Y | G=1,T=1) - 
+E(Y+ (1-D)\delta_0 + D \delta_1 | G=1, T=0 )}{
+E(D|G=1,T=1) - E(D|G=1,T=0)}$$
+
+The numerator of Wald TC compares the mean outcome in the treatment group in the post period 1 to the counterfactual mean we would have had if switchers had remained untreated.  \\
+
+\bigskip 
+
+Then normalized by the change in switching, we get the LATE for switchers
+
+\end{frame}
+
+\begin{frame}{Wald CiC}
+
+Here we have continuous outcomes and an estimator for quantiles of the LATE called LQTE.  New assumption is complicated but is needed for the Wald CiC
+
+\end{frame}
+
+\begin{frame}{Assumptions for changes in changes Wald ratio}
+
+
+\begin{block}{A7: Monotonicity and time invariance of unobservables}
+Potential outcomes are strictly increasing functions of some scalar unobserved heterogeneity term whose distribution is stationary over time.  Also imposes the distribution of that unobserved heterogeneity be stationary within subgroups of units sharing the same treatment status at baseline.
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Data restrictions}
+
+\begin{block}{A8: Data restrictions}
+First, Y must have the same support in each of the eight $D \times G \times T$ cells (common support).  Second, the distribution of Y be continuous with positive density in each of the eight cells.
+\end{block}
+
+This will allow us to bound treatment effects (Athey and Imbens 2006). Now the ugliest estimator ever.
+
+\end{frame}
+
+\begin{frame}{Wald CiC estimator}
+
+Let $Q(y) = F_{Y_{01}}^{-1} \cdot F_{Y_{00}}(Y)$ be the quantile-quantile transform of $Y$ from period 0 to 1 in the control group.  Also let:
+
+\begin{eqnarray*}
+F_{CiC,d(Y)} = \frac{
+P(D_{11}=d) F_{Y_{d11}} - 
+P(D_{10}=d) F_{Y_{d10}}}{
+P(D_{11}=d) - P(D_{10}=d)}
+\end{eqnarray*}And our Wald CiC estimator is:
+
+\begin{eqnarray*}
+W_{CiC} = \frac{
+E(Y_{11}) - E(Q_{D10}(Y_{10})}
+{E(D_{11}) - E(D_{10})}
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{Theorem 3: Wald CIC}
+
+\begin{block}{Theorem 3: Wald CiC}
+Under A1-A3 and A7-A8, then $W_{CiC}$ is the LATE and equivalently we get the LQTE
+\end{block}
+
+\footnotesize
+\begin{eqnarray*}
+W_{CiC} = \frac{
+E(Y|G=1,T=1) - 
+E((1-D)Q_0(Y) + DQ_1(Y) | G=1, T=0}{
+E(D|G=1,T=1) - E(D|G=1,T=0)}
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{Comment on theorem 3}
+
+Almost the standard Wald DiD except for that $(1-D)Q_0(Y) + DQ_1(Y)$ instead of Y in the second term of the numerator.  So again, we are simply making adjustments for the fuzziness but under different set of assumptions. This term accounts for the fact that time directly affects the outcome, but in a CiC setup.
+
+\end{frame}
+
+\begin{frame}{Which to use}
+
+It's about choosing your poison.  Do you want A4' or A7? 
+
+\bigskip
+
+When T and C have different outcome distributions conditional on D in the first period, then scaling of the outcome may have large effect on the Wald-TC.  Whereas Wald-CiC isn't sensitive to the scaling of Y.
+
+\bigskip
+
+But when the two groups have similar outcome distributions conditional on D in the first period, Wald-TC may be preferable as A4' only restricts the mean of the potential outcomes, whereas Wald-CiC restricts the entire distribution
+
+\end{frame}
+
+\begin{frame}{Extensions to non-binary, ordered treatment}
+
+\begin{block}{Theorem 6}
+Under continuous treatments, the estimators we've been considering are equal to the average causal response parameter that Angrist and Imbens (1995) discuss.  This parameter is a weighted average over all values of $d$ of the effect of increasing treatment from $d-1$ to $d$ for any switchers where treatment status goes from strictly below to strictly above $d$ over time.
+\end{block}
+
+Theorem 6 extends to a continuous treatment.  Under theorem 6, each of the estimators is identifying a weighted average of the derivative of potential outcomes with respect to changing $d$
+
+\end{frame}
+
+\begin{frame}{Stata code}
+
+Only code I know of at the moment is the fuzzydid the authors published in Stata Journal.  But it allows you to specify which estimator.  Here's sample code for Wald DiD:
+
+\bigskip
+
+\texttt{fuzzydid lngonf g_decr post1 inverse_fee, did breps (1000) cluster(county1)}
+
+where $g_decr$ is the treatment group dummy, post1 is the post period dummy, and $inverse_fee$ is our continuous treatment variable. We specify the Wald DiD by noting did after the comma.
+
+\end{frame}
+
+\begin{frame}{Concluding remarks}
+
+\begin{itemize}
+\item Paper is hard but worth it.  It's possible your controls are getting treated for unrelated reasons, but this is testable
+\item The Wald DiD is a conventional approach but suffers bias without a layering in of assumptions
+\item Alternative estimators for when control group stabilization isn't possible or you don't want to impose treatment effect homogeneity are available
+\item fuzzydid can handle continuous treatments as well as dummies.
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+
+\end{document}
