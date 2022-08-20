@@ -44,11 +44,25 @@
 
 \subsection{Numerical examples}
 
+\begin{frame}{Drake and David Card}
+
+``Started from the bottom now we're here'' -- Drake
+
+\bigskip
+
+David Card and Orley Ashenfelter are often associated with it in economics, but it goes back further
+
+\bigskip
+
+Let's go back to the bottom and get to where we are now
+
+\end{frame}
+
 \begin{frame}{Miasma Debates}
 
 \begin{itemize}
 
-\item DiD is a 19th century tool used in health policy debates
+\item Difference-in-differences (DiD) was quietly and largely unnoticed introduced in the 19th century as a way to convince skeptics in health policy arguments
 \item Dominant disease theory in 19th century was \emph{miasma} -- disease caused by smelly vapor
 \item Keep in mind -- microorganisms would not be identified until much later, partly caused by poor resolution in microscopes (Freedman 2007)
 
@@ -56,7 +70,7 @@
 
 \end{frame}
 
-\begin{frame}{Miasma I: Ignaz Semmelweis}
+\begin{frame}{Miasma I: Ignaz Semmelweis and washing hands}
 
 \begin{itemize}
 \item 1840s, Vienna maternity wards had high postpartum infections in one wing compared to other wings
@@ -65,7 +79,7 @@
 
 \end{frame}
 
-\begin{frame}{Miasma I: Ignaz Semmelweis}
+\begin{frame}{Miasma I: Ignaz Semmelweis and washing hands}
 
 \begin{itemize}
 \item Ignaz Semmelweis notes the difference in 1841 when hospitals moved to ``anatomical'' training involving cadavers (Pamela Jakeila lecture notes on DiD)
@@ -80,6 +94,7 @@
 \begin{frame}{Miasma II: John Snow and cholera}
 
 \begin{itemize}
+\item Three major waves of cholera in the early to mid 1800s in London
 \item John Snow believed cholera was spread through the Thames water supply which contradicted dominant theory about ``dirty air'' transmission
 \item Grand experiment: Lambeth moves its pipe between 1849 and 1854; Southwark and Vauxhall delay
 \item He can evaluate the effect in three ways (one of which is DiD)
@@ -279,10 +294,10 @@
 \begin{frame}{Potential outcomes review}
 
 \begin{itemize}
-\item DiD really can't be understood without committing to some common causality language
+\item DiD really can't be understood without committing to useful causality notation
 \item Standard language is the potential outcomes model, sometimes called the Rubin-Neyman model
-\item Don't go over potential outcomes too fast or you'll miss all the fun
 \item Potential outcomes are thought experiments about worlds that never existed, but which \emph{could have}
+\item Important we are all on the same page, so I'm going to review this
 \end{itemize}
 
 \end{frame}
@@ -300,7 +315,6 @@
 
 	\item Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{: health if drank from upstream at time $t$} \\ 0 \text{: health if drank from downstream at time $t$} \end{cases}$$where $j$ indexes a counterfactual state of the world
 
-	\item I'll drop $t$ subscript, but note -- these are potential outcomes for the same person at the exact same moment in time
 	\end{itemize}
 \end{frame}
 
@@ -310,7 +324,8 @@
 \begin{itemize}
 \item A potential outcome $Y^1$ and an observed outcome $Y$ are distinct
 \item Potential outcomes are \emph{hypothetical} possibilities describing states of the world but historical outcomes actually occurred
-\item Potential outcomes become observed outcomes when treatments are assigned (the ``switching equation'') $$Y=DY^1 + (1-D)Y^0$$
+\item Potential outcomes become observed outcomes when treatments are assigned (the ``switching equation'') $$Y_{it}=D_{it}Y_{it}^1 + (1-D_{it})Y_{it}^0$$
+\item I'll often drop the subscripts to reduce clutter, but note the key point here is one's own realized outcome at some point in time is based on one's own treatment assignment at that time (this is what we mean by SUTVA in fact)
 
 \end{itemize}
 \end{frame}
@@ -355,6 +370,7 @@ Individual causal effects cannot be calculated because one of the two needed pot
 \item We may be unable to randomize -- not because we lack the imagination, but because we lack the permission
 \item If we cannot randomize, then how does DiD identify a treatment effect, and which treatment effect?
 \item DiD identifies the ATT, and since we are missing $Y^0$ for treated group, we will restrict counterfactual $Y^0$ in expectation
+\item One of the main advantages of DiD is the hope that we can identify the ATT \emph{without} randomization
 \end{itemize}
 
 \end{frame}
@@ -402,7 +418,7 @@ If we had more than one treatment group, then ``Pre'' and ``Post'' no longer are
 
 \end{frame}
 
-\begin{frame}{Identification}
+\begin{frame}{Identification through parallel trends}
 	
 
 	\begin{block}{Parallel trends}
@@ -423,18 +439,19 @@ It's in \textcolor{red}{red} so you know it's a nontrivial assumption.  But why?
 
 
 
-\begin{frame}{How does the science work}
+\begin{frame}{What is ``The Science''?}
 
 \begin{itemize}
 \item You've probably heard people say RCT is the gold standard for causal inference.  But why?
 \item Because randomization gives \emph{near certainty} that selection bias won't exist
 \item Don Rubin commented once, ``we know how the science works''
+\item DiD \textbf{does not} use ``the science'' though
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}{Independence}
+\begin{frame}{Identification with Independence (``the Science'')}
 
 
 \begin{block}{Independence assumption}
@@ -447,7 +464,7 @@ RCTs use \emph{independence} to estimate causal effects; DiD does not
 
 \begin{frame}{Independence}
 
-Independence allows us to write down conditional expected potential outcome equations like $$E[Y^0|D=1]=E[Y^0|D=0]$$ 
+Independence allows us to write down conditional expected potential outcome equations (i.e., impute) like $$E[Y^0|D=1]=E[Y^0|D=0]$$ 
 
 \bigskip
 
@@ -456,14 +473,17 @@ In the simple comparison in means, $\widehat{\delta}_{cs} = D + (L-SV)$, indepen
 \end{frame}
 
 
-\begin{frame}{Parallel trends}
+\begin{frame}{Parallel trends is hard}
 
 \begin{itemize}
-\item Unlike selection bias under RCT being zero, \textbf{there is no science of parallel trends}
-\item DiD is a harder design because it doesn't rely on randomization (it relies on parallel trends)
-\item Ashenfelter's Dip -- treatment and control group units prior to treatment seemed like they would've diverged anyway
-\item Now we do an exercise together.  Open up the word document and excel spreadsheet.  
+\item \textbf{There is no guaranteed ``science'' in parallel trends}
+\item IMO, this makes DiD a ``hard'' design -- \emph{because} it doesn't rely on randomization (it relies on parallel trends), there are no ``slam dunks'' and evidence tends to be multi-layered
+\item Before we move into regression, let's go through a simple exercise to really pin down these core ideas with simple calculations
 \end{itemize}
+
+\bigskip 
+
+\url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
 
 \end{frame}
 
@@ -475,14 +495,15 @@ In the simple comparison in means, $\widehat{\delta}_{cs} = D + (L-SV)$, indepen
 \begin{frame}{OLS Specification}
 	
 	\begin{itemize}
-	\item Properly specified OLS model will also identify the ATT when there is only two groups and no covariates
-	\item Often preferred because
+	\item Simple DiD equation will identify ATT under parallel trends
+	\item But so will a particular OLS specification (two groups and no covariates)
+	\item OLS was historically preferred because
 		\begin{itemize}
 		\item OLS estimates the ATT under parallel trends
 		\item Easy to calculate the standard errors
 		\item Easy to include multiple periods
 		\end{itemize}
-	\item Some issues emerge with differential timing, time varying covariates and continuous treatments, so we take those separately
+	\item People liked it also because of differential timing, continuous treatments and covariates, but those are more complex so we address them later
 	\end{itemize}
 \end{frame}
 
@@ -491,7 +512,7 @@ In the simple comparison in means, $\widehat{\delta}_{cs} = D + (L-SV)$, indepen
 \begin{itemize}
 \item Card and Krueger (1994) have a famous study estimating causal effect (ATT) of minimum wages on employment
 \item Exploited a policy change in New Jersey between February and November in mid-1990s where minimum wage was increased, but neighbor PA did not
-\item Using DiD, they do not find a negative effect of the minimum wage on employment
+\item Using DiD, they do not find a negative effect of the minimum wage on employment which is part of its legacy today, but I mainly present it to illustrate the history and the design principles
 \end{itemize}
 
 \end{frame}
@@ -545,16 +566,48 @@ But let's listen to Orley's opinion about the paper's controversy at the time.  
 \end{frame}
 
 
+\begin{frame}[plain]
+	$$Y_{ist} = \alpha + \gamma NJ_s + \lambda d_t + \delta(NJ\times d)_{st} + \varepsilon_{ist}$$
+	\begin{figure}
+	\includegraphics[scale=0.90]{./lecture_includes/waldinger_dd_5.pdf}
+	\end{figure}
 
-	
+Notice how OLS is ``imputing'' $E[Y^0|D=1,Post]$ for the treatment group in the post period? It is only ``correct'', though, if parallel trends is a good approximation
+
+\end{frame}
 
 
-\begin{frame}{Compositional differences violate parallel trends}
+\begin{frame}{Violating parallel trends exercise}
+
+Let's use the second tab now 
+
+\url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
+
+\end{frame}
+
+
+\begin{frame}{Violating parallel trends}
+
+\begin{itemize}
+\item Parallel trends are in expectation only -- we don't rely each state to follow the same trend, just the group average for $Y^0$ over the long difference
+\item Violations happen due to selection bias as remember -- we are using untreated units as controls, only we are using their \emph{long differences} as the control outcome
+\item Two straightforward ways that parallel trends will be violated
+	\begin{enumerate}
+	\item Compositional differences in samples associated with repeated cross-sections
+	\item Policy endogeneity
+	\end{enumerate}
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Repeated cross-sections and compositional change}
 	
 	\begin{itemize}
-	\item One of the risks of a repeated cross-section is that the composition of the sample may have changed between the pre and post period
-	\item Hong (2011) uses repeated cross-sectional data from the Consumer Expenditure Survey (CEX) containing music expenditure and internet use for a random sample of households
-	\item Study exploits the emergence of Napter (first file sharing software widely used by Internet users) in June 1999 as a natural experiment
+	\item One of the risks of a repeated cross-section is that the composition of the sample may have changed between the pre and post period in ways that are correlated with treatment
+	\item Hong (2013) uses repeated cross-sectional data from the Consumer Expenditure Survey (CEX) containing music expenditure and internet use for a random sample of households
+	\item Study exploits the emergence of Napster (first file sharing software widely used by Internet users) in June 1999 as a natural experiment
 	\item Study compares internet users and internet non-users before and after emergence of Napster
 	\end{itemize}
 
@@ -576,6 +629,18 @@ But let's listen to Orley's opinion about the paper's controversy at the time.  
 	
 \end{frame}
 
+\begin{frame}{Repeated cross-sections}
+
+\begin{itemize}
+\item Surprisingly underappreciated problem with almost no literature around it
+\item So what can you do?  Check covariate balance by regressing the time-varying covariates instead of the outcome onto the treatment using your OLS specification
+\item They should be exogenous remember, so this covariate regression can be a helpful test of whether this is a problem
+\item ``Difference-in-differences with Compositional Changes'' by Pedro Sant'anna and Qi Xu (not yet released) is the only paper I've ever seen to look into it
+\end{itemize}
+
+\end{frame}
+
+
 \begin{frame}{Inference}
 	
 	\begin{itemize}
@@ -589,19 +654,200 @@ But let's listen to Orley's opinion about the paper's controversy at the time.  
 \begin{frame}{Inference}
 	
 		\begin{enumerate}
-		\item Block bootstrapping standard errors (if you analyze states the block should be the states and you would sample whole states with replacement for bootstrapping)
-		\item Clustering standard errors at the group level (in Stata one would simply add \texttt{, cluster(state)} to the regression equation if one analyzes state level variation)
-		\item Aggregating the data into one pre and one post period. Literally works if there is only one treatment data.  With staggered treatment dates one should adopt the following procedure:
+		\item[1 ] Block bootstrapping standard errors (if you analyze states the block should be the states and you would sample whole states with replacement for bootstrapping)
+		\item[2 ] Clustering standard errors at the group level (in Stata one would simply add \texttt{, cluster(state)} to the regression equation if one analyzes state level variation)
+		\end{enumerate}
+
+\bigskip
+
+Most people will simply cluster, but there are issues if you have too few clusters
+		
+\end{frame}
+
+\begin{frame}{Inference}
+
+\begin{enumerate}
+		\item[3] Aggregating the data into one pre and one post period. Literally works if there is only one treatment data.  With staggered treatment dates one should adopt the following procedure:
 			\begin{itemize}
 			\item Regress $Y_{st}$ onto state FE, year FE and relevant covariates
 			\item Obtain residuals from the treatment states only and divide them into 2 groups: pre and post treatment
 			\item Then regress the two groups of residuals onto a post dummy
 			\end{itemize}
-		\end{enumerate}
+\end{enumerate}
+
+No one does this, and I only mention it so you have it in your slides
+
+\end{frame}
+
+\begin{frame}{Application using real data}
+
+\begin{itemize}
+\item Let's now use a real example with real data and see how well this does
+\item Famous paper in AER by Lalonde (1986), an Orley and Card student at Princeton
+\item Found that most program evaluation did badly, but let's revisit it with diff-in-diff
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Description of NSW Job Trainings Program}
+	
+The National Supported Work Demonstration (NSW), operated by Manpower Demonstration Research Corp in the mid-1970s:
+	\begin{itemize}
+	\item was a temporary employment program designed to help disadvantaged workers lacking basic job skills move into the labor market by giving them work experience and counseling in a sheltered environment
+	\item was also unique in that it \textbf{randomly assigned} qualified applicants to training positions:
+		\begin{itemize}
+		\item \textbf{Treatment group}: received all the benefits of NSW program
+		\item \textbf{Control group}: left to fend for themselves
+		\end{itemize}
+	\item admitted AFDC females, ex-drug addicts, ex-criminal offenders, and high school dropouts of both sexes
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{NSW Program}
+	
+	\begin{itemize}
+	\item Treatment group members were:
+		\begin{itemize}
+		\item guaranteed a job for 9-18 months depending on the target group and site
+		\item divided into crews of 3-5 participants who worked together and met frequently with an NSW counselor to discuss grievances and performance
+		\item paid for their work
+		\end{itemize}
+	\item Control group members were randomized so the same
+	\item Note: the randomization balanced observables and unobservables across the two arms, thus enabling the estimation of an ATE for the people who self-selected into the program
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{NSW Program}
+
+\begin{itemize}
+	\item Other details about the NSW program:
+		\begin{itemize}
+		\item \underline{Wages}:  NSW offered the trainees lower wage rates than they would've received on a regular job, but allowed their earnings to increase for satisfactory performance and attendance
+		\item \underline{Post-treatment}: after their term expired, they were forced to find regular employment
+		\item \underline{Job types}:  varied within sites -- gas station attendant, working at a printer shop -- and males and females were frequently performing different kinds of work
+		\end{itemize}
+\end{itemize}
+
+\end{frame}
+	
+\begin{frame}{NSW Data}
+	
+	\begin{itemize}
+	\item \underline{NSW data collection}:
+		\begin{itemize}
+		\item MDRC collected earnings and demographic information from both treatment and control at baseline and every 9 months thereafter
+		\item Conducted up to 4 post-baseline interviews
+		\item Different sample sizes from study to study can be confusing, but has simple explanations
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+	
+
+\begin{frame}{NSW Data}
+
+\begin{itemize}
+	\item \underline{Estimation}:
+		\begin{itemize}
+		\item NSW was a randomized job trainings program; therefore estimating the average treatment effect is straightforward:
+			\begin{eqnarray*}
+			\frac{1}{N_t}\sum_{D_i=1}Y_i - \frac{1}{N_c}\sum_{D_i=0}Y_i \approx E[Y^1-Y^0] 
+			\end{eqnarray*}in large samples assuming treatment selection is independent of potential outcomes (randomization) -- i.e., $(Y^0,Y^1)\independent{D}$. 
+		\end{itemize}
+	\item \underline{NSW worked}: Treatment group participants' real earnings post-treatment (1978) was positive and economically meaningful -- $\approx$ \$900 (LaLonde 1986) to \$1,800 (Dehejia and Wahba 2002) depending on the sample used
+\end{itemize}
+
+\end{frame}
+	
+\begin{frame}[plain]
+	\begin{center}
+	LaLonde, Robert J. (1986). \myurlshort{http://business.baylor.edu/scott_cunningham/teaching/lalonde-1986.pdf}{``Evaluating the Econometric Evaluations of Training Programs with Experimental Data''}. \emph{American Economic Review}. 
+	\end{center}
+	
+\underline{LaLonde's study} was \textbf{not} an evaluation of the NSW program, as that had been done, but rather an evaluation of econometric models done by:
+		\begin{itemize}
+		\item replacing the experimental NSW control group with non-experimental control group drawn from two nationally representative survey datasets: Current Population Survey (CPS) and Panel Study of Income Dynamics (PSID)
+		\item estimating the average effect using non-experimental workers as controls for the NSW trainees 
+		\item comparing his non-experimental estimates to the experimental estimates of \$900
+		\end{itemize}
+\end{frame}
+
+\begin{frame}{LaLonde (1986)}
+
+\begin{itemize}
+
+	\item \underline{LaLonde's conclusion}: available econometric approaches were biased and inconsistent
+		\begin{itemize}
+		\item His estimates were way off and usually the wrong sign
+		\item Conclusion was influential in policy circles and led to greater push for more experimental evaluations
+		\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+\imageframe{./lecture_includes/lalonde_table5a.png}
+\imageframe{./lecture_includes/lalonde_table5b.png}
+
+\begin{frame}[plain,shrink=10]{Imbalanced covariates for experimental and non-experimental samples}
+
+    \begin{center}
+		\begin{table}
+		\begin{tabular}{lcccccc}
+		\hline \hline
+		\multicolumn{3}{c}{}&
+		\multicolumn{1}{c}{CPS}&
+		\multicolumn{1}{c}{NSW}\\
+		
+		\multicolumn{1}{c}{}&
+		\multicolumn{2}{c}{All} &
+		\multicolumn{1}{c}{Controls} &
+		\multicolumn{1}{c}{Trainees} \\
+
+		\multicolumn{3}{c}{}&
+		\multicolumn{1}{c}{$N_c=15,992$}&
+		\multicolumn{1}{c}{$N_t=297$}&
+		\multicolumn{1}{c}{}&
+		\multicolumn{1}{c}{}\\
+
+		\multicolumn{1}{l}{covariate}&
+		\multicolumn{1}{c}{mean}&
+		\multicolumn{1}{c}{(s.d.)}&
+		\multicolumn{1}{c}{mean}&
+		\multicolumn{1}{c}{mean}&
+		\multicolumn{1}{c}{t-stat}&
+		\multicolumn{1}{c}{diff}\\
+		\hline
+Black    & 0.09 & 0.28 & 0.07 & 0.80 & 47.04 & -0.73\\
+Hispanic & 0.07 & 0.26 & 0.07 & 0.94 & 1.47 & -0.02\\
+Age & 33.07 & 11.04 & 33.2 & 24.63 & 13.37  & 8.6\\
+Married & 0.70 & 0.46 & 0.71 & 0.17 & 20.54 & 0.54\\
+No degree & 0.30 & 0.46 & 0.30 & 0.73 & 16.27 & -0.43\\
+Education & 12.0 & 2.86 & 12.03 & 10.38 & 9.85 & 1.65 \\
+1975 Earnings   & 13.51 & 9.31 & 13.65 & 3.1 & 19.63 & 10.6\\
+1975 Unemp  & 0.11 & 0.32 & 0.11 & 0.37 & 14.29 & -0.26\\
+		\hline 
+		\end{tabular}
+		\end{table}
+    \end{center}
+
 \end{frame}
 
 
-\subsection{Event study}
+\begin{frame}{Lab}
+
+\url{https://github.com/Mixtape-Sessions/Causal-Inference-2/tree/main/Lab/Lalonde}
+
+\bigskip
+
+Together let's do questions 1 and 2a, 2b (but hold off on 2c)
+
+\end{frame}
+
+
+
+\subsection{Event studies in DiD}
+
+
 
 \begin{frame}{Evidence for parallel trends: pre-trends}
 
@@ -614,6 +860,7 @@ But let's listen to Orley's opinion about the paper's controversy at the time.  
 
 \end{frame}
 
+
 \begin{frame}{Plot the raw data when there's only two groups}
 
 	\begin{figure}
@@ -622,12 +869,32 @@ But let's listen to Orley's opinion about the paper's controversy at the time.  
 
 \end{frame}
 
+\begin{frame}{Evidence for parallel trends: pre-trends}
+
+Let's do the bonus questions on first and second tab now 
+
+\url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
+
+\end{frame}
+
+\begin{frame}{Intuition}
+
+\begin{itemize}
+\item Parallel pre-trends are neither necessary nor sufficient for parallel trends
+\item To argue otherwise is to commit a type of \emph{post hoc ergo propter hoc} fallacy
+\item Parallel pre-trends is a type of ``look-alike'' reasoning we often do though
+\item Similar to checking for covariate balance in RCTs
+\item But \textbf{cannot} substitute for domain knowledge!
+\end{itemize}
+
+\end{frame}
+
 
 
 \begin{frame}{Event study regression}
 	
 	\begin{itemize}
-	\item Including leads into the DD model is an easy way to analyze pre-treatment trends
+	\item Including leads into the DD model is an easy way to analyze pre-treatment trends (which we hope are zero)
 	\item Lags can be included to analyze whether the treatment effect changes over time after assignment
 	\item The estimated regression would be:$$Y_{its} = \gamma_s + \lambda_t + \sum_{\tau=-2}^{-q}\mu_{\tau}D_{s\tau} + \sum_{\tau=0}^m\delta_{\tau}D_{s\tau}+\varepsilon_{ist}$$
 		\begin{itemize}
@@ -683,7 +950,6 @@ Under parallel trends and no anticipation, then you expect $\widehat{\mu}$ coeff
 
 
 \imageframe{./lecture_includes/medicaid_qje_placebo}
-
 
 \begin{frame}[plain]
 
