@@ -1,3 +1,12 @@
+---
+output: github_document
+---
+
+```{r setup, include = F}
+# devtools::install_github("Hemken/Statamarkdown")
+library(Statamarkdown)
+```
+
 # Lalonde
 
 This dataset is one of the most commonly used dataset in econometrics based on [Lalonde (1986)](https://econpapers.repec.org/article/aeaaecrev/v_3a76_3ay_3a1986_3ai_3a4_3ap_3a604-20.htm) and [Dehejia and Wahba (2002)](https://www.uh.edu/~adkugler/Dehejia&Wahba.pdf). Both the paper by Lalonde and Dehejia and Wahba both wanted to evaluate causal inference methods using non-experimental data. Cleverly, they start with an experimental dataset to estimate the 'true' causal effect and then use non-experimental data to evaluate an econometric method.
@@ -6,16 +15,51 @@ In [Causal Inference 1](github.com/Mixtape-Sessions/Causal-Inference-1), we have
 
 1. We will first perform analysis on the experimental dataset `https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Labs/Lalonde/lalonde_exp_panel.dta`
 
+```{stata load-exp-data, , collectcode = TRUE}
+* ssc install drdid, replace
+clear
+use "https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalonde/lalonde_exp_panel.dta", clear 
+```
+
 a. As a reminder, perform a simple difference-in-means on the experimental dataset to estimate the "treatment effect". Use only the year `78` and compare average real earnings for the treated and the control groups. This is our baseline estimate of the treatment effect
+
+```{stata difference-in-means-exp}
+* Difference-in-means
+reg re i.treat if year == 78, r
+```
 
 b. Estimate the effect of treatment, `treat`, on real-earnings, `re` in a difference-in-differences estimator. This will be the "true" treatment effect estimate that we will try to recreate with the non-experimental CPS sample. 
 
+```{stata diff-in-diff-exp}
+* Difference-in-differences
+reghdfe re i.treat, absorb(id year) vce(robust)
+```
+
 2. Now, we turn to the non-experimental dataset `https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Labs/Lalonde/lalonde_nonexp_panel.dta`. 
+
+```{stata load-nonexp-data, collectcode = TRUE}
+* 2. CPS data
+use "https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalonde/lalonde_nonexp_panel.dta", clear 
+```
 
 a. As a reminder, perform a simple difference-in-means on the combined dataset to estimate the "treatment effect". Use only the year `78` and compare average real earnings for the treated and the control groups.
 
+```{stata difference-in-means-nonexp}
+* Difference-in-means
+reg re i.treat if year == 78, r
+```
+
 b. Estimate a difference-in-differences estimator for the non-experimental group.
+
+```{stata diff-in-diff-nonexp}
+* Initial Difference-in-difference
+reghdfe re i.treat, absorb(id year) vce(robust)
+```
 
 c. Use the `DRDID` command to estimate a doubly-robust DID with covariates `age + agesq + agecube + educ + educsq + marr + nodegree + black + hisp`
 
+```{stata drdid}
+* Doubly-robust DID
+drdid re age agesq agecube educ educsq marr nodegree black hisp re74 u74 if year == 75 | year == 78, time(year) ivar(id) tr(ever_treated)
+```
 
