@@ -847,6 +847,13 @@ Together let's do questions 1 and 2a, 2b (but hold off on 2c)
 
 \subsection{Event studies in DiD}
 
+\begin{frame}{Event studies have become mandatory in DiD}
+
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/currie_eventstudy.png}
+	\end{figure}
+
+\end{frame}
 
 
 \begin{frame}{Evidence for parallel trends: pre-trends}
@@ -854,7 +861,8 @@ Together let's do questions 1 and 2a, 2b (but hold off on 2c)
 \begin{itemize}
 
 	\item The identifying assumption for all DD designs is parallel trends, but since we cannot verify parallel trends, we often look at pre-trends
-	\item But, even if pre-trends are the same one still has to worry about other policies changing at the same time (omitted variable bias)
+	\item It's a type of check for selection bias, but you must understand what it is and what it isn't to see its value but not be naive about it (it is not a silver bullet)
+	\item Even if pre-trends are the same one still has to worry about other policies changing at the same time (omitted variable bias)
 
 \end{itemize}
 
@@ -877,7 +885,7 @@ Let's do the bonus questions on first and second tab now
 
 \end{frame}
 
-\begin{frame}{Intuition}
+\begin{frame}{Intuition behind event studies}
 
 \begin{itemize}
 \item Parallel pre-trends are neither necessary nor sufficient for parallel trends
@@ -894,8 +902,7 @@ Let's do the bonus questions on first and second tab now
 \begin{frame}{Event study regression}
 	
 	\begin{itemize}
-	\item Including leads into the DD model is an easy way to analyze pre-treatment trends (which we hope are zero)
-	\item Lags can be included to analyze whether the treatment effect changes over time after assignment
+	\item Lags and lags can be included in our simple OLS model to analyze this issue
 	\item The estimated regression would be:$$Y_{its} = \gamma_s + \lambda_t + \sum_{\tau=-2}^{-q}\mu_{\tau}D_{s\tau} + \sum_{\tau=0}^m\delta_{\tau}D_{s\tau}+\varepsilon_{ist}$$
 		\begin{itemize}
 		\item $D$ equals the treatment group interacted with the calendar year
@@ -917,7 +924,7 @@ Typically you'll plot the coefficients and 95\% CI on all leads and lags (binned
 
 \bigskip
 
-Under parallel trends and no anticipation, then you expect $\widehat{\mu}$ coefficients to be zero, which gives you confidence that parallel trends holds (but is not a guarantee)
+Under parallel trends and no anticipation, then you expect $\widehat{\mu}$ coefficients to be zero, which gives you confidence that parallel trends holds (but is not a guarantee, and there are still specification issues -- see Jon Roth's work)
 
 \end{frame}
 
@@ -971,6 +978,7 @@ Under parallel trends and no anticipation, then you expect $\widehat{\mu}$ coeff
 		\item Falsification test using data for alternative control group (e.g., Medicare population)
 		\item Falsification test using alternative ``placebo'' outcome that should not be affected by the treatment
 		\end{itemize}
+	\item Triple differences uses a within-state untreated group; little trickier, so let's use the table again
 	\end{itemize}
 \end{frame}
 
@@ -1046,6 +1054,15 @@ $l_t-s_t$ is the same for PA and NJ. That's the gap between high and low wage em
 	
 \end{frame}
 
+\begin{frame}{Great new paper to learn more}
+
+\begin{figure}
+\includegraphics[scale=0.25]{./lecture_includes/olden_moen_2022_ddd.png}
+\end{figure}
+
+\end{frame}
+
+
 
 \subsection{Falsifications}
 
@@ -1054,8 +1071,8 @@ $l_t-s_t$ is the same for PA and NJ. That's the gap between high and low wage em
 	\begin{itemize}
 	\item The within-group control group (DDD) is a form of placebo analysis using the same \emph{outcome}
 	\item But there are also placebos using a \emph{different} outcome -- but you need a hypothesis of mechanisms to figure out what is in fact a \emph{different outcome}
-	\item Figure out what those are, and test them -- finding no effect raises the epistemological credibility of the first result, interestingly
-	\item Cheng and Hoekstra (2013) examine the effect of castle doctrine gun laws on non-gun related offenses like grand theft auto and find no evidence of an effect
+	\item Figure out what those are, and test them -- finding no effect on placebo outcomes tends to help people your other results interestingly enough
+	\item Cheng and Hoekstra (2013) examine the effect of castle doctrine gun laws on non-gun related offenses like grand theft auto and find no evidence of an effect 
 	\end{itemize}
 \end{frame}
 
@@ -1673,7 +1690,7 @@ There is code in R and Stata
 \item R: \textbf{drdid}
 \end{itemize}
 \bigskip
-Remember -- it's for 2x2 with covariates (i.e., one treatment group)
+Remember -- it's for 2x2 with covariates (i.e., one treatment group). We can refer to this now in our Lalonde example online.
 
 \end{frame}
 
