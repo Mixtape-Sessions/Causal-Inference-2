@@ -679,171 +679,6 @@ No one does this, and I only mention it so you have it in your slides
 
 \end{frame}
 
-\begin{frame}{Application using real data}
-
-\begin{itemize}
-\item Let's now use a real example with real data and see how well this does
-\item Famous paper in AER by Lalonde (1986), an Orley and Card student at Princeton
-\item Found that most program evaluation did badly, but let's revisit it with diff-in-diff
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Description of NSW Job Trainings Program}
-	
-The National Supported Work Demonstration (NSW), operated by Manpower Demonstration Research Corp in the mid-1970s:
-	\begin{itemize}
-	\item was a temporary employment program designed to help disadvantaged workers lacking basic job skills move into the labor market by giving them work experience and counseling in a sheltered environment
-	\item was also unique in that it \textbf{randomly assigned} qualified applicants to training positions:
-		\begin{itemize}
-		\item \textbf{Treatment group}: received all the benefits of NSW program
-		\item \textbf{Control group}: left to fend for themselves
-		\end{itemize}
-	\item admitted AFDC females, ex-drug addicts, ex-criminal offenders, and high school dropouts of both sexes
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{NSW Program}
-	
-	\begin{itemize}
-	\item Treatment group members were:
-		\begin{itemize}
-		\item guaranteed a job for 9-18 months depending on the target group and site
-		\item divided into crews of 3-5 participants who worked together and met frequently with an NSW counselor to discuss grievances and performance
-		\item paid for their work
-		\end{itemize}
-	\item Control group members were randomized so the same
-	\item Note: the randomization balanced observables and unobservables across the two arms, thus enabling the estimation of an ATE for the people who self-selected into the program
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{NSW Program}
-
-\begin{itemize}
-	\item Other details about the NSW program:
-		\begin{itemize}
-		\item \underline{Wages}:  NSW offered the trainees lower wage rates than they would've received on a regular job, but allowed their earnings to increase for satisfactory performance and attendance
-		\item \underline{Post-treatment}: after their term expired, they were forced to find regular employment
-		\item \underline{Job types}:  varied within sites -- gas station attendant, working at a printer shop -- and males and females were frequently performing different kinds of work
-		\end{itemize}
-\end{itemize}
-
-\end{frame}
-	
-\begin{frame}{NSW Data}
-	
-	\begin{itemize}
-	\item \underline{NSW data collection}:
-		\begin{itemize}
-		\item MDRC collected earnings and demographic information from both treatment and control at baseline and every 9 months thereafter
-		\item Conducted up to 4 post-baseline interviews
-		\item Different sample sizes from study to study can be confusing, but has simple explanations
-		\end{itemize}
-	\end{itemize}
-\end{frame}
-	
-
-\begin{frame}{NSW Data}
-
-\begin{itemize}
-	\item \underline{Estimation}:
-		\begin{itemize}
-		\item NSW was a randomized job trainings program; therefore estimating the average treatment effect is straightforward:
-			\begin{eqnarray*}
-			\frac{1}{N_t}\sum_{D_i=1}Y_i - \frac{1}{N_c}\sum_{D_i=0}Y_i \approx E[Y^1-Y^0] 
-			\end{eqnarray*}in large samples assuming treatment selection is independent of potential outcomes (randomization) -- i.e., $(Y^0,Y^1)\independent{D}$. 
-		\end{itemize}
-	\item \underline{NSW worked}: Treatment group participants' real earnings post-treatment (1978) was positive and economically meaningful -- $\approx$ \$900 (LaLonde 1986) to \$1,800 (Dehejia and Wahba 2002) depending on the sample used
-\end{itemize}
-
-\end{frame}
-	
-\begin{frame}[plain]
-	\begin{center}
-	LaLonde, Robert J. (1986). \myurlshort{http://business.baylor.edu/scott_cunningham/teaching/lalonde-1986.pdf}{``Evaluating the Econometric Evaluations of Training Programs with Experimental Data''}. \emph{American Economic Review}. 
-	\end{center}
-	
-\underline{LaLonde's study} was \textbf{not} an evaluation of the NSW program, as that had been done, but rather an evaluation of econometric models done by:
-		\begin{itemize}
-		\item replacing the experimental NSW control group with non-experimental control group drawn from two nationally representative survey datasets: Current Population Survey (CPS) and Panel Study of Income Dynamics (PSID)
-		\item estimating the average effect using non-experimental workers as controls for the NSW trainees 
-		\item comparing his non-experimental estimates to the experimental estimates of \$900
-		\end{itemize}
-\end{frame}
-
-\begin{frame}{LaLonde (1986)}
-
-\begin{itemize}
-
-	\item \underline{LaLonde's conclusion}: available econometric approaches were biased and inconsistent
-		\begin{itemize}
-		\item His estimates were way off and usually the wrong sign
-		\item Conclusion was influential in policy circles and led to greater push for more experimental evaluations
-		\end{itemize}
-
-\end{itemize}
-
-\end{frame}
-
-\imageframe{./lecture_includes/lalonde_table5a.png}
-\imageframe{./lecture_includes/lalonde_table5b.png}
-
-\begin{frame}[plain,shrink=10]{Imbalanced covariates for experimental and non-experimental samples}
-
-    \begin{center}
-		\begin{table}
-		\begin{tabular}{lcccccc}
-		\hline \hline
-		\multicolumn{3}{c}{}&
-		\multicolumn{1}{c}{CPS}&
-		\multicolumn{1}{c}{NSW}\\
-		
-		\multicolumn{1}{c}{}&
-		\multicolumn{2}{c}{All} &
-		\multicolumn{1}{c}{Controls} &
-		\multicolumn{1}{c}{Trainees} \\
-
-		\multicolumn{3}{c}{}&
-		\multicolumn{1}{c}{$N_c=15,992$}&
-		\multicolumn{1}{c}{$N_t=297$}&
-		\multicolumn{1}{c}{}&
-		\multicolumn{1}{c}{}\\
-
-		\multicolumn{1}{l}{covariate}&
-		\multicolumn{1}{c}{mean}&
-		\multicolumn{1}{c}{(s.d.)}&
-		\multicolumn{1}{c}{mean}&
-		\multicolumn{1}{c}{mean}&
-		\multicolumn{1}{c}{t-stat}&
-		\multicolumn{1}{c}{diff}\\
-		\hline
-Black    & 0.09 & 0.28 & 0.07 & 0.80 & 47.04 & -0.73\\
-Hispanic & 0.07 & 0.26 & 0.07 & 0.94 & 1.47 & -0.02\\
-Age & 33.07 & 11.04 & 33.2 & 24.63 & 13.37  & 8.6\\
-Married & 0.70 & 0.46 & 0.71 & 0.17 & 20.54 & 0.54\\
-No degree & 0.30 & 0.46 & 0.30 & 0.73 & 16.27 & -0.43\\
-Education & 12.0 & 2.86 & 12.03 & 10.38 & 9.85 & 1.65 \\
-1975 Earnings   & 13.51 & 9.31 & 13.65 & 3.1 & 19.63 & 10.6\\
-1975 Unemp  & 0.11 & 0.32 & 0.11 & 0.37 & 14.29 & -0.26\\
-		\hline 
-		\end{tabular}
-		\end{table}
-    \end{center}
-
-\end{frame}
-
-
-\begin{frame}{Lab}
-
-\url{https://github.com/Mixtape-Sessions/Causal-Inference-2/tree/main/Lab/Lalonde}
-
-\bigskip
-
-Together let's do questions 1 and 2a, 2b (but hold off on 2c)
-
-\end{frame}
-
-
 
 \subsection{Event studies in DiD}
 
@@ -1681,18 +1516,190 @@ DR & -3.1878 & 3.4544 & 1.2946 & 0.3076 & 5.0749 \\
 
 \end{frame}
 
+\subsection{Lalonde lab}
 
-\begin{frame}{Code}
+\begin{frame}{R and Stata Code}
 
-There is code in R and Stata
+There is code in R and Stata (all DiD estimators are now beautifully arranged at a website hosted by Asjad Naqvi)
 \begin{itemize}
 \item Stata: \textbf{drdid}
 \item R: \textbf{drdid}
 \end{itemize}
+
 \bigskip
-Remember -- it's for 2x2 with covariates (i.e., one treatment group). We can refer to this now in our Lalonde example online.
+
+\url{https://asjadnaqvi.github.io/DiD/docs/01_stata/}
+
+\bigskip
+
+Remember -- it's for 2x2 with covariates (i.e., one treatment group). 
 
 \end{frame}
+
+\begin{frame}{Application using real data}
+
+\begin{itemize}
+\item Let's now use a real example with real data and see how well this does
+\item Famous paper in AER by Lalonde (1986), an Orley and Card student at Princeton
+\item Found that most program evaluation did badly, but let's revisit it with diff-in-diff
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Description of NSW Job Trainings Program}
+	
+The National Supported Work Demonstration (NSW), operated by Manpower Demonstration Research Corp in the mid-1970s:
+	\begin{itemize}
+	\item was a temporary employment program designed to help disadvantaged workers lacking basic job skills move into the labor market by giving them work experience and counseling in a sheltered environment
+	\item was also unique in that it \textbf{randomly assigned} qualified applicants to training positions:
+		\begin{itemize}
+		\item \textbf{Treatment group}: received all the benefits of NSW program
+		\item \textbf{Control group}: left to fend for themselves
+		\end{itemize}
+	\item admitted AFDC females, ex-drug addicts, ex-criminal offenders, and high school dropouts of both sexes
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{NSW Program}
+	
+	\begin{itemize}
+	\item Treatment group members were:
+		\begin{itemize}
+		\item guaranteed a job for 9-18 months depending on the target group and site
+		\item divided into crews of 3-5 participants who worked together and met frequently with an NSW counselor to discuss grievances and performance
+		\item paid for their work
+		\end{itemize}
+	\item Control group members were randomized so the same
+	\item Note: the randomization balanced observables and unobservables across the two arms, thus enabling the estimation of an ATE for the people who self-selected into the program
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{NSW Program}
+
+\begin{itemize}
+	\item Other details about the NSW program:
+		\begin{itemize}
+		\item \underline{Wages}:  NSW offered the trainees lower wage rates than they would've received on a regular job, but allowed their earnings to increase for satisfactory performance and attendance
+		\item \underline{Post-treatment}: after their term expired, they were forced to find regular employment
+		\item \underline{Job types}:  varied within sites -- gas station attendant, working at a printer shop -- and males and females were frequently performing different kinds of work
+		\end{itemize}
+\end{itemize}
+
+\end{frame}
+	
+\begin{frame}{NSW Data}
+	
+	\begin{itemize}
+	\item \underline{NSW data collection}:
+		\begin{itemize}
+		\item MDRC collected earnings and demographic information from both treatment and control at baseline and every 9 months thereafter
+		\item Conducted up to 4 post-baseline interviews
+		\item Different sample sizes from study to study can be confusing, but has simple explanations
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+	
+
+\begin{frame}{NSW Data}
+
+\begin{itemize}
+	\item \underline{Estimation}:
+		\begin{itemize}
+		\item NSW was a randomized job trainings program; therefore estimating the average treatment effect is straightforward:
+			\begin{eqnarray*}
+			\frac{1}{N_t}\sum_{D_i=1}Y_i - \frac{1}{N_c}\sum_{D_i=0}Y_i \approx E[Y^1-Y^0] 
+			\end{eqnarray*}in large samples assuming treatment selection is independent of potential outcomes (randomization) -- i.e., $(Y^0,Y^1)\independent{D}$. 
+		\end{itemize}
+	\item \underline{NSW worked}: Treatment group participants' real earnings post-treatment (1978) was positive and economically meaningful -- $\approx$ \$900 (LaLonde 1986) to \$1,800 (Dehejia and Wahba 2002) depending on the sample used
+\end{itemize}
+
+\end{frame}
+	
+\begin{frame}[plain]
+	\begin{center}
+	LaLonde, Robert J. (1986). \myurlshort{http://business.baylor.edu/scott_cunningham/teaching/lalonde-1986.pdf}{``Evaluating the Econometric Evaluations of Training Programs with Experimental Data''}. \emph{American Economic Review}. 
+	\end{center}
+	
+\underline{LaLonde's study} was \textbf{not} an evaluation of the NSW program, as that had been done, but rather an evaluation of econometric models done by:
+		\begin{itemize}
+		\item replacing the experimental NSW control group with non-experimental control group drawn from two nationally representative survey datasets: Current Population Survey (CPS) and Panel Study of Income Dynamics (PSID)
+		\item estimating the average effect using non-experimental workers as controls for the NSW trainees 
+		\item comparing his non-experimental estimates to the experimental estimates of \$900
+		\end{itemize}
+\end{frame}
+
+\begin{frame}{LaLonde (1986)}
+
+\begin{itemize}
+
+	\item \underline{LaLonde's conclusion}: available econometric approaches were biased and inconsistent
+		\begin{itemize}
+		\item His estimates were way off and usually the wrong sign
+		\item Conclusion was influential in policy circles and led to greater push for more experimental evaluations
+		\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+\imageframe{./lecture_includes/lalonde_table5a.png}
+\imageframe{./lecture_includes/lalonde_table5b.png}
+
+\begin{frame}[plain,shrink=10]{Imbalanced covariates for experimental and non-experimental samples}
+
+    \begin{center}
+		\begin{table}
+		\begin{tabular}{lcccccc}
+		\hline \hline
+		\multicolumn{3}{c}{}&
+		\multicolumn{1}{c}{CPS}&
+		\multicolumn{1}{c}{NSW}\\
+		
+		\multicolumn{1}{c}{}&
+		\multicolumn{2}{c}{All} &
+		\multicolumn{1}{c}{Controls} &
+		\multicolumn{1}{c}{Trainees} \\
+
+		\multicolumn{3}{c}{}&
+		\multicolumn{1}{c}{$N_c=15,992$}&
+		\multicolumn{1}{c}{$N_t=297$}&
+		\multicolumn{1}{c}{}&
+		\multicolumn{1}{c}{}\\
+
+		\multicolumn{1}{l}{covariate}&
+		\multicolumn{1}{c}{mean}&
+		\multicolumn{1}{c}{(s.d.)}&
+		\multicolumn{1}{c}{mean}&
+		\multicolumn{1}{c}{mean}&
+		\multicolumn{1}{c}{t-stat}&
+		\multicolumn{1}{c}{diff}\\
+		\hline
+Black    & 0.09 & 0.28 & 0.07 & 0.80 & 47.04 & -0.73\\
+Hispanic & 0.07 & 0.26 & 0.07 & 0.94 & 1.47 & -0.02\\
+Age & 33.07 & 11.04 & 33.2 & 24.63 & 13.37  & 8.6\\
+Married & 0.70 & 0.46 & 0.71 & 0.17 & 20.54 & 0.54\\
+No degree & 0.30 & 0.46 & 0.30 & 0.73 & 16.27 & -0.43\\
+Education & 12.0 & 2.86 & 12.03 & 10.38 & 9.85 & 1.65 \\
+1975 Earnings   & 13.51 & 9.31 & 13.65 & 3.1 & 19.63 & 10.6\\
+1975 Unemp  & 0.11 & 0.32 & 0.11 & 0.37 & 14.29 & -0.26\\
+		\hline 
+		\end{tabular}
+		\end{table}
+    \end{center}
+
+\end{frame}
+
+
+\begin{frame}{Lab}
+
+\url{https://github.com/Mixtape-Sessions/Causal-Inference-2/tree/main/Lab/Lalonde}
+
+\bigskip
+
+Together let's do questions 1 and 2a-c
+
+\end{frame}
+
 
 
 
@@ -1702,12 +1709,13 @@ Remember -- it's for 2x2 with covariates (i.e., one treatment group). We can ref
 \begin{itemize}
 \item So we hopefully see a few of the key elements of DiD
 	\begin{itemize}
-	\item DiD equation and ATT equation are distinct
-	\item Pre-trends is a placebo for evaluating parallel trends
+	\item Remember: the DiD equation and ATT equation are distinct concepts and definitions
 	\item DiD is a design; OLS is a model
+	\item Also, parallel pre-trends and parallel trends are distinct -- the first is testable, the latter is not testable
+	\item Event studies are nonetheless mandatory
 	\end{itemize}
-\item Including covariates posed problems for the canonical OLS specification
-\item Problem with that OLS specification was \emph{the specification}, not OLS -- it assumed constant treatment effects
+\item Including \emph{time-varying} covariates in the canonical OLS specification requires additional assumptions
+\item Doubly robust and IPW incorporate covariates through propensity scores and outcome regressions (or both) using baseline covariate means only
 \end{itemize}
 
 \end{frame}
