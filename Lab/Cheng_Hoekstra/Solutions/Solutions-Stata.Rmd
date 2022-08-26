@@ -1,0 +1,147 @@
+---
+output: github_document
+---
+
+```{r setup, include = F}
+# devtools::install_github("Hemken/Statamarkdown")
+library(Statamarkdown)
+```
+
+# Cheng and Hoekstra (2013)
+
+We are going to revisit the analysis performed by Cheng and Hoekstra on the effect of "Stand Your Ground" gun laws on homicides. To begin, load the data from `https://github.com/scunning1975/mixtape/raw/master/castle.dta`. The main variables of interest are: the state id, denoted by `sid`; the `year` of the observation; the log of the number of homocides in the state denoted `l_homicide`; and `effyear` which measures the year in which the Stand Your Ground law was implemented in a state. 
+
+Before we begin, we need to do some data work to prepare for estimation. For estimators, we need to change `effyear` to 0 for the control states. They are in the data as `NA` in R or `.` in Stata. Then, Take the variable `effyear` and `year` and construct an event-time variable (i.e. `year` - `effyear` or $t - g$ in Callaway and Sant'Anna's syntax). For the control units, you should set the relative year indicator to `-1`. More, create a variable `treat` that denotes when treatment is active, i.e. when `year` is greater than or equal to `effyear`. 
+
+```{stata prep-data, collectcode = T}
+********************************************************************************
+* name: cheng_hoekstra.do
+* description: Various Difference-in-Differences Estimators with Cheng and 
+* Hoekstra dataset.
+********************************************************************************
+
+* To install packages, run:
+* ssc install reghdfe
+* ssc install csdid
+* net install github, from("https://haghish.github.io/github/")
+* github install kylebutts/did2s_stata
+* github install lsun20/eventstudyinteract
+
+use "https://github.com/scunning1975/mixtape/raw/master/castle.dta", clear
+
+* for csdid, effyear needs to be 0 for untreated group
+replace effyear = 0 if effyear == .
+
+gen rel_year = year - effyear
+replace rel_year = -1 if effyear == 0
+
+* can't have negative years for factor variable
+gen rel_year_shifted = rel_year + 9
+
+gen treat = (year >= effyear)
+```
+
+1. Now that our data is in the correct order, we will estimate the standard TWFE event-study.
+
+```{stata es-twfe}
+* 1. TWFE Event-study regression -----------------------------------------------
+
+* 8 is relative-year -1, so we want that to be the reference
+reghdfe l_homicide ib8.rel_year_shifted, absorb(sid year) cluster(sid)
+```
+
+2. Use the Callaway and Sant'Anna estimator to estimate the group-time average treatment effects, $ATT(g,t)$. Then aggregate these to event-study treatment effects. *Note:* use `did` package in R or the `csdid` package in Stata. 
+
+```{stata es-cs}
+* 2. Callaway and Santa'Anna ---------------------------------------------------
+
+csdid l_homicide, ivar(sid) time(year) gvar(effyear) agg(event)
+```
+
+  a. In R you will receive the following error:
+
+  ```
+  Warning messages:
+  1: In pre_process_did(yname = yname, tname = tname, idname = idname,  :
+    Be aware that there are some small groups in your dataset.
+    Check groups: 2005,2007,2008,2009.
+  ```
+
+  Describe why you might be getting this error
+
+  *Answer*: This error comes up because there are few treated states in each of these groups. Therefore you should be careful when conducting inference on any particular $ATT(g,t)$. This problem can be mitigated by averaging $ATT(g,t)$
+
+3. Then, use the imputation-estimator to estimate event-study coefficients. Note that BJS, Gardner, and Wooldridge's Mundlak estimators will produce the same exact point estimate. *Note:* use `did2s` package in R or Stata. 
+
+```{stata es-imputation}
+* 3. Imputation Estimator ------------------------------------------------------
+
+did2s l_homicide, first_stage(i.sid i.year) second_stage(ib8.rel_year_shifted) treatment(treat) cluster(sid)
+```
+
+4. Next, use the Sun and Abraham event-study estimator. *Note:* use `sunab` function within the `fixest` package in R or the `eventstudyinteract` package in Stata. 
+
+```{stata es-sunab}
+* 4. Sun and Abraham -----------------------------------------------------------
+
+* generate relative time indicators
+sum rel_year
+* Leads, drop -1
+forvalues k = `r(min)'(1)-2 {
+  local k = -`k'
+  gen rel_year_lag`k' = rel_year == -`k'
+}
+* Lags
+forvalues k = 0(1)`r(max)' {
+  gen rel_year_lead`k' = rel_year == `k'
+}
+
+gen never_treated = effyear == 0
+
+* Drop rel_year = -1
+eventstudyinteract l_homicide rel_year_lag* rel_year_lead*, cohort(effyear) control_cohort(never_treated) absorb(sid year) vce(cluster sid)
+```
+
+5. Last, construct a stacked estimator where for each group, you keep all not-yet-treated observations and the never treated obserations. Keep observations only for event-time between -5 and +4. Make sure to properly stack the data and cluster at the `sid` x stack_id level.
+
+```{stata es-stacked}
+* 5. Stacking Estimator --------------------------------------------------------
+
+* Step 1: Loop through by using only a group and the never treated
+* and assigning it a unique stack_id
+* We are aiming for a panel with event_time -5 to 4
+
+forvalues i = 2005(1)2009 {
+  preserve
+  gen stack_id = `i'
+
+  * Keep if effyear == `i', never-treated, or untreated observations 
+  keep if effyear == `i' | effyear == 0 | year < effyear
+
+  * keep rel_year -5 through 4
+  keep if rel_year >= -5 & rel_year <= 4
+
+  save ./stack_`i', replace
+  restore
+}
+
+* Step 2: Now append the datasets into one single stacked dataset.
+
+use ./stack_2005, clear
+rm ./stack_2005.dta
+forvalues i = 2006(1)2009 {
+  append using ./stack_`i'.dta
+  * Clean up
+  rm ./stack_`i'.dta
+}
+
+* Step 3: Estimation with dataset interaction fixed effects and 
+* relative event time fixed effects, clustering on unique stateXdataset
+* identifiers
+
+* relative year = -1 is rel_year 8
+egen sid_x_stack_id = group(sid stack_id)
+egen year_x_stack_id = group(year stack_id)
+reghdfe l_homicide ib8.rel_year_shift, absorb(sid_x_stack_id year_x_stack_id) cluster(sid_x_stack_id)
+
+```
