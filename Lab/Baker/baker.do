@@ -96,9 +96,9 @@ replace te = te4 if group == 4
 ***********************************************************************************************************************
 
 * Constant treatment effects.  Notice, the treatment effect is constant. 
-gen y2 = firms + n + te*treat + e // parallel trends IN EVERY PERIOD. 
+gen y2 = firms + n + te*treat + e // UNIT LEVEL parallel trends IN EVERY PERIOD and NO ANTICIPATION
 
-* Data generating process with heterogeneity over time
+* Data generating process with dynamic treatment effects over time
 gen y = firms + n + treat*te*(year - treat_date + 1) + e 
 
 * For group 1, the ATT in 1986 is 10
@@ -110,7 +110,7 @@ gen y = firms + n + treat*te*(year - treat_date + 1) + e
 * Estimation using TWFE - constant treatment effects
 areg y2 i.year treat, a(id) robust 
 
-* Estimation using TWFE - heterogenous treatment effects over time
+* Estimation using TWFE - dynamic treatment effects over time
 areg y i.year treat, a(id) robust 
 
 
