@@ -650,10 +650,12 @@ $$ Y_{ist} = \alpha + \delta D_{st} + \sigma_s + \tau_t + \varepsilon_{ist}$$
 \imageframe{./lecture_includes/bacon.png}
 
 \imageframe{./lecture_includes/cs.png}
-\imageframe{./lecture_includes/sa.png}
+
+\imageframe{./lecture_includes/sa.png}
 
 \imageframe{./lecture_includes/2sdid.png}
-\imageframe{./lecture_includes/jeff.png}
+
+\imageframe{./lecture_includes/jeff.png}
 
 
 \begin{frame}{Overview}
@@ -673,7 +675,9 @@ $$ Y_{ist} = \alpha + \delta D_{st} + \sigma_s + \tau_t + \varepsilon_{ist}$$
 
 \subsection{TWFE Pathologies}
 
-
+
+
+
 
 
 \begin{frame}{Differential timing}
@@ -1769,7 +1773,7 @@ Pr(E_i=e|E_i \in [-l,T-l])
 
 \begin{itemize}
 \item Under parallel trends and no anticipation, $\widehat{\delta}_{e,l}$ is consistent, and sample shares are also consistent estimators for population shares. 
-\item Thus IV estimator is consistent for a weighted average of $CATT_{e,l}$ with weights equal to the share of each cohort in the relevant period(s).
+\item Thus IW estimator is consistent for a weighted average of $CATT_{e,l}$ with weights equal to the share of each cohort in the relevant period(s).
 \item They show that each IW estimator is asymptotically normal and derive its asymptotic variance. Doesn't rely on bootstrap like CS.
 \end{itemize}
 
@@ -1867,40 +1871,65 @@ de Chaisemartin and D'Haultfouelle 2020 (dCdH) is different from the other paper
 
 \end{frame}
 
-\begin{frame}{Causal effects}
+\begin{frame}{Negative weights}
 
 \begin{itemize}
 \item dCdH impose causal assumptions and try a different decomposition strategy
 \item Uses as its building block the unit-specific treatment effects
-\item This is hopefully going to help us better understand where these negative weights are coming from
-\item Note that their model is very general in that the treatment is reversible (meaning you can turn it on and off)
+\item Their decomposition will reveal negative weights on the underlying treatment effects (similar to negative weight on dynamics with Bacon)
+\item Remember though: the Bacon decomposition weights were \emph{always} positive, because they were numerical weights (not theoretical weights) on the underlying 2x2s (not the treatment effects)
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Terms}
+\begin{frame}{Turning on and off}
 
 \begin{itemize}
-\item Target parameter: $$\Delta^g_{i,t} = Y^1_{i,t} - Y^\infty_{i,t}$$ but where the treatment is in time period $g$. Notice --it's not the ATT (it's $i$ individual treatment effect)
-\item TWFE terms. Define the error term as $\varepsilon_{i,t}$: $$D_{i,t} = \alpha_i + \alpha_t + \varepsilon_{i,t}$$
-\item Weights: $$w_{i,t} = \frac{\varepsilon_{i,t}}{\frac{1}{N^T} \sum_{i,t:D_{i,t}=1} \varepsilon_{i,t}}$$Basically divide the error by the average of the error for all treated units. 
+\item CS and SA both require interventions to turn on and stay on
+\item dCdH allows for ``switching'' on and off 
+\item Before we move quickly into that, please note that the researcher bears the burden of knowing whether in fact you want to impose symmetry on turning on and off
+\item Roe v Wade ``turned on'' legalized abortion and 2022 it was ``turned off'' -- do we want to treat these as simply a single policy flipping of the switch or two separate policies?
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Assumptions}
+\begin{frame}{dCdH notation}
+
+\begin{itemize}
+\item Individual treatment effects (iow, not the group-time ATT): $$\Delta^g_{i,t} = Y^1_{i,t} - Y^\infty_{i,t}$$ but where the treatment is in time period $g$. Notice --it's not the ATT (it's $i$ individual treatment effect)
+\item with defined error term as $\varepsilon_{i,t}$: $$D_{i,t} = \alpha_i + \alpha_t + \varepsilon_{i,t}$$
+\item Weights: $$w_{i,t} = \frac{\varepsilon_{i,t}}{\frac{1}{N^T} \sum_{i,t:D_{i,t}=1} \varepsilon_{i,t}}$$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Parallel trend assumption}
 
 \begin{block}{Strong unconditional PT}
 Assume that for every time period $t$ and every group $g,g'$, $$E[Y^\infty_t - Y^\infty_{t-1}|G=g] = E[Y^\infty_t - Y^\infty_{t-1}|G=g'] $$
 \end{block}Assume parallel trends for every unit in every cohort in every time period.
+
+\bigskip
+
+What then does TWFE estimate with differential timing?
 
 \end{frame}
 
 \begin{frame}{dCdH Theorem}
 
 \begin{block}{Theorem -- dCdH decomposition}
-Assuming SUTVA, no anticipation and the strong PT, then let $\beta$ be the TWFE estimand associated with $$Y_{i,t} = \alpha_i + \alpha_t + \beta D_{i,t} + \varepsilon_{i,t}$$Then it follows that $$\beta = E \bigg [ \sum_{i,t:D_{i,t}=1} \frac{1}{N^T} w_{i,t} \cdot \Delta_{i,t}^g \bigg ] $$ where $\sum_{i,t:D_{i,t}=1} \frac{w_{i,t}}{N^T} = 1$ but $w_{i,t}$ can be negative
-\end{block}So once you run that specification, $\beta$ is going to recover a non-convex average over all unit level treatment effects (weights can be negative). dCdH was the first I think.
+Assuming SUTVA, no anticipation and the strong PT, then let $\delta$ be the TWFE estimand associated with $$Y_{i,t} = \alpha_i + \alpha_t + \delta D_{i,t} + \varepsilon_{i,t}$$Then it follows that $$\delta = E \bigg [ \sum_{i,t:D_{i,t}=1} \frac{1}{N^T} w_{i,t} \cdot \Delta_{i,t}^g \bigg ] $$ where $\sum_{i,t:D_{i,t}=1} \frac{w_{i,t}}{N^T} = 1$ but $w_{i,t}$ can be negative
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Origins}
+
+\begin{itemize}
+\item So once you run that specification, $\widehat{\delta}$ is going to recover a ``non-convex average'' over all unit level treatment effects (weights can be negative, more on this). 
+\item Not sure who came first, because there were working papers before publications, but my understanding is dCdH was the first to prove this
+\item Very important theorem -- established the ``no sign flip property'' for OLS with differential timing in the canonical static specification
+\end{itemize}
 
 \end{frame}
 
@@ -1909,9 +1938,9 @@ Assuming SUTVA, no anticipation and the strong PT, then let $\beta$ be the TWFE 
 
 \begin{itemize}
 \item Very common now to hear about negative weights, and furthermore, that negative weights wipe out any causal interpretation, but why?
-\item What if every unit treatment effect was positive, but some of the weights were negative?
+\item Thought experiment: imagine every unit gained from the treatment, but their treatment effect when estimated was multiplied by a negative number
 \item It's possible it could flip the sign, but it would definitely at least pull the estimate away from the true effect
-\item This is dangerous -- and it's caused by the forbidden contrasts (treated to already treated)
+\item This is dangerous -- and it's caused by the forbidden contrasts (comparing treated to already treated) which is what the canonical TWFE static specification is doing (for many of us unknowingly)
 \end{itemize}
 
 \end{frame}
@@ -1961,7 +1990,70 @@ Assuming SUTVA, no anticipation and the strong PT, then let $\beta$ be the TWFE 
 
 \end{frame}
 
+\section{Concluding remarks}
 
+\begin{frame}{Empirical micro model}
+\begin{itemize}
+
+\item In 2014, David Card gave a speech at Michigan in which he told the history of the ``empirical micro model'', particularly labor
+\item He notes the different role that economic models have played throughout the history of modern applied (empirical) work
+	\begin{enumerate}
+	\item Simple approximations of the theoretical model (regress earnings on education)
+	\item Structural modeling (often highly parametrized models)
+	\item Princeton (essentially this entire workshop) where focus is on physical (manipulated) treatment assignment
+	\end{enumerate}
+\item Models are valuable even under \#3, but largely to suggest question, interpret results -- not to solve the identification problem
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Unrestricted heterogeneity and selection on gains}
+
+\begin{itemize}
+\item Over time, applied economists (at least the modal one) is far less likely to believe they know enough about treatment assignment or the underlying treatment effects that they are willing to make any theoretical restrictions
+\item Treatment effects come from unknown production functions, and whether we have heterogeneity across treatment groups involves selection, most likely from a Roy model type of situation
+\item By and large, this is my conjecture, economists are either unwilling to restrict heterogeneity ex ante, and the only models many of us are by and large committed to are Roy like rational sorting models
+\item Without restrictions on heterogeneity ex ante, Roy models imply sorting on gains which create the very problems we find 
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Consequences of being ``deeply a-theoretical''}
+
+\begin{itemize}
+\item Insofar as people sort on the gains from treatment, then given unknown and unrestricted heterogeneous treatment effects, we do not know enough to rule out situations like those in our ``baker'' dataset
+\item Baker dataset was extreme, but before this literature, it's not clear anyone would've known it was extreme
+\item Linear dynamics that never stabilized, large treatment effects in the ATT, heterogenous treatment profiles
+\item TWFE in the canonical specification performs poorly and in our case flipped sign
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Decision making under uncertainty}
+
+\begin{itemize}
+
+\item If you cannot restrict heterogeneity, and Roy like models are driving selection into treatment, then there's risks
+\item TWFE will be efficient if model is correctly specified, which requires no dynamic treatment effects, and most of us when pushed cannot credibly claim we have enough prior knowledge to say that as we are often working on something for which underly production technology around treatment effects are not well known or external validity is unknown
+\item You will need to take this seriously, and adjust practices \emph{away} from naive TWFE modeling
+\item You are, though, the first wave of researchers to have to, so you are unfortunately caught in a bit of limbo moment
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Future work}
+
+\begin{itemize}
+
+\item We are going to cover more differential timing modeling, but I think some of this is a bit redundant
+\item We start to see similar fixes to the underlying problem performed in different, though internally valid, ways
+\item Much of this is a bit cloudy to even the most up-to-date practitioner -- differences between estimators are based on which control groups are used, whether PT holds for those control groups, and how best to think about the parallel trends assumption (some of which have stronger additive forms imposing pre-treatment parallel trends and others which do not)
+\item Cherry picking diff-in-diff could be on the horizon, and this workshop is meant to prepare you for this situation as worst case scenario you will be reading referee reports of people using methods which you may yourself think are inferior but which you still need to understand
+\item You will need to continue to invest in good judgment, as always; most likely going forward returns to econometric skill has shifted up
+\end{itemize}
+
+\end{frame}
 
 
 
