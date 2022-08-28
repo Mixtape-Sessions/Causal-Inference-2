@@ -43,6 +43,59 @@
 
 \subsection{Dose causal parameter}
 
+\begin{frame}{DiD Revolution}
+
+Standard DiD model with binary treatment $D_{it}$ estimated with TWFE
+
+$$Y_{it} = \delta D_{it} + \alpha_i + \tau_t + \varepsilon_{it}$$
+
+With differential timing, TWFE estimates of $\delta$ are biased when treatment effects ``change over time'' (dynamic), even when $E[\Delta Y^0|D=1] = E[\Delta Y^0|D=0]$.
+
+\bigskip
+
+Borusyak, et al. (2022), de Chaisemartin and D'Haultfouielle (2020), Sun and Abraham (2020), Goodman-Bacon (2021)
+
+\end{frame}
+
+\begin{frame}{Alternative methods}
+
+\begin{itemize}
+\item OLS loves to exploit variation, but this can lead to naive causal inference practices
+\item Causal inference is not focused on exploiting variation but rather estimating treatment effects using appropriate counterfactuals
+\item Alternative estimators avoided ``forbidden contrasts'' altogether allowing us to entertain unrestricted heterogeneity and obtain reasonable versions of ATT parameter
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Continuous DiD}
+
+\begin{itemize}
+\item A very common panel model will use a treatment variable which is continuous, not binary
+\item Examples include minimum wage papers, my JHR on abortion clinic closures causing increased travel distance, vaccinations, price elasticity of demand etc.
+\item Variation is in ``treatment intensity'' and researchers typically use TWFE for estimation, or perhaps count models like Poisson
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Quotes}
+
+\begin{quote}
+``The two-period regression estimator can be easily modified to allow for continuous, or at least non-binary, treatments.'' (Wooldridge 2005)
+
+\bigskip
+
+``A second advantage of regression DiD is that it facilitates the study of policies other than those that can be described by a dummy.'' (Angrist and Pischke 2008)
+
+\end{quote}
+
+\end{frame}
+
 \begin{frame}{Continuous DiD}
 
 \begin{figure}
@@ -53,6 +106,7 @@
 
 \end{frame}
 
+
 \begin{frame}{Overview}
 
 \begin{enumerate}
@@ -62,7 +116,7 @@
 
 \end{frame}
 
-\begin{frame}{Framing the question}
+\begin{frame}{Introducing a new causal parameter}
 
 \begin{itemize}
 \item \textbf{ATT}: Extensive margin causal parameter.  Do this versus don't do this.
@@ -138,10 +192,11 @@ Assume city $a$ did choose $d=\$100$. Then ATT(\$50|a) just means that that is i
 \end{center}
 \end{figure}
 
-What if everyone has different responses?  In other words, city $a$ has the higher curve than city $b$.  Then there are several comparisons possible.  What is the effect of \$50 on outcomes for cities that actually chose \$50 versus those than actually chose \$100?  We need a new building block than just the ATT.
+What if everyone has different responses?  In other words, city $a$ has the higher curve than city $b$.  Then there are several comparisons possible.  What is the effect of \$50 on outcomes for cities that actually chose \$50 versus those than actually chose \$100?  
 
 \end{frame}
-
+
+
 \begin{frame}{Average causal response function}
 
 \begin{figure}
@@ -169,7 +224,7 @@ $ATT(d|d) = E[Y^d_{it} - Y^0_{it} | D_{it}=d]$
 
 \bigskip
 
-Notice that this is sort of an extensive margin causal response, but that isn't the only causal concept we have.  Elasticities are causal, demand curves are causal, but they aren't based on comparisons to nothing -- they are intensive margin comparisons, local comparisons, adjacencies. Zero isn't the only counterfactual in other words.
+Notice that you are comparing any dose $d$ to no treatment at all -- sort of an extensive margin causal response, but that isn't the only causal concept we have.  Elasticities are causal, demand curves are causal, but they aren't based on comparisons to nothing -- they are intensive margin comparisons, local comparisons, adjacencies. Zero isn't the only counterfactual in other words.
 
 \end{frame}
 
@@ -183,9 +238,15 @@ Notice that this is sort of an extensive margin causal response, but that isn't 
 
 \end{frame}
 
-\begin{frame}{ACRT}
+\begin{frame}{What is the ACRT?}
 
 \begin{itemize}
+\item ACRT is the causal effect of dose $D=d_j$ vs a different dose $D=D_{j-1}$ for group $d$
+	\begin{itemize}
+	\item Easiest example is the demand function: at $p=\$10$, I buy 10 units, but at $p=\$11$, I buy 5 units.  
+	\item Causal effect of that one dollar increase is $-5$ units
+	\item Demand curves are pairs of potential outcomes and treatments and equilibrium ``selects'' one of them
+	\end{itemize}
 \item Discrete/multi-valued treatment is linear difference between two ATTs for the same city
 \item Continuous treatment is the derivative of the function itself
 \end{itemize}
@@ -206,15 +267,21 @@ Notice that this is sort of an extensive margin causal response, but that isn't 
 
 \end{frame}
 
-\begin{frame}{Identifying ATT}
+\begin{frame}{Identifying $ATT(d|d)$}
+
+We can estimate the $ATT(d|d)$ using the simple DiD equation:
 
 \begin{eqnarray*}
-E [ \Delta Y_{it} | D_i = d] - E[ \Delta Y_{it} | D_i = 0] &=& ATT
+E [ \Delta Y_{it} | D_i = d] - E[ \Delta Y_{it} | D_i = 0]
 \end{eqnarray*}
 
 \bigskip
 
-No anticipation and parallel trends converts this comparison of before and after into the ATT
+No anticipation and parallel trends converts this comparison of before and after into the $ATT(d|d)$
+
+\bigskip
+
+$ATT(d|d)$ is using as its counterfactual the ``no treatment'', note.  Treatment is a dosage compared to zero iow.
 
 \end{frame}
 
@@ -223,15 +290,45 @@ No anticipation and parallel trends converts this comparison of before and after
 
 
 \begin{eqnarray*}
-ATT(b|b) - ATT(a|a) &=& E [ \Delta Y_{it} | D_i=a] - E[\Delta Y_{it} | D_i=b]
+ATT(b|b) - ATT(a|a) &=& ( E[ \Delta Y_{it} | D_i =a ] - E[ \Delta Y_{it} | D_i = 0]) \\
+&& - ( E[ \Delta Y_{it} | D_i =b ] - E[ \Delta Y_{it} | D_i = 0]) \\
+&=& E [ \Delta Y_{it} | D_i=a] - E[\Delta Y_{it} | D_i=b]
 \end{eqnarray*}
 
-Comparing high and low dose groups.  Let's call them $d_j$ and $d_{j-1}$. 
+Comparing high and low dose groups.
+
+\end{frame}
+
+\begin{frame}{Identifying ACRT}
+
+
+\begin{eqnarray*}
+ATT(d_j|d_j) - ATT(d_{j-1} | d_{j-1}) &=& \\
+( ATT(d_j|d_j) - ATT(d_{j-1} | d_{j}) ) + ( ATT(d_{j-1} | d_j) - ATT(d_{j-1} | d_{j-1}) )&=&  \\
+ ( \textcolor{blue}{ACRT(d_j | d_j)} ) + ( \textcolor{red}{ATT(d_{j-1} | d_j) - ATT(d_{j-1} | d_{j-1})} )&=&  \\
+\end{eqnarray*}
+
+Part in blue is the movement along the average causal response function, the ACRT, and is causal.  The part in red is selection bias. 
+
+\end{frame}
+
+\begin{frame}{Identifying ACRT}
+
+
+\begin{eqnarray*}
+ATT(d_j|d_j) - ATT(d_{j-1} | d_{j-1}) &=& \\
+( ATT(d_j|d_j) - ATT(d_{j-1} | d_{j}) ) + ( ATT(d_{j-1} | d_j) - ATT(d_{j-1} | d_{j-1}) )&=&  \\
+ ( \textcolor{blue}{ACRT(d_j | d_j)} ) + ( \textcolor{red}{ATT(d_{j-1} | d_j) - ATT(d_{j-1} | d_{j-1})} )&=&  \\
+\end{eqnarray*}
+
+Notice parallel trends allows to identify ATT terms but we need additional assumptions for this red part to vanish. We must assume that the ATT for cities that chose $d_j$ and cities that chose $d_{j-1}$ are the same had they both chose $d_{j-1}$.
 
 \end{frame}
 
 
-\begin{frame}{Bias and causality}
+\subsection{Selection bias}
+
+\begin{frame}{Causality and selection bias}
 
 \begin{figure}
 \begin{center}
@@ -239,9 +336,170 @@ Comparing high and low dose groups.  Let's call them $d_j$ and $d_{j-1}$.
 \end{center}
 \end{figure}
 
-Let me draw this.  When we 
+Draw the ACRT for top curve and selection bias. 
 
 \end{frame}
+
+\begin{frame}{Interpreting this}
+
+\begin{itemize}
+\item Unrestricted heterogenous treatment effects (across dosage levels and across units with difference dose response functions) is not itself the problem
+\item If we randomized dosages, then $\textcolor{red}{ATT(d_{j-1} | d_j) - ATT(d_{j-1} | d_{j-1})}=0$
+\item Why?  Because then there is no selection on gains from dosages, and average causal response functions are the same for all dosage groups
+\item So then when is this a problem?  Sorting on gains
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Interpreting this}
+
+\begin{itemize}
+
+\item When estimating treatment effects using continuous DiD, you will need to make one of two assumptions
+	\begin{enumerate}
+	\item Strong parallel trends: Average change in $E[Y^0]$ for the entire sample is the same as the $d$ group
+	\item Parallel trends plus homogenous treatment effect functions
+	\end{enumerate}
+\item Roy model like sorting on gains typically lead to violations of the second condition insofar as there is heterogenous returns to dosages across units
+\item So the question you have to ask yourself is do you think that cities are ``optimally setting the minimum wage'' around some given minimum wage?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Stronger assumption}
+
+\begin{itemize}
+
+\item I'm really not so sure I think that when it comes to state legislation that I think a Roy model is likely responsible for the equilibrium
+\item Solving constrained optimization problems is hard and unlikely is it the case that Florida's ATT and Georgia's ATT are terribly different from one another had both chosen the same minimum wage (but that is the bias)
+\item But notice where this is taking us -- we are getting closer and closer back to a place of assuming away the problems!
+
+\end{itemize}
+
+\end{frame}
+
+\subsection{Interpreting TWFE}
+
+\begin{frame}{Interpretation of estimate}
+
+\begin{itemize}
+
+\item So we are back to interpretation -- what is the interpretation, then, of $\widehat{\delta}^{TWFE}$ with continuous DiD?
+\item Callaway, Goodman-Bacon and Sant'anna (2022) have a decomposition which I encourage you to read
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}{TWFE as weighted average of ACRT parameters}
+
+\begin{eqnarray*}
+\widehat{\delta}^{TWFE} = \int_{d=L}^{d=U} w_1(l) ACRT(l) , dl + w_0 \frac{ATE(d_L)}{d_L}
+\end{eqnarray*}
+
+\begin{itemize}
+\item They assume strong parallel trends and find that TWFE coefficient is weighted average of ACRT function
+\item All weights are non-negative and sum to one
+\item But weights are strange in that they are maximized at dosage equal to the mean dosage of the entire dataset
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Conclusion}
+
+\begin{itemize}
+\item Very interesting area, a bit challenging, my suggestion is make clear your assumptions 
+\item Most intuitive for me is the parallel trends plus homogenous treatment effects across units around the dosages
+\item But interpretations are hard because you're having to think about a new parameter, and you could have nonlinearities in the ACRT that since TWFE is a weighted average of them, could flip sign 
+\item Not a problem but could be a challenge for you as you try to make sense of it (particularly given how the weights are)
+\item Unclear to me how we might develop original falsification exercises for this homogeneity assumption except it does imply equalities (covariate balance?)
+\end{itemize}
+
+\end{frame}
+
+
+\section{Concluding remarks}
+
+\begin{frame}{Empirical micro model}
+\begin{itemize}
+
+\item In 2014, David Card gave a speech at Michigan in which he told the history of the ``empirical micro model'', particularly labor
+\item He notes the different role that economic models have played throughout the history of modern applied (empirical) work
+	\begin{enumerate}
+	\item Simple approximations of the theoretical model (regress earnings on education)
+	\item Structural modeling (often highly parametrized models)
+	\item Princeton (essentially this entire workshop) where focus is on physical (manipulated) treatment assignment
+	\end{enumerate}
+\item Models are valuable even under \#3, but largely to suggest question, interpret results -- not to solve the identification problem
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Unrestricted heterogeneity and selection on gains}
+
+\begin{itemize}
+\item Over time, applied economists (at least the modal one) is far less likely to believe they know enough about treatment assignment or the underlying treatment effects that they are willing to make any theoretical restrictions
+\item Treatment effects come from unknown production functions, and whether we have heterogeneity across treatment groups involves selection, most likely from a Roy model type of situation
+\item By and large, this is my conjecture, economists are either unwilling to restrict heterogeneity ex ante, and the only models many of us are by and large committed to are Roy like rational sorting models
+\item Without restrictions on heterogeneity ex ante, Roy models imply sorting on gains which create the very problems we find 
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Consequences of being ``deeply a-theoretical''}
+
+\begin{itemize}
+\item Insofar as people sort on the gains from treatment, then given unknown and unrestricted heterogeneous treatment effects, we do not know enough to rule out situations like those in our ``baker'' dataset
+\item Baker dataset was extreme, but before this literature, it's not clear anyone would've known it was extreme
+\item Linear dynamics that never stabilized, large treatment effects in the ATT, heterogenous treatment profiles
+\item TWFE in the canonical specification performs poorly and in our case flipped sign
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Decision making under uncertainty}
+
+\begin{itemize}
+
+\item If you cannot restrict heterogeneity, and Roy like models are driving selection into treatment, then there's risks
+\item TWFE will be efficient if model is correctly specified, which requires no dynamic treatment effects, and most of us when pushed cannot credibly claim we have enough prior knowledge to say that as we are often working on something for which underly production technology around treatment effects are not well known or external validity is unknown
+\item You will need to take this seriously, and adjust practices \emph{away} from naive TWFE modeling
+\item You are, though, the first wave of researchers to have to, so you are unfortunately caught in a bit of limbo moment
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Future work}
+
+\begin{itemize}
+
+\item We are going to cover more differential timing modeling, but I think some of this is a bit redundant
+\item We start to see similar fixes to the underlying problem performed in different, though internally valid, ways
+\item Much of this is a bit cloudy to even the most up-to-date practitioner -- differences between estimators are based on which control groups are used, whether PT holds for those control groups, and how best to think about the parallel trends assumption (some of which have stronger additive forms imposing pre-treatment parallel trends and others which do not)
+\item Cherry picking diff-in-diff could be on the horizon, and this workshop is meant to prepare you for this situation as worst case scenario you will be reading referee reports of people using methods which you may yourself think are inferior but which you still need to understand
+\item You will need to continue to invest in good judgment, as always; most likely going forward returns to econometric skill has shifted up
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Suggestions}
+
+\begin{itemize}
+
+\item These papers have made the careers of young econometricians to be honest -- the growth in citations in short period of time is very weird for econometrics papers (even the IV papers by Angrist and Imbens don't show this pattern)
+\item Think of a monopolistic competition model -- entry stops when zero profits at the margin
+\item \textbf{Profits are shrinking but not zero at the margin}
+\item There's a lot of activity, it will continue, and you'll need to allocate your time accordingly
+\item Good luck with your research and pursuit of meaning and happiness -- don't lose sight of what's important
+
+\end{itemize}
+
+\end{frame}
+
+
+\end{document}
 
 
 \section{Fuzzy DiD}
