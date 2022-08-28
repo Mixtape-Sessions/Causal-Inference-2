@@ -40,17 +40,16 @@
 
 \section{Stacking}
 
-\subsection{Clean controls}
+\subsection{Minimum wages example}
 
 
 \begin{frame}{Keep TWFE but avoid differential timing problems}
 
 \begin{itemize}
-\item Problem with TWFE occurred when we used already-treated as controls
-\item CS and SA used the never-treated (CS and SA), not-yet-treated (CS) or last-treated (SA) as controls
-\item Each identified group-time ATT (``cohort-specific ATT''), then via weighting based on group shares, aggregate treatment parameters (e.g., ATT)
+\item Problem with the canonical TWFE specification was the explicit use of already-treated as controls introduced biases
+\item CS and SA estimated each feasible group-time ATT (``cohort-specific ATT'') then summarized into a reasonably weighted ATT
+\item Differences between the two had to do with incorporating covariates and who was chosen as controls (CS and SA used the never-treated (CS and SA), not-yet-treated (CS) or last-treated (SA) as controls)
 \item Could we still use TWFE, but avoid the use of already-treated as controls?  How? Interpretation?
-\item  Cengiz, et al. (2019) call this ``clean controls'' but now it's called ``stacking''
 \end{itemize}
 
 \end{frame}
@@ -59,8 +58,8 @@
 \begin{frame}{Stacking minimum wages}
 
 \begin{itemize}
-\item Discuss the Cengiz, et al. (2019) as an example of stacking, even though it is a very small part of the paper
-\item It's a good paper at illustrating an argument built up through tables, figures and various forms of intuitive reasoning that guides estimation
+\item  Cengiz, et al. (2019) call this ``clean controls'' but now it's called ``stacking'' (Baker, et al. 2022)
+\item Paper is known for stacking, but I think it's not as well known for being a model (like Miller, et al. 2021) for how to build the case through tables, figures and various forms of intuitive reasoning that guides estimation
 \item Data is 1979 to 2016 US state-level panel, 138 ``prominent'' state-level minimum wage change events
 \item Main model specification is TWFE, but in a robustness section (Appendix D) they introduce a stacking alternative
 \end{itemize}
@@ -70,11 +69,21 @@
 \begin{frame}{Background}
 
 \begin{itemize}
-\item Theory: minimum wages should reduce employment in perfectly competitive labor markets
-\item Theory: minimum wages will increase employment in monopsony labor markets 
-\item Prior research: ``new minimum wage'' studies starting with Card and Krueger (1995) found no effect of minimum wages on employment, but others (often authored by David Neumark) found reductions
-\item Focus had often been on aggregate employment or teens
-\item Controversial, contentious and unsettled 
+\item Theory is ambiguous with respect to increasing minimum binding minimum wages on employment/unemployment 
+	\begin{itemize}
+	\item On the one hand, minimum wages should reduce employment in \textbf{perfectly competitive labor markets}. Minimize cost subject to isoquant constraint, solve for first order conditions, $\frac{d L*(w,r,q)}{d w<0}$. No Giffen behavior with labor inputs.
+	\item But, minimum wages will increase employment in \textbf{imperfect labor markets}. See Joan Robinson's monopsony work 
+	\end{itemize}
+\item Early work on this was viewed as low quality but gradually improved; back-and-forth debates have tended to leave the questions temporarily settled before being overturned
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Background}
+
+\begin{itemize}
+\item Prior research: ``new minimum wage'' studies starting with the now classic Card and Krueger (1994) which found no effect of minimum wages on employment, but others (many written by David Neumark) found reductions in employment
+\item Prior research had often been on \textbf{aggregate} employment or teenagers
+\item ``Enter the arena, but bring a knife'' -- fake Brene Brown novel from Ted Lasso season 2
 \end{itemize}
 
 \end{frame}
@@ -102,6 +111,16 @@
 
 \end{frame}
 
+\begin{frame}{Remember my philosophy on DiD}
+
+\begin{itemize}
+\item \textbf{Show bite}. Oftentimes we study secondary effects -- sex work legalization effect on STIs or violence (Cunningham and Shah 2018). People \emph{need} to see first order effects and they need to be large. We showed reductions in arrests and increases in supply along many data sources before ever showing our ``main results''
+\item \textbf{Falsifications}. You find effects where you expect to; but you shouldn't find effects in places you shouldn't. This style of reasoning is unique to the applied arguments; not as common outside econ but you did see it John Snow's original cholera studies ironically
+\item \textbf{Event studies}. Here we see the core visuals -- show the selection bias problems don't exist by looking at pre-trends; show dynamic treatment effects post-treatment
+\end{itemize}
+
+\end{frame}
+
 \begin{frame}{Bite}
 
 Constant reference to ``bite''.  Footnote 2.
@@ -118,7 +137,7 @@ You can sometimes hear it referred to as the first stage, using IV language, but
 
 \bigskip
 
-The idea is that this paper only makes sense if the policy change has ``bite''
+The idea is that this paper only makes sense if the policy change has ``bite''. But check out the visual Dube drew to guide the reader. Great visuals go a long way in causal studies (slide after the next)
 
 \end{frame}
 
@@ -137,10 +156,10 @@ The idea is that this paper only makes sense if the policy change has ``bite''
 
 \includegraphics{./lecture_includes/dube_a.pdf}
 
-\begin{frame}{Null results}
+\begin{frame}{Null results on the event study}
 
 \begin{itemize}
-\item Results we will now see is essentially a lot of zeroes
+\item Results we will now see is essentially a lot of zeroes (nulls work if they're precise and on a result people may disagree about)
 \item Authors fail to find any evidence of an effect on employment other than the ``bite'' result which I'll show
 \item Empirical equation is estimated using TWFE; differential timing problems, $\tau$ are event years and $k$ are dollar bins, $\mu$ and $\rho$ are state-by-wage-bin and period-by-wage-bin fixed effects, $\omega$ are controls for small or federal increases
 \end{itemize}
@@ -161,12 +180,15 @@ E/N = \sum_{\tau=-3}^4 \sum_{k=-4}^{17} \alpha_{\tau k}I^{\tau k}_{sjt} + \mu_{s
 \imageframe{./lecture_includes/dube_i.pdf}
 
 
+\subsection{Creating a stacked model}
+
 \begin{frame}{Stacking alternative}
 
 \begin{itemize}
-\item TWFE estimation is biased if there are differential timing and heterogenous treatment effects by cohort (SA 2020)
-\item They propose their own alternative which they call ``clean controls'' but which is more commonly called ``stacking''
-\item Estimation models are TWFE; weights were unknown at time of writing (but are now known via Gardner 2021)
+\item Cengiz, et al. (2019) used TWFE with differential timing, much like had always been done, but they have Cambridge connections and SA was in the air (Dube did a sabbatical at MIT)
+\item They knew TWFE estimation was biased if there are differential timing and heterogenous treatment effects by cohort in other words
+\item They propose their own alternative which they call ``clean controls'' but which is more commonly called ``stacking'' (Baker, et al. 2022)
+\item Estimation models are TWFE; weights were unknown at time of writing (but have since been derived by Gardner 2021)
 \end{itemize}
 
 \end{frame}
@@ -186,7 +208,7 @@ Clean controls is done one of two ways:
 
 \begin{frame}{Steps to stacked regression}
 \begin{enumerate}
-    \item Create separate ``event by cohort specific'' datasets for each policy cohort (e.g., groups who pass minimum wages in the same year)
+    \item[1.]  Create separate ``event by cohort specific'' datasets for each policy cohort (e.g., groups who pass minimum wages in the same year)
         \begin{itemize}
         \item Dataset will consist of the relevant policy cohort \textbf{plus} controls
         \item Data is structured in ``event time'' and will be balanced such that panel length is $h$, perhaps starting point being 3 years prior to treatment and ending point 4 years after or something like that
@@ -197,19 +219,27 @@ Clean controls is done one of two ways:
 
 \begin{frame}{Steps to stacked regression}
 \begin{enumerate}
-    \item Append each dataset (or what people are now calling ``stacking'') to one another
+    \item[2. ] Append each dataset (or what people are now calling ``stacking'') to one another
         \begin{itemize}
         \item This necessarily replicates control observations though as they are in each datasets
         \item Since the same people are often appearing many many times, you will correct for this in the regression model specification
         \end{itemize}
-    \item Estimate a simple 2x2 model but include ``cohort-by-state'' fixed effects so as to account for the multiple appearances of observations from the never-treated control states
+    \item[3. ] Estimate a simple 2x2 model but include ``cohort-by-state'' fixed effects so as to account for the multiple appearances of observations from the never-treated control states
 \end{enumerate}
 \end{frame}
 
 \begin{frame}{Comments on the approach}
 
 \begin{itemize}
-\item Hard part of this is probably just the careful balancing, saving datasets, then appending, but ultimately not difficult -- just watch yourself.
+\item Hard part of this is probably just the careful balancing, saving datasets, then appending, but ultimately not difficult -- just double and triple check your work using logic and investigating the datasets (there should be no already treated in any dataset for instance)
+\item I wouldn't trust someone else's code on this; write the loops yourself. You're responsible.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Comments on the approach}
+
+\begin{itemize}
 \item Because the data is now balanced \emph{in event time}, there is \emph{no differential timing}; it is a simple 2x2
 \item Recall that the reason TWFE is biased in DiD designs is (1) differential timing and (2) heterogeneity
 \item Stacked eliminates (1) making (2) irrelevant
@@ -300,6 +330,7 @@ Logic is used to dismiss effects at upper part of distribution which is only pla
 
 \subsection{Identification and aggregation}
 
+\subsection{Weights and Parameter}
 
 \begin{frame}{Unknown parameter}
 
@@ -353,7 +384,7 @@ $\pi_c$ is the fraction of units treated in period $p$ and $\rho_c$ is the popul
 
 \bigskip
 
-The stacked estimator weights each group's ATT by dataset-specific treatment variance and sample size which slightly overstates the true average bc $\pi$ and $\rho$ are both fractions.
+The stacked estimator positively weights each group's ATT by dataset-specific treatment variance and sample size which slightly overstates the true average bc $\pi$ and $\rho$ are both fractions.
 
 \bigskip
 
@@ -415,11 +446,10 @@ Clemens and Strain (2021) use preregistration which is rare in labor or quasi-ex
 
 \begin{itemize}
 \item Nick Huntington-Klein and several others published a 2021 article in \emph{Economic Inquiry} in which two applied microeconomics papers were assigned to individual researchers with the task of replicating the results from raw data
-\item Results were concerning: 
 \begin{quote}
 "We find large differences in data preparation and analysis decisions, many of which would not likely be reported in a publication. No two replicators reported the same sample size. Statistical significance varied across replications, and for one of the studies the effect's sign varied as well. The standard deviation of estimates across replications was 3–4 times the mean reported standard error."
 \end{quote}
-\item Sometimes it isn't the garden of forking paths or p-hacking that is the problem -- there is also uncertainty driven by the numerous reasonable choices that researchers must make in order to do any analysis in the first place
+\item Decision making under uncertainty creates variation, not just p-hacking
 \end{itemize}
 
 \end{frame}
@@ -547,14 +577,10 @@ They will also estimate triple difference versions of this model with a within-s
 \item To understand the rest of their results, we have to first cover the imputation estimator that Borusyak, Jaravel and Speiss (2021) have created
 \item But to summarize what we found so far, large shocks are indeed credibly causing declines in employment, particular for the affected class of workers (young with or without a high school degree)
 \item More modest increase are null, though, which is what Cengiz, et al. (2019) also found
+\item Debates continue!  See my podcast interview with Meer and West, as well as Alan Manning
 \end{itemize}
 
 \end{frame}
-
-
-
-
-
 
 
 
