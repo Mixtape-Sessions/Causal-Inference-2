@@ -3,10 +3,10 @@
 * author: scott cunningham (baylor university)
 * description: estimates the causal effect of prison capacity
 * 			   expansion on incarceration rates using synth
-* date: april 19, 2020
+* date: august 28, 2020
 **************************************************************
 
-cd "/Users/scott_cunningham/Dropbox/CI Workshop/Texas/Do"
+cd "/Users/scott_cunningham/Documents/Causal-Inference-2 2/Lab/Texas/Do"
 capture log close
 capture log using ./texas.log, replace text
 
@@ -14,7 +14,7 @@ capture log using ./texas.log, replace text
 * ssc install synth, replace
 
 * Estimation 1: Texas model of black male prisoners (per capita)
-use https://github.com/scunning1975/mixtape/raw/master/smoking.dta, clear
+use ../data/texas.dta, replace
 
 
 #delimit;
