@@ -12,6 +12,7 @@ capture log using ./texas.log, replace text
 
 
 * ssc install synth, replace
+* ssc install mat2txt, replace
 
 * Estimation 1: Texas model of black male prisoners (per capita)
 use ../data/texas.dta, replace
