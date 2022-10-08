@@ -39,458 +39,10 @@
 % ---- Content ----
 
 
-\section{Introducing difference-in-differences}
-
-
-\subsection{Numerical examples}
-
-\begin{frame}{Drake and David Card}
-
-``Started from the bottom now we're here'' -- Drake
-
-\bigskip
-
-David Card and Orley Ashenfelter are often associated with it in economics, but it goes back further
-
-\bigskip
-
-Let's go back to the bottom and get to where we are now
-
-\end{frame}
-
-\begin{frame}{Miasma Debates}
-
-\begin{itemize}
-
-\item Difference-in-differences (DiD) was quietly and largely unnoticed introduced in the 19th century as a way to convince skeptics in health policy arguments
-\item Dominant disease theory in 19th century was \emph{miasma} -- disease caused by smelly vapor
-\item Keep in mind -- microorganisms would not be identified until much later, partly caused by poor resolution in microscopes (Freedman 2007)
-
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Miasma I: Ignaz Semmelweis and washing hands}
-
-\begin{itemize}
-\item 1840s, Vienna maternity wards had high postpartum infections in one wing compared to other wings
-\item One division had doctors and trainee doctors, but another had midwives and trainee midwives
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Miasma I: Ignaz Semmelweis and washing hands}
-
-\begin{itemize}
-\item Ignaz Semmelweis notes the difference in 1841 when hospitals moved to ``anatomical'' training involving cadavers (Pamela Jakeila lecture notes on DiD)
-\item New training happens to one but not the other and Semmelweis thinks the mortality is caused by working with cadavers
-\item Proposes washing hands with chlorine in 1847 in the midwives' wing and uses a DiD design of pre and post
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}{Miasma II: John Snow and cholera}
-
-\begin{itemize}
-\item Three major waves of cholera in the early to mid 1800s in London
-\item John Snow believed cholera was spread through the Thames water supply which contradicted dominant theory about ``dirty air'' transmission
-\item Grand experiment: Lambeth moves its pipe between 1849 and 1854; Southwark and Vauxhall delay
-\item He can evaluate the effect in three ways (one of which is DiD)
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}
-
-	\begin{figure}
-	\caption{Two water utility companies in London 1854}
-	\includegraphics[scale=0.225]{./lecture_includes/lambeth.png}
-	\end{figure}
-
-
-\end{frame}
-
-
-
-
-\begin{frame}{1) Simple cross-sectional design}
-
-\begin{table}\centering
-		\caption{Lambeth and Southwark and Vauxhall, 1854}
-		\begin{center}
-		\begin{tabular}{ll}
-		\toprule
-		\multicolumn{1}{l}{\textbf{Company}}&
-		\multicolumn{1}{c}{\textbf{Cholera mortality}}\\
-		\midrule
-		Lambeth  & $Y=L + D$ \\
-		Southwark and Vauxhall  & $Y=SV$ \\
-		\bottomrule
-		\end{tabular}
-		\end{center}
-	\end{table}
-
-\bigskip
-
-\begin{eqnarray*}
-\widehat{\delta}_{cs} = D + (L-SV)
-\end{eqnarray*}What is $L$ and $SV$?  
-
-\end{frame}
-
-\begin{frame}{1) Simple cross-sectional design}
-
-\begin{table}\centering
-		\caption{Lambeth and Southwark and Vauxhall, 1854}
-		\begin{center}
-		\begin{tabular}{ll}
-		\toprule
-		\multicolumn{1}{l}{\textbf{Company}}&
-		\multicolumn{1}{c}{\textbf{Cholera mortality}}\\
-		\midrule
-		Lambeth  & $Y=L + D$ \\
-		Southwark and Vauxhall  & $Y=SV$ \\
-		\bottomrule
-		\end{tabular}
-		\end{center}
-	\end{table}
-
-\bigskip
-
-\begin{eqnarray*}
-\widehat{\delta}_{cs} = D + (L-SV)
-\end{eqnarray*}This is biased if $\L \neq SV$ (selection bias). Give an example when we're pretty sure they are equal.
-
-\end{frame}
-
-\begin{frame}{2) Interrupted time series design}
-
-	\begin{table}\centering
-		\caption{Lambeth, 1849 and 1854}
-		\begin{center}
-		\begin{tabular}{lll}
-		\toprule
-		\multicolumn{1}{l}{\textbf{Company}}&
-		\multicolumn{1}{c}{\textbf{Time}}&
-		\multicolumn{1}{c}{\textbf{Cholera mortality}}\\
-		\midrule
-		Lambeth & 1849 & $Y=L$ \\
-		& 1854 & $Y=L + (T + D)$ \\
-		\bottomrule
-		\end{tabular}
-		\end{center}
-	\end{table}
-
-\begin{eqnarray*}
-\widehat{\delta}_{its} = D + T
-\end{eqnarray*}What is required for this estimator to be unbiased?
-
-
-\end{frame}
-
-\begin{frame}{3) Difference-in-differences}
-
-\begin{table}\centering
-		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
-		\begin{center}
-		\begin{tabular}{lll|lc}
-		\toprule
-		\multicolumn{1}{l}{\textbf{Companies}}&
-		\multicolumn{1}{c}{\textbf{Time}}&
-		\multicolumn{1}{c}{\textbf{Outcome}}&
-		\multicolumn{1}{c}{$D_1$}&
-		\multicolumn{1}{c}{$D_2$}\\
-		\midrule
-		Lambeth & Before & $Y=L$ \\
-		& After & $Y=L + T_L + D$ & $T_L+D$\\
-		\midrule
-		& & & & $D$ \\
-		\midrule
-		Southwark and Vauxhall & Before & $Y=SV$ \\
-		& After & $Y=SV + T_{SV}$ & $T_{SV}$\\
-		\bottomrule
-		\end{tabular}
-		\end{center}
-	\end{table}
-
-\begin{eqnarray*}
-\widehat{\delta}_{did} = D + (T_L - T_{SV})
-\end{eqnarray*}How do we calculate $T_{SV}$?  
-
-\end{frame}
-
-\begin{frame}{3) Difference-in-differences}
-
-\begin{table}\centering
-		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
-		\begin{center}
-		\begin{tabular}{lll|lc}
-		\toprule
-		\multicolumn{1}{l}{\textbf{Companies}}&
-		\multicolumn{1}{c}{\textbf{Time}}&
-		\multicolumn{1}{c}{\textbf{Outcome}}&
-		\multicolumn{1}{c}{$D_1$}&
-		\multicolumn{1}{c}{$D_2$}\\
-		\midrule
-		Lambeth & Before & $Y=L$ \\
-		& After & $Y=L + T_L + D$ & $T_L+D$\\
-		\midrule
-		& & & & $D$ \\
-		\midrule
-		Southwark and Vauxhall & Before & $Y=SV$ \\
-		& After & $Y=SV + T_{SV}$ & $T_{SV}$\\
-		\bottomrule
-		\end{tabular}
-		\end{center}
-	\end{table}
-
-\begin{eqnarray*}
-\widehat{\delta}_{did} = D + (T_L - T_{SV})
-\end{eqnarray*}How do we calculate $T_{L}$?  
-
-\end{frame}
-
-
-\begin{frame}{3) Difference-in-differences}
-
-\begin{table}\centering
-		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
-		\begin{center}
-		\begin{tabular}{lll|lc}
-		\toprule
-		\multicolumn{1}{l}{\textbf{Companies}}&
-		\multicolumn{1}{c}{\textbf{Time}}&
-		\multicolumn{1}{c}{\textbf{Outcome}}&
-		\multicolumn{1}{c}{$D_1$}&
-		\multicolumn{1}{c}{$D_2$}\\
-		\midrule
-		Lambeth & Before & $Y=L$ \\
-		& After & $Y=L + T_L + D$ & $T_L+D$\\
-		\midrule
-		& & & & $D$ \\
-		\midrule
-		Southwark and Vauxhall & Before & $Y=SV$ \\
-		& After & $Y=SV + T_{SV}$ & $T_{SV}$\\
-		\bottomrule
-		\end{tabular}
-		\end{center}
-	\end{table}
-
-\begin{eqnarray*}
-\widehat{\delta}_{did} = D + (T_L - T_{SV})
-\end{eqnarray*}This second term is called ``parallel trends''
-
-\end{frame}
-
-
-
-\subsection{Potential outcomes}
-
-
-
-\begin{frame}{Potential outcomes review}
-
-\begin{itemize}
-\item DiD really can't be understood without committing to useful causality notation
-\item Standard language is the potential outcomes model, sometimes called the Rubin-Neyman model
-\item Potential outcomes are thought experiments about worlds that never existed, but which \emph{could have}
-\item Important we are all on the same page, so I'm going to review this
-\end{itemize}
-
-\end{frame}
-\begin{frame}{Potential outcomes notation}
-	
-	\begin{itemize}
-	\item Let the treatment be a binary variable: $$D_{i,t} =\begin{cases} 1 \text{ if pipe inlet is upstream at time $t$} \\ 0 \text{ if pipe inlet is downstream at time $t$} \end{cases}$$where $i$ indexes an individual observation, such as a person
-
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Potential outcomes notation}
-	
-	\begin{itemize}
-
-	\item Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{: health if drank from upstream at time $t$} \\ 0 \text{: health if drank from downstream at time $t$} \end{cases}$$where $j$ indexes a counterfactual state of the world
-
-	\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Potential vs observed}
-
-\begin{itemize}
-\item A potential outcome $Y^1$ and an observed outcome $Y$ are distinct
-\item Potential outcomes are \emph{hypothetical} possibilities describing states of the world but historical outcomes actually occurred
-\item Potential outcomes become observed outcomes when treatments are assigned (the ``switching equation'') $$Y_{it}=D_{it}Y_{it}^1 + (1-D_{it})Y_{it}^0$$
-\item I'll often drop the subscripts to reduce clutter, but note the key point here is one's own realized outcome at some point in time is based on one's own treatment assignment at that time (this is what we mean by SUTVA in fact)
-
-\end{itemize}
-\end{frame}
-
-
-
-\begin{frame}{Treatment effect definitions}
-
-
-	\begin{block}{Individual treatment effect}
-	    The individual treatment effect,  $\delta_i$, equals $Y_i^1-Y_i^0$
-	\end{block}
-
-Individual causal effects cannot be calculated because one of the two needed potential outcomes will always be missing. Epistemologically ``unknowable'' in some important but difficult to define way.	
-	
-\end{frame}
-
-
-\begin{frame}{Conditional Average Treatment Effects}	
-	\begin{block}{Average Treatment Effect on the Treated (ATT)}
-	The average treatment effect on the treatment group is equal to the average treatment effect conditional on being a treatment group member:
-		\begin{eqnarray*}
-		E[\delta|D=1]&=&E[Y^1-Y^0|D=1] \nonumber \\
-		&=&E[Y^1|D=1]-\textcolor{red}{E[Y^0|D=1]}
-		\end{eqnarray*}
-	\end{block}
-	
-	\bigskip
-	
- Again that ``epistemological'' uncertainty.  We can estimate the ATT, but never be sure due to \textcolor{red}{missing potential outcomes} for the treated group
-
-	
-\end{frame}
-
-
-
-\subsection{Identification}
-
-\begin{frame}{Identification without randomization}
-
-\begin{itemize}
-\item We may be unable to randomize -- not because we lack the imagination, but because we lack the permission
-\item If we cannot randomize, then how does DiD identify a treatment effect, and which treatment effect?
-\item DiD identifies the ATT, and since we are missing $Y^0$ for treated group, we will restrict counterfactual $Y^0$ in expectation
-\item One of the main advantages of DiD is the hope that we can identify the ATT \emph{without} randomization
-\end{itemize}
-
-\end{frame}
-
-
-
-
-\begin{frame}{DiD equation}
-
-I call this the DiD equation, but Goodman-Bacon calls it the ``2x2''; I'll use his $k$ and $U$ notation for treated and untreated groups
-
-\begin{eqnarray*}
-\widehat{\delta}^{2x2}_{kU} = \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
-\end{eqnarray*}$k$ index people with Lambeth, $U$ index people with Southwark and Vauxhall, $Post$ is after Lambeth moved pipe upstream, $Pre$ before Lambeth moved its pipe (baseline), and $E[y]$ mean cholera mortality. 
-
-\end{frame}
-
-\begin{frame}{DiD equation}
-
-``Pre'' and ``Post'' refer to when Lambeth, $k$, was treated which is why it is the same for both $k$ and $U$ groups
-
-\bigskip
-
-If we had more than one treatment group, then ``Pre'' and ``Post'' no longer are defined for all units
-
-\end{frame}
-
-
-\begin{frame}{Potential outcomes and the switching equation}
-
-\begin{eqnarray*}
-\widehat{\delta}^{2x2}_{kU} &=& \bigg ( \underbrace{E[Y^1_k|Post] - E[Y^0_k|Pre] \bigg ) - \bigg ( E[Y^0_U | Post ] - E[ Y^0_U | Pre]}_{\mathclap{\text{Switching equation}}} \bigg)  \\
-&&+ \underbrace{\textcolor{red}{E[Y_k^0 |Post] - E[Y^0_k | Post]}}_{\mathclap{\text{Adding zero}}} 
-\end{eqnarray*}
-
-\end{frame}
-
-\begin{frame}{Parallel trends bias}
-
-\begin{eqnarray*}
-\widehat{\delta}^{2x2}_{kU} &=& \underbrace{E[Y^1_k | Post] - \textcolor{red}{E[Y^0_k | Post]}}_{\mathclap{\text{ATT}}} \\
-&& + \bigg [  \underbrace{\textcolor{red}{E[Y^0_k | Post]} - E[Y^0_k | Pre] \bigg ] - \bigg [ E[Y^0_U | Post] - E[Y_U^0 | Pre] }_{\mathclap{\text{Non-parallel trends bias in 2x2 case}}} \bigg ]
-\end{eqnarray*}
-
-
-\end{frame}
-
-\begin{frame}{Identification through parallel trends}
-	
-
-	\begin{block}{Parallel trends}
-	Assume two groups, treated and comparison group, then we define parallel trends as:	 $$\textcolor{red}{E(}\textcolor{red}{\Delta Y^0_k)} = E(\Delta Y^0_U)$$
-	\end{block}
-
-\textbf{In words}: ``The \textcolor{red}{evolution of cholera mortality for Lambeth \emph{had it kept its pipe downstream}} is the same as the evolution of cholera mortality for Southwark and Vauxhall''.  
-
-\bigskip
-
-It's in \textcolor{red}{red} so you know it's a nontrivial assumption.  But why?  Can't we just check?
-
-	
-
-	
-\end{frame}
-
-
-
-
-\begin{frame}{What is ``The Science''?}
-
-\begin{itemize}
-\item You've probably heard people say RCT is the gold standard for causal inference.  But why?
-\item Because randomization gives \emph{near certainty} that selection bias won't exist
-\item Don Rubin commented once, ``we know how the science works''
-\item DiD \textbf{does not} use ``the science'' though
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{Identification with Independence (``the Science'')}
-
-
-\begin{block}{Independence assumption}
-Treatment is independent of potential outcomes  $$(Y^0,Y^1)\independent{D}$$
-\end{block}	
-
-RCTs use \emph{independence} to estimate causal effects; DiD does not
-
-\end{frame}
-
-\begin{frame}{Independence}
-
-Independence allows us to write down conditional expected potential outcome equations (i.e., impute) like $$E[Y^0|D=1]=E[Y^0|D=0]$$ 
-
-\bigskip
-
-In the simple comparison in means, $\widehat{\delta}_{cs} = D + (L-SV)$, independence implies $L=SV$ (no selection bias).
-
-\end{frame}
-
-
-\begin{frame}{Parallel trends is hard}
-
-\begin{itemize}
-\item \textbf{There is no guaranteed ``science'' in parallel trends}
-\item IMO, this makes DiD a ``hard'' design -- \emph{because} it doesn't rely on randomization (it relies on parallel trends), there are no ``slam dunks'' and evidence tends to be multi-layered
-\item Before we move into regression, let's go through a simple exercise to really pin down these core ideas with simple calculations
-\end{itemize}
-
-\bigskip 
-
-\url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
-
-\end{frame}
 
 \section{Estimation}
 
-\subsection{OLS Specification}
-
+\subsection{OLS specification}
 
 \begin{frame}{OLS Specification}
 	
@@ -576,10 +128,46 @@ Notice how OLS is ``imputing'' $E[Y^0|D=1,Post]$ for the treatment group in the 
 
 \end{frame}
 
+\subsection{Inference}
+
+\begin{frame}{Inference}
+	
+	\begin{itemize}
+	\item  Bertrand, Duflo and Mullainathan (2004) show that conventional standard errors will often severely understate the standard deviation of the estimators
+	\item Standard errors are biased downward (i.e., too small, over reject)
+	\item They proposed three solutions, but most only use one of them (clustering)
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Inference}
+	
+		\begin{enumerate}
+		\item[1 ] Block bootstrapping standard errors (if you analyze states the block should be the states and you would sample whole states with replacement for bootstrapping)
+		\item[2 ] Clustering standard errors at the group level (in Stata one would simply add \texttt{, cluster(state)} to the regression equation if one analyzes state level variation)
+		\end{enumerate}
+
+\bigskip
+
+Most people will simply cluster, but there are issues if you have too few clusters. They mention a third way but it's only a curiosity.
+		
+\end{frame}
+
+
+
+
+\section{Parallel trends violations}
+
+\subsection{How parallel trends can get violated}
+
 
 \begin{frame}{Violating parallel trends exercise}
 
-Let's use the second tab now 
+\begin{itemize}
+\item Parallel trends are needed so we can impute the missing $E[Y^0|D=1]$ with $E[Y^0|D=0]$ either explicitly or implicitly
+\item Which means if parallel trends isn't true, then the imputation isn't correct and therefore estimates are biased
+\item To illustrate this, let's go through the document again
+\end{itemize}
 
 \url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
 
@@ -589,9 +177,8 @@ Let's use the second tab now
 \begin{frame}{Violating parallel trends}
 
 \begin{itemize}
-\item Parallel trends are in expectation only -- we don't rely each state to follow the same trend, just the group average for $Y^0$ over the long difference
-\item Violations happen due to selection bias as remember -- we are using untreated units as controls, only we are using their \emph{long differences} as the control outcome
-\item Two straightforward ways that parallel trends will be violated
+\item Parallel trends are in expectation only -- we don't rely everybody to follow the same trend, just that the group average for $Y^0$ be approximately the same for treated and control 
+\item Violations are a form of selection bias and there are two straightforward ways that parallel trends will be violated
 	\begin{enumerate}
 	\item Compositional differences in samples associated with repeated cross-sections
 	\item Policy endogeneity
@@ -641,46 +228,18 @@ Let's use the second tab now
 \end{frame}
 
 
-\begin{frame}{Inference}
-	
-	\begin{itemize}
-	\item  Bertrand, Duflo and Mullainathan (2004) show that conventional standard errors will often severely understate the standard deviation of the estimators
-	\item Standard errors are biased downward (i.e., too small, over reject)
-	\item They proposed three solutions, but most only use one of them (clustering)
-	\end{itemize}
-\end{frame}
+\subsection{DiD in Court}
 
+\begin{frame}{Types of evidence}
 
-\begin{frame}{Inference}
-	
-		\begin{enumerate}
-		\item[1 ] Block bootstrapping standard errors (if you analyze states the block should be the states and you would sample whole states with replacement for bootstrapping)
-		\item[2 ] Clustering standard errors at the group level (in Stata one would simply add \texttt{, cluster(state)} to the regression equation if one analyzes state level variation)
-		\end{enumerate}
-
-\bigskip
-
-Most people will simply cluster, but there are issues if you have too few clusters
-		
-\end{frame}
-
-\begin{frame}{Inference}
-
-\begin{enumerate}
-		\item[3] Aggregating the data into one pre and one post period. Literally works if there is only one treatment data.  With staggered treatment dates one should adopt the following procedure:
-			\begin{itemize}
-			\item Regress $Y_{st}$ onto state FE, year FE and relevant covariates
-			\item Obtain residuals from the treatment states only and divide them into 2 groups: pre and post treatment
-			\item Then regress the two groups of residuals onto a post dummy
-			\end{itemize}
-\end{enumerate}
-
-No one does this, and I only mention it so you have it in your slides
+\begin{itemize}
+\item You are building a case, the prosecutor before a judge and jury, always in battle with the defense attorney
+\item Evidence has particular broadly defined forms that can help you on the front end
+\item Your goal in my humble opinion should be mixing tight logic based falsifications with particular kinds of data visualization, starting with the event study
+\end{itemize}
 
 \end{frame}
 
-
-\subsection{Event studies in DiD}
 
 \begin{frame}{Event studies have become mandatory in DiD}
 
@@ -690,18 +249,19 @@ No one does this, and I only mention it so you have it in your slides
 
 \end{frame}
 
-
-\begin{frame}{Evidence for parallel trends: pre-trends}
+\begin{frame}{Intuition behind event studies}
 
 \begin{itemize}
-
-	\item The identifying assumption for all DD designs is parallel trends, but since we cannot verify parallel trends, we often look at pre-trends
+	\item Princeton Industrial Relations Section seems to be behind this -- this intense focus on research design but also verifying assumptions
+	\item The identifying assumption for all DD designs is parallel trends , but since we cannot verify parallel trends, we often look at pre-trends
 	\item It's a type of check for selection bias, but you must understand what it is and what it isn't to see its value but not be naive about it (it is not a silver bullet)
-	\item Even if pre-trends are the same one still has to worry about other policies changing at the same time (omitted variable bias)
+	\item Even if pre-trends are the same one still has to worry about other policies changing at the same time (omitted variable bias is a parallel trends violation)
 
 \end{itemize}
 
 \end{frame}
+
+
 
 
 \begin{frame}{Plot the raw data when there's only two groups}
@@ -720,12 +280,12 @@ Let's do the bonus questions on first and second tab now
 
 \end{frame}
 
-\begin{frame}{Intuition behind event studies}
+\begin{frame}{Beware of naive reasoning}
 
 \begin{itemize}
-\item Parallel pre-trends are neither necessary nor sufficient for parallel trends
-\item To argue otherwise is to commit a type of \emph{post hoc ergo propter hoc} fallacy
-\item Parallel pre-trends is a type of ``look-alike'' reasoning we often do though
+\item Parallel pre-trends $\neq$ parallel trends -- these are often thought to be the same thing, and they aren't
+\item Equating them is a kind of \emph{post hoc ergo propter hoc} fallacy
+\item Parallel pre-trends is more like a smoking gun based on things ``looking the same'' before
 \item Similar to checking for covariate balance in RCTs
 \item But \textbf{cannot} substitute for domain knowledge!
 \end{itemize}
@@ -733,17 +293,14 @@ Let's do the bonus questions on first and second tab now
 \end{frame}
 
 
-
 \begin{frame}{Event study regression}
 	
 	\begin{itemize}
-	\item Lags and lags can be included in our simple OLS model to analyze this issue
-	\item The estimated regression would be:$$Y_{its} = \gamma_s + \lambda_t + \sum_{\tau=-2}^{-q}\mu_{\tau}D_{s\tau} + \sum_{\tau=0}^m\delta_{\tau}D_{s\tau}+\varepsilon_{ist}$$
+	\item Event studies have a simple OLS specification with only one treatment group and one never-treated group $$Y_{its} = \alpha +  \sum_{\tau=-2}^{-q}\mu_{\tau}D_{s\tau} + \sum_{\tau=0}^m\delta_{\tau}D_{s\tau}+\varepsilon_{ist}$$
 		\begin{itemize}
-		\item $D$ equals the treatment group interacted with the calendar year
+		\item where $D$ is an interaction of the treatment group $s$ with the calendar year $\tau$
 		\item Treatment occurs in year 0, no anticipation, drop baseline $t-1$
-		\item Includes $q$ leads or anticipatory effects
-		\item Includes $m$ lags or post treatment effects
+		\item Includes $q$ leads or anticipatory effects and $m$ lags or post treatment effects
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -751,7 +308,7 @@ Let's do the bonus questions on first and second tab now
 \begin{frame}{Event study regression}
 
 
-$$Y_{its} = \gamma_s + \lambda_t + \sum_{\tau=-2}^{-q}\mu_{\tau}D_{s\tau} + \sum_{\tau=0}^m\delta_{\tau}D_{s\tau}+\varepsilon_{ist}$$
+$$Y_{its} = \alpha + \sum_{\tau=-2}^{-q}\mu_{\tau}D_{s\tau} + \sum_{\tau=0}^m\delta_{\tau}D_{s\tau}+\varepsilon_{ist}$$
 
 \bigskip
 
@@ -759,7 +316,11 @@ Typically you'll plot the coefficients and 95\% CI on all leads and lags (binned
 
 \bigskip
 
-Under parallel trends and no anticipation, then you expect $\widehat{\mu}$ coefficients to be zero, which gives you confidence that parallel trends holds (but is not a guarantee, and there are still specification issues -- see Jon Roth's work)
+Under no anticipation, then you expect $\widehat{\mu}$ coefficients to be zero, which gives you confidence that parallel trends holds (but is not a guarantee, and there are still specification issues -- see Jon Roth's work)
+
+\bigskip
+
+Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in time
 
 \end{frame}
 
@@ -773,7 +334,7 @@ Under parallel trends and no anticipation, then you expect $\widehat{\mu}$ coeff
 
 \end{frame}
 
-\begin{frame}{Evidence}
+\begin{frame}{Types of evidence}
 
 \begin{itemize}
 \item \textbf{Bite} -- show that the expansion shifted people into Medicaid and out of uninsured status
@@ -808,11 +369,7 @@ Under parallel trends and no anticipation, then you expect $\widehat{\mu}$ coeff
 	
 	\begin{itemize}
 	\item Very common for readers and others to request a variety of ``robustness checks'' from a DD design
-	\item Think of these as along the same lines as the event study we just discussed
-		\begin{itemize}
-		\item Falsification test using data for alternative control group (e.g., Medicare population)
-		\item Falsification test using alternative ``placebo'' outcome that should not be affected by the treatment
-		\end{itemize}
+	\item We saw some of these just now (e.g., falsification test using data for alternative control group, the Medicare population)
 	\item Triple differences uses a within-state untreated group; little trickier, so let's use the table again
 	\end{itemize}
 \end{frame}
@@ -860,7 +417,7 @@ PA					&&&&&$l_t-s_t$		\\
 
 \bigskip
 
-$l_t-s_t$ is the same for PA and NJ. That's the gap between high and low wage employment in PA (observed) is the same as NJ (counterfactual).
+$l_t-s_t$ is the same for PA and NJ in the post period. That's the gap between high and low wage employment in PA (observed) is the same as NJ (counterfactual).
 
 
 
@@ -899,7 +456,7 @@ $l_t-s_t$ is the same for PA and NJ. That's the gap between high and low wage em
 
 
 
-\subsection{Falsifications}
+\subsection{Placebo outcomes}
 
 \begin{frame}{Falsification test with alternative outcome}
 	
@@ -1106,7 +663,7 @@ Assumption 1: Assume panel data or repeated cross-sectional data
 
 \bigskip
 
-Handling repeated cross-sectional data is possible but assumes modularity which is a kind of stability assumption, but I'll use panel representation. 
+Handling repeated cross-sectional data is possible but assumes stationarity which is a kind of stability assumption, but I'll use panel representation. 
 
 \bigskip
 

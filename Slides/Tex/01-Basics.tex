@@ -38,12 +38,16 @@
 
 % ---- Content ----
 
+\section{Introduction}
+
+\subsection{Managing expectations}
+
 
 \begin{frame}{Introduction}
 
 \begin{itemize}
 \item Welcome to Mixtape Sessions workshop on difference-in-differences and synthetic control (``Causal Inference II'')
-\item 9:00am to 6:00pm CST, 15 min breaks every hour, 1 hour lunch at noon CST
+\item 8:00am to 5:00pm CST, 15 min breaks every hour, 1 hour lunch at noon CST
 \item Lecture, discussion, exercises, application
 \end{itemize}
 
@@ -55,8 +59,9 @@
 Introduction to DiD basics 
 	\begin{itemize}
 	\item Potential outcomes review
-	\item DiD equation and OLS
-	\item Triple differences, event studies
+	\item DiD equation and estimation with OLS
+	\item Evaluating parallel trends with falsifications, event studies 
+	\item Triple differences
 	\item Including covariates
 	\end{itemize}
 
@@ -67,14 +72,13 @@ Introduction to DiD basics
 
  Differential timing
 	\begin{itemize}
-	\item Decomposing constant treatment effect model (TWFE)
+	\item Bacon decomposition 
 	\item Aggregating group-time ATTs
 	\item Issues and solutions with event studies
 	\item Turning treatments on and off
 	\item Stacked regression
 	\item Imputation estimators
 	\item Continuous treatments
-	\item Time-varying covariates
 	\end{itemize}
 
 \end{frame}
@@ -89,6 +93,11 @@ Synthetic control
 
 \end{frame}
 
+\subsection{Introducing difference-in-differences}
+
+\imageframe{./lecture_includes/bumpersticker.jpeg}
+
+
 \begin{frame}{Natural experiments}
 
 \begin{quote}
@@ -98,7 +107,6 @@ Synthetic control
 \end{frame}
 
 
-\imageframe{./lecture_includes/bumpersticker.jpeg}
 
 
 \begin{frame}{What is difference-in-differences (DiD)}
@@ -106,9 +114,8 @@ Synthetic control
 \begin{itemize}
 \item DiD is a very old, relatively straightforward, intuitive research design
 \item A group of units are assigned some treatment and then compared to a group of units that weren't
-\item Closely associated with 1980s Princeton Industrial Relations Section (Orley Ashenfelter, David Card, Alan Krueger, Bob LaLonde)
-\item Unclear when key identifying assumptions like parallel trends are worked out (as originally there is no potential outcomes in play), but Angrist says he invented the term with Pischke
 \item One of the most widely used quasi-experimental methods in economics and even used in industry
+\item Mostly associated with ``big shocks'' happening in space over time
 \end{itemize}
 
 \end{frame}
@@ -133,7 +140,7 @@ Synthetic control
 
 \begin{itemize}
 \item \textbf{Research advantages}: DiD is sometimes the only way we have to study large social policies 
-\item \textbf{Time to retool}: Recent wave of scholarship suggest model misspecification has been pronounced
+\item \textbf{Good time to retool}: Recent wave of scholarship suggest model misspecification is pronounced
 \item \textbf{Good news}: Better understanding of our models, new tools, new programs
 \item \textbf{Hope}: I think we can get to the bottom of this in a way that will stick with you
 \end{itemize}
@@ -146,20 +153,468 @@ Synthetic control
 
 
 
-\begin{frame}{Let's begin with DiD}
+
+
+
+
+\subsection{History}
+
+\begin{frame}{Brief history of diff-in-diff}
 
 \begin{itemize}
-\item With all this out of the way, let's dig into the DiD material
-\item We will start with the simplest situation using simple difference in means without covariates
-\item We will then move into OLS with covariates
-\item And then move into alternatives to OLS when we have covariates
-\item Later we go into the more advanced material (e.g., differential timing, continuous treatments)
+\item David Card and Orley Ashenfelter are often associated with it in economics, but it goes back further to the 19th century
+\item Difference-in-differences (DiD) was quietly and largely unnoticed introduced in the 19th century as a way to convince skeptics in health policy arguments
+\item Dominant disease theory in 19th century was \emph{miasma} -- disease caused by smelly vapor
+\item Keep in mind -- microorganisms would not be identified until much later, partly caused by poor resolution in microscopes (Freedman 2007)
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Miasma I: Ignaz Semmelweis and washing hands}
+
+\begin{itemize}
+\item 1840s, Vienna maternity wards had high postpartum infections in one wing compared to other wings
+\item One division had doctors and trainee doctors, but another had midwives and trainee midwives
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Miasma I: Ignaz Semmelweis and washing hands}
+
+\begin{itemize}
+\item Ignaz Semmelweis notes the difference in 1841 when hospitals moved to ``anatomical'' training involving cadavers (Pamela Jakeila lecture notes on DiD)
+\item New training happens to one but not the other and Semmelweis thinks the mortality is caused by working with cadavers
+\item Proposes washing hands with chlorine in 1847 in the midwives' wing and uses a DiD design of pre and post
 \end{itemize}
 
 \end{frame}
 
 
 
+\begin{frame}{Miasma II: John Snow and cholera}
+
+\begin{itemize}
+\item Three major waves of cholera in the early to mid 1800s in London
+\item John Snow believed cholera was spread through the Thames water supply which contradicted dominant theory about ``dirty air'' transmission
+\item Grand experiment: Lambeth moves its pipe between 1849 and 1854; Southwark and Vauxhall delay
+\item He can evaluate the effect in three ways (one of which is DiD)
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+
+	\begin{figure}
+	\caption{Two water utility companies in London 1854}
+	\includegraphics[scale=0.225]{./lecture_includes/lambeth.png}
+	\end{figure}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{1) Simple cross-sectional design}
+
+\begin{table}\centering
+		\caption{Lambeth and Southwark and Vauxhall, 1854}
+		\begin{center}
+		\begin{tabular}{ll}
+		\toprule
+		\multicolumn{1}{l}{\textbf{Company}}&
+		\multicolumn{1}{c}{\textbf{Cholera mortality}}\\
+		\midrule
+		Lambeth  & $Y=L + D$ \\
+		Southwark and Vauxhall  & $Y=SV$ \\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\bigskip
+
+\begin{eqnarray*}
+\widehat{\delta}_{cs} = D + (L-SV)
+\end{eqnarray*}What is $L$ and $SV$?  
+
+\end{frame}
+
+\begin{frame}{1) Simple cross-sectional design}
+
+\begin{table}\centering
+		\caption{Lambeth and Southwark and Vauxhall, 1854}
+		\begin{center}
+		\begin{tabular}{ll}
+		\toprule
+		\multicolumn{1}{l}{\textbf{Company}}&
+		\multicolumn{1}{c}{\textbf{Cholera mortality}}\\
+		\midrule
+		Lambeth  & $Y=L + D$ \\
+		Southwark and Vauxhall  & $Y=SV$ \\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\bigskip
+
+\begin{eqnarray*}
+\widehat{\delta}_{cs} = D + (L-SV)
+\end{eqnarray*}This is biased if $\L \neq SV$ (selection bias). Give an example when we're pretty sure they are equal.
+
+\end{frame}
+
+\begin{frame}{2) Interrupted time series design}
+
+	\begin{table}\centering
+		\caption{Lambeth, 1849 and 1854}
+		\begin{center}
+		\begin{tabular}{lll}
+		\toprule
+		\multicolumn{1}{l}{\textbf{Company}}&
+		\multicolumn{1}{c}{\textbf{Time}}&
+		\multicolumn{1}{c}{\textbf{Cholera mortality}}\\
+		\midrule
+		Lambeth & 1849 & $Y=L$ \\
+		& 1854 & $Y=L + (T + D)$ \\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{eqnarray*}
+\widehat{\delta}_{its} = D + T
+\end{eqnarray*}What is required for this estimator to be unbiased?
+
+
+\end{frame}
+
+\begin{frame}{3) Difference-in-differences}
+
+\begin{table}\centering
+		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
+		\begin{center}
+		\begin{tabular}{lll|lc}
+		\toprule
+		\multicolumn{1}{l}{\textbf{Companies}}&
+		\multicolumn{1}{c}{\textbf{Time}}&
+		\multicolumn{1}{c}{\textbf{Outcome}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}\\
+		\midrule
+		Lambeth & Before & $Y=L$ \\
+		& After & $Y=L + T_L + D$ & $T_L+D$\\
+		\midrule
+		& & & & $D$ \\
+		\midrule
+		Southwark and Vauxhall & Before & $Y=SV$ \\
+		& After & $Y=SV + T_{SV}$ & $T_{SV}$\\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{eqnarray*}
+\widehat{\delta}_{did} = D + (T_L - T_{SV})
+\end{eqnarray*}How do we calculate $T_{SV}$?  
+
+\end{frame}
+
+\begin{frame}{3) Difference-in-differences}
+
+\begin{table}\centering
+		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
+		\begin{center}
+		\begin{tabular}{lll|lc}
+		\toprule
+		\multicolumn{1}{l}{\textbf{Companies}}&
+		\multicolumn{1}{c}{\textbf{Time}}&
+		\multicolumn{1}{c}{\textbf{Outcome}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}\\
+		\midrule
+		Lambeth & Before & $Y=L$ \\
+		& After & $Y=L + T_L + D$ & $T_L+D$\\
+		\midrule
+		& & & & $D$ \\
+		\midrule
+		Southwark and Vauxhall & Before & $Y=SV$ \\
+		& After & $Y=SV + T_{SV}$ & $T_{SV}$\\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{eqnarray*}
+\widehat{\delta}_{did} = D + (T_L - T_{SV})
+\end{eqnarray*}How do we calculate $T_{L}$?  
+
+\end{frame}
+
+
+\begin{frame}{3) Difference-in-differences}
+
+\begin{table}\centering
+		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
+		\begin{center}
+		\begin{tabular}{lll|lc}
+		\toprule
+		\multicolumn{1}{l}{\textbf{Companies}}&
+		\multicolumn{1}{c}{\textbf{Time}}&
+		\multicolumn{1}{c}{\textbf{Outcome}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}\\
+		\midrule
+		Lambeth & Before & $Y=L$ \\
+		& After & $Y=L + T_L + D$ & $T_L+D$\\
+		\midrule
+		& & & & $D$ \\
+		\midrule
+		Southwark and Vauxhall & Before & $Y=SV$ \\
+		& After & $Y=SV + T_{SV}$ & $T_{SV}$\\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{eqnarray*}
+\widehat{\delta}_{did} = D + (T_L - T_{SV})
+\end{eqnarray*}This second term is called ``parallel trends''
+
+\end{frame}
+
+
+
+\subsection{Potential outcomes}
+
+
+
+\begin{frame}{Potential outcomes review}
+
+\begin{itemize}
+\item DiD really can't be understood without committing to useful causality notation
+\item Standard language is the potential outcomes model, sometimes called the Rubin-Neyman model
+\item Potential outcomes are thought experiments about worlds that never existed, but which \emph{could have}
+\item Important we are all on the same page, so I'm going to review this
+\end{itemize}
+
+\end{frame}
+\begin{frame}{Potential outcomes notation}
+	
+	\begin{itemize}
+	\item Let the treatment be a binary variable: $$D_{i,t} =\begin{cases} 1 \text{ if pipe inlet is upstream at time $t$} \\ 0 \text{ if pipe inlet is downstream at time $t$} \end{cases}$$where $i$ indexes an individual observation, such as a person
+
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Potential outcomes notation}
+	
+	\begin{itemize}
+
+	\item Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{: health if drank from upstream at time $t$} \\ 0 \text{: health if drank from downstream at time $t$} \end{cases}$$where $j$ indexes a counterfactual state of the world
+
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Potential vs observed}
+
+\begin{itemize}
+\item A potential outcome $Y^1$ and an observed outcome $Y$ are distinct
+\item Potential outcomes are \emph{hypothetical} possibilities describing states of the world but historical outcomes actually occurred
+\item Potential outcomes become observed outcomes when treatments are assigned (the ``switching equation'') $$Y_{it}=D_{it}Y_{it}^1 + (1-D_{it})Y_{it}^0$$
+\item I'll often drop the subscripts to reduce clutter, but note the key point here is one's own realized outcome at some point in time is based on one's own treatment assignment at that time 
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Treatment effect definitions}
+
+
+	\begin{block}{Individual treatment effect}
+	    The individual treatment effect,  $\delta_i$, equals $Y_i^1-Y_i^0$
+	\end{block}
+
+Individual causal effects cannot be calculated because one of the two needed potential outcomes will always be missing. Epistemologically ``unknowable'' in some important but difficult to define way.	
+	
+\end{frame}
+
+
+\begin{frame}{Conditional Average Treatment Effects}	
+	\begin{block}{Average Treatment Effect on the Treated (ATT)}
+	The average treatment effect on the treatment group is equal to the average treatment effect conditional on being a treatment group member:
+		\begin{eqnarray*}
+		E[\delta|D=1]&=&E[Y^1-Y^0|D=1] \nonumber \\
+		&=&E[Y^1|D=1]-\textcolor{red}{E[Y^0|D=1]}
+		\end{eqnarray*}
+	\end{block}
+	
+	\bigskip
+	
+ Again that ``epistemological'' uncertainty.  We can estimate the ATT, but never be sure due to \textcolor{red}{missing potential outcomes} for the treated group
+
+	
+\end{frame}
+
+
+
+\subsection{Identification}
+
+\begin{frame}{Identification without randomization}
+
+\begin{itemize}
+\item We may be unable to randomize -- not because we lack the imagination, but because we lack the permission
+\item If we cannot randomize, then how does DiD identify a treatment effect, and which treatment effect?
+\item DiD identifies the ATT, and since we are missing $Y^0$ for treated group, we will restrict counterfactual $Y^0$ in expectation
+\item One of the main advantages of DiD is the hope that we can identify the ATT \emph{without} randomization
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{DiD equation}
+
+I call this the DiD equation, but Goodman-Bacon calls it the ``2x2''; I'll use his $k$ and $U$ notation for treated and untreated groups
+
+\begin{eqnarray*}
+\widehat{\delta}^{2x2}_{kU} = \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
+\end{eqnarray*}$k$ index people with Lambeth, $U$ index people with Southwark and Vauxhall, $Post$ is after Lambeth moved pipe upstream, $Pre$ before Lambeth moved its pipe (baseline), and $E[y]$ mean cholera mortality. 
+
+\end{frame}
+
+\begin{frame}{DiD equation}
+
+``Pre'' and ``Post'' refer to when Lambeth, $k$, was treated which is why it is the same for both $k$ and $U$ groups
+
+\bigskip
+
+If we had more than one treatment group, then ``Pre'' and ``Post'' no longer are defined for all units
+
+\end{frame}
+
+
+\begin{frame}{Potential outcomes and the switching equation}
+
+\begin{eqnarray*}
+\widehat{\delta}^{2x2}_{kU} &=& \bigg ( \underbrace{E[Y^1_k|Post] - E[Y^0_k|Pre] \bigg ) - \bigg ( E[Y^0_U | Post ] - E[ Y^0_U | Pre]}_{\mathclap{\text{Switching equation}}} \bigg)  \\
+&&+ \underbrace{\textcolor{red}{E[Y_k^0 |Post] - E[Y^0_k | Post]}}_{\mathclap{\text{Adding zero}}} 
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{Parallel trends bias}
+
+\begin{eqnarray*}
+\widehat{\delta}^{2x2}_{kU} &=& \underbrace{E[Y^1_k | Post] - \textcolor{red}{E[Y^0_k | Post]}}_{\mathclap{\text{ATT}}} \\
+&& + \bigg [  \underbrace{\textcolor{red}{E[Y^0_k | Post]} - E[Y^0_k | Pre] \bigg ] - \bigg [ E[Y^0_U | Post] - E[Y_U^0 | Pre] }_{\mathclap{\text{Non-parallel trends bias in 2x2 case}}} \bigg ]
+\end{eqnarray*}
+
+
+\end{frame}
+
+\begin{frame}{Identification through parallel trends}
+	
+
+	\begin{block}{Parallel trends}
+	Assume two groups, treated and comparison group, then we define parallel trends as:	 $$\textcolor{red}{E(}\textcolor{red}{\Delta Y^0_k)} = E(\Delta Y^0_U)$$
+	\end{block}
+
+\textbf{In words}: ``The \textcolor{red}{evolution of cholera mortality for Lambeth \emph{had it kept its pipe downstream}} is the same as the evolution of cholera mortality for Southwark and Vauxhall''.  
+
+\bigskip
+
+It's in \textcolor{red}{red} so you know it's a nontrivial assumption.  But why?  Can't we just check?
+
+	
+
+	
+\end{frame}
+
+
+
+
+\begin{frame}{What is ``The Science''?}
+
+\begin{itemize}
+\item You've probably heard people say RCT is the gold standard for causal inference.  But why?
+\item Because randomization gives \emph{near certainty} that selection bias won't exist
+\item Don Rubin commented once, ``we know how the science works''
+\item DiD \textbf{does not} use ``the science'' though
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Identification with Independence (``the Science'')}
+
+
+\begin{block}{Independence assumption}
+Treatment is independent of potential outcomes  $$(Y^0,Y^1)\independent{D}$$
+\end{block}	
+
+RCTs use \emph{independence} to estimate causal effects; DiD does not
+
+\end{frame}
+
+\begin{frame}{Independence}
+
+Independence allows us to write down conditional expected potential outcome equations (i.e., impute) like $$E[Y^0|D=1]=E[Y^0|D=0]$$ 
+
+\bigskip
+
+In the simple comparison in means, $\widehat{\delta}_{cs} = D + (L-SV)$, independence implies $L=SV$ (no selection bias).
+
+\end{frame}
+
+
+\begin{frame}{Parallel trends is hard}
+
+\begin{itemize}
+\item \textbf{There is no guaranteed ``science'' in parallel trends}
+\item IMO, this makes DiD a ``hard'' design -- \emph{because} it doesn't rely on randomization (it relies on parallel trends), there are no ``slam dunks'' and evidence tends to be multi-layered
+\item Before we move into regression, let's go through a simple exercise to really pin down these core ideas with simple calculations
+\end{itemize}
+
+\bigskip 
+
+\url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
+
+\end{frame}
+
+\begin{frame}{No Anticipation}
+
+\begin{itemize}
+\item Additional assumption is ``no anticipation'' -- poorly named as it doesn't require literally no anticipation
+\item No anticipation means that the treatment effect happens only at the time that the treatment occurs or after, but not before
+	\begin{itemize}
+	\item \textbf{Example 1}: Tomorrow I win the lottery, but don't get paid yet. I decide to buy a new house today. That violates NA
+	\item \textbf{Example 2}: Next year, a state lets you drive without a driver license and you know it. But you can't drive without a driver license today.  This satisfies NA.
+	\end{itemize}
+\item We need NA because we are comparing to a baseline period and it needs to not be treated
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{SUTVA}
+
+\begin{itemize}
+\item Stable Unit Treatment Value Assumption (Imbens and Rubin 2015) focuses on what happens when in our analysis we are combining units (versus defining treatment effects)
+	\begin{enumerate}
+	\item \textbf{No Interference}: a treated unit cannot impact a control unit such that their potential outcomes change (unstable treatment value)
+	\item \textbf{No hidden variation in treatment}: When units are indexed to receive a treatment, their dose is the same as someone else with that same index
+	\item \textbf{Scale}: If scaling causes interference or changes inputs in production process, then \#1 or \#2 are violated
+	\end{enumerate}
+\item Shifts from defining treatment effects to estimating them, which means being careful about who is the control group, how you define treatments and what questions can and cannot be answered with this method
+\end{itemize}
+
+\end{frame}
 
 
 
