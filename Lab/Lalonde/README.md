@@ -14,7 +14,7 @@ b. Estimate the effect of the treatment, `ever_treated`, on real earnings, `re`,
 
 c. Check the pre-trends for 1974 relative to 1975 two ways: (1) manually calculate the DiD equation on 1974 relative to 1975 and (2) estimate the dynamic OLS specification with an interaction of `ever_treated` with `74`, an interaction of `ever_treated` with `78`.  Compare your answers for 2c to what you found in 2a and 2b. 
 
-2. Now, we turn to the non-experimental dataset `https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Labs/Lalonde/lalonde_nonexp_panel.dta`. 
+2. Now, we turn to the non-experimental dataset `https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalonde/lalonde_nonexp_panel.dta`. 
 
 a. Repeat 1a (simple difference-in-means for `78` only), 1b (DiD using manual calculations and OLS specification for `78` and `75` only) and 1c (event study calculations manually and dynamic OLS specification for `78`, `75` and `74`)
 
