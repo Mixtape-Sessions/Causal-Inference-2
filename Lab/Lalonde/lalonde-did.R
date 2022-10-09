@@ -13,8 +13,11 @@ df_exp <- haven::read_dta("https://raw.github.com/Mixtape-Sessions/Causal-Infere
 
 # ---- Difference-in-means - Averages
 with(df_exp, {
-  mean(re[year == 78 & ever_treated == 1]) -
-    mean(re[year == 78 & ever_treated == 0])
+  y11 = mean(re[year == 78 & ever_treated == 1])
+  y01 = mean(re[year == 78 & ever_treated == 0])
+
+  dim = y11 - y01
+  dim
 })
 
 
@@ -70,8 +73,11 @@ df_nonexp <- haven::read_dta("https://raw.github.com/Mixtape-Sessions/Causal-Inf
 
 # ---- Difference-in-means - Averages
 with(df_nonexp, {
-  mean(re[year == 78 & ever_treated == 1]) -
-    mean(re[year == 78 & ever_treated == 0])
+  y11 = mean(re[year == 78 & ever_treated == 1])
+  y01 = mean(re[year == 78 & ever_treated == 0])
+
+  dim = y11 - y01
+  dim
 })
 
 
@@ -95,7 +101,7 @@ with(df_nonexp, {
 # ---- Difference-in-Differences - OLS
 feols(
   re ~ i(treat) | id + year, 
-  data = df_exp |> filter(year %in% c(75, 78)),
+  data = df_nonexp |> filter(year %in% c(75, 78)),
   vcov = "hc1"
 )
 

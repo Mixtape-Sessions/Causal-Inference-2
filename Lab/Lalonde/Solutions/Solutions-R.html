@@ -602,53 +602,64 @@ body {
 <body>
 
 <h1 id="lalonde">Lalonde</h1>
-<p>This dataset is one of the most commonly used dataset in econometrics
-based on <a href="https://econpapers.repec.org/article/aeaaecrev/v_3a76_3ay_3a1986_3ai_3a4_3ap_3a604-20.htm">Lalonde
-(1986)</a> and <a href="https://www.uh.edu/~adkugler/Dehejia&amp;Wahba.pdf">Dehejia and
-Wahba (2002)</a>. Both the paper by Lalonde and Dehejia and Wahba both
-wanted to evaluate causal inference methods using non-experimental data.
-Cleverly, they start with an experimental dataset to estimate the ‘true’
-causal effect and then use non-experimental data to evaluate an
-econometric method.</p>
+<p>The National Supported Work (NSW) Demonstration dataset is one of the
+most commonly used dataset in econometrics based on <a href="https://business.baylor.edu/scott_cunningham/teaching/lalonde-1986.pdf">Lalonde
+(1986)</a> and <a href="https://business.baylor.edu/scott_cunningham/teaching/dehejia-and-wahba-2002.pdf">Dehejia
+and Wahba (2002)</a>. Both the original 1986 article by Lalonde as well
+as the follow-up articles by Dehejia and Wahba used the data to evaluate
+contemporary approaches to causal inference using non-experimental data.
+Cleverly, they start with an experimental dataset to establish ‘true’
+causal effect and then use a non-experimental dataset consisting of a
+control group of randomly sampled American households to see if
+covariate adjustment can recover causal effects under fairly dramatic
+selection problems.</p>
 <p>In <a href="github.com/Mixtape-Sessions/Causal-Inference-1">Causal
 Inference 1</a>, we have already shown that the nonexperimental dataset
-performs poorly at estimating the effects of a job training program on
-earnings, finding a substantial negative effect. That lab shows that
-matching-based methods are effective at recovering effects close to the
-experimental effect. This lab will study difference-in-differences
-estimators of the effects.</p>
+suffers from severe negative selection into the job trainings program.
+Simple comparisons often found negative effects of job training on
+earnings despite the fact the program had an average positive effect of
+around $1700 higher real earnings in 1978. That lab found that some
+selection on observable methods like propensity score weighting and
+nearest neighbor matching recovered causal effects close to that found
+using experimental data.</p>
+<p>In this lab, we will study the performance of several
+difference-in-differences estimators using both the experimental and
+non-experimental datasets.</p>
 <ol style="list-style-type: decimal">
 <li>We will first perform analysis on the experimental dataset
 <code>https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Labs/Lalonde/lalonde_exp_panel.dta</code></li>
 </ol>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
-<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
-
-✔ ggplot2 3.3.6     ✔ purrr   0.3.4
-✔ tibble  3.1.7     ✔ dplyr   1.0.9
-✔ tidyr   1.2.0     ✔ stringr 1.4.0
-✔ readr   2.1.2     ✔ forcats 0.5.1
-
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DRDID) <span class="co"># devtools::install_github(&quot;pedrohcgs/DRDID&quot;)</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Experimental data</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>df_exp <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalonde/lalonde_exp_panel.dta&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DRDID) <span class="co"># devtools::install_github(&quot;pedrohcgs/DRDID&quot;)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Experimental data</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df_exp <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalonde/lalonde_exp_panel.dta&quot;</span>)</span></code></pre></div>
 <ol style="list-style-type: decimal">
-<li>As a reminder, perform a simple difference-in-means on the
-experimental dataset to estimate the “treatment effect”. Use only the
-year <code>78</code> and compare average real earnings for the treated
-and the control groups. This is our baseline estimate of the treatment
-effect</li>
+<li>Under random assignment, the simple difference-in-means identifies
+the ATE, and since the original NSW was a randomized experiment, we can
+do this. Calculate the simple difference-in-means on the experimental
+dataset to estimate the “treatment effect” two separate ways: (1)
+manually calculate averages for both treatment
+(<code>ever_treated=1</code>) and control (<code>ever_treated=0</code>)
+and use them to estimate the returns to the program, and (2) estimate
+the effect with an OLS specification. In both cases, use only the year
+<code>78</code> and <code>re</code> variable for real earnings.</li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Difference-in-means</span></span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Difference-in-means - Averages</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df_exp, {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  y11 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">78</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  y01 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">78</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  dim <span class="ot">=</span> y11 <span class="sc">-</span> y01</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  dim</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>[1] 1794.342</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Difference-in-means - OLS</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">feols</span>(</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  re <span class="sc">~</span> <span class="fu">i</span>(treat),</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_exp[df_exp<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">78</span>, ], <span class="at">vcov =</span> <span class="st">&quot;hc1&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_exp <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">78</span>), <span class="at">vcov =</span> <span class="st">&quot;hc1&quot;</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>OLS estimation, Dep. Var.: re
 Observations: 445 
@@ -660,88 +671,229 @@ treat::1     1794.34    670.824  2.67483 0.0077534 **
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 RMSE: 6,564.7   Adj. R2: 0.015606</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Estimate the effect of treatment, <code>treat</code>, on
-real-earnings, <code>re</code> in a difference-in-differences estimator.
-This will be the “true” treatment effect estimate that we will try to
-recreate with the non-experimental CPS sample.</li>
+<li>Estimate the effect of the treatment, <code>ever_treated</code>, on
+real earnings, <code>re</code>, in a difference-in-differences estimator
+using years <code>78</code> for post period and <code>75</code> as the
+pre-period (ignoring for now year <code>74</code>). As with 1a, do this
+in the following two ways: (1) manually calculate the four means you
+need for the DiD equation and then estimate using the DiD equation, and
+(2) estimate the ATT using the OLS specification for the DiD equation
+with robust standard errors. Reminder to only use <code>78</code> and
+<code>75</code> (i.e., do not include <code>74</code> in OLS
+analysis).</li>
 </ol>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Difference-in-Differences Estimate</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">feols</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  re <span class="sc">~</span> <span class="fu">i</span>(treat) <span class="sc">|</span> id <span class="sc">+</span> year, </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_exp, <span class="at">vcov =</span> <span class="st">&quot;hc1&quot;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Difference-in-Differences - Averages</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df_exp, {</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  y00 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">75</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  y01 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">78</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  y10 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">75</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  y11 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">78</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  did <span class="ot">=</span> (y11 <span class="sc">-</span> y10) <span class="sc">-</span> (y01 <span class="sc">-</span> y00)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  did</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>[1] 1529.196</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Difference-in-Differences - OLS</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">feols</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  re <span class="sc">~</span> <span class="fu">i</span>(treat) <span class="sc">|</span> id <span class="sc">+</span> year, </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_exp <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">75</span>, <span class="dv">78</span>)), </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">vcov =</span> <span class="st">&quot;hc1&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>OLS estimation, Dep. Var.: re
+Observations: 890 
+Fixed-effects: id: 445,  year: 2
+Standard-errors: Heteroskedasticity-robust 
+         Estimate Std. Error t value Pr(&gt;|t|)    
+treat::1   1529.2    714.956 2.13887 0.032992 *  
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+RMSE: 3,524.5     Adj. R2: 0.189077
+                Within R2: 0.011302</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Check the pre-trends for 1974 relative to 1975 two ways: (1)
+manually calculate the DiD equation on 1974 relative to 1975 and (2)
+estimate the dynamic OLS specification with an interaction of
+<code>ever_treated</code> with <code>74</code>, an interaction of
+<code>ever_treated</code> with <code>78</code>. Compare your answers for
+2c to what you found in 2a and 2b.</li>
+</ol>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Event study and pre-trends using manually calculated averages</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df_exp, {</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  y00 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">75</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  y01 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">74</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  y10 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">75</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  y11 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">74</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  did <span class="ot">=</span> (y11 <span class="sc">-</span> y10) <span class="sc">-</span> (y01 <span class="sc">-</span> y00)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  did</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>[1] -276.5993</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Event study and pre-trends using OLS </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>df_exp<span class="sc">$</span>pre <span class="ot">=</span> df_exp<span class="sc">$</span>ever_treated <span class="sc">*</span> (df_exp<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">74</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>df_exp<span class="sc">$</span>post <span class="ot">=</span> df_exp<span class="sc">$</span>ever_treated <span class="sc">*</span> (df_exp<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">78</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">feols</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  re <span class="sc">~</span> <span class="fu">i</span>(post) <span class="sc">+</span> <span class="fu">i</span>(pre) <span class="sc">|</span> id <span class="sc">+</span> year, </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_exp, </span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">vcov =</span> <span class="st">&quot;hc1&quot;</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>OLS estimation, Dep. Var.: re
 Observations: 1,335 
 Fixed-effects: id: 445,  year: 3
 Standard-errors: Heteroskedasticity-robust 
-         Estimate Std. Error t value Pr(&gt;|t|)    
-treat::1   1667.5    658.711 2.53145 0.011531 *  
+        Estimate Std. Error   t value Pr(&gt;|t|)    
+post::1 1529.196    687.872  2.223082 0.026462 *  
+pre::1  -276.599    539.640 -0.512562 0.608385    
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-RMSE: 3,828.8     Adj. R2: 0.274779
-                Within R2: 0.010134</code></pre>
+RMSE: 3,828.4     Adj. R2: 0.274114
+                Within R2: 0.010343</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Now, we turn to the non-experimental dataset
 <code>https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Labs/Lalonde/lalonde_nonexp_panel.dta</code>.</li>
 </ol>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. CPS data</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df_nonexp <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalonde/lalonde_nonexp_panel.dta&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. CPS data</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df_nonexp <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalonde/lalonde_nonexp_panel.dta&quot;</span>)</span></code></pre></div>
 <ol style="list-style-type: decimal">
-<li>As a reminder, perform a simple difference-in-means on the combined
-dataset to estimate the “treatment effect”. Use only the year
-<code>78</code> and compare average real earnings for the treated and
-the control groups.</li>
+<li>Repeat 1a (simple difference-in-means for <code>78</code> only), 1b
+(DiD using manual calculations and OLS specification for <code>78</code>
+and <code>75</code> only) and 1c (event study calculations manually and
+dynamic OLS specification for <code>78</code>, <code>75</code> and
+<code>74</code>)</li>
 </ol>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Difference-in-means</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">feols</span>(</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  re <span class="sc">~</span> <span class="fu">i</span>(treat),</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_nonexp[df_nonexp<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">78</span>, ], <span class="at">vcov =</span> <span class="st">&quot;hc1&quot;</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Difference-in-means - Averages</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df_nonexp, {</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">78</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">78</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>[1] -8497.516</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Difference-in-means - OLS</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">feols</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  re <span class="sc">~</span> <span class="fu">i</span>(treat),</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_exp <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">78</span>), <span class="at">vcov =</span> <span class="st">&quot;hc1&quot;</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>OLS estimation, Dep. Var.: re
-Observations: 16,177 
+Observations: 445 
 Standard-errors: Heteroskedasticity-robust 
             Estimate Std. Error  t value  Pr(&gt;|t|)    
-(Intercept) 14846.66    76.2907 194.6063 &lt; 2.2e-16 ***
-treat::1    -8497.52   581.9158 -14.6027 &lt; 2.2e-16 ***
+(Intercept)  4554.80    340.204 13.38845 &lt; 2.2e-16 ***
+treat::1     1794.34    670.824  2.67483 0.0077534 ** 
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-RMSE: 9,628.4   Adj. R2: 0.008667</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Estimate a difference-in-differences estimator for the
-non-experimental group.</li>
-</ol>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Initial Difference-in-difference</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">feols</span>(</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  re <span class="sc">~</span> <span class="fu">i</span>(treat) <span class="sc">|</span> id <span class="sc">+</span> year, </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_nonexp, <span class="at">vcov =</span> <span class="st">&quot;hc1&quot;</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+RMSE: 6,564.7   Adj. R2: 0.015606</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Difference-in-Differences - Averages</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df_nonexp, {</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  y00 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">75</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  y01 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">78</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  y10 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">75</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  y11 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">78</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  did <span class="ot">=</span> (y11 <span class="sc">-</span> y10) <span class="sc">-</span> (y01 <span class="sc">-</span> y00)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  did</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>[1] 3621.232</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Difference-in-Differences - OLS</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">feols</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  re <span class="sc">~</span> <span class="fu">i</span>(treat) <span class="sc">|</span> id <span class="sc">+</span> year, </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_nonexp <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">75</span>, <span class="dv">78</span>)),</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">vcov =</span> <span class="st">&quot;hc1&quot;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>OLS estimation, Dep. Var.: re
+Observations: 32,354 
+Fixed-effects: id: 16,177,  year: 2
+Standard-errors: Heteroskedasticity-robust 
+         Estimate Std. Error t value   Pr(&gt;|t|)    
+treat::1  3621.23    609.868 5.93773 2.9491e-09 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+RMSE: 3,858.1     Adj. R2: 0.670904
+                Within R2: 0.002483</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Event study and pre-trends using manually calculated averages</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df_nonexp, {</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  y00 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">75</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  y01 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">74</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  y10 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">75</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  y11 <span class="ot">=</span> <span class="fu">mean</span>(re[year <span class="sc">==</span> <span class="dv">74</span> <span class="sc">&amp;</span> ever_treated <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  did <span class="ot">=</span> (y11 <span class="sc">-</span> y10) <span class="sc">-</span> (y01 <span class="sc">-</span> y00)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  did</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>[1] 197.5215</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Event study and pre-trends using OLS </span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>df_nonexp<span class="sc">$</span>pre <span class="ot">=</span> df_nonexp<span class="sc">$</span>ever_treated <span class="sc">*</span> (df_nonexp<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">74</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>df_nonexp<span class="sc">$</span>post <span class="ot">=</span> df_nonexp<span class="sc">$</span>ever_treated <span class="sc">*</span> (df_nonexp<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">78</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">feols</span>(</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  re <span class="sc">~</span> <span class="fu">i</span>(post) <span class="sc">+</span> <span class="fu">i</span>(pre) <span class="sc">|</span> id <span class="sc">+</span> year, </span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_nonexp, </span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">vcov =</span> <span class="st">&quot;hc1&quot;</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>OLS estimation, Dep. Var.: re
 Observations: 48,531 
 Fixed-effects: id: 16,177,  year: 3
 Standard-errors: Heteroskedasticity-robust 
-         Estimate Std. Error t value   Pr(&gt;|t|)    
-treat::1  3522.47    549.319 6.41244 1.4518e-10 ***
+        Estimate Std. Error  t value   Pr(&gt;|t|)    
+post::1 3621.232    577.183 6.273972 3.5640e-10 ***
+pre::1   197.522    431.728 0.457513 6.4731e-01    
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-RMSE: 4,073.4     Adj. R2: 0.726947
-                Within R2: 0.001875</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>Use the <code>DRDID</code> command to estimate a doubly-robust DID
-with covariates
-<code>age + agesq + agecube + educ + educsq + marr + nodegree + black + hisp</code></li>
+RMSE: 4,073.4     Adj. R2: 0.72694
+                Within R2: 0.00188</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Repeat 1b and 1c (OLS specifications) controlling linearly for
+<code>age, agesq, agecube, educ, educsq, marr, nodegree, black, hisp</code>
+with robust standard errors.</li>
 </ol>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Double-robust DID</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">drdid</span>(</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">yname =</span> <span class="st">&quot;re&quot;</span>, <span class="at">tname =</span> <span class="st">&quot;year&quot;</span>, <span class="at">idname =</span> <span class="st">&quot;id&quot;</span>, <span class="at">dname =</span> <span class="st">&quot;ever_treated&quot;</span>, </span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xformla =</span> <span class="sc">~</span> age <span class="sc">+</span> agesq <span class="sc">+</span> agecube <span class="sc">+</span> educ <span class="sc">+</span> educsq <span class="sc">+</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    marr <span class="sc">+</span> nodegree <span class="sc">+</span> black <span class="sc">+</span> hisp <span class="sc">+</span> re74 <span class="sc">+</span> u74,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_nonexp <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">75</span> <span class="sc">|</span> year <span class="sc">==</span> <span class="dv">78</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Difference-in-differeces - OLS with covariates </span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># age, agesq, agecube, educ, educsq, marr, nodegree, black, hisp</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">feols</span>(re <span class="sc">~</span> <span class="fu">i</span>(post) <span class="sc">+</span> age <span class="sc">+</span> agesq <span class="sc">+</span> agecube <span class="sc">+</span> educ <span class="sc">+</span> educsq <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  marr <span class="sc">+</span> nodegree <span class="sc">+</span> black <span class="sc">+</span> hisp <span class="sc">|</span> ever_treated <span class="sc">+</span> year, </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">data =</span> df_nonexp,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>   <span class="at">vcov =</span> <span class="st">&quot;hc1&quot;</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>OLS estimation, Dep. Var.: re
+Observations: 48,531 
+Fixed-effects: ever_treated: 2,  year: 3
+Standard-errors: Heteroskedasticity-robust 
+             Estimate Std. Error   t value   Pr(&gt;|t|)    
+post::1   3522.471290 664.595928   5.30017 1.1620e-07 ***
+age       3064.963427 122.595591  25.00060  &lt; 2.2e-16 ***
+agesq      -66.596546   3.679051 -18.10156  &lt; 2.2e-16 ***
+agecube      0.463888   0.034921  13.28381  &lt; 2.2e-16 ***
+educ       914.147339  66.589112  13.72818  &lt; 2.2e-16 ***
+educsq     -33.970475   2.800199 -12.13145  &lt; 2.2e-16 ***
+marr      3329.034931 105.472209  31.56315  &lt; 2.2e-16 ***
+nodegree -1001.024881 122.001842  -8.20500 2.3620e-16 ***
+black    -2159.036745 143.815162 -15.01258  &lt; 2.2e-16 ***
+hisp      -962.553918 146.958309  -6.54984 5.8171e-11 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+RMSE: 8,374.6     Adj. R2: 0.230409
+                Within R2: 0.216879</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Use the <code>DRDID</code> command to estimate a doubly-robust
+difference-in-differences with covariates
+<code>age + agesq + agecube + educ + educsq + marr + nodegree + black + hisp</code>,
+<code>id</code> panel unit identifier, <code>year</code> as the panel
+time identifier, and reporting the outcome regression analysis <a href="http://jenni.uchicago.edu/papers/Heckman_Ichimura-Todd_REStud_v64-4_1997.pdf">(Heckman,
+Ichimura and Todd 1997)</a>, inverse probability weight estimator <a href="https://academic.oup.com/restud/article-abstract/72/1/1/1581053?redirectedFrom=fulltext">(Abadie
+2005)</a>, doubly robust <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304407620301901">(Sant’anna
+and Zhao 2020)</a>. Compare these results with 1a, 1b, 2a and 2b.</li>
+</ol>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Double-robust DID</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>DRDID<span class="sc">::</span><span class="fu">drdid</span>(</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">yname =</span> <span class="st">&quot;re&quot;</span>, <span class="at">tname =</span> <span class="st">&quot;year&quot;</span>, <span class="at">idname =</span> <span class="st">&quot;id&quot;</span>, <span class="at">dname =</span> <span class="st">&quot;ever_treated&quot;</span>, </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xformla =</span> <span class="sc">~</span> age <span class="sc">+</span> agesq <span class="sc">+</span> agecube <span class="sc">+</span> educ <span class="sc">+</span> educsq <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    marr <span class="sc">+</span> nodegree <span class="sc">+</span> black <span class="sc">+</span> hisp <span class="sc">+</span> re74 <span class="sc">+</span> u74,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_nonexp <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">75</span> <span class="sc">|</span> year <span class="sc">==</span> <span class="dv">78</span>)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code> Call:
-drdid(yname = &quot;re&quot;, tname = &quot;year&quot;, idname = &quot;id&quot;, dname = &quot;ever_treated&quot;, 
+DRDID::drdid(yname = &quot;re&quot;, tname = &quot;year&quot;, idname = &quot;id&quot;, dname = &quot;ever_treated&quot;, 
     xformla = ~age + agesq + agecube + educ + educsq + marr + 
-        nodegree + black + hisp + re74 + u74, data = df_nonexp %&gt;% 
-        filter(year == 75 | year == 78))
+        nodegree + black + hisp + re74 + u74, data = filter(df_nonexp, 
+        year == 75 | year == 78))
 ------------------------------------------------------------------
  Further improved locally efficient DR DID estimator for the ATT:
  
