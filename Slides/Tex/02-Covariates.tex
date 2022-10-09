@@ -374,11 +374,20 @@ Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in 
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{DDD Example by Gruber}
+	
+	\begin{figure}
+	\includegraphics{./lecture_includes/gruber_ddd_3.pdf}
+	\end{figure}
+	
+\end{frame}
+
+
 
 \begin{frame}[shrink=20]
 
 \begin{table}\centering
-		\caption{Difference-in-Difference-in-differences}
+		\caption{Difference-in-Difference-in-Differences numerical example}
 		\tiny
 		\begin{center}
 		\begin{tabular}{lll|l|lll}
@@ -392,44 +401,37 @@ Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in 
 		\multicolumn{1}{c}{$D_3$}\\
 		\hline
 		&&After	&$NJ+T+NJ_t+l_t+D$					\\
-	&Low wage employment			&&&$T+NJ_t+l_t+D$			\\
+	&Married women, 20-40yo			&&&$T+NJ_t+l_t+D$			\\
 		&&Before	&$NJ$					\\
-NJ					&&&&&$D+l_t-s_t$			\\
+Experimental states					&&&&&$D+l_t-s_t$			\\
 		&&After	&$NJ+T+NJ_t+s_t$					\\
-	&High wage employment		&&	&$T+NJ_t+s_t$				\\
+	&Older 40, Single men 20-40yo		&&	&$T+NJ_t+s_t$				\\
 		&&Before	&$NJ$					\\
 								\\
 &&&&&&$D$
 \\
 		&&After	&$PA+T+PA_t+l_t$				\\
-	&Low wage employment			&&&$T+PA_t+l_t$ \\				
+	&Married women, 20-40yo			&&&$T+PA_t+l_t$ \\				
 		&&Before	&$PA$					\\
-PA					&&&&&$l_t-s_t$		\\
+Non-experimental states					&&&&&$l_t-s_t$		\\
 		&&After	&$PA+T+PA_t+s_t$					\\
-	&High wage employment		&&&	$T+PA_t+s_t$				\\
+	&Older 40, Single men 20-40yo		&&&	$T+PA_t+s_t$				\\
 		&&Before	&$PA$					\\
 		\hline \hline
 		\end{tabular}
 		\end{center}
 	\end{table}
 	
-\textbf{What is our identifying assumption?}
+\textbf{What is our identifying assumption?} Answer: just another parallel trend assumption but with a slightly different interpretation!
 
 \bigskip
 
-$l_t-s_t$ is the same for PA and NJ in the post period. That's the gap between high and low wage employment in PA (observed) is the same as NJ (counterfactual).
+$l_t-s_t$ is the same for the experimental and non-experimental states. This is ``change in inequality between two groups hourly wages'' from pre to post.  It's a new parallel trend assumption.
 
 
 
 \end{frame}
 
-\begin{frame}{DDD Example by Gruber}
-	
-	\begin{figure}
-	\includegraphics{./lecture_includes/gruber_ddd_3.pdf}
-	\end{figure}
-	
-\end{frame}
 
 \begin{frame}{DDD in Regression}
 	
