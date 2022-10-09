@@ -39,46 +39,44 @@
 % ---- Content ----
 
 \section{Differential timing}
-\subsection{Twoway fixed effects vs Pooled OLS}
+\subsection{Twoway fixed effects }
 
 
-\begin{frame}
-\begin{center}
-\textbf{Twoway fixed effects}
-\end{center}
+\begin{frame}{Twoway fixed effects}
 
 \begin{itemize}
 \item When working with panel data, the so-called ``twoway fixed effects'' (TWFE) estimator is the workhorse estimator
-\item It's easy to run, a version of OLS, and many people are just interested in mean effects anyway
-\item It's the most common model for estimating treatment effects in a difference-in-differences, and so for all these reasons, we need to spend some time understanding what it is
+\item It was at some point adopted for difference-in-differences designs when treatments are adopted at different points in time 
+\item It's easy to implement, handles time-varying treatments, and has a relatively straightforward interpretation under constant treatment effects
+\item Turns out it's interpretation is more complicated with heterogenous treatment effects
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Panel Data}
-	\end{center}
-	
+\begin{frame}{Types of repeating data}
+
 	\begin{itemize}
-	\item Panel data: we observe the same units (individuals, firms, countries, schools, etc.) over several time periods
-	\item Often our outcome variable depends on unobserved factors which are also correlated with our explanatory variable of interest
-	\item If these omitted variables are constant over time, we can use panel data estimators to consistently estimate the effect of our explanatory variable
+	\item Panel datasets follow the same units (individuals, firms, countries, schools, etc.) over several time periods
+	\item Repeated cross-sections will sample a population for a given area, but not be the same people or units in that area
+	\item Difference-in-differences accommodates either, but panel estimators are about the first 
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[plain]
-\begin{center}
-\textbf{What I will cover}
-\end{center}
 
-\begin{itemize}
-		\item I will cover pooled OLS and twoway fixed effects
-		\item But I won't be covering random effects, Arrelano and Bond and any number of important panel estimators because the purpose here is to present the modal regression model used in difference-in-differences
-\end{itemize}
 
+\begin{frame}{Panel estimators}
+
+	\begin{itemize}
+	\item Panel estimators estimate causal effects in situations where there are unobserved factors associated with the treatment variable creating endogeneity problems
+	\item Less about identification under parallel trends and more about modeling unobservables as unchanging over time (``time invariant'')
+	\item Fixed effects estimation eliminate the unobserved confounder through a demeaning process while retaining the identification of the treatment parameter under constant treatment efects
+	\item Heterogenous treatment effects are part of the problem after that
+	\end{itemize}
 \end{frame}
+
+
+
 
 \begin{frame}[plain]
 
@@ -116,15 +114,12 @@
 	\end{tikzpicture}
 	\end{center}
 
-Sorry - drawing the DAG for a simple panel model is somewhat messy!
+Directed acyclic graph showing when to use TWFE
 
 \end{frame}
 
 
-\begin{frame}[plain]
-\begin{center}
-\textbf{When to use this}
-\end{center}
+\begin{frame}{When to use TWFE}
 
 \begin{itemize}
 \item Traditionally, this was used for estimating constant treatment effects with unobserved time-invariant heterogeneity -- recall the $c_i$ was constant across all time periods
@@ -134,11 +129,8 @@ Sorry - drawing the DAG for a simple panel model is somewhat messy!
 
 \end{frame}
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Problems that fixed effects cannot solve}
-	\end{center}
-	
+\begin{frame}{When not to use it}
+
 	\begin{itemize}
 		\item Reverse causality: Becker predicted police reduce crime, but when you regress crime onto police, it's usually positive 
 			\begin{itemize}
@@ -157,10 +149,8 @@ Sorry - drawing the DAG for a simple panel model is somewhat messy!
 \end{frame}
 
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Formal panel notation}
-	\end{center}
+\begin{frame}{Notation}
+
 	
 	\begin{itemize}
 	\item Let $y$ and $x\equiv(x_1, x_2, \dots, x_k)$ be observable random variables and $c$ be an unobservable random variable
@@ -168,10 +158,7 @@ Sorry - drawing the DAG for a simple panel model is somewhat messy!
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[plain]
-\begin{center}
-\textbf{Formal panel notation cont.}
-\end{center}
+\begin{frame}{Notation}
 
 \begin{itemize}
 	\item We observe a sample of $i=1,2,\dots,N$ cross-sectional units for $t=1,2,\dots,T$ time periods (a balanced panel)
@@ -188,10 +175,7 @@ Sorry - drawing the DAG for a simple panel model is somewhat messy!
 
 \end{frame}
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Formal panel notation}
-	\end{center}
+\begin{frame}{Notation}
 Single unit:
 
 \[ y_i = \left( \begin{array}{c}
@@ -232,10 +216,8 @@ X_N
 
 \end{frame}
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Unobserved heterogeneity}
-	\end{center}
+\begin{frame}{Unobserved heterogeneity}
+
 	
 	\begin{itemize}
 	\item For a randomly drawn cross-sectional unit $i$, the model is given by $$y_{it} = x_{it}\beta + c_i + \varepsilon_{it}, \text{   }t=1,2,\dots,T$$
@@ -250,10 +232,7 @@ X_N
 \end{frame}
 
 
-\begin{frame}
-\begin{center}
-\textbf{Pooled OLS}
-\end{center}
+\begin{frame}{Pooled OLS}
 
 \begin{itemize}
 	\item When we ignore the panel structure and regress $y_{it}$ on $x_{it}$ we get$$ y_{it}=x_{it}\beta + v_{it}; \text{    }t=1,2,\dots,T$$with composite error $v_{it} \equiv c_i + \varepsilon_{it}$
@@ -264,10 +243,7 @@ X_N
 
 \end{frame}
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Pooled OLS}
-	\end{center}
+\begin{frame}{Pooled OLS}
 	
 	\begin{itemize}
 	\item Main assumption to obtain consistent estimates for $\beta$ is:
@@ -286,10 +262,7 @@ X_N
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Pooled OLS}
-	\end{center}
+\begin{frame}{Pooled OLS}
 	
 	\begin{itemize}
 	\item Always ask: is there a time-constant unobserved variable ($c_i$) that is correlated with the regressors?  
@@ -298,10 +271,8 @@ X_N
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Fixed effect regression}
-	\end{center}
+\begin{frame}{Fixed effects}
+
 	
 	\begin{itemize}
 	\item Our unobserved effects model is:$$y_{it} = x_{it}\beta + c_i + \varepsilon_{it}; t=1,2,\dots,T$$
@@ -310,10 +281,7 @@ X_N
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Derivation: fixed effects regression}
-	\end{center}
+\begin{frame}{Fixed effects}
 	
 $$(\widehat{\beta}, \widehat{c}_1, \dots, \widehat{c}_N) = \underset{b,m_1,\dots,m_N}{\arg\!\min} \sum_{i=1}^N\sum_{t=1}^T (y_{it} - x_{it}b - m_i)^2$$
 
@@ -321,20 +289,14 @@ The first-order conditions (FOC) for this minimization problem are: $$\sum_{i=1}
 	
 \end{frame}
 
-\begin{frame}[shrink=20,plain]
-	\begin{center}
-	\textbf{Derivation: fixed effects regression}
-	\end{center}
+\begin{frame}{Fixed effects}
 	
 Therefore, for $i=1, \dots, N$,$$\widehat{c}_i = \frac{1}{T} \sum_{t=1}^T(y_{it}-x_{it}\widehat{\beta})=\bar{y}_i-\bar{x}_i\widehat{\beta},$$where$$\bar{x}_i \equiv \frac{1}{T}\sum_{t=1}^Tx_{it}; \bar{y}_i \equiv \frac{1}{T} \sum_{t=1}^T y_{it}$$
 Plug this result into the first FOC to obtain:$$\widehat{\beta} = \bigg( \sum_{i=1}^N \sum_{t=1}^T (x_{it} - \bar{x}_i)'(x_{it} - \bar{x}_i) \bigg)^{-1} \bigg( \sum_{i=1}^N \sum_{t=1}^T (x_{it} - \bar{x}_i)'(y_{it} - \bar{y})\bigg)$$ $$\widehat{\beta} = \bigg(\sum_{i=1}^N \sum_{t=1}^T \ddot{x}_{it}'\ddot{x}_{it} \bigg)^{-1} \bigg( \sum_{i=1}^N \sum_{t=1}^T \ddot{x}_{it}' \ddot{y}_{it} \bigg)$$
 with time-demeaned variables $\ddot{x}_{it} \equiv x_{it}-\bar{x},\ddot{y}_{it} \equiv y_{it} - \bar{y}_i$
 \end{frame}
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Fixed effects regression}
-	\end{center}
+\begin{frame}{Fixed effects}
 	
 Running a regression with the time-demeaned variables $\ddot{y}_{it}\equiv y_{it} - \bar{y}_i$ and $\ddot{x}_{it} \equiv x_{it} - \bar{x}$ is numerically equivalent to a regression of $y_{it}$ on $x_{it}$ and unit specific dummy variables.
 
@@ -352,10 +314,7 @@ y_{it} &=& x_{it}\beta + c_i + \varepsilon_{it} \\
 
 \end{frame}
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Fixed effects regression: main results}
-	\end{center}
+\begin{frame}{Fixed effects}
 	
 	\begin{itemize}
 	\item Identification assumptions:	
@@ -383,10 +342,7 @@ y_{it} &=& x_{it}\beta + c_i + \varepsilon_{it} \\
 \end{frame}
 
 
-\begin{frame}[plain]
-\begin{center}
-\textbf{FE main results}
-\end{center}
+\begin{frame}{Fixed effects}
 
 \begin{itemize}
 	\item Properties (under assumptions 1-2):
@@ -398,10 +354,7 @@ y_{it} &=& x_{it}\beta + c_i + \varepsilon_{it} \\
 
 \end{frame}
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Fixed effects regression: main issues}
-	\end{center}
+\begin{frame}{Fixed effects}
 	
 	\begin{itemize}
 	\item Inference:
@@ -417,10 +370,7 @@ y_{it} &=& x_{it}\beta + c_i + \varepsilon_{it} \\
 \end{frame}
 
 
-\begin{frame}
-\begin{center}
-\textbf{Application: SASP}
-\end{center}
+\begin{frame}{Application: Survey for Adult Service Providers}
 
 \begin{itemize}
 \item From 2008-2009, I fielded a survey of Internet sex workers (685 respondents, 5\% response rate)
@@ -430,15 +380,12 @@ y_{it} &=& x_{it}\beta + c_i + \varepsilon_{it} \\
 
 \end{frame}
 
-\begin{frame}[plain]
-\begin{center}
-\textbf{Risk premium equation}
-\end{center}
+\begin{frame}{Returns to risk}
 
 \begin{eqnarray*}
-Y_{is} &=& \beta_i X_i + \delta{D_{is}} + \gamma_{is} Z_{is} + u_i + \varepsilon_{is} \\
-\ddot{Y}_{is} &=& \gamma_{is} \ddot{Z}_{is} + \ddot \eta_{is}
-\end{eqnarray*}where $Y$ is log price, $D$ is unprotected sex with a client in a session,  $X$ are client and session characteristics, $Z$ is unobserved heterogeneity, and $u_i$ is both unobserved and correlated with $Z_{is}$.  
+Y_{is} &=& \beta X_i + \delta{D_{is}} + \gamma_{is} Z_{is} + c_i + \varepsilon_{is} \\
+\ddot{Y}_{is} &=&  \delta \ddot{D}_{is} +  \gamma_{is} \ddot{Z}_{is} + \ddot \eta_{is}
+\end{eqnarray*}where $Y$ is log hourly price (i.e., gross price divided by session length in minutes times 60), $D$ is unprotected sex with a client in session $s$,  $X$ are time invariant observable worker $i$ characteristics, $Z$ are time varying session $s$ characteristics, and $c_i$ is unobserved worker heterogeneity unchanging over time that is correlated with $D_{is}$.
 
 \end{frame}
 
@@ -546,10 +493,8 @@ Mean of dependent variable								&        5.57   &        5.57   &        0.00\
 
 
 
-\begin{frame}[plain]
-	\begin{center}
-	\textbf{Unit specific time trends often eliminate ``results''}
-	\end{center}
+\begin{frame}{Including linear trends interacting with panel identifier}
+
 	
 \begin{table}[htbp]\centering
 \tiny
@@ -597,10 +542,7 @@ Gave Client a Massage&       0.022   \\
  	
 \end{frame}
 
-\begin{frame}[plain]
-\begin{center}
-\textbf{Concluding remarks}
-\end{center}
+\begin{frame}{Concluding remarks}
 
 \begin{itemize}
 \item This was not a review of panel econometrics; for that see Wooldridge and other excellent options
@@ -610,6 +552,117 @@ Gave Client a Massage&       0.022   \\
 \end{itemize}
 
 \end{frame}
+
+\subsection{Castle doctrine reform}
+
+
+\begin{frame}[plain]
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/cheng_and_hoekstra_jhr.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Case study: Castle doctrine reforms}
+
+\begin{itemize}
+
+\item Cheng and Hoekstra (2013) is a good, clean example of a differential timing for us to practice on
+\item In 2005, Florida passed a law called Stand Your Ground that expanded self-defense protections beyond the house
+\item More ``castle doctrine'' reforms followed from 2006 to 2009
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Description}
+
+Details of castle doctrine reforms
+		\begin{itemize}
+		\item ``Duty to retreat'' is removed versus castle doctrine reforms; expanded where you can use lethal force
+		\item Presumption of reasonable fear is added
+		\item Civil liability for those acting under the law is removed
+		\end{itemize}
+\end{frame}
+
+\begin{frame}{Ambiguous predictions}
+	
+Castle reforms $\rightarrow$ homicides: Increase by removing homicide penalties and increasing opportunities
+	\begin{itemize}
+	\item Castle doctrine expansions lowered the (expected) cost of killing someone in self-defense
+	\item Lowering the price of lethal self-defense should increase lethal homicides
+	\end{itemize}
+\bigskip
+Castle reforms $\rightarrow$ homicides: decrease through deterrence
+
+\end{frame}
+
+
+\begin{frame}{Cheng and Hoekstra's estimation model}
+	
+	\begin{itemize}
+	\item TWFE model$$Y_{it} = \beta_1 D_i + \beta_2 T_t + \beta_3 (CDL_{it}) + \alpha_1X_{it} + c_i + u_t + \varepsilon_{it}$$
+	\item $CDL$ is a fraction between 0 and 1 depending on the percent of the year the state has a castle doctrine law 
+	\item Preferred specifications includes ``region-by-year fixed effects'' (see next slide)
+	\item Estimation with TWFE and Poisson with and without population weights
+	\item Models will include covariates (e.g., police, imprisonment, race shares, state spending on public assistance)
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Publicly available crime data}
+	
+Main data: FBI Uniform Crime Reports Part 1 Offenses (2000-2010)
+		\begin{itemize}
+		\item Main outcomes: log homicides
+		\item Falsification outcomes: motor vehicle theft and larceny
+		\item Deterrence outcomes: burglary, robbery, assault
+		\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Region-by-year fixed effects}
+	
+	\begin{itemize}
+	\item \textbf{Parallel trends assumption}: imposed structurally with region-by-year dummies
+	\item \textbf{Argument}: unobserved changes in crime are running ``parallel'' to the treatment states within region over time
+	\item \textbf{SUTVA} and \textbf{No Anticipation}: No spillovers, no hidden variation in treatment, no behavioral change today in response to tomorrow's law
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Results -- Deterrence}
+	
+	\begin{figure}
+	\includegraphics[scale=0.4]{./lecture_includes/cheng4.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+
+\begin{frame}{Results -- Homicides}
+	
+	\begin{figure}
+	\includegraphics[scale=0.4]{./lecture_includes/cheng12.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Interpretation}
+	
+	\begin{itemize}
+	\item Series of robustness checks (falsifications on larceny and motor vehicle theft; deterrence; many different specifications)
+	\item Castle doctrine reforms are associated with an 8\% net increase in homicide rates per year across the 21 adopting states
+	\item Interpretation is these would not have occurred without castle doctrine reforms
+	\item But is this robust to alternative models? Today we will check
+	\end{itemize}
+\end{frame}
+
+
 
 \subsection{Diff-in-diff wars}
 
@@ -1041,115 +1094,6 @@ While large weight on the ``late to early 2x2'' is \emph{suggestive} of an issue
 \end{frame}
 
 
-
-\subsection{Castle doctrine reform}
-
-
-\begin{frame}[plain]
-	\begin{figure}
-	\includegraphics[scale=0.5]{./lecture_includes/cheng_and_hoekstra_jhr.png}
-	\end{figure}
-
-\end{frame}
-
-\begin{frame}{Case study: Castle doctrine reforms}
-
-\begin{itemize}
-
-\item Cheng and Hoekstra (2013) is a good, clean example of a differential timing for us to practice on
-\item In 2005, Florida passed a law called Stand Your Ground that expanded self-defense protections beyond the house
-\item More ``castle doctrine'' reforms followed from 2006 to 2009
-
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Description}
-
-Details of castle doctrine reforms
-		\begin{itemize}
-		\item ``Duty to retreat'' is removed versus castle doctrine reforms; expanded where you can use lethal force
-		\item Presumption of reasonable fear is added
-		\item Civil liability for those acting under the law is removed
-		\end{itemize}
-\end{frame}
-
-\begin{frame}{Ambiguous predictions}
-	
-Castle reforms $\rightarrow$ homicides: Increase by removing homicide penalties and increasing opportunities
-	\begin{itemize}
-	\item Castle doctrine expansions lowered the (expected) cost of killing someone in self-defense
-	\item Lowering the price of lethal self-defense should increase lethal homicides
-	\end{itemize}
-\bigskip
-Castle reforms $\rightarrow$ homicides: decrease through deterrence
-
-\end{frame}
-
-
-\begin{frame}{Cheng and Hoekstra's estimation model}
-	
-	\begin{itemize}
-	\item TWFE model$$Y_{it} = \beta_1 D_i + \beta_2 T_t + \beta_3 (CDL_{it}) + \alpha_1X_{it} + c_i + u_t + \varepsilon_{it}$$
-	\item $CDL$ is a fraction between 0 and 1 depending on the percent of the year the state has a castle doctrine law 
-	\item Preferred specifications includes ``region-by-year fixed effects'' (see next slide)
-	\item Estimation with TWFE and Poisson with and without population weights
-	\item Models will include covariates (e.g., police, imprisonment, race shares, state spending on public assistance)
-	\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Publicly available crime data}
-	
-Main data: FBI Uniform Crime Reports Part 1 Offenses (2000-2010)
-		\begin{itemize}
-		\item Main outcomes: log homicides
-		\item Falsification outcomes: motor vehicle theft and larceny
-		\item Deterrence outcomes: burglary, robbery, assault
-		\end{itemize}
-\end{frame}
-
-
-
-\begin{frame}{Region-by-year fixed effects}
-	
-	\begin{itemize}
-	\item \textbf{Parallel trends assumption}: imposed structurally with region-by-year dummies
-	\item \textbf{Argument}: unobserved changes in crime are running ``parallel'' to the treatment states within region over time
-	\item \textbf{SUTVA} and \textbf{No Anticipation}: No spillovers, no hidden variation in treatment, no behavioral change today in response to tomorrow's law
-	\end{itemize}
-\end{frame}
-
-
-
-\begin{frame}{Results -- Deterrence}
-	
-	\begin{figure}
-	\includegraphics[scale=0.4]{./lecture_includes/cheng4.pdf}
-	\end{figure}
-\end{frame}
-
-
-
-
-\begin{frame}{Results -- Homicides}
-	
-	\begin{figure}
-	\includegraphics[scale=0.4]{./lecture_includes/cheng12.pdf}
-	\end{figure}
-\end{frame}
-
-
-
-\begin{frame}{Interpretation}
-	
-	\begin{itemize}
-	\item Series of robustness checks (falsifications on larceny and motor vehicle theft; deterrence; many different specifications)
-	\item Castle doctrine reforms are associated with an 8\% net increase in homicide rates per year across the 21 adopting states
-	\item Interpretation is these would not have occurred without castle doctrine reforms
-	\item But is this robust to alternative models? Today we will check
-	\end{itemize}
-\end{frame}
 
 
 
