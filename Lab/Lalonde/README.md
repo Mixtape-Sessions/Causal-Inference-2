@@ -6,7 +6,7 @@ In [Causal Inference 1](github.com/Mixtape-Sessions/Causal-Inference-1), we have
 
 In this lab, we will study the performance of several difference-in-differences estimators using both the experimental and non-experimental datasets. 
 
-1. We will first perform analysis on the experimental dataset `https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Labs/Lalonde/lalonde_exp_panel.dta`
+1. We will first perform analysis on the experimental dataset `https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalonde/lalonde_exp_panel.dta`
 
 a. Under random assignment, the simnple difference-in-means identifies the ATE, and since the original NSW was a randomized experiment, we can do this.  Calculate the simple difference-in-means on the experimental dataset to estimate the "treatment effect" two separate ways: (1) manually calculate averages for both treatment (`ever_treated=1`) and control (`ever_treated=0`) and use them to estimate the returns to the program, and (2) estimate the effect with an OLS specification. In both cases, use only the year `78` and `re` variable for real earnings. 
 
