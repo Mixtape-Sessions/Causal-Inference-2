@@ -14,7 +14,7 @@ c. Check the pre-trends for 1974 relative to 1975 two ways: (1) manually calcula
 
 2. Now, we turn to the non-experimental dataset `https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Labs/Lalonde/lalonde_nonexp_panel.dta`. 
 
-a. Repeat 1a (simple difference-in-means for `78` only), 1b (DiD using manual calculations and OLS specification for `78` and `75` only) and `c (event study calculations manually and dynamic OLS specification)
+a. Repeat 1a (simple difference-in-means for `78` only), 1b (DiD using manual calculations and OLS specification for `78` and `75` only) and 1c (event study calculations manually and dynamic OLS specification)
 
 b. Repeat 1b and 1c (OLS specifications) controlling `age, agesq, agecube, educ, educsq, marr, nodegree, black, hisp` with robust standard errors.
 
