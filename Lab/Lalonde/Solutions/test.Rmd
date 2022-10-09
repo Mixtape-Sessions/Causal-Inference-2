@@ -1,0 +1,24 @@
+---
+output: github_document
+---
+
+```{r setup, include = F}
+# devtools::install_github("Hemken/Statamarkdown")
+library(Statamarkdown)
+stataexe <- "/Applications/Stata/StataSE.app/Contents/MacOS/stata-se"
+knitr::opts_chunk$set(engine.path=list(stata=stataexe))
+knitr::opts_knit$set(root.dir = getwd())
+```
+
+
+A first code block:
+```{stata first-Stata, collectcode = TRUE} 
+sysuse auto
+generate gpm = 1/mpg
+summarize price gpm
+```
+
+A second, later code block:
+```{stata second-Stata} 
+regress price gpm
+```
