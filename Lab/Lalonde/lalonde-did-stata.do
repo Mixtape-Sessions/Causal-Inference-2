@@ -1,6 +1,6 @@
 ********************************************************************************
 * name: lalonde-did-stata.do
-* description: simple estimation of ATT using Lalonde 1986 data with DW 2003 sample
+* description: simple estimation of ATT using Lalonde 1986 data with DW 2002 sample
 ********************************************************************************
 * ssc install drdid, replace
 clear
@@ -123,5 +123,5 @@ use "https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalon
 
 
   * Doubly-robust DID
-  drdid re age agesq agecube educ educsq marr nodegree black hisp re74 u74 if year == 75 | year == 78, time(year) ivar(id) tr(ever_treated)
+  drdid re age agesq agecube educ educsq marr nodegree black hisp re74 u74 if year == 75 | year == 78, time(year) ivar(id) tr(ever_treated) all
   

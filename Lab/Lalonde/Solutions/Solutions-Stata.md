@@ -5,19 +5,18 @@ This dataset is one of the most commonly used dataset in econometrics
 based on [Lalonde
 (1986)](https://econpapers.repec.org/article/aeaaecrev/v_3a76_3ay_3a1986_3ai_3a4_3ap_3a604-20.htm)
 and [Dehejia and Wahba
-(2002)](https://www.uh.edu/~adkugler/Dehejia&Wahba.pdf). Both the paper
-by Lalonde and Dehejia and Wahba both wanted to evaluate causal
+(2002)](https://www.uh.edu/~adkugler/Dehejia&Wahba.pdf). Both the original 1986 paper
+by Lalonde and Dehejia and Wahba's follow-up wanted to evaluate the performance of then contemporary causal
 inference methods using non-experimental data. Cleverly, they start with
 an experimental dataset to estimate the ‘true’ causal effect and then
 use non-experimental data to evaluate an econometric method.
 
 In [Causal Inference 1](github.com/Mixtape-Sessions/Causal-Inference-1),
-we have already shown that the nonexperimental dataset performs poorly
+we showed that the nonexperimental dataset performs poorly
 at estimating the effects of a job training program on earnings, finding
-a substantial negative effect. That lab shows that matching-based
-methods are effective at recovering effects close to the experimental
-effect. This lab will study difference-in-differences estimators of the
-effects.
+a substantial negative effect. That lab shows that a variety of selection on observable methods
+could in practice recover the experimental results using a sub-sample of the original Lalonde dataset that had two years pre-treatment data. But in this lab, we will study difference-in-differences estimators of the
+effects.  Our goal is to better understand basic specifications, basic calculations, interpretation, syntax and the methods that incorporate covariates. 
 
 1.  We will first perform analysis on the experimental dataset
     `https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Labs/Lalonde/lalonde_exp_panel.dta`
