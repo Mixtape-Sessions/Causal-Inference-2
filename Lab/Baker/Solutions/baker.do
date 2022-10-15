@@ -95,6 +95,8 @@ replace te = te4 if group == 4
 * How does (year - treat_date + 1) create dynamic ATT?  Assume treat_date is 1992 and it is year 2000. Then, te=8 x (2000 - 1992 + 1) = 8 x (9) = 72. Group 2's TE rises from an 8 up to 72 in the t+8 year.
 ***********************************************************************************************************************
 
+gen y0 = firms + n + e // parallel trends (unit level) in y0. Everyone's Y0 grows at n+e where e is tiny shocks with mean of 0.
+
 * Constant treatment effects.  Notice, the treatment effect is constant. 
 gen y2 = firms + n + te*treat + e // UNIT LEVEL parallel trends IN EVERY PERIOD and NO ANTICIPATION
 

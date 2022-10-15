@@ -53,7 +53,7 @@ Compare your answer to the known ATT(1986,1986).
 b. Repeat 2a for ATT(1986, 1987)
 c. Repeate 2a for ATT(1986, 1988)
 
-3. Now we will estimate aggregate the group-time ATT using the [Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub) estimator with bootstrapping. 
+4. Now we will estimate aggregate the group-time ATT using the [Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub) estimator with bootstrapping. 
 
 a. First, establish the ground truth by aggregating the group time ATT(g,t) parameters using the data in the second tab into Simple ATT and group ATT at `https://docs.google.com/spreadsheets/d/1dI67eNNE2zrX4KrkoFvej-cKxqHkM8yJdMpD-0uE4q8/edit?usp=sharing`. Simple ATT is a simple average over all ATT (using uniform weights). Group ATT is an equally weighted average of ATT(1986), ATT(1992), ATT(1998) and ATT(2004). Compare these two parameters to one another.  How are the underlying ATT(g,t) parameters different?  How are the weights different?
 
@@ -63,14 +63,14 @@ c. Using either `csdid` in Stata or `did` in R, estimate the simple ATT and the 
 
 d. Estimate the relative event study plot using the `dynamic` model. Which firms contribute to which set of leads and lags and why is it that the longer lags have fewer firms contributing?
 
-4. Now we will estimate event studies using TWFE and [Sun and Abraham (2020)](https://www.sciencedirect.com/science/article/abs/pii/S030440762030378X). The command in stata is called `eventstudyinteract` but in R it is called `fixest`. 
+5. Now we will estimate event studies using TWFE and [Sun and Abraham (2020)](https://www.sciencedirect.com/science/article/abs/pii/S030440762030378X). The command in stata is called `eventstudyinteract` but in R it is called `fixest`. 
 
 a. Before we get started, go to the tab labeled "Event Study" at (https://docs.google.com/spreadsheets/d/1dI67eNNE2zrX4KrkoFvej-cKxqHkM8yJdMpD-0uE4q8/edit?usp=sharing). Calculate the cohort ATT in relative event time (column H, rows 2 to 25) using the group-time ATT(g,t) parameters corresponding to each relative event time.  Use simple averages for each estimate. 
 b. Estimate an event study in relative event time using TWFE and if you have time, fill in column I. Compare your TWFE estimates against coluumn H.
 c. Estimate an event study in relative event time now using [Sun and Abraham (2020)](https://www.sciencedirect.com/science/article/abs/pii/S030440762030378X) and insert in column J.  Then do the same using [Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub) and insert in column K. Compare your answers both to one another, to TWFE and to the ground truth.
 d. What is the differences in the control groups used by CS vs SA?
 
-5. In one final analysis, let's revisit the TWFE analysis from question 2 using `y` as the firm revenue outcome, only instead of using the entire dataset as we did before, use only the dataset used in part 4. 
+6. In one final analysis, let's revisit the TWFE analysis from question 2 using `y` as the firm revenue outcome, only instead of using the entire dataset as we did before, use only the dataset used in part 4. 
 
 a. Compare your TWFE to CS and SA aggregate parameter estimate.  How has it changed and is it still biased?
 b. Conduct the Bacon decomposition on this shorter panel and compare the decomposition results to what you had done earlier.  What's changed and why?
