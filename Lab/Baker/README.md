@@ -32,6 +32,8 @@ $$ATT(g,t) = E \bigg [ \bigg ( \frac{G_g}{E[G_g]} - \frac{ \frac{\hat{p}(X)C}{1-
 
 a. We know from the second tab of the spreadsheet `https://docs.google.com/spreadsheets/d/1dI67eNNE2zrX4KrkoFvej-cKxqHkM8yJdMpD-0uE4q8/edit?usp=sharing` that the ATT(1986,1986) is equal to 10. Calculate this yourself using the above formula.
 
+b. Calculate the ATT(1986,1986) using the above [Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub) formula. 
+
 - Calculate a dummy for group 1 called `g1`.
 - Calculate the propoensity score called `pscore` equalling the probability a group is in group 1 using all untreated groups in 1986 plus group 1 itself using logit.
 - Calculate the following two variables: `ypre` equal to `y` in `1985` and `ypost` equal to `y` in `1986`.
@@ -46,3 +48,24 @@ as `pscore-mean`
 
 $$ATT(1986,1986) = [w1 ypost - w1 ypre] - [w0 post - w0 pre]$$
 
+Compare your answer to the known ATT(1986,1986). 
+
+b. Repeat 2a for ATT(1986, 1987)
+c. Repeate 2a for ATT(1986, 1988)
+
+3. Now we will estimate aggregate the group-time ATT using the [Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub) estimator with bootstrapping. 
+
+a. First, establish the ground truth by aggregating the group time ATT(g,t) parameters using the data in the second tab into Simple ATT and group ATT at `https://docs.google.com/spreadsheets/d/1dI67eNNE2zrX4KrkoFvej-cKxqHkM8yJdMpD-0uE4q8/edit?usp=sharing`. Simple ATT is a simple average over all ATT (using uniform weights). Group ATT is an equally weighted average of ATT(1986), ATT(1992), ATT(1998) and ATT(2004). Compare these two parameters to one another.  How are the underlying ATT(g,t) parameters different?  How are the weights different?
+
+b. [Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub) avoids the biases of TWFE by not calculating any ATT(g,t) for which there is no untreated comparison group.  It in other words does not attempt to calculate ATT parameters when there is full adoption. Repeat 3a calculating simple and group ATT under this `feasible` ATT scenario.  Compare these two ATT parameters with the one from 3a.
+
+c. Using either `csdid` in Stata or `did` in R, estimate the simple ATT and the group ATT using the `baker` dataset.  Plot the event-study coefficients for each group.
+
+d. Estimate the relative event study plot using the `dynamic` model. Which firms contribute to which set of leads and lags and why is it that the longer lags have fewer firms contributing?
+
+4. Now we will estimate event studies using TWFE and [Sun and Abraham (2020)](https://www.sciencedirect.com/science/article/abs/pii/S030440762030378X). The command in stata is called `eventstudyinteract` but in R it is called `fixest`. 
+
+a. Before we get started, go to the tab labeled "Event Study" at (https://docs.google.com/spreadsheets/d/1dI67eNNE2zrX4KrkoFvej-cKxqHkM8yJdMpD-0uE4q8/edit?usp=sharing). Calculate the cohort ATT in relative event time (column H, rows 2 to 25) using the group-time ATT(g,t) parameters corresponding to each relative event time.  Use simple averages for each estimate. 
+b. Estimate an event study in relative event time using TWFE and if you have time, fill in column I. Compare your TWFE estimates against coluumn H.
+c. Estimate an event study in relative event time now using [Sun and Abraham (2020)](https://www.sciencedirect.com/science/article/abs/pii/S030440762030378X) and insert in column J.  Then do the same using [Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub) and insert in column K. Compare your answers both to one another, to TWFE and to the ground truth.
+d. What is the differences in the control groups used by CS vs SA?
