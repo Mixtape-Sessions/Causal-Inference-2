@@ -33,13 +33,16 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 <a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/02-Covariates.pdf">Introducing OLS and various estmators with covariate adjustments</a>
 
 <b>Code</b>
-[did in R](https://bcallaway11.github.io/did/)
+[did in R](https://bcallaway11.github.io/did/); 
 [drdid in Stata](https://friosavila.github.io/playingwithstata/main_drdid.html)
 
 <b>Readings</b>
-[Cunningham (2021 ch. 9)](https://mixtape.scunning.com/09-difference_in_differences)
+[Cunningham (2021 ch. 9)](https://mixtape.scunning.com/09-difference_in_differences), 
+
 Outcome regression [(Heckman, Ichimura and Todd 1997)](http://jenni.uchicago.edu/papers/Heckman_Ichimura-Todd_REStud_v64-4_1997.pdf), 
+
 Inverse probability weight estimator [(Abadie 2005)](https://academic.oup.com/restud/article-abstract/72/1/1/1581053?redirectedFrom=fulltext), 
+
 Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620301901)           
 
 
@@ -52,14 +55,19 @@ Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/
 <a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Bacon decomposition</a>
 
 <b>Code</b>
-[Fixed effects and Pooled OLS example](https://mixtape.scunning.com/08-panel_data#data-exercise-survey-of-adult-service-providers)
-[bacondecomp in Stata](https://asjadnaqvi.github.io/DiD/docs/01_stata/)
-[bacondecomp in R](https://github.com/evanjflack/bacondecomp)
-[ddtiming in Stata](https://tgoldring.github.io/projects/ddtiming.html)
+
+[Fixed effects and Pooled OLS example](https://mixtape.scunning.com/08-panel_data#data-exercise-survey-of-adult-service-providers), 
+
+[bacondecomp in Stata](https://asjadnaqvi.github.io/DiD/docs/01_stata/), 
+
+[bacondecomp in R](https://github.com/evanjflack/bacondecomp), 
+
+[ddtiming in Stata](https://tgoldring.github.io/projects/ddtiming.html), 
+
 [Shiny App for Bacon Decomposition](https://mixtape.shinyapps.io/Bacon-Decomposition/)
 
 <b>Readings</b>
-<a href="https://mixtape.scunning.com/08-panel_data">Causal Inference: the Mixtape (chapter 8 and 9)</a>
+<a href="https://mixtape.scunning.com/08-panel_data">Causal Inference: the Mixtape (chapter 8 and 9)</a>, 
 [Goodman-Bacon (2021)](https://www.sciencedirect.com/science/article/abs/pii/S0304407621001445)
 
 </details><br />
@@ -73,7 +81,9 @@ Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/
 <a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Callaway and Sant'anna (2020)</a>
 
 <b>Code</b>
-[did in R](https://bcallaway11.github.io/did/)
+
+[did in R](https://bcallaway11.github.io/did/), 
+
 [csdid in Stata](https://friosavila.github.io/playingwithstata/main_csdid.html)           
 
 <b>Readings</b>
@@ -90,9 +100,11 @@ Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/
 <a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Sun and Abraham (2020)</a>
 
 <b>Code</b>
-[eventstudyinteract in Stata](https://github.com/lsun20/EventStudyInteract)
-[fixest in R](https://lrberge.github.io/fixest/)
-           
+
+[eventstudyinteract in Stata](https://github.com/lsun20/EventStudyInteract), 
+
+[fixest in R](https://lrberge.github.io/fixest/), 
+
 [Shiny App for Event Study](https://mixtape.shinyapps.io/Event-Study/)
 
 <b>Readings</b>
@@ -109,17 +121,24 @@ Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/
 <a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/05-Imputation.pdf">Various imputation estimators</a>
 
 <b>Code</b>
+
 Two-stage DID
+
 [did2s in Stata](https://github.com/kylebutts/did2s_stata)
+
 [did2s in R](https://www.kylebutts.com/open-source/did2s/)
 
 Robust efficient imputation estimator
+
 [did_imputation in Stata](https://github.com/borusyak/did_imputation)
+
 [didimputation in R](https://github.com/kylebutts/didimputation)
            
 
 <b>Readings</b>
+
 [Borusyak, et al. (2022)](https://arxiv.org/abs/2108.12419)
+
 [Gardner (2021)](https://jrgcmu.github.io/2sdd_current.pdf)
 </details><br />
 
@@ -132,9 +151,11 @@ Robust efficient imputation estimator
 <a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/04-Stacking.pdf">Cengiz, et al. (2019)</a>
 
 <b>Code</b>
+
 [stackdev in Stata (under development)](https://asjadnaqvi.github.io/DiD/docs/code/06_stackedev/)           
 
 <b>Readings</b>
+
 [Cengiz, et al. (2019)](https://academic.oup.com/qje/article/134/3/1405/5484905)
 </details><br />
 
@@ -150,6 +171,7 @@ Robust efficient imputation estimator
            
 
 <b>Readings</b>
+
 [Callaway, Goodman-Bacon and Sant'anna (2021)](https://arxiv.org/abs/2107.02637)
 
 </details><br />
@@ -161,11 +183,15 @@ Robust efficient imputation estimator
 <a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/06-Synthetic.pdf">Abadie, Diamond and Hainmueller (2010)</a>
 
 <b>Code</b>
-[synth in Stata](https://ideas.repec.org/c/boc/bocode/s457334.html)     
+
+[synth in Stata](https://ideas.repec.org/c/boc/bocode/s457334.html)  
+
 [synth in R](https://cran.r-project.org/web/packages/Synth/Synth.pdf)      
 
 <b>Readings</b>
+
 [Abadie and Gardeazabal (2003)](https://www.aeaweb.org/articles?id=10.1257/000282803321455188)
+
 [Abadie, Diamond and Hainmueller (2010)](https://web.stanford.edu/~jhain/Paper/JASA2010.pdf)
 
 
