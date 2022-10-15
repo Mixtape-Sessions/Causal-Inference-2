@@ -1,24 +1,30 @@
-# Baker
+# Differential timing using Andrew Baker simulation
 
 Twoway fixed effects (TWFE) is a common estimator used with panel data or repeated cross sections which is part of its appeal for difference-in-differences with differential timing.  Differential timing is a scenario in which panel units, such as states or firms, are shocked with some intervention at different time periods.  Ten firms may be treated in 2010, another five firms in 2014, and the remaining firms in 2020.  If we are interested in estimating the causal effect of the intervention on firm outcomes using diff-in-diff, can we estimate the effect using TWFE? And if so, what causal effect are we estimating?
 
 The purpose of this exercise is to illustrate the bias of TWFE with differential timing if treatment effects are dynamic and to show that it is not biased if treatment effects are not dynamic. We will decompose the aggregate coefficient estimated using TWFE into the weighted average of underlying diff-in-diff calculations using the [Goodman-Bacon (2021)](https://www.sciencedirect.com/science/article/abs/pii/S0304407621001445) decomposition. The second purpose of the exercise is to illustrate the concept of the group-time ATT parameter and show that [Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub) estimates through manual calculations. Finally, we estimate various aggregate parameters both across groups and relative event time using both [Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub) as well as [Sun and Abraham (2020)](https://www.sciencedirect.com/science/article/abs/pii/S030440762030378X). 
 
-1. We will perform analysis on a simulated dataset which can be downloaded 
+We will perform analysis on a simulated dataset that Andrew Baker (assistant professor, University of California Berkeley College of Law) created. This can be generated yourself using either baker.R or baker.do, or you can download it yourself `https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Baker/baker.dta`.
 
+There are 40 states, 250 firms per state, each of which is observed for 30 years from 1980 to 2009 (i.e., a balanced panel of firms). Ten firms are treated in 1986, another 10 in 1992, another 10 in 1998 and another 10 in 2004. There are two outcomes: `y2` is firm revenue under constant treatment effects that are on average equal to 10 for group 1 (i.e., the 1986 group), 8 for group 2, 6 for group 3 and 4 for group 4. The second outcome is a different outcome scenario in which treatment effects grow over time at a constant slope: 10 in 1986, 20 in 1987, 30 in 1988 and so on. You can view this data construction in lines 98-102 of baker.do. Write down what you think the aggregate treatment effect on the treatment group should for `y2` versus `y`. 
 
-1. We will first perform analysis on the experimental dataset `https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalonde/lalonde_exp_panel.dta`
+1. For this first question, we will focus on `y2`, the constant treatment effect outcome measure. 
 
-a. Under random assignment, the simple difference-in-means identifies the ATE, and since the original NSW was a randomized experiment, we can do this.  Calculate the simple difference-in-means on the experimental dataset to estimate the "treatment effect" two separate ways: (1) manually calculate averages for both treatment (`ever_treated=1`) and control (`ever_treated=0`) and use them to estimate the returns to the program, and (2) estimate the effect with an OLS specification. In both cases, use only the year `78` and `re` variable for real earnings. 
+a. Calculate the simple and group ATT using the information at this spreadsheet `https://docs.google.com/spreadsheets/d/1dI67eNNE2zrX4KrkoFvej-cKxqHkM8yJdMpD-0uE4q8/edit?usp=sharing` in the first tab labeled Constant DiD.
 
-b. Estimate the effect of the treatment, `ever_treated`, on real earnings, `re`, in a difference-in-differences estimator using years `78` for post period and `75` as the pre-period (ignoring for now year `74`). As with 1a, do this in the following two ways: (1) manually calculate the four means you need for the DiD equation and then estimate using the DiD equation, and (2) estimate the ATT using the OLS specification for the DiD equation with robust standard errors. Reminder to only use `78` and `75` (i.e., do not include `74` in OLS analysis). 
+b. Generate a dummy labeled `post` equalling 0 if a unit is not treated and 1 if it is the year of treatment or after. Estimate the effect of the treatment `post` on `y2` using TWFE with cluster robust standard errors. Compare your answer to the simple and group ATT you calculated in the spreadsheet.  Is your TWFE estimate biased?
 
-c. Check the pre-trends for 1974 relative to 1975 two ways: (1) manually calculate the DiD equation on 1974 relative to 1975 and (2) estimate the dynamic OLS specification with an interaction of `ever_treated` with `74`, an interaction of `ever_treated` with `78`.  Compare your answers for 2c to what you found in 2a and 2b. 
+c. Decompose the TWFE estimated coefficient using the [Goodman-Bacon (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407621001445) decomposition using either `ddtiming` or `bacondecomp`. Why did the use of late-to-early DiD calculations ("forbidden contrasts") not bias our estimate of the ATT?
 
-2. Now, we turn to the non-experimental dataset `https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalonde/lalonde_nonexp_panel.dta`. 
+2. For this second question, we will focus on `y`, the dynamic treatment effect outcome measure.
 
-a. Repeat 1a (simple difference-in-means for `78` only), 1b (DiD using manual calculations and OLS specification for `78` and `75` only) and 1c (event study calculations manually and dynamic OLS specification for `78`, `75` and `74`)
+a. Calculate the simple and group ATT using the information at this spreadsheet `https://docs.google.com/spreadsheets/d/1dI67eNNE2zrX4KrkoFvej-cKxqHkM8yJdMpD-0uE4q8/edit?usp=sharing` in the second tab labeled Dynamic DiD. Why is the ATT under dynamics larger than the ATT under constant treatment effects?
 
-b. Repeat 1b and 1c (OLS specifications) controlling linearly for `age, agesq, agecube, educ, educsq, marr, nodegree, black, hisp, re74, u74` with robust standard errors.
+b. You can still use the same dummy as before `post` equalling 0 if a unit is not treated and 1 if it is the year of treatment or after. Now estimate the effect of the treatment `post` on `y` using TWFE with cluster robust standard errors. Compare your answer to the simple and group ATT you calculated in the second table of the spreadsheet.  Is your TWFE estimate biased?
 
-c. Use the `DRDID` command to estimate a doubly-robust difference-in-differences with covariates `age + agesq + agecube + educ + educsq + marr + nodegree + black + hisp + re74 + u74`, `id` panel unit identifier, `year` as the panel time identifier, and reporting the outcome regression analysis [(Heckman, Ichimura and Todd 1997)](http://jenni.uchicago.edu/papers/Heckman_Ichimura-Todd_REStud_v64-4_1997.pdf), inverse probability weight estimator [(Abadie 2005)](https://academic.oup.com/restud/article-abstract/72/1/1/1581053?redirectedFrom=fulltext), doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620301901).  Compare these results with 1a, 1b, 2a and 2b. 
+c. Decompose the TWFE estimated coefficient using the [Goodman-Bacon (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407621001445) decomposition using either `ddtiming` or `bacondecomp`. Why did the use of late-to-early DiD calculations ("forbidden contrasts") bias our estimate of the ATT but hadn't earlier?
+
+3. 
+
+![equation](http://www.sciweavers.org/tex2img.php?eq=1%2Bsin%28mc%5E2%29&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=)
+
