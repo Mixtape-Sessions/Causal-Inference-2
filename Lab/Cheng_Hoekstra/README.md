@@ -23,5 +23,5 @@ Before we begin, we need to do some data work to prepare for estimation. For est
 
 4. Next, use the Sun and Abraham event-study estimator. *Note:* use `sunab` function within the `fixest` package in R or the `eventstudyinteract` package in Stata. 
 
-5. Last, construct a stacked estimator where for each group, you keep all not-yet-treated observations and the never treated obserations. Keep observations only for event-time between -5 and +4. Make sure to properly stack the data and cluster at the `sid` x stack_id level.
+5. As a bonus exercise, construct a stacked estimator where for each group, you keep all not-yet-treated observations and the never treated obserations. Keep observations only for event-time between -5 and +4. Make sure to properly stack the data and cluster at the `sid` x stack_id level.
 
