@@ -20,6 +20,7 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 [Google Spreadsheet for simple DiD Calculations](https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing)
 
 <b>Readings</b>
+
 <a href="https://mixtape.scunning.com">Causal Inference: the Mixtape (ch. 9)</a>
 
 </details><br />
@@ -33,10 +34,13 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 <a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/02-Covariates.pdf">Introducing OLS and various estmators with covariate adjustments</a>
 
 <b>Code</b>
+
 [did in R](https://bcallaway11.github.io/did/); 
+
 [drdid in Stata](https://friosavila.github.io/playingwithstata/main_drdid.html)
 
 <b>Readings</b>
+
 [Cunningham (2021 ch. 9)](https://mixtape.scunning.com/09-difference_in_differences), 
 
 Outcome regression [(Heckman, Ichimura and Todd 1997)](http://jenni.uchicago.edu/papers/Heckman_Ichimura-Todd_REStud_v64-4_1997.pdf), 
@@ -87,6 +91,7 @@ Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/
 [csdid in Stata](https://friosavila.github.io/playingwithstata/main_csdid.html)           
 
 <b>Readings</b>
+
 [Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub)
 
 </details><br />
@@ -108,6 +113,7 @@ Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/
 [Shiny App for Event Study](https://mixtape.shinyapps.io/Event-Study/)
 
 <b>Readings</b>
+
 [Sun and Abraham (2020)](https://www.sciencedirect.com/science/article/abs/pii/S030440762030378X)
 
 </details><br />
