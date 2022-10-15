@@ -35,13 +35,13 @@ a. We know from the second tab of the spreadsheet `https://docs.google.com/sprea
 - Calculate a dummy for group 1 called `g1`.
 - Calculate the propoensity score called `pscore` equalling the probability a group is in group 1 using all untreated groups in 1986 plus group 1 itself using logit.
 - Calculate the following two variables: `ypre` equal to `y` in `1985` and `ypost` equal to `y` in `1986`.
-- Calculate the mean value of `g1` called `g1\_mean` and the mean value of the inverse probability weight:
+- Calculate the mean value of `g1` called `g1-mean` and the mean value of the inverse probability weight:
 
 $$(1-g1)\frac{pscore}{1-pscore}$$
 
-as `pscore\_mean`
+as `pscore-mean`
 
-- Calculate a weight called `w1` equal to $\frac{g1}{g1\_mean}$ anda  weight called `w0` equal to $\frac{(1-g1)\frac{pscore}{1-pscore}}{pscore\_mean}$. 
+- Calculate a weight called `w1` equal to $\frac{g1}{g1-mean}$ anda  weight called `w0` equal to $\frac{(1-g1)\frac{pscore}{1-pscore}}{pscore-mean}$. 
 - calculate the four group cells for the DiD calculation as weighted averages according to:
 
 $$ATT(1986,1986) = [w1 ypost - w1 ypre] - [w0 post - w0 pre]$$
