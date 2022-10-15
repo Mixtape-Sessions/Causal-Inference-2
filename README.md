@@ -72,7 +72,9 @@ Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/
 [Shiny App for Bacon Decomposition](https://mixtape.shinyapps.io/Bacon-Decomposition/)
 
 <b>Readings</b>
+
 <a href="https://mixtape.scunning.com/08-panel_data">Causal Inference: the Mixtape (chapter 8 and 9)</a>, 
+
 [Goodman-Bacon (2021)](https://www.sciencedirect.com/science/article/abs/pii/S0304407621001445)
 
 </details><br />
