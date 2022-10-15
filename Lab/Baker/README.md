@@ -24,7 +24,25 @@ b. You can still use the same dummy as before `post` equalling 0 if a unit is no
 
 c. Decompose the TWFE estimated coefficient using the [Goodman-Bacon (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407621001445) decomposition using either `ddtiming` or `bacondecomp`. Why did the use of late-to-early DiD calculations ("forbidden contrasts") bias our estimate of the ATT but hadn't earlier?
 
-3. 
+d. Bonus question. The error term is `~N(0,0.5^2)`. There are no covariates and there are no policies, so there are no omitted variables. The same error term was used to produce `y` as was `y2`. Parallel trends in `E[Y(0)]` is linear and holds even at the unit level. So if TWFE is unbiased in the first but not the second, and parallel trends holds, then it implies strict exogeneity is violated with `y` but not `y2`. How then is it possible that strict exogeneity is violated if the error term is independent of the treatment?
+
+3. Next we will estimate various group-time ATT(g,t) parameters using [Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub). For simplicity, we will use the inverse probability weighting method associated with Abadie (2005)(https://academic.oup.com/restud/article-abstract/72/1/1/1581053?redirectedFrom=fulltext) though feel free to try outcome regression and doubly robust too. As there are no coveriates, the results should not differ.  The calculation of a given ATT(g,t) is given by this formula:
 
 $$ATT(g,t) = E \bigg [ \bigg ( \frac{G_g}{E[G_g]} - \frac{ \frac{\hat{p}(X)C}{1-\hat{p}(X)}}{E \bigg [ \frac{\hat{p}(X)C}{1-\hat{p}(X)} \bigg ]} \bigg ) (Y_t - Y_{g-1} ) \bigg ) \bigg ] ]$$
+
+a. We know from the second tab of the spreadsheet `https://docs.google.com/spreadsheets/d/1dI67eNNE2zrX4KrkoFvej-cKxqHkM8yJdMpD-0uE4q8/edit?usp=sharing` that the ATT(1986,1986) is equal to 10. Calculate this yourself using the above formula.
+
+i. Calculate a dummy for group 1 called `g1`.
+ii. Calculate the propoensity score called `pscore` equalling the probability a group is in group 1 using all untreated groups in 1986 plus group 1 itself using logit.
+iii. Calculate the following two variables: `ypre` equal to `y` in `1985` and `ypost` equal to `y` in `1986`.
+iv. Calculate the mean value of `g1` called `g1_mean` and the mean value of the inverse probability weight:
+
+$$(1-g1)\frac{pscore}{1-pscore}$$
+
+as `pscore_mean`
+
+v. Calculate a weight called `w1` equal to $\frac{g1}{g1_mean}$ anda  weight called `w0` equal to $\frac{(1-g1)\frac{pscore}{1-pscore}}{pscore_mean}$. 
+vi. calculate the four group cells for the DiD calculation as weighted averages according to:
+
+$$ATT(1986,1986) = [w1 ypost - w1 ypre] - [w0 post - w0 pre]$$
 
