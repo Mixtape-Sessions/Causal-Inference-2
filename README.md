@@ -25,11 +25,11 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 
 
-<details open><summary><b>Difference-in-Differences with Covariates</b></summary><br/>
+<details open><summary><b>Difference-in-Differences Estimation with and without Covariates</b></summary><br/>
 
 <b>Slides</b>
            
-<a href=""></a>
+<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/02-Covariates.pdf">Introducing OLS and various estmators with covariate adjustments</a>
 
 <b>Code</b>
            
@@ -40,11 +40,11 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 
 
-<details open><summary><b>Differential Timing and Bacon-Decomposition</b></summary><br/>
+<details open><summary><b>Twoway Fixed Effects and Bacon-Decomposition</b></summary><br/>
 
 <b>Slides</b>
            
-<a href=""></a>
+<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Bacon decomposition</a>
 
 <b>Code</b>
 
@@ -61,7 +61,7 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 <b>Slides</b>
            
-<a href=""></a>
+<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Callaway and Sant'anna (2020)</a>
 
 <b>Code</b>
            
@@ -76,7 +76,7 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 <b>Slides</b>
            
-<a href=""></a>
+<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Sun and Abraham (2020)</a>
 
 <b>Code</b>
            
@@ -92,7 +92,7 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 <b>Slides</b>
            
-<a href=""></a>
+<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/05-Imputation.pdf">Various imputation estimators</a>
 
 <b>Code</b>
            
@@ -103,11 +103,11 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 
 
-<details open><summary><b>Time-varying Covariates</b></summary><br/>
+<details open><summary><b>Stacking</b></summary><br/>
 
 <b>Slides</b>
            
-<a href=""></a>
+<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/04-Stacking.pdf">Cengiz, et al. (2019)</a>
 
 <b>Code</b>
            
@@ -118,11 +118,11 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 
 
-<details open><summary><b>Continuous Treatment</b></summary><br/>
+<details open><summary><b>Continuous Treatment Diff-in-Diff</b></summary><br/>
 
 <b>Slides</b>
            
-<a href=""></a>
+<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/07-Non-binary.pdf">Callaway, Goodman-Bacon and Sant'anna (2022)</a>
 
 <b>Code</b>
            
