@@ -14,7 +14,7 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 <b>Slides</b>
            
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/01-Basics.pdf"></a>
+<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/01-Basics.pdf">Introduction to basics of DiD</a>
 
 <b>Code</b>
            
