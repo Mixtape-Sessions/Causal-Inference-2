@@ -69,3 +69,9 @@ a. Before we get started, go to the tab labeled "Event Study" at (https://docs.g
 b. Estimate an event study in relative event time using TWFE and if you have time, fill in column I. Compare your TWFE estimates against coluumn H.
 c. Estimate an event study in relative event time now using [Sun and Abraham (2020)](https://www.sciencedirect.com/science/article/abs/pii/S030440762030378X) and insert in column J.  Then do the same using [Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub) and insert in column K. Compare your answers both to one another, to TWFE and to the ground truth.
 d. What is the differences in the control groups used by CS vs SA?
+
+5. In one final analysis, let's revisit the TWFE analysis from question 2 using `y` as the firm revenue outcome, only instead of using the entire dataset as we did before, use only the dataset used in part 4. 
+
+a. Compare your TWFE to CS and SA aggregate parameter estimate.  How has it changed and is it still biased?
+b. Conduct the Bacon decomposition on this shorter panel and compare the decomposition results to what you had done earlier.  What's changed and why?
+c. How did the weights on the forbidden contrasts change when you shortened the sample and used TWFE? 
