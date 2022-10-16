@@ -159,6 +159,15 @@ net install ddtiming, from(https://tgoldring.com/code/)
 areg y2 i.year treat, a(id) robust
 ddtiming y2 treat, i(id) t(year)
 
+* Bacon decomposition shows the problem -- notice all those late to early 2x2s!
+preserve
+drop if year>2003
+areg y i.year treat, a(id) robust
+ddtiming y treat, i(id) t(year)
+restore
+
+
+
 * Save for the R code
 save ./baker.dta, replace
 
