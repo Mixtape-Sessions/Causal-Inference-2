@@ -47,14 +47,17 @@
 \begin{frame}{Background}
 
 \begin{itemize}
-\item First ``new diff-in-diff'' paper was Borusyak and Jaravel (2016) -- a lot of what was simultaneously discovered elsewhere was in that paper
-\item We will discuss its successor -- Borusyak, Jaravel and Spiess (2021)
-\item As a lot of this has already been elaborated on, I'm going to focus primarily on the estimator
+
+\item The origin of the robust diff-in-diff papers identifying pathologies in TWFE was Borusyak and Jaravel (2016) working paper
+\item Both problems with static and dynamic specifications were discussed, and the identification of the ``already treated'' as controls
+\item Paper remained in working paper until 2021 when Jan Speiss was brought on; the team developed a new estimator
+\item We will focus primarily on the estimator, to avoid redundancies
+
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{My Outline (versus their outline)}
+\begin{frame}{My Outline}
 
 \begin{enumerate}
 \item Discussion of their interpretation of ``basic'' DiD assumptions
@@ -68,7 +71,7 @@
 
 \begin{frame}{ATT parameter}
 
-Estimation target:
+Estimation target will be unit level treatment effects aggregated to a higher level like the ATT:
 
 \begin{eqnarray*}
 \tau_w = \sum_{it \in \Omega_{1}}w_{it}\tau_{it} = w'_1\tau
@@ -76,8 +79,18 @@ Estimation target:
 
 \bigskip
 
-Weights need not add up to one.  Weights could be $\frac{1}{N}$ for all $it \in \Omega_1$. We have a number of options. 
+Note the weights -- they need not add up to one.  Weights could be $\frac{1}{N}$ for all $it \in \Omega_1$. We have a number of options. 
 
+
+\end{frame}
+
+\begin{frame}{Standard TWFE Assumptions}
+
+\begin{enumerate}
+\item Parallel trends -- expressed as a TWFE model
+\item No anticipation
+\item Homogenous treatment effects
+\end{enumerate}
 
 \end{frame}
 
@@ -94,10 +107,20 @@ $$Y_{it}(0) = \alpha_i + \beta_t + \varepsilon_{it}$$with $$E[\varepsilon_{it}]=
 \begin{itemize}
 \item No anticipation rules out anticipatory behavior that would cause treatment effects to materialize even before the treatment occurred:$$Y_{it} = Y_{it}(0)$$ for all $it \in \Omega_0$. 
 \item Notice how as an assumption, it literally imposes $\tau=0$ for all pre-treatment periods. 
-\item Even before Goodman-Bacon (2021), Sun and Abraham (2020) and Borusyak and Jaravel (2016), I had seen a million applied papers and only seen references to PT, not NA
+
 \end{itemize}
 
 \end{frame}
+
+\begin{frame}{A2: No anticipation}
+
+\begin{itemize}
+\item Caveat: No Anticipation was never mentioned until recently
+\item It's crucial for the pre-trends to be zero, far more than parallel trends, as parallel trends is \emph{only} about post-treatment from baseline, whereas event studies are about pre-trends and that's where no anticipation reigns
+\end{itemize}
+
+\end{frame}
+
 
 \begin{frame}{A3: Restricted causal effects}
 
@@ -601,6 +624,67 @@ y_{gpit} = \lambda_g + \gamma_p + \sum_{r=-R}^P \beta_rD_{rgp} + \varepsilon_{gp
 
 
 
+\section{Concluding remarks}
+
+
+\begin{frame}{Summarizing}
+
+\begin{itemize}
+
+\item Difference-in-differences is very popular; it is often a go-to procedure for studying large policies and demand for staggered adoption will remain
+\item Canonical panel modeling of TWFE can with dynamic treatment effects flip the sign; will it is another matter, but it can
+\item Treatment effects can be positive, and yet TWFE reports a negative effect
+\item Caused by non-transparent use of already treated units as controls
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Summarizing}
+
+\begin{itemize}
+\item Even if in your situation that didn't happen, how would you know without making strong prior statements about heterogeneity
+\item This requires \emph{a priori} knowledge of opaque production functions that are simply not available to most researchers
+\item Generalizability is also an issue because the weights that TWFE uses are not the weights most likely what the policymaker needs (``variance weighted ATT'')
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Summarizing}
+
+\begin{itemize}
+
+\item My recommendation is to eschew TWFE and use more transparent and robust methods when facing staggered adoption, and pay careful attention to how each handles covariates
+\item Know who your comparison group is, and how each underlying building block aggregates (i.e., weights chosen)
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Summarizing}
+
+\begin{itemize}
+
+\item Core assumptions of difference-in-differences is, apart from no anticipation and SUTVA, the parallel trends assumption
+\item It is not testable; people often check for it through falsifications, including the pre-treatment event study which under no anticipation leaves only \emph{that period's} differential trend
+\item Even under robust diff-in-diff methods, pre-treatment trends can fail, which would simply reflect that the treatment and control group are diverging even before the intervention
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Summarizing}
+
+\begin{itemize}
+
+\item But what if parallel trends simply does not become believable?
+\item This may happen because of the event study -- the \emph{aggregate} comparison group is simply not a proxy for $E[\Delta Y^0|D=1]$, the counterfactual
+\item Then it may be time to shift gears and move into the synthetic control methods as they do not rely on parallel trends
+
+\end{itemize}
+
+\end{frame}
 
 
 

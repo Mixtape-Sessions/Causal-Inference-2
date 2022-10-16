@@ -1,0 +1,35 @@
+\begin{table}[htbp]\centering
+\small
+\caption{OLS estimates of effect of college on log wages}
+\begin{center}
+\begin{threeparttable}
+\begin{tabular}{l*{2}{c}}
+\toprule
+\multicolumn{1}{l}{\textbf{Dependent variable: log(wages)}}&
+\multicolumn{1}{c}{\textbf{(1)}}&
+\multicolumn{1}{c}{\textbf{(2)}}\\
+\midrule
+educ                &       0.052***&       0.071***\\
+                    &     (0.003)   &     (0.004)   \\
+exper               &               &       0.034***\\
+                    &               &     (0.002)   \\
+black               &               &      -0.166***\\
+                    &               &     (0.017)   \\
+south               &               &      -0.132***\\
+                    &               &     (0.015)   \\
+married             &               &      -0.036***\\
+                    &               &     (0.004)   \\
+smsa                &               &       0.176***\\
+                    &               &     (0.015)   \\
+\midrule
+N                   &       3,010   &       3,003   \\
+Mean of dependent variable&        6.26   &        6.26   \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\tiny
+\item Data is from NLS.  Heteroskedastic standard errors shown in parenthesis.  * p$<$0.10, ** p$<$0.05, *** p$<$0.01
+\end{tablenotes}
+\end{threeparttable}
+\end{center}
+\end{table}

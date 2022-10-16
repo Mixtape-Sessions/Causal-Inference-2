@@ -46,20 +46,18 @@
 \begin{frame}{What is synthetic control}
 	
 	\begin{itemize}
-	\item Synthetic control has been called the most important innovation in causal inference of the last 15 years (Athey and Imbens 2017)
-	\item It's extremely useful for case studies, which is nice because that's often all we have
-	\item Continues to also be methodologically a frontier for applied econometrics
-	\item Consider this talk a starting point for you
+	\item Synthetic control has been called the most important innovation in causal inference of the last two decades (Athey and Imbens 2017)
+	\item Originally designed for comparative case studies, but newer developments have extended it to multiple treated units as well as differential timing
+	\item Continues to also be methodologically a frontier for applied econometrics, so consider this talk a starting point for you
 	\end{itemize}
 \end{frame}
 	
 \begin{frame}{What is a comparative case study}
 
 \begin{itemize}
-\item Single treated unit -- country, state, whatever
+\item Single treated unit -- country, state, firm
 \item Social scientists tackle such situations in two ways: qualitatively and quantitatively
-\item In political science, probably others, you see as a stark dividing line between camps
-\item Not so much in economics
+\item In political science, probably others, you see as a stark dividing line between camps, (economics doesn't have a qualitative tradition)
 \end{itemize}
 
 \end{frame}
@@ -68,40 +66,51 @@
 \begin{frame}{Qualitative comparative case studies}
 	
 	\begin{itemize}
-	\item In qualitative comparative case studies, the goal is to reason \emph{inductively} the causal effects of events or characteristics of a single unit on some outcome, oftentimes through logic and historical analysis.  
+	\item In qualitative comparative case studies, the goal might be to reason \emph{inductively} the causal effects of events or characteristics of a single unit on some outcome, oftentimes through logic and historical analysis.  
 		\begin{itemize}
 		\item May not answer the causal questions at all because there is rarely a counterfactual, or if so, it's ad hoc.
 		\item Classic example of comparative case study approach is Alexis de Toqueville's \underline{Democracy in America} (but he is regularly comparing the US to France)
 		\end{itemize}
+	\item You won't find someone claiming that some event caused GDP to fall \$1500 when compared against France in qualitative
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Traditional quantitative comparative case studies}
 
 \begin{itemize}
-	\item Quantitative comparative case studies are often explicitly causal designs.  
-	\item Usually a natural experiment applied to a single aggregate unit (e.g., city, school, firm, state, country)
+	\item Traditional quantitative comparative case studies are explicitly causal designs in that there is a treatment and control
+	\item Usually treatment is based on a natural experiment applied to a single aggregate unit (e.g., city, school, firm, state, country)
 	\item Method compares the evolution of an aggregate outcome for the unit affected by the intervention to the evolution of the same \emph{ad hoc} aggregate control group (Card 1990; Card and Krueger 1994)
+	\item It'll essentially be diff-in-diff, but it may not use the event study, and the point is the choice of controls is a subset of all possible controls
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Pros and cons of traditional case study approaches}
+\begin{frame}{Pros and cons}
 	
 	\begin{itemize}
 	\item Pros:
 		\begin{itemize}
-		\item Policy interventions often take place at an aggregate level
-		\item Aggregate/macro data are often available
+		\item Takes advantage of policy interventions that take place at an aggregate level (which is common and so this is useful)
+		\item Aggregate/macro data are often available (which may be all we have)
 		\end{itemize}
 	\item Cons:
 		\begin{itemize}
-		\item Selection of control group is \emph{ad hoc}
+		\item Selection of control group is \emph{ad hoc} -- opens up researcher biases, even unconscious
 		\item Standard errors do not reflect uncertainty about the ability of the control group to reproduce the counterfactual of interest
 		\end{itemize}
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Description of the Mariel Boatlift}
+	
+	\begin{itemize}
+	\item Card (1990) uses the Mariel Boatlift of 1980 as a natural experiment to measure the effect of a sudden influx of immigrants on unemployment among less-skilled natives
+	\item His question was how do inflows of immigrants affect the wages and employment of natives in local US labor markets?
+	\item The Mariel Boatlift brought 100,000 Cubans to Miami which increased the Miami labor force by 7\%
+	\item Individual-level data on unemployment from the Current Population Survey (CPS) for Miami and comparison cities
+	\end{itemize}
+\end{frame}
 
 
 \begin{frame}[plain]
@@ -123,17 +132,18 @@
 \end{frame}
 
 
+\begin{frame}{Selecting control groups}
 
+\begin{itemize}
 
-\begin{frame}{Description of the Mariel Boatlift}
-	
-	\begin{itemize}
-	\item How do inflows of immigrants affect the wages and employment of natives in local labor markets?
-	\item Card (1990) uses the Mariel Boatlift of 1980 as a natural experiment to measure the effect of a sudden influx of immigrants on unemployment among less-skilled natives
-	\item The Mariel Boatlift increased the Miami labor force by 7\%
-	\item Individual-level data on unemployment from the Current Population Survey (CPS) for Miami and four comparison cities (Atlanta, Los Angeles, Houston, Tampa-St. Petersburg)
-	\end{itemize}
+\item His treatment group was low skill workers in Miami since that's where Cubans went
+\item But which control group?
+\item He chose Atlanta, Los Angeles, Houston, Tampa-St. Petersburg
+
+\end{itemize}
+
 \end{frame}
+
 
 
 \begin{frame}{Why these four?}
@@ -144,28 +154,31 @@
 
 \end{frame}
 
-\begin{frame}{Card's main results}
+\begin{frame}{Card's main results used diff-in-diff}
 	
 	\begin{figure}
 	\includegraphics[scale=0.75]{./lecture_includes/abadie_2.pdf}
 	\end{figure}
 \end{frame}
 
-\begin{frame}{Can this ever lead to subjective biases?}
+\begin{frame}{Parallel trends}
 
 \begin{itemize}
-\item Card found that the Mariel boatlift reduced unemployment \emph{compared to the four cities he chose}
+\item This estimate is unbiased if the change in $Y^0$ for the comparison cities correctly approximates the unobserved $\textcolor{red}{\Delta Y^0}$ for the treatment group
+\item But Card largely focused on covariates, and in a relatively casual way (``similar growth'')
+\item The Black result would have been positive, too, were it not that the comparison cities growth was smaller
 \item Is there anything principled we could do that doesn't give the researcher so much control over control group?
-\item Enter synthetic control (Abadie and Gardeazabal 2003; Abadie, Diamond and Hainmueller 2010) 
 \end{itemize}
+
 \end{frame}
 
 
 \begin{frame}{Synthetic Control}
 	
 	\begin{itemize}
-	\item First appears in Abadie and Gardeazabal (2003) in a study of a terrorist attack in Spain (Basque) on GDP
-	\item Revisited again in a 2011 JASA with Diamond and Hainmueller, two political scientists who were PhD students at Harvard (more proofs and inference)
+	\item Abadie and Gardeazabal (2003) introduces synthetic control in a study of a terrorist attack in Spain (Basque) on GDP
+	\item Revisited again in a 2010 JASA with Diamond and Hainmueller, two political scientists who were PhD students at Harvard (more proofs and inference)
+	\item Paper has over 5000 cites and is growing in influence over time -- very popular in tech
 	\item A combination of comparison units often does a better job reproducing the characteristics of a treated unit than single comparison unit alone
 	\end{itemize}
 \end{frame}
