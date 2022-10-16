@@ -5,10 +5,15 @@ We are going to revisit the analysis performed by Cheng and Hoekstra on the effe
 Before we begin, we need to do some data work to prepare for estimation. For estimators, we need to change `effyear` to 0 for the control states. They are in the data as `NA` in R or `.` in Stata. Then, Take the variable `effyear` and `year` and construct an event-time variable (i.e. `year` - `effyear` or $t - g$ in Callaway and Sant'Anna's syntax). For the control units, you should set the relative year indicator to `-1`. More, create a variable `treat` that denotes when treatment is active, i.e. when `year` is greater than or equal to `effyear`. 
 
 1. Now that our data is in the correct order, we will estimate the standard TWFE event-study as well as the aggregate parameter from a single dummy. Your outcome is `l_homicide`. Remember to include your state and year fixed effects. Don't worry about using the region-year fixed effects. We'll keep this simple.  Remember to cluster at the state level.
+
 a. How many never treated states are there? How many groups are there?
+
 b. Interpret your regression coefficient. 
+
 c. Conduct the Bacon decomposition and interpret the weights.  How many underlying 2x2s were calculated that aggregated up to your TWFE coefficient? Show that the weighted average of the different types of DiD equal the TWFE coefficient.
+
 d. Estimate an event study with `-1` the dropped year. What's your interpretation of the pre-treatment leads? 
+
 e. What assumptions must be true for the static parameter to equal the VWATT?  To be the ATT?
 
 2. Use the Callaway and Sant'Anna estimator to estimate the group-time average treatment effects, $ATT(g,t)$. Then aggregate these to event-study treatment effects. *Note:* use `did` package in R or the `csdid` package in Stata. 
