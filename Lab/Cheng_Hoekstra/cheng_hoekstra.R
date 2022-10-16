@@ -16,7 +16,7 @@ castle <- haven::read_dta('https://github.com/scunning1975/mixtape/raw/master/ca
 castle[is.na(castle$effyear), ]$effyear <- 0
 castle$rel_year = castle$year - castle$effyear
 castle[castle$effyear == 0, ]$rel_year <- -1
-castle$treat = castle$year >= castle$effyear
+castle$treat = (castle$year >= castle$effyear) & (castle$effyear != 0)
 
 # 1. TWFE Event-study regression -----------------------------------------------
 
@@ -58,13 +58,30 @@ ggdid(es_cs)
 es_imputation <- did2s(
   yname = "l_homicide",
   first_stage = ~ 1 | sid + year, 
-  second_stage = ~ i(rel_year, ref = -1s), 
+  second_stage = ~ i(rel_year, ref = -1), 
   treatment = "treat", 
   cluster_var = "sid",
   data = castle
 )
 
 coefplot(es_imputation)
+
+
+# Manual 
+first_stage <- feols(
+  l_homicide ~ 1 | sid + year,
+  data = subset(castle, treat == FALSE)
+)
+
+castle$l_homicide_resid <- 
+  castle$l_homicide - predict(first_stage, newdata = castle)
+
+second_stage <- feols(
+  l_homicide_resid ~ i(rel_year, ref = -1),
+  data = castle
+)
+
+coefplot(second_stage)
 
 
 # 4. Sun and Abraham -----------------------------------------------------------
