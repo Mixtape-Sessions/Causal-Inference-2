@@ -164,8 +164,8 @@
 \begin{frame}{Parallel trends}
 
 \begin{itemize}
-\item This estimate is unbiased if the change in $Y^0$ for the comparison cities correctly approximates the unobserved $\textcolor{red}{\Delta Y^0}$ for the treatment group
-\item But Card largely focused on covariates, and in a relatively casual way (``similar growth'')
+\item His estimate is unbiased if the change in $Y^0$ for the comparison cities correctly approximates the unobserved $\textcolor{red}{\Delta Y^0}$ for the treatment group
+\item But Card largely focused on covariates, and in a relatively casual way (``similar growth'') -- this predates using event studies (also Card was not particularly impressed by the study so didn't seem to really expect it to make much of a splash)
 \item The Black result would have been positive, too, were it not that the comparison cities growth was smaller
 \item Is there anything principled we could do that doesn't give the researcher so much control over control group?
 \end{itemize}
@@ -212,9 +212,36 @@
 \end{enumerate}
 
 
-Furman and Pinto (2018) recommend showing a few different results in their ``cherry picking'' JPAM
 
 \end{frame}
+
+\begin{frame}{Avoiding cherry picking synthetic controls}
+
+\begin{itemize}
+\item Ferman, Pinto and Possbaum (2020) note that there's a ton of diversity in how the models are fit
+\item Opens the door for ``cherry picking'' and remember -- part of the purpose of this procedure is to reduce subjective researcher bias
+\item They conducted Monte Carlo simulations and make several recommendations for specifications and reporting all of them
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Avoiding cherry picking}
+
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/cherry_picking_1.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Avoiding cherry picking}
+
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/cherry_picking_2.png}
+	\end{figure}
+
+\end{frame}
+
 
 \begin{frame}{Synthetic control method: estimation}
 	
@@ -506,24 +533,27 @@ Y^0_{1t} - \sum^{J+1}_{j=2}w^*_jY_{jt} &=& \sum_{j=2}^{J+1} w_j^* \sum_{s=1}^{T_
 \end{figure}
 \end{frame}
 
-
-\begin{frame}{Data}
-
-	\begin{itemize}
-	\item National Prisoner Statistics - prison measures, including race and gender-specific incarceration
-	\item Current Population Survey - controls
-	\item SEER - population
-	\end{itemize}
-\end{frame}
-\newpage
-\clearpage
-
 \begin{frame}[shrink=30,plain]
 
 \begin{figure}
 \includegraphics{./lecture_includes/synth_placebo_totalincarceration1993.pdf}
 \end{figure}
 \end{frame}
+
+
+
+
+
+\begin{frame}{Coding together}
+
+\begin{itemize}
+\item Let's go to Mixtape Sessions repository now into /Labs/Texas 
+\item I'll walk us through the Stata and R code so you understand the syntax and underlying logic
+\item But then I have us a practice assignment 
+\end{itemize}
+
+\end{frame}
+
 
 
 

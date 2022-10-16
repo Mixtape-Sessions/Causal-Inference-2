@@ -49,9 +49,10 @@
 
 \footnotesize
 \begin{itemize}
-\item Differential timing with heterogeneity -- Bacon, Callaway and Sant'anna, etc. 
+\item Basic principles -- DiD calculation, ATT, parallel trends, falsifications, event studies
 \item Covariates -- Abadie, Sant'Anna and Zhao
-\item Fuzzy - de Chaisemartin and D'Haultfoeuille 
+\item Differential timing with heterogeneity -- Bacon, Callaway and Sant'anna, Sun and Abraham, Borusyak, et al., Gardner, Wooldridge
+\item Continuous treatments -- Callaway, Sant'anna and Goodman-Bacon
 \end{itemize}
 
 \end{frame}
@@ -72,8 +73,7 @@
 \begin{itemize}
 \item Simple 2x2 has its own problems when estimated using TWFE \emph{if you include covariates}
 \item Stronger assumptions needed to include covariates, and bias can be large
-\item Don't control for covariates that could be affected by the outcome (e.g., COLLIDER BIAS!! DAG!! BOOGIEMAN!)
-\item Why pay more for the same car?
+\item Don't control for covariates that could be affected by the outcome 
 \end{itemize}
 
 \end{frame}
@@ -82,9 +82,8 @@
 
 \begin{itemize}
 \item Main problem in differential timing is heterogeneity and the use of already-treated units as controls
-\item Honestly, I'll just put my neck out there -- if you have any reason to believe homogenous treatment effects hold from theory, fine.  Use TWFE
-\item But with differential timing and not a priori theory, you \emph{cannot} use TWFE.  It is biased, and it does not obey a ``no sign flip'' property, weights can be negative, etc etc.
-\item CS has additional benefits like examining heterogenous responses by timing -- this is part of the value of defining target parameters as weighted averages
+\item Differential timing and lacking a priori theory, you \emph{cannot} use TWFE.  It is biased, and it does not obey a ``no sign flip'' property, weights can be negative, etc etc.
+\item Robust DiD methods do not place restrictions on treatment effect heterogeneity 
 \end{itemize}
 
 \end{frame}
@@ -92,15 +91,22 @@
 \begin{frame}{Concluding remarks}
 
 \begin{itemize}
-\item Causal claims depends on valid assumptions, high quality and appropriate data, and appropriate estimators
-\item Use this opportunity to remember how much fun econometrics is
-\item Don't sweat whether you learned everything in this seminar -- check out my substack ``Causal Inference: the Remix'' for simple explainers, go back to the papers, talk to the authors (they are all very smart, but also extremely kind people)
-\item Have fun!  Remember that applied work is exciting, so don't sweat it.  Don't forget how great it is to learn something new
-\item Don't forget that season 2 of \underline{Ted Lasso} came out yesterday.  It felt the same, but different (metaphor)
+\item But when you lose parallel trends, you're probably going in the direction of needing synthetic control methods
+\item There are plenty and they also require good form fit pre-treatment
+\item But when you fail that, there are new advances -- augmented synth, Imbens and Doudchenko both allow for lower quality fit
 \end{itemize}
 
 \end{frame}
 
+\begin{frame}{Conclusion}
+
+\begin{itemize}
+\item Thank you for coming to the workshop
+\item I hope that this was valuable for you
+\item We will be doing this until demand drops off, so keep your eyes peeled
+\end{itemize}
+
+\end{frame}
 
 
 
