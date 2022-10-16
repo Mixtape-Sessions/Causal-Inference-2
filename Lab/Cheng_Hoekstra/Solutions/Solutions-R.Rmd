@@ -98,7 +98,7 @@ ggdid(es_cs)
 es_imputation <- did2s(
   yname = "l_homicide",
   first_stage = ~ 1 | sid + year, 
-  second_stage = ~ i(rel_year, ref = -1s), 
+  second_stage = ~ i(rel_year, ref = -1), 
   treatment = "treat", 
   cluster_var = "sid",
   data = castle
