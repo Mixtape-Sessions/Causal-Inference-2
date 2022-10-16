@@ -27,60 +27,18 @@ active, i.e. when `year` is greater than or equal to `effyear`.
 
 library(haven)
 library(tidyverse)
-```
-
-    ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
-
-    ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
-    ✔ tibble  3.1.8     ✔ dplyr   1.0.9
-    ✔ tidyr   1.2.0     ✔ stringr 1.4.0
-    ✔ readr   2.1.2     ✔ forcats 0.5.2
-
-    ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ✖ dplyr::filter() masks stats::filter()
-    ✖ dplyr::lag()    masks stats::lag()
-
-``` r
 library(fixest) 
 library(did2s)
-```
-
-    ℹ did2s (v0.7.0). For more information on the methodology, visit <https://www.kylebutts.com/did2s>
-
-    To cite did2s in publications use:
-
-      Butts, Kyle (2021).  did2s: Two-Stage Difference-in-Differences
-      Following Gardner (2021). R package version 0.7.0.
-
-    A BibTeX entry for LaTeX users is
-
-      @Manual{,
-        title = {did2s: Two-Stage Difference-in-Differences Following Gardner (2021)},
-        author = {Kyle Butts},
-        year = {2021},
-        url = {https://github.com/kylebutts/did2s/},
-      }
-
-``` r
 library(did)
 library(bacondecomp)
-```
 
-
-    Attaching package: 'bacondecomp'
-
-    The following object is masked from 'package:did2s':
-
-        castle
-
-``` r
 castle <- haven::read_dta('https://github.com/scunning1975/mixtape/raw/master/castle.dta')
 
 # Never treated have `effyear` = Inf
 castle[is.na(castle$effyear), ]$effyear <- 0
 castle$rel_year = castle$year - castle$effyear
 castle[castle$effyear == 0, ]$rel_year <- -1
-castle$treat = castle$year >= castle$effyear
+castle$treat = (castle$year >= castle$effyear) & (castle$effyear != 0)
 ```
 
 1.  Now that our data is in the correct order, we will estimate the
@@ -129,8 +87,7 @@ atts <- att_gt(
     Warning in pre_process_did(yname = yname, tname = tname, idname = idname, : Be aware that there are some small groups in your dataset.
       Check groups: 2005,2007,2008,2009.
 
-    Warning in att_gt(yname = "l_homicide", tname = "year", idname = "sid", : Not
-    returning pre-test Wald statistic due to singular covariance matrix
+    Warning in att_gt(yname = "l_homicide", tname = "year", idname = "sid", : Not returning pre-test Wald statistic due to singular covariance matrix
 
 ``` r
 es_cs <- aggte(atts, type = "dynamic")
@@ -168,19 +125,44 @@ averaging $ATT(g,t)$
 es_imputation <- did2s(
   yname = "l_homicide",
   first_stage = ~ 1 | sid + year, 
-  second_stage = ~ i(rel_year, ref = -1s), 
+  second_stage = ~ i(rel_year, ref = -1), 
   treatment = "treat", 
   cluster_var = "sid",
   data = castle
 )
+```
 
+    Running Two-stage Difference-in-Differences
+    • first stage formula `~ 1 | sid + year`
+    • second stage formula `~ i(rel_year, ref = -1)`
+    • The indicator variable that denotes when treatment is on is `treat`
+    • Standard errors will be clustered by `sid`
+
+``` r
 coefplot(es_imputation)
 ```
 
-    Error: <text>:8:40: unexpected symbol
-    7:   first_stage = ~ 1 | sid + year, 
-    8:   second_stage = ~ i(rel_year, ref = -1s
-                                              ^
+![](Solutions-R_files/figure-gfm/es-imputation-1.png)<!-- -->
+
+``` r
+# Manual 
+first_stage <- feols(
+  l_homicide ~ 1 | sid + year,
+  data = subset(castle, treat == FALSE)
+)
+
+castle$l_homicide_resid <- 
+  castle$l_homicide - predict(first_stage, newdata = castle)
+
+second_stage <- feols(
+  l_homicide_resid ~ i(rel_year, ref = -1),
+  data = castle
+)
+
+coefplot(second_stage)
+```
+
+![](Solutions-R_files/figure-gfm/es-imputation-manual-1.png)<!-- -->
 
 4.  Next, use the Sun and Abraham event-study estimator. *Note:* use
     `sunab` function within the `fixest` package in R or the
@@ -217,7 +199,7 @@ for(g in groups) {
   stacked <- bind_rows(stacked, 
     castle |> 
       filter(effyear == g | effyear == 0 | year < effyear) |>
-      filter((rel_year >= -5 & rel_year <= 4) | effyear = 0) |>
+      filter((rel_year >= -5 & rel_year <= 4) | effyear == 0) |>
       mutate(stack_id = g)
   )
 }
@@ -229,7 +211,4 @@ feols(
   coefplot()
 ```
 
-    Error: <text>:12:57: unexpected '='
-    11:       filter(effyear == g | effyear == 0 | year < effyear) |>
-    12:       filter((rel_year >= -5 & rel_year <= 4) | effyear =
-                                                                ^
+![](Solutions-R_files/figure-gfm/es-stacked-1.png)<!-- -->
