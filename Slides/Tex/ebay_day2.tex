@@ -1504,18 +1504,6 @@ Treatment effect estimate is \textbf{weighted diff-in-diff}:
 \begin{frame}{Conclusions}
 
 \begin{itemize}
-\item Synth is useful for very difficult problems in which parallel trends is implausible
-\item With large $T$ and perfect balance, you can use synth to get approximately unbiased treatment effect estimates under reasonable DGPs (we saw in the original ADH)
-\item But perfect balance is a unicorn and doesn't happen in most settings
-\item What do we do when it doesn't?  Give up?  Salvage the estimates somehow? How?
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{Conclusions}
-
-\begin{itemize}
 \item Augmented synth allows us to salvage the method, using an outcome model to remove bias from imperfect balance
 \item Partially pooled synth allows extension to the staggered adoption setting
 \item Combining the two methods gives us the best hope 
@@ -1526,8 +1514,6 @@ Treatment effect estimate is \textbf{weighted diff-in-diff}:
 \end{itemize}
 
 \end{frame}
-
-
 
 
 
@@ -1679,7 +1665,8 @@ Finally, we obtain generally good performance from specifications that use a cro
 \end{figure}
 \end{frame}
 
-\section{Concluding remarks}
+
+
 
 \begin{frame}{Summarizing}
 
@@ -1692,6 +1679,8 @@ Finally, we obtain generally good performance from specifications that use a cro
 \end{itemize}
 
 \end{frame}
+
+
 
 
 \subsection{Matrix completion with nuclear norm}
@@ -2655,6 +2644,7 @@ What is ``not too complex'' signal matrix $L$? It's one that looks different fro
 \end{frame}
 
 
+
 \begin{frame}{Some comments}
 
 \begin{itemize}
@@ -2679,6 +2669,24 @@ Code: \url{https://github.com/synth-inference/synthdid}
 Vignettes: \url{https://synth-inference.github.io/synthdid/articles/more-plotting.html}
 
 \end{frame}
+
+\section{Concluding remarks}
+
+
+
+\begin{frame}{Conclusions}
+
+\begin{itemize}
+\item Synth is useful for very difficult problems in which parallel trends is implausible
+\item With large $T$ and perfect balance, you can use synth to get approximately unbiased treatment effect estimates under reasonable DGPs (we saw in the original ADH)
+\item But perfect balance is a unicorn and doesn't happen in most settings
+\item What do we do when it doesn't?  Give up?  Salvage the estimates somehow? How?
+\end{itemize}
+
+\end{frame}
+
+
+
 
 
 
