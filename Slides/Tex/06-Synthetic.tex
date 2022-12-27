@@ -41,7 +41,14 @@
 
 \section{Synthetic control}
 
-\subsection{Abadie, Diamond and Hainmueller (2010)}
+\subsection{Abadie, Diamond and Hainmueller}
+
+
+\begin{frame}[plain]
+	\begin{figure}
+	\includegraphics[scale=0.25]{./lecture_includes/currie_synth.png}
+	\end{figure}
+\end{frame}
 
 \begin{frame}{What is synthetic control}
 	
@@ -2454,6 +2461,168 @@ Treatment effect estimate is \textbf{weighted diff-in-diff}:
 
 
 
+
+\subsection{Event studies in finance}
+
+\begin{frame}{Possibilities for detecting corruption}
+
+\begin{itemize}
+
+\item Event studies in finance have been used to detect abnormal patterns around ``events'' involving single firms
+\item Baker and Gelbach (2020) proposes a type of synthetic control estimator that uses machine learning to estimate a counterfactual, as opposed to imposing strong parametric assumptions
+\item Examples of its use have been applied to disruptions with the Elon Musk Twitter deal which while not corruption does involve estimating potential damages from stock price movements
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Largest Securities Class Action Settlements}
+
+\begin{enumerate}
+
+\item Enron: \$7.2b
+\item WorldCom Inc: \$6.1b
+\item Tyco International Ltd.: \$3.2b
+\item Cendant Corporation: \$3.2b
+
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Over time}
+
+\begin{figure}
+\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_1}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Event studies and securities litigation}
+
+\begin{itemize}
+
+\item Historically, the ``event study'' estimated ``abnormal'' returns under strong parametric assumptions (e.g., normality), but non-normal returns are normal
+
+\begin{quote}
+``The abnormal returns are the parameters that determine the damage estimates in securities suits, it is worthwhile to explore whether methods exist that can provide more accurate estimates of the abnormal return itself.''
+\end{quote}
+
+\item They argue that the event study is an out-of-sample prediction problem, which ML is used for, but it is also an extension of the synth modeling framework
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Basic idea}
+
+\begin{figure}
+\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_2}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Event studies as a prediction problem}
+
+\begin{itemize}
+\item Let the daily return for firm $i$ on date $t$ be $r_{i,t}$ and variables used for prediction is $X_{i,t}$ (e.g., market return, Fama-French and Carhart factors, a 1 for intercept, etc.)
+\item Suppose an event reveals fraud.  It's effect on daily return is $r^1_{i,t} - r^0_{i,t}$ and we want to estimate $r^0_{i,t}$ with $\widehat{r}^0_{i,t}$
+\item Construct a predicted residual as $\widehat{\varepsilon}_{i,t} = r_{i,t} - \widehat{r}^0_{i,t}$
+\item Typically people would estimate this with OLS $$r_{i,t} = \alpha + \beta_1 X_{i,t} + \varepsilon_{i,t}$$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{OLS, ML, MSE, Bias, Variance}
+
+\begin{itemize}
+\item MSE of predicted abnormal return for $\widehat{\varepsilon}_{i,t} = r_{i,t} - \widehat{\beta}X_{i,t}$ is the sum of a squared bias term and a variance term
+\item It's possible that the variance of one specification is lower enough than another to make up for a difference in bias
+\item OLS also suffers because it overfits data when used for prediction -- it is best unbiased linear predictor but at the price of greater out-of-sample variance linear prediction
+\item Since MSE is the basis for measuring prediction accuracy, ML estimators may outperform conventional OLS as we can explore increasing bias and reducing variance
+\item ML methods accept bias in exchange for reduced variance out-of-sample accomplished through ``training''
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Paper's punchline}
+
+\begin{quote}
+``Using real stock return data, we demonstrate that a number of out-of-the-box statistical approaches that are relatively easy to interpret perform better than the standard, OLS-based event study specifications used in court proceedings.
+
+\bigskip
+
+We find that specifications using penalized regression generally perform well.  Specifications that adjust for daily market performance using data-driven peer indexes also generally perform well.
+
+\bigskip
+
+Finally, we obtain generally good performance from specifications that use a cross-validation technique that is robust to otherwise unmodeled time-series properties of the DGP. The best specifications provide noticeable improvements over event study approaches conventionally used in securities litigation. 
+
+\end{quote}
+
+\end{frame}
+
+\begin{frame}{Peer index}
+
+\begin{itemize}
+\item They note that the best-performing specification makes use of both penalized regression and data-driven peer firm choice.
+\item They call this the ``reasonable peer index'', and they show that ML methods can usefully serve as a basis for choosing \emph{which} peer firms to include in an event study (again, making this a synth-like method) which can mitigate the subjective researcher bias that synth is meant to overcome
+\item Rather than subjectively picking which firms represent the counterfactual (over which there can be debate clearly, some disingenuous given the amount of money at stake), they propose letting the data say who the best peer is
+\item But using \emph{any} peer index appears to mitigate this too
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Ranking all the ML methods}
+
+\begin{figure}
+\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_5}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Elon Musk example}
+
+\begin{itemize}
+\item In an unpublished analysis, Baker examined Elon Musk's attempt to buy Twitter on Twitter's stock price
+\item Unlike his published paper, he's only going to use one form of ``penalized'' machine learning called ridge regression (which constrains what the coefficients can be in his model)
+\item He will use peer index and the S\&P500 for prediction purposes
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Purpose of the exercise}
+
+\begin{quote}
+``The goal here is to get a rough estimate of what TWTR would be trading at had Elon never put the stock in play. Note, this does not mean that the prediction is equivalent to what TWTR would trade at were the deal to not go through (without any damage payments), as Elon has likely destroyed value in the process. This prediction could in fact be used as a baseline price in any tort-type damages claim that the company would want to bring against Elon after the process is over.''
+\end{quote}
+
+\end{frame}
+
+\begin{frame}{Basic idea}
+
+\begin{figure}
+\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_3}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Basic idea}
+
+\begin{figure}
+\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_4}
+\end{figure}
+\end{frame}
+
+\section{Concluding remarks}
+
+\begin{frame}{Summarizing}
+
+\begin{itemize}
+\item Randomized treatments are great but not always available 
+\item Causal inference methods can utilize naturally occurring variation, but still must make adequate adjustments to find suitable controls
+\item Synthetic control and recent work on event studies can be possibilities
+\item Thank you!
+
+\end{itemize}
+
+\end{frame}
 
 
 
