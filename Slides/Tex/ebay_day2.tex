@@ -464,13 +464,31 @@ Y^0_{1t} - \sum^{J+1}_{j=2}w^*_jY_{jt} &=& \sum_{j=2}^{J+1} w_j^* \sum_{s=1}^{T_
 \end{frame}
 
 
+\begin{frame}{Criticism of weights}
+
+\begin{itemize}
+\item Prominent economist discussed Abadie, Diamond and Hainmueller (2015), a study on the reunification of Germany
+\item Incredulous and dismissive about the Japan weight of 0.16 for Germany
+\item But compare the weights used by regression with the weights used by synthetic control -- OLS weight on Japan is larger plus we get all these negative weights
+\item We're going to return to this issue about over fitting, negative weighting and extrapolation with regression -- but for now I thought it was interesting that synth was punished for being too honest
+\end{itemize}
+
+\end{frame}
 
 
-\begin{frame}{Coding exercise}
+\begin{frame}{Negative weights}
+
+\begin{figure}
+\includegraphics[scale=0.35]{./lecture_includes/abadie2015_table1}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Coding exercise: Texas prison construction}
 	
 	\begin{itemize}
 	\item The US has the highest prison population of any OECD country in the world 
-	\item 2.3 million are currently incarcerated in US federal and state prisons and county jails
+	\item 2 million are currently incarcerated in US federal and state prisons and county jails
 	\item Another 4.75 million are on parole
 	\item From the early 1970s to the present, incarceration and prison admission rates quintupled in size
 	\end{itemize}
@@ -486,40 +504,56 @@ Y^0_{1t} - \sum^{J+1}_{j=2}w^*_jY_{jt} &=& \sum_{j=2}^{J+1} w_j^* \sum_{s=1}^{T_
 \end{frame}
 
 
-\begin{frame}{Prison constraints}
+\begin{frame}{Managing inmate growth}
 
 	
 	\begin{itemize}
-	\item Prisons are and have been at capacity for a long time.  
-	\item Requires managing flows through
+	\item Prisons were at capacity so states had to make changes to adjust for growth by doing one or all of the following
 		\begin{itemize}
 		\item Prison construction
 		\item Overcrowding
 		\item Paroles
 		\end{itemize}
+	\item Guess how Texas was managing its capacity problems
 	\end{itemize}
 \end{frame}
 
 
 
-\begin{frame}{Texas prison boom}
+\begin{frame}{Texas Dept of Corrections loses human rights case}
 
-	
-	\begin{itemize}
-	\item Ruiz v. Estelle 1980  
+Ruiz v. Estelle 1980  
 		\begin{itemize}
 		\item Class action lawsuit against TX Dept of Corrections (Estelle, warden). 
-		\item TDC lost.  Lengthy period of appeals and legal decrees.  
+		\item TDC surprisingly lost, led to years of appeals and legal decrees
 		\item Lengthy period of time relying on paroles to manage flows
 		\end{itemize}
-	\item Governor Ann Richards (D) 1991-1995
-		\begin{itemize}
-		\item Operation prison capacity increased 30-35\% in 1993, 1994 and 1995. 
-		\item Prison capacity increased from 55,000 in 1992 to 130,000 in 1995.  
-		\item Building of new prisons (private and public)
-		\end{itemize} 
-	\end{itemize}
 \end{frame}
+
+
+
+\begin{frame}[shrink=30,plain]
+
+\begin{figure}
+\includegraphics{./lecture_includes/flow_rate_figure.pdf}
+\end{figure}
+
+Rising paroles, but what's that red line?
+\end{frame}
+
+
+	
+
+\begin{frame}{Texas prison expansion}
+
+ Governor Ann Richards (D) serves from 1991-1995
+		\begin{itemize}
+		\item Secures funding from Congress to build new prisons (public and private)
+		\item Operation prison capacity increased 30-35\% in 1993, 1994 and 1995. 
+		\item Or put differently, prison capacity increased from 55,000 in 1992 to 130,000 in 1995.  
+		\end{itemize} 
+\end{frame}
+
 
 \begin{frame}[shrink=30,plain]
 
@@ -535,38 +569,1113 @@ Y^0_{1t} - \sum^{J+1}_{j=2}w^*_jY_{jt} &=& \sum_{j=2}^{J+1} w_j^* \sum_{s=1}^{T_
 \end{figure}
 \end{frame}
 
-
 \begin{frame}[shrink=30,plain]
 
-\begin{figure}
-\includegraphics{./lecture_includes/flow_rate_figure.pdf}
-\end{figure}
-\end{frame}
-
-\begin{frame}[shrink=30,plain]
 
 \begin{figure}
 \includegraphics{./lecture_includes/total_incarceration.pdf}
 \end{figure}
 \end{frame}
 
-\begin{frame}[shrink=30,plain]
+\begin{frame}{Synthetic control}
 
-\begin{figure}
-\includegraphics{./lecture_includes/synth_placebo_totalincarceration1993.pdf}
-\end{figure}
+\begin{itemize}
+\item Let's work together to see how synthetic control would handle this
+\item Using the ADH canonical model, we will be estimating the dynamic ATT parameters per year for Texas by comparing with a non-negatively weighted control group
+\item We will use \texttt{synth} in Stata, R and python, but I'll teach with Stata first as it's faster
+\end{itemize}
+
 \end{frame}
 
 
 
 
 
-\begin{frame}{Coding together}
+
+
+\subsection{Augmented Synthetic Control}
+
+\begin{frame}{Comments about negative weights}
 
 \begin{itemize}
-\item Let's go to Mixtape Sessions repository now into /Labs/Texas 
-\item I'll walk us through the Stata and R code so you understand the syntax and underlying logic
-\item But then I have us a practice assignment 
+
+\item Abadie cautions against negative weights, even if it improves fit, because it necessarily extrapolates beyond the support of the data
+\item King and Zeng (2006) note, ``if we learn that a counterfactual question involves extrapolation, we still might wish to proceed if the question is sufficiently important, but we would be aware of how much model dependent our answers would be.''
+\item Much of the newer work has been to carefully balance issues around poor fit (bias) with negative weights (extrapolation)
+\item Now we introduce the augmented synthetic control model (Ben-Michael, Feller and Rothstein 2021, JASA)
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Why Fix What Isn't Broken?}
+
+\begin{quote}
+``The applicability of the [ADH2010] method requires a sizable number of pre-intervention periods. The reason is that the credibility of a synthetic control depends upon how well it tracks the treated unit’s characteristics and outcomes over an extended period of time prior to the treatment. \textbf{We do not recommend using this method when the pretreatment fit is poor or the number of pretreatment periods is small}. A sizable number of post-intervention periods may also be required in cases when the effect of the intervention emerges gradually after the intervention or changes over time.'' (my emphasis, Abadie, et al. 2015)
+\end{quote}
+
+\end{frame}
+
+\begin{frame}{What is augmented synthetic control?}
+
+\begin{itemize}
+\item Recall the quote from earlier by Athey and Imbens -- ``synthetic control is the most important innovation in causal inference of the last 15 years''
+\item A lot of activity on synth in last few years, not counting two ``augmented synthetic control'' papers by Eli Ben-Michael, Avi Feller and Jesse Rothstein
+\item First model will apply in single case situations with one treatment data with pre-treatment imbalance
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Why and when to augment}
+
+\begin{itemize}
+\item ADH will be biased in practical settings because it needs perfect pre-treatment fit and that's difficult to achieve in many applications 
+\item Their augmentation estimates the bias caused by covariate imbalance with an outcome model
+\item Introduces ridge regularization linear regression to estimate new weights that reweight synth
+\item It's similar to ``bias reduction'' by Abadie and Imbens (2011), it will have doubly robust properties and inverse probability weighting
+\item When synth is imbalanced, augmented synth will reduce bias reweighting and bias correction, and when synth is balanced, they are the same
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Comments on negative weights}
+
+	\begin{itemize}
+	\item Relaxes original ADH constraints that required non-negative weights at the expense of allowing extrapolation
+	\item This is done to correct for the bias caused by pre-treatment imbalance (``poor fit'')
+	\item Negative weights puts the treated unit back in the convex hull through extrapolation
+	\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Same Notation}
+
+\begin{itemize}
+\item Observe $J+1$ units over $T$ time periods
+\item Unit $1$ will be treated at time period $T_0=T-1$ (we allow for unit $1$ to be an average over treated units)
+\item Units $j=2 $ to $J+1$ (using ADH original notation) are ``never treated''
+\item $D_j$ is the treatment indicator
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[plain,shrink=20]
+\begin{center}
+\textbf{Pre-treatment covariates and outcomes}
+\end{center}
+
+\begin{center}
+\[ \left( \begin{array}{ccccc}
+    Y_{11} & Y_{12} & Y_{13} & \dots  & Y_{1T}^1 \\
+    Y_{21} & Y_{22} & Y_{23} & \dots  & Y_{2T}^0  \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    Y_{N1} & Y_{i2} & Y_{i3} & \dots  & Y_{NT}^0
+\end{array} \right) \equiv
+\left( \begin{array}{ccccc}
+    X_{11} & X_{12} & X_{13} & \dots  & Y_{1} \\
+    X_{21} & X_{22} & X_{23} & \dots  & Y_{2}  \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    X_{N1} & X_{i2} & X_{i3} & \dots  & Y_{N}
+\end{array} \right) \equiv
+\left( \begin{array}{cc}
+    X_{1} & Y_{1} \\
+    X_{0} & Y_{0}  \\
+\end{array} \right)
+\]
+
+\end{center}
+
+This is a 2x2 in diff-in-diff parlance (i.e., single last period block structure, no staggered roll out)
+
+\bigskip
+
+The last column is always post-treatment and switches from $Y^1$ to $Y$ via switching equation
+
+\bigskip
+
+The last column is just showing a top row of the treated unit 1 and the bottom row of all the donor pool (i.e., we will use $X_0$ and $Y_0$ to represent all the donor pool units)
+
+\end{frame}
+
+
+\begin{frame}{Optimal weights}
+
+Synth minimizes the following norm:
+
+\begin{eqnarray*}
+\textrm{min}_w = || V_X^{1/2} (X_1 - X_0'w) ||_2^2 + \psi \sum_{D_j=0}f(w_j)\\
+\textrm{s.t. }\sum_{j=2}^N w_{j} =1 \textrm{ and } w_j \geq 0
+\end{eqnarray*}
+
+$Y_0'w*$ (i.e., optimally weighted donor pool) is the unit 1 ``synthetic control'' 
+
+\end{frame}
+
+
+\begin{frame}{Predicting counterfactuals}
+
+Synth minimizes the following norm:
+
+\begin{eqnarray*}
+\textrm{min}_w = || V_X^{1/2} (X_1 - X_0'w) ||_2^2 + \psi \sum_{D_j=0}f(w_j)\\
+\textrm{s.t. }\sum_{j=2}^N w_{j} =1 \textrm{ and } w_j \geq 0
+\end{eqnarray*}
+
+We are hoping that $\widehat{Y}_1^0$ with $Y_0' {w}^{*}$ based on ``perfect fit'' pre-treatment
+
+\end{frame}
+
+
+
+
+\begin{frame}{$V_X$ matrix}
+
+Synth minimizes the following norm:
+
+\begin{eqnarray*}
+\textrm{min}_w = || V_X^{1/2} (X_1 - X_0'w) ||_2^2 + \psi \sum_{D_j=0}f(w_j)\\
+\textrm{s.t. }\sum_{j=2}^N w_{j} =1 \textrm{ and } w_j \geq 0
+\end{eqnarray*}
+
+$V_x$ is the ``importance'' matrix on $X_0$ (Some packages default to choose $V^*_x$ that minimizes pre-treatment MSE, but it can be identity matrix for simplicity).
+\end{frame}
+
+\begin{frame}{Penalizing the weights with ridge}
+
+Synth minimizes the following norm:
+
+\begin{eqnarray*}
+\textrm{min}_w = || V_X^{1/2} (X_1 - X_0'w) ||_2^2 + \psi \sum_{D_j=0}f(w_j)\\
+\textrm{s.t. }\sum_{j=2}^N w_{j} =1 \textrm{ and } w_j \geq 0
+\end{eqnarray*}
+
+Modification to the original synthetic control model is the inclusion of the penalty term. ``The choice of penalty is less central when weights are constrained to be on the simplex, but becomes more important when we relax this constraint.''
+
+\end{frame}
+
+\begin{frame}{Convex hull}
+
+Synth minimizes the following norm:
+
+\begin{eqnarray*}
+\textrm{min}_w = || V_X^{1/2} (X_1 - X_0'w) ||_2^2 + \psi \sum_{D_j=0}f(w_j)\\
+\textrm{s.t. }\sum_{j=2}^N w_{j} =1 \textrm{ and } w_j \geq 0
+\end{eqnarray*}
+
+These weights are used to address imbalance, not to weight the donor units, bc we are using this method is for when the weighted controls are still outside the convex hull (poor fit)
+
+\end{frame}
+
+
+
+
+\begin{frame}{Original ADH factor model and bias}
+
+\begin{eqnarray*}
+Y_{it}^0 = \alpha_t + \theta_t Z_i + \lambda_t u_i + \varepsilon_{it}
+\end{eqnarray*}
+
+\bigskip
+
+Original synth factor model (with ADH notation)
+
+\bigskip
+
+\begin{eqnarray*}
+Y^0_{1t} - \sum^{J+1}_{j=2}w^*_jY_{jt} &=& \sum_{j=2}^{J+1} w_j^* \sum_{s=1}^{T_0} \lambda_t \bigg ( \sum_{n=1}^{T_0} \lambda_n'\lambda_n \bigg )
+^{-1} \lambda_s'(\varepsilon_{js} - \varepsilon_{1s} ) \\
+&& - \sum_{j=2}^{J+1} w_j^* (\varepsilon_{jt} - \varepsilon_{1t})
+\end{eqnarray*}
+
+\bigskip
+
+The bias of ADH synthetic control
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{Perfect fit is necessary}
+
+\begin{eqnarray*}
+Y^0_{1t} - \sum^{J+1}_{j=2}w^*_jY_{jt} &=& \sum_{j=2}^{J+1} w_j^* \sum_{s=1}^{T_0} \lambda_t \bigg ( \sum_{n=1}^{T_0} \lambda_n'\lambda_n \bigg )
+^{-1} \lambda_s'(\varepsilon_{js} - \varepsilon_{1s} ) \\
+&& - \sum_{j=2}^{J+1} w_j^* (\varepsilon_{jt} - \varepsilon_{1t})
+\end{eqnarray*}
+
+\bigskip
+
+Recall that the bias of ADH required ``perfect fit'' using their factor model (I'll change $\lambda$ factor loadings in a minute)
+
+\end{frame}
+
+
+
+
+\begin{frame}{Perfect fit models heterogeneity}
+
+
+\begin{eqnarray*}
+Y^0_{1t} - \sum^{J+1}_{j=2}w^*_jY_{jt} &=& \sum_{j=2}^{J+1} w_j^* \sum_{s=1}^{T_0} \lambda_t \bigg ( \sum_{n=1}^{T_0} \lambda_n'\lambda_n \bigg )
+^{-1} \lambda_s'(\varepsilon_{js} - \varepsilon_{1s} ) \\
+&& - \sum_{j=2}^{J+1} w_j^* (\varepsilon_{jt} - \varepsilon_{1t})
+\end{eqnarray*}
+
+Only units that are alike in observables and unobservables should produce similar trajectories of the outcome variable over extended periods of time
+
+
+\end{frame}
+
+
+\begin{frame}{Call back to the earlier ADH15 quote}
+
+\begin{quote}
+``The applicability of the [ADH2010] method requires a sizable number of pre-intervention periods. The reason is that the credibility of a synthetic control depends upon how well it tracks the treated unit’s characteristics and outcomes over an extended period of time prior to the treatment. \textbf{We do not recommend using this method when the pretreatment fit is poor or the number of pretreatment periods is small}. A sizable number of post-intervention periods may also be required in cases when the effect of the intervention emerges gradually after the intervention or changes over time.'' (my emphasis, Abadie, et al. 2015)
+\end{quote}
+
+\end{frame}
+
+\begin{frame}{Slight change in synth notation}
+
+\begin{itemize}
+\item Assume that our outcome, $Y_{jt}$, follows a factor model where $m(.)$ are pre-treatment outcomes: $$ Y_{jt}^0 = m_{jt} + \varepsilon_{jt}$$
+\item Since $\widehat{m(.)}$ estimates the post-treatment outcome, let's view it as estimated bias, analogous to bias correction for inexact matching (Abadie and Imbens 2011)
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Bias correction}
+
+ $$ Y_{jt}^0 = m_{jt} + \varepsilon_{jt}$$
+
+\begin{itemize}
+\item When the weights achieve exact balance, the bias of synthetic control decreases with $T$
+\item The intuition is that for a large $T$ ($T$ not transitory shocks), you achieve balance by balancing the latent parameter on the unobserved heterogeneity in our factor model
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Common practice}
+
+\begin{itemize}
+\item Length of panel $T$ varies by dataset and question
+\item Oftent the number of time periods isn't much larger than the number of units
+\item But even when it does, ``exact balance'' is exception not the rule
+\item Without exact balance, unobserved heterogeneity won't get deleted and bias is introduced
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Treatment and control units}
+
+	\begin{figure}
+	\includegraphics[scale=0.07]{./lecture_includes/convexhull_1.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Convex hull (good fit)}
+
+	\begin{figure}
+	\includegraphics[scale=0.07]{./lecture_includes/convexhull_2.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Outside the convex hull (bad fit)}
+
+	\begin{figure}
+	\includegraphics[scale=0.07]{./lecture_includes/convexhull_3.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Use negative weights to get back}
+
+	\begin{figure}
+	\includegraphics[scale=0.07]{./lecture_includes/convexhull_4.png}
+	\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Estimating the bias}
+
+\begin{itemize}
+\item So the idea is to adjust the synthetic control when we have poor fit pre-treatment.
+\item Use $\widehat{m}_{jT}$ from our factor model as an estimator for the post-treatment control potential outcome $Y_{jT}^0$.
+\item What does this look like?
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{Setup of the estimator}
+
+Let's adjust synthetic control for this bias.  First we'll apply the \textbf{bias correction}.  Then we'll do the doubly robust augmented \textbf{inverse probability weighting}. Let $Y_1^{aug,0}$ be the augmented potential outcome
+
+\begin{eqnarray*}
+Y_1^{aug,0} &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{j} + \widehat{m}(X_1) - \sum_{D_j=0} \widehat{w}_j \widehat{m}(X_j) \\
+&=& \widehat{m}(X_1) + \sum_{D_j=0} \widehat{w_j}(Y_j - \widehat{m}(X_j))
+\end{eqnarray*}
+
+\end{frame}
+
+
+\begin{frame}{Interpreting line 1}
+
+\begin{eqnarray*}
+Y_1^{aug,0} &=& \underbrace{\sum_{D_j=0} \widehat{w}_j^{synth} Y_{jT}}_{\mathclap{Original\ ADH}} + \bigg (\widehat{m}_{1T} - \sum_{D_j=0} \widehat{w}_j^{synth}\widehat{m}_{jT} \bigg ) \\
+&=& \widehat{m}_{1T} + \sum_{D_j=0} \widehat{w}_j^{synth} (Y_{jT} - \widehat{m}_{jT})
+\end{eqnarray*}
+
+(1) Note how in the first line the traditional synthetic control weighted outcomes are corrected by the imbalance in a particular function of the pre-treatment outcomes $\widehat{m}$. 
+\end{frame}
+
+
+
+
+\begin{frame}{Interpreting line 1}
+
+\begin{eqnarray*}
+Y_1^{aug,0}  &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{jT} + \bigg (\underbrace{\widehat{m}_{1T}}_{Bias\ correction} - \sum_{D_j=0} \widehat{w}_j^{synth}\widehat{m}_{jT} \bigg ) \\
+&=& \widehat{m}_{1T} + \sum_{D_j=0} \widehat{w}_j^{synth} (Y_{jT} - \widehat{m}_{jT})
+\end{eqnarray*}
+
+(1) Since $\widehat{m}$ estimates the post-treatment outcome, we can view this as an estimate of the bias due to imbalance, which is similar to how you address imbalance in matching with a bias correction formula (Abadie and Imbens 2011). 
+
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Interpreting line 1}
+\begin{eqnarray*}
+Y_1^{aug,0}  &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{jT} + \bigg (\widehat{m}_{1T} - \sum_{D_j=0} \widehat{w}_j^{synth}\widehat{m}_{jT} \bigg ) \\
+&=& \widehat{m}_{1T} + \sum_{D_j=0} \widehat{w}_j^{synth} (Y_{jT} - \widehat{m}_{jT})
+\end{eqnarray*}
+
+(1) So if the bias is small, then synthetic control and augmented synthetic control will be similar because that interior term will be zero.
+
+\end{frame}
+
+\begin{frame}{Interpreting line 2}
+
+\begin{eqnarray*}
+Y_1^{aug,0}  &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{jT} + \bigg (\widehat{m}_{1T} - \sum_{D_j=0} \widehat{w}_j^{synth}\widehat{m}_{jT} \bigg ) \\
+&=& \widehat{m}_{1T} + \sum_{D_j=0} \widehat{w}_j^{synth} (Y_{jT} - \widehat{m}_{jT})
+\end{eqnarray*}
+
+(2) The second equation is equivalent to a double robust estimation which begins with an outcome model but then re-weights it to balance residuals.
+
+
+\end{frame}
+
+
+
+\begin{frame}{Interpreting line 2}
+
+\begin{eqnarray*}
+Y_1^{aug,0}  &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{jT} + \bigg (\widehat{m}_{1T} - \sum_{D_j=0} \widehat{w}_j^{synth}\widehat{m}_{jT} \bigg ) \\
+&=& \widehat{m}_{1T} + \sum_{D_j=0} \widehat{w}_j^{synth} (Y_{jT} - \widehat{m}_{jT})
+\end{eqnarray*}
+
+(2) The second equation has a connection to inverse probability weighting (they show this in an appendix)
+
+
+\end{frame}
+\begin{frame}{Ridge Augmented SCM}
+
+\begin{eqnarray*}
+\textrm{arg min}_{\eta_0,\eta} \frac{1}{2} \sum_{D_j=0} (Y_j - (\eta_0 + X_j'\eta))^2 + \lambda^{ridge} || \eta ||_2^2
+\end{eqnarray*}Here we estimate $\widehat{m}(X_j)$ with ridge regularized linear model and penalty hyper parameter $\lambda^{ridge}$. (Sorry -- this is not the same $\lambda$ as in ADH10; author team is using the same $\lambda$ for different things).
+
+\bigskip
+
+Once we have those, we adjust for imbalance using the $\widehat{\eta}^{ridge}$ parameter as a weight on the outcome model itself. 
+
+\end{frame}
+
+\begin{frame}{Ridge Augmented SCM}
+
+\begin{eqnarray*}
+\textrm{arg min}_{\eta_0,\eta} \frac{1}{2} \sum_{D_j=0} (Y_j - (\eta_0 + X_j'\eta))^2 + \lambda^{ridge} || \eta ||_2^2
+\end{eqnarray*}Once we have those, we adjust for imbalance using the $\widehat{\eta}^{ridge}$ parameter as a weight on the outcome model itself. 
+
+\end{frame}
+
+
+
+
+\begin{frame}{Go back to that weighting but use the ridge parameters}
+
+\begin{eqnarray*}
+Y_1^{aug,0} &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{j} + \bigg ( X_1 - \sum_{D_j=0} \widehat{w}_j^{synth} X_j \bigg ) \widehat{\eta}^{ridge} \\
+&=& \sum_{D_j=0} \widehat{w}_j^{aug}Y_j
+\end{eqnarray*}What you're trying to do is adjust with the $\widehat{w}_j^{aug}$ weights to improve balance.  
+
+\end{frame}
+
+
+\begin{frame}{The ridge weights are key to the augmentation}
+
+\begin{eqnarray*}
+\widehat{w}_j^{aug} = \widehat{w}_j^{synth} + (X_j - X_0' \widehat{w}_j^{synth}) ' (X_0'X_0 + \lambda I_{T_0})^{-1}X_i
+\end{eqnarray*}
+
+The second term is adjusting the original synthetic control weights, $w_j^{synth}$ for better balance. 
+
+\bigskip
+
+Don't lose sight of the goal: we are trying to address the bias due to imbalance. 
+
+\bigskip
+
+We always could get better balance, but at a cost of higher variance and negative weights. 
+
+\end{frame}
+
+
+
+\begin{frame}{Ridge will allow negative weights via extrapolation}
+
+\begin{eqnarray*}
+\widehat{w}_j^{aug} = \widehat{w}_j^{synth} + (X_j - X_0' \widehat{w}_j^{synth}) ' (X_0'X_0 + \lambda I_{T_0})^{-1}X_i
+\end{eqnarray*}
+
+Relaxing the constraint from synth that weights be non-negative, as non-negative weights prohibit extrapolation. Since we aren't in the convex hull, if we are to proceed at all, we \emph{must} extrapolate, otherwise synth will be biased.
+
+\end{frame}
+
+
+
+\begin{frame}{Summarizing and some comments}
+
+\begin{itemize}
+\item When the treated unit lies in the convex hull of the control units so that the synth weights exactly balance lagged outcomes, then SCM and Ridge ASCM are the same
+\item When synth weights do not achieve exact balance, Ridge ASCM will use negative weights to extrapolate from the convex hull to the control units
+\item The amount of extrapolation will be determined by how much imbalance we're talking about and the estimated hyperparameter $\widehat{\lambda}^{ridge}$
+\item When synth has good pre-treatment fit or when $\lambda^{ridge}$ is large, then adjustment will be small and the augmented weights will be close to the SCM weights
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Intuition}
+
+Ridge begins at the center of control units, while Ridge ASCM begins at the synth solution. Both move towards an exact fit solution as the hyperparameter is reduced. It is possible to achieve the same level of balance with non-negative weights.  Both ridge and Ridge ASCM extrapolate from the support of the data to improve pre-treatment fit relative to synth alone. Let's look at a picture!
+
+
+\end{frame}
+
+
+
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/aug_1.png}
+	\end{figure}
+	
+\end{frame}	
+
+
+\begin{frame}{Conformal Inference}
+
+Inference will be based on ``conformal inference'' method by Chernozhukov et al. (2019).  We will get 95\% point-wide confidence intervals. They also outline a jackknife method by Barber et al (2019). 
+
+\end{frame}
+
+
+\begin{frame}{Steps of conformal Inference}
+
+\begin{enumerate}
+\item [1.] Choose a sharp null (i.e., no unit-level treatment effects, $\delta_0=0$)
+	\begin{itemize}
+	\item Enforce the null by creating an adjusted post-treatment outcome for the treated unit equal to $Y_{1T}-\delta_0$ (in other words, we get CI on the post-treatment outcomes, not the pre-treatment)
+	\item Augment the original dataset to include the post-treatment time period $T$ with the adjusted outcome and use the estimator to obtain the adjusted weights $\widehat{w(\delta_0)}$
+	\item Compute a p-value by assessing whether the adjusted residual conforms with the pre-treatment residuals (see Appendix A for the exact formula)
+	\end{itemize}
+\end{enumerate}
+
+
+\end{frame}
+
+
+\begin{frame}{Steps of conformal Inference}
+
+\begin{enumerate}
+\item [2.] Compute a level $\alpha$ for $\delta$ by inverting the hypothesis test (see Appendix A for the exact formula)
+	\begin{itemize}
+	\item Chernozhukov et al. (2019) provide several conditions for which approximate or exact finite-sample validity of the $p$-values (and hence coverage of the predicted confidence intervals) can be achieved
+	\end{itemize}
+\end{enumerate}
+
+See Appendix A for more details
+
+\end{frame}
+
+
+\begin{frame}{Simulations (summarized)}
+
+\begin{itemize}
+\item They examine the performance of synth against ridge, Augmented synth with ridge regularization, demeaned synth, and fixed effects under four DGP
+\item Augmenting synth with a ridge outcome regression reduces bias relative to synth alone in all four simulations
+\item This underscores the importance of the recommendation Abadie, et al. (2015) make which is that synth should be used in settings with excellent pre-treatment fit
+\item They also examine a real situation involving Kansas tax cuts in 2012
+\end{itemize}
+
+\end{frame}
+
+\imageframe{./lecture_includes/aug_5.png}
+
+\imageframe{./lecture_includes/aug_6.png}
+
+\begin{frame}{Couple of minor points}
+
+\begin{itemize}
+\item Hyper parameter chosen using cross validation
+\item This can be extended to auxiliary covariates as opposed to just lagged outcomes (section 6)
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Some minor points}
+
+\begin{itemize}
+\item We've motivated augmented synth as a kind of bias correction, but you can also think of it as correcting synth with an inverse probability weight (Appendix E)
+\item There's an implicit estimate of a propensity score model with ridge regularization
+\item Weights are odds of treatment (they're ATT weights), i.e., they're the inverse probability weighting scheme from Abadie (2005)
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Concluding remarks}
+
+\begin{itemize}
+\item Synthetic control is used with small $N$ comparison units, long pre-treatment $T$ periods and excellent pre-treatment fit
+\item ADH interpolates its counterfactual by restricting weights to be non-negative and sum to one
+\item When fit is poor, ridge regression augmentation introduces some degree of extrapolation to correct for imbalance bias using negative weighting
+\item Augmented synth is no worse than ADH and with imbalance dominates
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Python code}
+
+Shaleen Swarup (2021), ``Understanding Causal Inference with Synthetic Control method and implementing it in Python'', 
+\url{https://towardsdatascience.com/causal-inference-with-synthetic-control-in-python-4a79ee636325}
+
+\bigskip
+
+Matheus Facure Alves (2022), \underline{Causal Inference for The Brave and True}, \url{https://matheusfacure.github.io/python-causality-handbook/15-Synthetic-Control.html} 
+
+\bigskip
+
+ \url{https://matheusfacure.github.io/python-causality-handbook/Conformal-Inference-for-Synthetic-Control.html}
+
+\end{frame}
+
+
+
+\begin{frame}{R code}
+
+R vignette: \url{https://github.com/ebenmichael/augsynth/blob/master/vignettes/singlesynth-vignette.md}
+
+\bigskip
+
+Let's look at the Texas example ourselves so we can study the R syntax
+
+\end{frame}
+
+\subsection{Augmented Synthetic Control with Staggered Rollout}
+
+\begin{frame}
+
+\begin{itemize}
+\item ADH was designed for a single treated unit, no extrapolation, non-negative weights summed to one
+\item Previous Ben-Michael, Feller and Rothstein (2021a) paper addressed imperfect fit in the pre-trends using regularization
+\item Ben-Michael, Feller and Rothstein (2021b) focus on the single unit by allowing differential timing
+	\begin{itemize}
+	\item Augmented synth is a double-robust style (or bias corrected) estimator
+	\item This synth is similar to ``shrunken''/empirical Bayes/random effects estimation
+	\end{itemize}
+\item It sort of fits with the newer differential timing papers, like matrix completion with nuclear norm regularization had, even though neither are technically DiD
+\item More machine learning regularization as we've been seeing
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Paper's Contribution}
+
+\begin{enumerate}
+	\item Extend synth to staggered adoption (as opposed to one unit)
+	\item Show results using an example of unions on spending
+	\item Propensity score weighting with shrinkage
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Motivation}
+
+
+Synthetic control is not a very good propensity score estimator
+\begin{itemize}
+\item Uses pre-treatment outcomes as covariates (some use other $X$ covariates)
+\item Small $N$ and large $K$ means propensity score must be regularized with probability approaching 1 so perfect balance is not achieved
+\item You can borrow information to reduce bias from imbalance -- for instance from an outcome model (e.g., a regression) and/or other treated units
+\item You can then combine to produced a weighted event study estimator
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Stepping back}
+
+\begin{itemize}
+\item A unit is treated at some period $t$ and we want to know that event's effect on $Y$
+\item Standard approach is DiD and event studies
+	\begin{itemize}
+	\item Tons of papers recently (e.g., Goodman-Bacon 2021, Callaway and Sant'Anna 2020)
+	\item But what units all DiD papers is \emph{parallel trends}
+	\end{itemize}
+\item That assumption may be wrong, in which case the models' findings will be wrong
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Synth with staggered adoption}
+
+\begin{itemize}
+\item Synth was designed originally for the comparative case study -- i.e., one treatment group
+\item What do we do when there's more than one treatment group?
+\item People in the past tried different things
+	\begin{itemize}
+	\item If they were all treated at the same time, they'd average the treated units and construct a synthetic control for the average
+	\item If it was staggered, then they'd fit synth for each treated unit separately, then average those estimates
+	\end{itemize}
+\item They're going to propose optimizing a weighted average of the \emph{global balance} (for the average treated unit) and the sum of \emph{unit-specific balance} for each treated unit
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Intuition}
+
+We want to balance the average of the underlying factor loadings
+
+\begin{itemize}
+\item Balancing individual units may cause large imbalance in the average if errors all go in the same direction
+\item Balancing the average outcome may not balance factor loadings if imbalance for different treated units offset each other
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Teacher unions and teacher salaries/spending}
+
+Their application is about teacher unions
+\begin{itemize}
+\item 1964-1987: 33 states grant collective bargaining rights to teachers
+\item Long literature exploited the timing (Hoxby 1996; Lovenheim 2009)
+\item Impact on student spending, teacher salaries
+	\begin{itemize}
+	\item Hoxby (1996) finds increased spending by 12\%
+	\item Paglayan (2019) estimates precise zero in an event study model using ever-treated states
+	\end{itemize}
+\item They're going to re-analyze using all states and synth models
+\end{itemize}
+
+\end{frame}
+
+
+
+\imageframe{./lecture_includes/augsynth_7.png}
+
+\begin{frame}{Their paper}
+
+\begin{enumerate}
+\item \textbf{Methods}: Extend synth to staggered adoption
+\item \textbf{Substance}: Application will find minimal effect of unions on spending
+\item \textbf{Connection}: Propensity score weighting with shrinkage
+\end{enumerate}
+
+\end{frame}
+
+
+
+\imageframe{./lecture_includes/augsynth_8.png}
+
+\begin{frame}{Synth treatment effect: average all the synths}
+
+\begin{itemize}
+\item Suppose the first $J$ units are treated at times $T_1, \dots, T_J$
+\item Suppose we find a synthetic control for each, with $w_{ij}$ the weight on donor unit $i$ for treated unit $j$
+\item Our estimate of the ATT at event time $k$ will then be
+\end{itemize}
+
+\begin{eqnarray*}
+\widehat{\delta} = \frac{1}{J} \sum_{j=1}^{J+1} \bigg ( Y_{j,T_j+k} - \sum_i w_{ij} Y_{i,T_j+k} \bigg )
+\end{eqnarray*}Average of $J$ separate synth estimates
+
+\end{frame}
+
+
+\begin{frame}{Synth treatment effect: average treated unit}
+
+Or, we can think of it as Synth estimate for average treated unit
+
+\begin{eqnarray*}
+\widehat{\delta} = \frac{1}{J} \sum_{j=2}^{J+1} Y_{j,T_j+k} - \frac{1}{J} \bigg ( \sum_{j=2}^{J+1} \sum_i w_{ij} Y_{i,T_j+k} \bigg )
+\end{eqnarray*}
+
+\end{frame}
+
+
+\begin{frame}{Two definitions of ATT}
+
+
+\begin{eqnarray*}
+\widehat{\delta} &=& \frac{1}{J} \sum_{j=1}^J \bigg ( Y_{j,T_j+k} - \sum_i w_{ij} Y_{i,T_j+k} \bigg ) \\
+&=& \frac{1}{J} \sum_{j=2}^{J+1} Y_{j,T_j+k} - \frac{1}{J} \bigg ( \sum_{j=2}^{J+1} \sum_i w_{ij} Y_{i,T_j+k} \bigg )
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{Optimization problem}
+
+Do we want to optimize the sum of the separate imbalances or the imbalance of the sum (the pooled imbalance)?
+
+\begin{eqnarray*}
+\sum_{j=2}^{J+1} || X_j - \sum_i w_{ij}X_i ||^2\textrm{   or  } ||\sum_{j=2}^{J+1} X_j - \sum_i w_{ij} X_i ||^2
+\end{eqnarray*}where $j$ is treatment group and $i$ is donor pool units. Notice summations are inside or outside the norm
+\end{frame}
+
+\imageframe{./lecture_includes/augsynth_9.png}
+
+\imageframe{./lecture_includes/augsynth_10.png}
+
+\imageframe{./lecture_includes/augsynth_11.png}
+
+\imageframe{./lecture_includes/augsynth_12.png}
+
+\imageframe{./lecture_includes/augsynth_13.png}
+
+\imageframe{./lecture_includes/augsynth_14.png}
+
+\imageframe{./lecture_includes/augsynth_15.png}
+
+\imageframe{./lecture_includes/augsynth_16.png}
+
+\imageframe{./lecture_includes/augsynth_17.png}
+
+\imageframe{./lecture_includes/augsynth_18.png}
+
+
+
+\begin{frame}{Proposal: Partially pool synth}
+
+Instead of minimizing pooled imbalance or average state imbalance, minimize a \emph{weighted average}:
+
+\begin{eqnarray*}
+\textrm{min  }_{\Gamma \in \Delta^{synth}}  &&v|| \textrm{Pooled balance} ||^2_2 \\
+&&+ (1-v) \frac{1}{J} \sum_{j=2}^{J+1} ||\textrm{ State balance } ||^2_2 \\
+&&+ \textrm{ penalty }
+\end{eqnarray*}``Returns'' to this are highly convex: setting $v$ just a little below 1 yields a big improvement in state-level imbalance with very little cost in pooled imbalance
+
+\end{frame}
+
+
+
+\imageframe{./lecture_includes/augsynth_19.png}
+
+\imageframe{./lecture_includes/augsynth_20.png}
+
+\imageframe{./lecture_includes/augsynth_21.png}
+
+\imageframe{./lecture_includes/augsynth_22.png}
+
+\imageframe{./lecture_includes/augsynth_23.png}
+
+\imageframe{./lecture_includes/augsynth_24.png}
+
+\imageframe{./lecture_includes/augsynth_25.png}
+
+
+\begin{frame}{Augment staggered adoption}
+
+\begin{enumerate}
+\item Estimate an outcome model
+\item Estimate the partially pooled synth model
+\item Use the outcome model to adjust synth for imbalance (bias correction) or alternatively just use synth on the residuals from the outcome model (double robust)
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Special case: weighted event study}
+
+\begin{itemize}
+\item Estimate unit fixed effects via pre-treatment average: $\overline{Y}_{i,T_j}^{pre}$
+\item Estimate synth using residuals (Doudchenko and Imbens 2017; Ferman and Pinto 2018)
+\end{itemize}
+
+
+\begin{eqnarray*}
+\widehat{Y}^{aug}_{j,T_j+k}(0) = \overline{Y}_{j,T_j}^{pre} + \sum_{i=1}^N \widehat{w}_{ij} \bigg ( Y_{i,T_j+k} - \overline{Y}_{i,T_j}^{pre} \bigg )
+\end{eqnarray*}where $Y(0)=Y^0$
+
+\end{frame}
+
+\begin{frame}{Special case: weighted event study}
+
+Treatment effect estimate is \textbf{weighted diff-in-diff}:
+
+\begin{eqnarray*}
+\widehat{\delta}_{jk}^{aug} = \bigg ( Y_{j,T_j+k} - \overline{Y}_{j,T_j}^{pre} \bigg ) - \sum_{i=1}^N \widehat{w}_{ij} \bigg (Y_{i,T_j+k} - \overline{Y}_{i,T_j}^{pre} \bigg )
+\end{eqnarray*}Uniform weights correspond to ``standard DiD''
+
+\end{frame}
+
+
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.4]{./lecture_includes/augsynth_26.png}
+	\end{figure}
+
+\end{frame}
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.4]{./lecture_includes/augsynth_27.png}
+	\end{figure}
+
+\end{frame}
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.4]{./lecture_includes/augsynth_28.png}
+	\end{figure}
+
+\end{frame}
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.4]{./lecture_includes/augsynth_29.png}
+	\end{figure}
+
+\end{frame}
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.4]{./lecture_includes/augsynth_30.png}
+	\end{figure}
+
+\end{frame}
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.4]{./lecture_includes/augsynth_31.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Conclusions}
+
+\begin{itemize}
+\item Augmented synth allows us to salvage the method, using an outcome model to remove bias from imperfect balance
+\item Partially pooled synth allows extension to the staggered adoption setting
+\item Combining the two methods gives us the best hope 
+	\begin{itemize}
+	\item A simple fixed effect outcome model leads to a weighted event study
+	\item This generalizes recent recommendations for two-way fixed effects
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+\subsection{Event studies in finance}
+
+\begin{frame}{Possibilities for detecting corruption}
+
+\begin{itemize}
+
+\item Event studies in finance have been used to detect abnormal patterns around ``events'' involving single firms
+\item Baker and Gelbach (2020) proposes a type of synthetic control estimator that uses machine learning to estimate a counterfactual, as opposed to imposing strong parametric assumptions
+\item Examples of its use have been applied to disruptions with the Elon Musk Twitter deal which while not corruption does involve estimating potential damages from stock price movements
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Largest Securities Class Action Settlements}
+
+\begin{enumerate}
+
+\item Enron: \$7.2b
+\item WorldCom Inc: \$6.1b
+\item Tyco International Ltd.: \$3.2b
+\item Cendant Corporation: \$3.2b
+
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Over time}
+
+\begin{figure}
+\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_1}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Event studies and securities litigation}
+
+\begin{itemize}
+
+\item Historically, the ``event study'' estimated ``abnormal'' returns under strong parametric assumptions (e.g., normality), but non-normal returns are normal
+
+\begin{quote}
+``The abnormal returns are the parameters that determine the damage estimates in securities suits, it is worthwhile to explore whether methods exist that can provide more accurate estimates of the abnormal return itself.''
+\end{quote}
+
+\item They argue that the event study is an out-of-sample prediction problem, which ML is used for, but it is also an extension of the synth modeling framework
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Basic idea}
+
+\begin{figure}
+\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_2}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Event studies as a prediction problem}
+
+\begin{itemize}
+\item Let the daily return for firm $i$ on date $t$ be $r_{i,t}$ and variables used for prediction is $X_{i,t}$ (e.g., market return, Fama-French and Carhart factors, a 1 for intercept, etc.)
+\item Suppose an event reveals fraud.  It's effect on daily return is $r^1_{i,t} - r^0_{i,t}$ and we want to estimate $r^0_{i,t}$ with $\widehat{r}^0_{i,t}$
+\item Construct a predicted residual as $\widehat{\varepsilon}_{i,t} = r_{i,t} - \widehat{r}^0_{i,t}$
+\item Typically people would estimate this with OLS $$r_{i,t} = \alpha + \beta_1 X_{i,t} + \varepsilon_{i,t}$$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{OLS, ML, MSE, Bias, Variance}
+
+\begin{itemize}
+\item MSE of predicted abnormal return for $\widehat{\varepsilon}_{i,t} = r_{i,t} - \widehat{\beta}X_{i,t}$ is the sum of a squared bias term and a variance term
+\item It's possible that the variance of one specification is lower enough than another to make up for a difference in bias
+\item OLS also suffers because it overfits data when used for prediction -- it is best unbiased linear predictor but at the price of greater out-of-sample variance linear prediction
+\item Since MSE is the basis for measuring prediction accuracy, ML estimators may outperform conventional OLS as we can explore increasing bias and reducing variance
+\item ML methods accept bias in exchange for reduced variance out-of-sample accomplished through ``training''
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Paper's punchline}
+
+\begin{quote}
+``Using real stock return data, we demonstrate that a number of out-of-the-box statistical approaches that are relatively easy to interpret perform better than the standard, OLS-based event study specifications used in court proceedings.
+
+\bigskip
+
+We find that specifications using penalized regression generally perform well.  Specifications that adjust for daily market performance using data-driven peer indexes also generally perform well.
+
+\bigskip
+
+Finally, we obtain generally good performance from specifications that use a cross-validation technique that is robust to otherwise unmodeled time-series properties of the DGP. The best specifications provide noticeable improvements over event study approaches conventionally used in securities litigation. 
+
+\end{quote}
+
+\end{frame}
+
+\begin{frame}{Peer index}
+
+\begin{itemize}
+\item They note that the best-performing specification makes use of both penalized regression and data-driven peer firm choice.
+\item They call this the ``reasonable peer index'', and they show that ML methods can usefully serve as a basis for choosing \emph{which} peer firms to include in an event study (again, making this a synth-like method) which can mitigate the subjective researcher bias that synth is meant to overcome
+\item Rather than subjectively picking which firms represent the counterfactual (over which there can be debate clearly, some disingenuous given the amount of money at stake), they propose letting the data say who the best peer is
+\item But using \emph{any} peer index appears to mitigate this too
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Ranking all the ML methods}
+
+\begin{figure}
+\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_5}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Elon Musk example}
+
+\begin{itemize}
+\item In an unpublished analysis, Baker examined Elon Musk's attempt to buy Twitter on Twitter's stock price
+\item Unlike his published paper, he's only going to use one form of ``penalized'' machine learning called ridge regression (which constrains what the coefficients can be in his model)
+\item He will use peer index and the S\&P500 for prediction purposes
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Purpose of the exercise}
+
+\begin{quote}
+``The goal here is to get a rough estimate of what TWTR would be trading at had Elon never put the stock in play. Note, this does not mean that the prediction is equivalent to what TWTR would trade at were the deal to not go through (without any damage payments), as Elon has likely destroyed value in the process. This prediction could in fact be used as a baseline price in any tort-type damages claim that the company would want to bring against Elon after the process is over.''
+\end{quote}
+
+\end{frame}
+
+\begin{frame}{Basic idea}
+
+\begin{figure}
+\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_3}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Basic idea}
+
+\begin{figure}
+\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_4}
+\end{figure}
+\end{frame}
+
+
+
+
+\begin{frame}{Summarizing}
+
+\begin{itemize}
+\item Randomized treatments are great but not always available 
+\item Causal inference methods can utilize naturally occurring variation, but still must make adequate adjustments to find suitable controls
+\item Synthetic control and recent work on event studies can be possibilities
+\item Thank you!
+
 \end{itemize}
 
 \end{frame}
@@ -1535,6 +2644,7 @@ What is ``not too complex'' signal matrix $L$? It's one that looks different fro
 \end{frame}
 
 
+
 \begin{frame}{Some comments}
 
 \begin{itemize}
@@ -1560,887 +2670,9 @@ Vignettes: \url{https://synth-inference.github.io/synthdid/articles/more-plottin
 
 \end{frame}
 
+\section{Concluding remarks}
 
 
-
-
-\subsection{Augmented Synthetic Control}
-
-
-\begin{frame}
-
-\begin{quote}
-``The applicability of the [ADH2010] method requires a sizable number of pre-intervention periods. The reason is that the credibility of a synthetic control depends upon how well it tracks the treated unit’s characteristics and outcomes over an extended period of time prior to the treatment. \textbf{We do not recommend using this method when the pretreatment fit is poor or the number of pretreatment periods is small}. A sizable number of post-intervention periods may also be required in cases when the effect of the intervention emerges gradually after the intervention or changes over time.'' (my emphasis, Abadie, et al. 2015)
-\end{quote}
-
-\end{frame}
-
-\begin{frame}{What is augmented synthetic control?}
-
-\begin{itemize}
-\item Recall the quote from earlier by Athey and Imbens -- ``synthetic control is the most important innovation in causal inference of the last 15 years''
-\item They haven't been the only ones working on this -- Eli Ben-Michael, Avi Feller and Jesse Rothstein have two new papers on the subject as well
-\item This model will ``augment'' the original synthetic control model by Abadie, Diamond and Hainmueller (2010) by adjusting for pre-treatment imbalance
-\item As with the Athey, et al. papers, they will augment using more contemporary machine learning methods -- \textbf{penalized ridge regression}
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{The gist of their argument}
-
-\begin{enumerate}
-\item ADH (``synth'') needs perfect fit and so is biased in practical settings due to the curse of dimensionality as it won't be the case we get weights constrained to be ``on the simplex''
-\item Their augmentation will introduce an outcome model to estimate the bias caused by covariate imbalance 
-\item Introduces ridge regularization linear regression to estimate new weights to reweight synth
-\item Think of it as ``bias reduction'' like Abadie and Imbens (2011) plus it will have doubly robust properties and be equivalent to inverse probability weighting
-\item When synth is imbalanced, augmented synth will reduce bias reweighting and bias correction, and when synth is balanced, they are the same
-\end{enumerate}
-
-\end{frame}
-
-\begin{frame}{Some topical observations}
-
-\begin{itemize}
-\item Foregoes estimating \emph{donor pool unit weights} (e.g., ADH, synth did, MCNN)
-\item Synth sequels are using penalization/regularization for estimation
-\item Relaxes some of the original ADH constraints, like non-negative weights (i.e., no extrapolation)
-	\begin{itemize}
-	\item This is used to address bias caused by imbalance
-	\item Negative weights puts them back in the convex hull which recall we need
-	\item They argue synth DiD can be seen as a special case of augmented synth
-	\end{itemize}
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}{Notation}
-
-\begin{itemize}
-\item Observe $J+1$ units over $T$ time periods
-\item Unit $1$ will be treated at time period $T_0=T-1$ (we allow for unit $1$ to be an average over treated units)
-\item Units $j=2 $ to $J+1$ (using ADH original notation) are ``never treated''
-\item $D_j$ is the treatment indicator
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}[plain,shrink=20]
-\begin{center}
-\textbf{Pre-treatment outcomes}
-\end{center}
-
-\begin{center}
-\[ \left( \begin{array}{ccccc}
-    Y_{11} & Y_{12} & Y_{13} & \dots  & Y_{1T}^1 \\
-    Y_{21} & Y_{22} & Y_{23} & \dots  & Y_{2T}^0  \\
-    \vdots & \vdots & \vdots & \ddots & \vdots \\
-    Y_{N1} & Y_{i2} & Y_{i3} & \dots  & Y_{NT}^0
-\end{array} \right) \equiv
-\left( \begin{array}{ccccc}
-    X_{11} & X_{12} & X_{13} & \dots  & Y_{1} \\
-    X_{21} & X_{22} & X_{23} & \dots  & Y_{2}  \\
-    \vdots & \vdots & \vdots & \ddots & \vdots \\
-    X_{N1} & X_{i2} & X_{i3} & \dots  & Y_{N}
-\end{array} \right) \equiv
-\left( \begin{array}{cc}
-    X_{1} & Y_{1} \\
-    X_{0} & Y_{0}  \\
-\end{array} \right)
-\]
-
-\end{center}
-
-This is a model of 2x2 (i.e., single last period block structure, not staggered roll out)
-
-\bigskip
-
-The last column is always post-treatment and switches from $Y^1$ to $Y$. 
-
-\bigskip
-
-The last column is just showing a top row of the treated unit 1 and the bottom row of all the donor pool (i.e., we will use $X_0$ and $Y_0$ to represent all the donor pool units)
-
-\end{frame}
-
-
-\begin{frame}{Optimal weights}
-
-Synth minimizes the following norm:
-
-\begin{eqnarray*}
-\textrm{min}_w = || V_X^{1/2} (X_1 - X_0'w) ||_2^2 + \psi \sum_{D_j=0}f(w_j)\\
-\textrm{s.t. }\sum_{j=2}^N w_{j} =1 \textrm{ and } w_j \geq 0
-\end{eqnarray*}
-
-$Y_0'w*$ (i.e., optimally weighted donor pool) is the unit 1 ``synthetic control'' 
-
-\end{frame}
-
-
-\begin{frame}{Predicting counterfactuals}
-
-Synth minimizes the following norm:
-
-\begin{eqnarray*}
-\textrm{min}_w = || V_X^{1/2} (X_1 - X_0'w) ||_2^2 + \psi \sum_{D_j=0}f(w_j)\\
-\textrm{s.t. }\sum_{j=2}^N w_{j} =1 \textrm{ and } w_j \geq 0
-\end{eqnarray*}
-
-We are hoping that $\widehat{Y}_1^0$ with $Y_0' {w}^{*}$ based on ``perfect fit'' pre-treatment
-
-\end{frame}
-
-
-
-
-\begin{frame}{$V_X$ matrix}
-
-Synth minimizes the following norm:
-
-\begin{eqnarray*}
-\textrm{min}_w = || V_X^{1/2} (X_1 - X_0'w) ||_2^2 + \psi \sum_{D_j=0}f(w_j)\\
-\textrm{s.t. }\sum_{j=2}^N w_{j} =1 \textrm{ and } w_j \geq 0
-\end{eqnarray*}
-
-$V_x$ is the ``importance'' matrix on $X_0$ (Stata default chooses $V_x$ that min pre-treatment MSE).
-\end{frame}
-
-\begin{frame}{Penalizing the weights with ridge}
-
-Synth minimizes the following norm:
-
-\begin{eqnarray*}
-\textrm{min}_w = || V_X^{1/2} (X_1 - X_0'w) ||_2^2 + \psi \sum_{D_j=0}f(w_j)\\
-\textrm{s.t. }\sum_{j=2}^N w_{j} =1 \textrm{ and } w_j \geq 0
-\end{eqnarray*}
-
-Modification to the original synthetic control model is the inclusion of the penalty term. ``The choice of penalty is less central when weights are constrained to be on the simplex, but becomes more important when we relax this constrain.''
-
-\end{frame}
-
-\begin{frame}{Convex hull}
-
-Synth minimizes the following norm:
-
-\begin{eqnarray*}
-\textrm{min}_w = || V_X^{1/2} (X_1 - X_0'w) ||_2^2 + \psi \sum_{D_j=0}f(w_j)\\
-\textrm{s.t. }\sum_{j=2}^N w_{j} =1 \textrm{ and } w_j \geq 0
-\end{eqnarray*}
-
-These weights will be used to address imbalance, not so much the control units, bc this method is for when the weighted controls are still outside the convex hull (``simplex'')
-
-\end{frame}
-
-
-
-
-\begin{frame}{Original ADH factor model and bias}
-
-\begin{eqnarray*}
-Y_{it}^0 = \alpha_t + \theta_t Z_i + \lambda_t u_i + \varepsilon_{it}
-\end{eqnarray*}
-
-\bigskip
-
-Original synth factor model (with ADH notation)
-
-\bigskip
-
-\begin{eqnarray*}
-Y^0_{1t} - \sum^{J+1}_{j=2}w^*_jY_{jt} &=& \sum_{j=2}^{J+1} w_j^* \sum_{s=1}^{T_0} \lambda_t \bigg ( \sum_{n=1}^{T_0} \lambda_n'\lambda_n \bigg )
-^{-1} \lambda_s'(\varepsilon_{js} - \varepsilon_{1s} ) \\
-&& - \sum_{j=2}^{J+1} w_j^* (\varepsilon_{jt} - \varepsilon_{1t})
-\end{eqnarray*}
-
-\bigskip
-
-The bias of ADH synthetic control
-
-
-\end{frame}
-
-
-
-
-\begin{frame}{Perfect fit is necessary}
-
-\begin{eqnarray*}
-Y^0_{1t} - \sum^{J+1}_{j=2}w^*_jY_{jt} &=& \sum_{j=2}^{J+1} w_j^* \sum_{s=1}^{T_0} \lambda_t \bigg ( \sum_{n=1}^{T_0} \lambda_n'\lambda_n \bigg )
-^{-1} \lambda_s'(\varepsilon_{js} - \varepsilon_{1s} ) \\
-&& - \sum_{j=2}^{J+1} w_j^* (\varepsilon_{jt} - \varepsilon_{1t})
-\end{eqnarray*}
-
-\bigskip
-
-Recall that the bias of ADH required ``perfect fit'' using their factor model (I'll change $\lambda$ factor loadings in a minute)
-
-\end{frame}
-
-
-
-
-\begin{frame}{Perfect fit models heterogeneity}
-
-
-\begin{eqnarray*}
-Y^0_{1t} - \sum^{J+1}_{j=2}w^*_jY_{jt} &=& \sum_{j=2}^{J+1} w_j^* \sum_{s=1}^{T_0} \lambda_t \bigg ( \sum_{n=1}^{T_0} \lambda_n'\lambda_n \bigg )
-^{-1} \lambda_s'(\varepsilon_{js} - \varepsilon_{1s} ) \\
-&& - \sum_{j=2}^{J+1} w_j^* (\varepsilon_{jt} - \varepsilon_{1t})
-\end{eqnarray*}
-
-Only units that are alike in observables and unobservables should produce similar trajectories of the outcome variable over extended periods of time
-
-
-\end{frame}
-
-
-\begin{frame}{Remember that ADH15 quote}
-
-\begin{quote}
-``The applicability of the [ADH2010] method requires a sizable number of pre-intervention periods. The reason is that the credibility of a synthetic control depends upon how well it tracks the treated unit’s characteristics and outcomes over an extended period of time prior to the treatment. \textbf{We do not recommend using this method when the pretreatment fit is poor or the number of pretreatment periods is small}. A sizable number of post-intervention periods may also be required in cases when the effect of the intervention emerges gradually after the intervention or changes over time.'' (my emphasis, Abadie, et al. 2015)
-\end{quote}
-
-\end{frame}
-
-\begin{frame}{Slight change in synth notation}
-
-\begin{itemize}
-\item Assume that our outcome, $Y_{jt}$, follows a factor model where $m(.)$ are pre-treatment outcomes: $$ Y_{jt}^0 = m_{jt} + \varepsilon_{jt}$$
-\item Since $\widehat{m(.)}$ estimates the post-treatment outcome, let's view it as estimated bias, analogous to bias correction for inexact matching (Abadie and Imbens 2011)
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}{Bias correction}
-
- $$ Y_{jt}^0 = m_{jt} + \varepsilon_{jt}$$
-
-\begin{itemize}
-\item When the weights achieve exact balance, the bias of synthetic control decreases with $T$
-\item The intuition is that for a large $T$ ($T$ not transitory shocks), you achieve balance by balancing the latent parameter on the unobserved heterogeneity in our factor model
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}{Common practice}
-
-\begin{itemize}
-\item Usually the number of time periods isn't much larger than the number of units
-\item And exact balance rarely holds, which if it doesn't hold, then the unobserved heterogeneity also doesn't get deleted
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{Treatment and control units}
-
-	\begin{figure}
-	\includegraphics[scale=0.07]{./lecture_includes/convexhull_1.png}
-	\end{figure}
-
-\end{frame}
-
-\begin{frame}{Convex hull -- ideal for synth}
-
-	\begin{figure}
-	\includegraphics[scale=0.07]{./lecture_includes/convexhull_2.png}
-	\end{figure}
-
-\end{frame}
-
-\begin{frame}{Outside the convex hull bc of dimensionality}
-
-	\begin{figure}
-	\includegraphics[scale=0.07]{./lecture_includes/convexhull_3.png}
-	\end{figure}
-
-\end{frame}
-
-\begin{frame}{Outside the convex hull bc of dimensionality}
-
-	\begin{figure}
-	\includegraphics[scale=0.07]{./lecture_includes/convexhull_4.png}
-	\end{figure}
-
-\end{frame}
-
-
-\begin{frame}{Estimating the bias}
-
-\begin{itemize}
-\item Adjust the synthetic control approach to adjust for poor fit pre-treatment.
-\item Recall our factor model -- let $\widehat{m}_{jT}$ be an estimator for the post-treatment control potential outcome $Y_{jT}^0$.
-\item The augmented synthetic control estimator for $Y_{jt}^0$ is on the next slide
-\end{itemize}
-
-
-\end{frame}
-
-
-
-
-\begin{frame}{Setup of the estimator}
-
-Let's adjust synthetic control for this bias.  First we'll apply the \textbf{bias correction}.  Then we'll do the doubly robust augmented \textbf{inverse probability weighting}. Let $Y_1^{aug,0}$ be the augmented potential outcome
-
-\begin{eqnarray*}
-Y_1^{aug,0} &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{j} + \widehat{m}(X_1) - \sum_{D_j=0} \widehat{w}_j \widehat{m}(X_j) \\
-&=& \widehat{m}(X_1) + \sum_{D_j=0} \widehat{w_j}(Y_j - \widehat{m}(X_j))
-\end{eqnarray*}
-
-\end{frame}
-
-
-\begin{frame}{Interpreting line 1}
-
-\begin{eqnarray*}
-Y_1^{aug,0} &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{jT} + \bigg (\widehat{m}_{1T} - \sum_{D_j=0} \widehat{w}_j^{synth}\widehat{m}_{jT} \bigg ) \\
-&=& \widehat{m}_{1T} + \sum_{D_j=0} \widehat{w}_j^{synth} (Y_{jT} - \widehat{m}_{jT})
-\end{eqnarray*}
-
-(1) Note how in the first line the traditional synthetic control weighted outcomes are corrected by the imbalance in a particular function of the pre-treatment outcomes $\widehat{m}$. 
-\end{frame}
-
-
-
-
-\begin{frame}{Interpreting line 1}
-
-\begin{eqnarray*}
-Y_1^{aug,0}  &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{jT} + \bigg (\widehat{m}_{1T} - \sum_{D_j=0} \widehat{w}_j^{synth}\widehat{m}_{jT} \bigg ) \\
-&=& \widehat{m}_{1T} + \sum_{D_j=0} \widehat{w}_j^{synth} (Y_{jT} - \widehat{m}_{jT})
-\end{eqnarray*}
-
-(1) Since $\widehat{m}$ estimates the post-treatment outcome, we can view this as an estimate of the bias due to imbalance, which is similar to how you address imbalance in matching with a bias correction formula (Abadie and Imbens 2011). 
-
-\end{frame}
-
-
-
-
-
-\begin{frame}{Interpreting line 1}
-
-\begin{eqnarray*}
-Y_1^{aug,0}  &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{jT} + \bigg (\widehat{m}_{1T} - \sum_{D_j=0} \widehat{w}_j^{synth}\widehat{m}_{jT} \bigg ) \\
-&=& \widehat{m}_{1T} + \sum_{D_j=0} \widehat{w}_j^{synth} (Y_{jT} - \widehat{m}_{jT})
-\end{eqnarray*}
-
-(1) I actually cover the bias correction of Abadie and Imbens 2011 in the mixtape!  The subclassification chapter
-
-\end{frame}
-
-
-\begin{frame}{Interpreting line 1}
-\begin{eqnarray*}
-Y_1^{aug,0}  &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{jT} + \bigg (\widehat{m}_{1T} - \sum_{D_j=0} \widehat{w}_j^{synth}\widehat{m}_{jT} \bigg ) \\
-&=& \widehat{m}_{1T} + \sum_{D_j=0} \widehat{w}_j^{synth} (Y_{jT} - \widehat{m}_{jT})
-\end{eqnarray*}
-
-(1) So if the bias is small, then synthetic control and augmented synthetic control will be similar because that interior term will be zero.
-
-\end{frame}
-
-\begin{frame}{Interpreting line 2}
-
-\begin{eqnarray*}
-Y_1^{aug,0}  &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{jT} + \bigg (\widehat{m}_{1T} - \sum_{D_j=0} \widehat{w}_j^{synth}\widehat{m}_{jT} \bigg ) \\
-&=& \widehat{m}_{1T} + \sum_{D_j=0} \widehat{w}_j^{synth} (Y_{jT} - \widehat{m}_{jT})
-\end{eqnarray*}
-
-(2) The second equation is equivalent to a double robust estimation which begins with an outcome model but then re-weights it to balance residuals.
-
-
-\end{frame}
-
-
-
-\begin{frame}{Interpreting line 2}
-
-\begin{eqnarray*}
-Y_1^{aug,0}  &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{jT} + \bigg (\widehat{m}_{1T} - \sum_{D_j=0} \widehat{w}_j^{synth}\widehat{m}_{jT} \bigg ) \\
-&=& \widehat{m}_{1T} + \sum_{D_j=0} \widehat{w}_j^{synth} (Y_{jT} - \widehat{m}_{jT})
-\end{eqnarray*}
-
-(2) The second equation has a connection to inverse probability weighting (they show this in an appendix)
-
-
-\end{frame}
-\begin{frame}{Ridge Augmented SCM}
-
-\begin{eqnarray*}
-\textrm{arg min}_{\eta_0,\eta} \frac{1}{2} \sum_{D_j=0} (Y_j - (\eta_0 + X_j'\eta))^2 + \lambda^{ridge} || \eta ||_2^2
-\end{eqnarray*}Here we estimate $\widehat{m}(X_j)$ with ridge regularized linear model and penalty hyper parameter $\lambda^{ridge}$. Sorry -- this is not the same $\lambda$. I didn't create this notation though! Once we have those, we adjust for imbalance using the $\widehat{\eta}^{ridge}$ parameter as a weight on the outcome model itself. 
-
-\end{frame}
-
-\begin{frame}{Ridge Augmented SCM}
-
-\begin{eqnarray*}
-\textrm{arg min}_{\eta_0,\eta} \frac{1}{2} \sum_{D_j=0} (Y_j - (\eta_0 + X_j'\eta))^2 + \lambda^{ridge} || \eta ||_2^2
-\end{eqnarray*}Once we have those, we adjust for imbalance using the $\widehat{\eta}^{ridge}$ parameter as a weight on the outcome model itself. 
-
-\end{frame}
-
-
-
-
-\begin{frame}{Go back to that weighting but use the ridge parameters}
-
-\begin{eqnarray*}
-Y_1^{aug,0} &=& \sum_{D_j=0} \widehat{w}_j^{synth} Y_{j} + \bigg ( X_1 - \sum_{D_j=0} \widehat{w}_j^{synth} X_j \bigg ) \widehat{\eta}^{ridge} \\
-&=& \sum_{D_j=0} \widehat{w}_j^{aug}Y_j
-\end{eqnarray*}What you're trying to do is adjust with the $\widehat{w}_j^{aug}$ weights to improve balance.  
-
-\end{frame}
-
-
-\begin{frame}{The ridge weights are key to the augmentation}
-
-\begin{eqnarray*}
-\widehat{w}_j^{aug} = \widehat{w}_j^{synth} + (X_j - X_0' \widehat{w}_j^{synth}) ' (X_0'X_0 + \lambda I_{T_0})^{-1}X_i
-\end{eqnarray*}
-
-The second term is adjusting the original synthetic control weights, $w_j^{synth}$ for better balance. Again remember -- we are trying to address the bias due to imbalance. You can achieve better balance, but at higher variance and can introduce negative weights. 
-
-\end{frame}
-
-
-
-\begin{frame}{Ridge will allow negative weights via extrapolation}
-
-\begin{eqnarray*}
-\widehat{w}_j^{aug} = \widehat{w}_j^{synth} + (X_j - X_0' \widehat{w}_j^{synth}) ' (X_0'X_0 + \lambda I_{T_0})^{-1}X_i
-\end{eqnarray*}
-
-Relaxing the constraint from synth that weights be non-negative, as non-negative weights prohibit extrapolation. But we don't have synthetic control on the simplex, so we \emph{must} extrapolate, otherwise synth will be biased.
-
-\end{frame}
-
-
-
-\begin{frame}{Summarizing and some comments}
-
-\begin{itemize}
-\item When the treated unit lies in the convex hull of the control units so that the synth weights exactly balance lagged outcomes, then SCM and Ridge ASCM are the same
-\item When synth weights do not achieve exact balance, Ridge ASCM will use negative weights to extrapolate from the convex hull to the control units
-\item The amount of extrapolation will be determined by how much imbalance we're talking about and the estimated hyperparameter $\widehat{\lambda}^{ridge}$
-\item When synth has good pre-treatment fit or when $\lambda^{ridge}$ is large, then adjustment will be small and the augmented weights will be close to the SCM weights
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}{Intuition}
-
-Ridge begins at the center of control units, while Ridge ASCM begins at the synth solution. Both move towards an exact fit solution as the hyperparameter is reduced. It is possible to achieve the same level of balance with non-negative weights.  Both ridge and Ridge ASCM extrapolate from the support of the data to improve pre-treatment fit relative to synth alone. Let's look at a picture!
-
-
-\end{frame}
-
-
-
-\begin{frame}[plain]
-
-	\begin{figure}
-	\includegraphics[scale=0.5]{./lecture_includes/aug_1.png}
-	\end{figure}
-	
-\end{frame}	
-
-
-\begin{frame}{Conformal Inference}
-
-Inference will be based on ``conformal inference'' method by Chernozhukov et al. (2019).  We will get 95\% point-wide confidence intervals. They also outline a jackknife method by Barber et al (2019). 
-
-\end{frame}
-
-
-\begin{frame}{Steps of conformal Inference}
-
-\begin{enumerate}
-\item [1] Choose a sharp null (i.e., no unit-level treatment effects, $\delta_0=0$)
-	\begin{itemize}
-	\item Enforce the null by creating an adjusted post-treatment outcome for the treated unit equal to $Y_{1T}-\delta_0$ (in other words, we get CI on the post-treatment outcomes, not the pre-treatment)
-	\item Augment the original dataset to include the post-treatment time period $T$ with the adjusted outcome and use the estimator to obtain the adjusted weights $\widehat{w(\delta_0)}$
-	\item Compute a p-value by assessing whether the adjusted residual conforms with the pre-treatment residuals (see Appendix A for the exact formula)
-	\end{itemize}
-\end{enumerate}
-
-
-\end{frame}
-
-
-\begin{frame}{Steps of conformal Inference}
-
-\begin{enumerate}
-\item [2] Compute a level $\alpha$ for $\delta$ by inverting the hypothesis test (see Appendix A for the exact formula)
-	\begin{itemize}
-	\item Chernozhukov et al. (2019) provide several conditions for which approximate or exact finite-sample validity of the $p$-values (and hence coverage of the predicted confidence intervals) can be achieved)
-	\end{itemize}
-\end{enumerate}
-
-See Appendix A for more details
-
-\end{frame}
-
-
-\begin{frame}{Simulations (summarized)}
-
-\begin{itemize}
-\item They examine the performance of synth against ridge, Augmented synth with ridge regularization, demeaned synth, and fixed effects under four DGP
-\item Augmenting synth with a ridge outcome regression reduces bias relative to synth alone in all four simulations
-\item This underscores the importance of the recommendation Abadie, et al. (2015) make which is that synth should be used in settings with excellent pre-treatment fit
-\item They also examine a real situation involving Kansas tax cuts in 2012
-\end{itemize}
-
-\end{frame}
-
-\imageframe{./lecture_includes/aug_5.png}
-
-\imageframe{./lecture_includes/aug_6.png}
-
-\begin{frame}{Couple of minor points}
-
-\begin{itemize}
-\item Hyper parameter chosen using cross validation
-\item This can be extended to auxiliary covariates as opposed to just lagged outcomes (section 6)
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}{Some minor points}
-
-\begin{itemize}
-\item We've motivated augmented synth as a kind of bias correction, but you can also think of it as correcting synth with an inverse probability weight (Appendix E)
-\item There's an implicit estimate of a propensity score model with ridge regularization
-\item Weights are odds of treatment (they're ATT weights), i.e., they're the inverse probability weighting scheme from Abadie (2005)
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{Augmented synth is better}
-
-\begin{itemize}
-\item In conclusion, synthetic control is best when pre-treatment fit is excellent, otherwise it is biased
-\item Synthetic control avoids extrapolation by restricting weights to be non-negative and sum to one
-\item Ridge regression augmentation will allow for a degree of extrapolation to achieve pre-treatment balance and that creates negative weights
-\item Augmented synth will dominate synth in those instances by extrapolating outside the convex hull
-\item They also say synth DiD is a special case of their augmented synth method, which is interesting as synth DiD is also meant to nest all such modifications too (but they don't discuss augmented synth)
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}{R code}
-
-R: \url{https://github.com/ebenmichael/augsynth}
-
-\end{frame}
-
-\subsection{Augmented Synthetic Control with Staggered Rollout}
-
-\begin{frame}
-
-\begin{itemize}
-\item ADH was designed for a single treated unit, no extrapolation, non-negative weights summed to one
-\item Previous Ben-Michael, Feller and Rothstein (2021a) paper addressed imperfect fit in the pre-trends using regularization
-\item Ben-Michael, Feller and Rothstein (2021b) focus on the single unit by allowing differential timing
-	\begin{itemize}
-	\item Augmented synth is a double-robust style (or bias corrected) estimator
-	\item This synth is similar to ``shrunken''/empirical Bayes/random effects estimation
-	\end{itemize}
-\item It sort of fits with the newer differential timing papers, like matrix completion with nuclear norm regularization had, even though neither are technically DiD
-\item More machine learning regularization as we've been seeing
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Paper's Contribution}
-
-\begin{enumerate}
-	\item Extend synth to staggered adoption (as opposed to one unit)
-	\item Show results using an example of unions on spending
-	\item Propensity score weighting with shrinkage
-\end{enumerate}
-
-\end{frame}
-
-\begin{frame}{Motivation}
-
-
-Synthetic control is not a very good propensity score estimator
-\begin{itemize}
-\item Uses pre-treatment outcomes as covariates (some use other $X$ covariates)
-\item Small $N$ and large $K$ means propensity score must be regularized with probability approaching 1 so perfect balance is not achieved
-\item You can borrow information to reduce bias from imbalance -- for instance from an outcome model (e.g., a regression) and/or other treated units
-\item You can then combine to produced a weighted event study estimator
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Stepping back}
-
-\begin{itemize}
-\item A unit is treated at some period $t$ and we want to know that event's effect on $Y$
-\item Standard approach is DiD and event studies
-	\begin{itemize}
-	\item Tons of papers recently (e.g., Goodman-Bacon 2021, Callaway and Sant'Anna 2020)
-	\item But what units all DiD papers is \emph{parallel trends}
-	\end{itemize}
-\item That assumption may be wrong, in which case the models' findings will be wrong
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{Synth with staggered adoption}
-
-\begin{itemize}
-\item Synth was designed originally for the comparative case study -- i.e., one treatment group
-\item What do we do when there's more than one treatment group?
-\item People in the past tried different things
-	\begin{itemize}
-	\item If they were all treated at the same time, they'd average the treated units and construct a synthetic control for the average
-	\item If it was staggered, then they'd fit synth for each treated unit separately, then average those estimates
-	\end{itemize}
-\item They're going to propose optimizing a weighted average of the \emph{global balance} (for the average treated unit) and the sum of \emph{unit-specific balance} for each treated unit
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Intuition}
-
-We want to balance the average of the underlying factor loadings
-
-\begin{itemize}
-\item Balancing individual units may cause large imbalance in the average if errors all go in the same direction
-\item Balancing the average outcome may not balance factor loadings if imbalance for different treated units offset each other
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{Teacher unions and teacher salaries/spending}
-
-Their application is about teacher unions
-\begin{itemize}
-\item 1964-1987: 33 states grant collective bargaining rights to teachers
-\item Long literature exploited the timing (Hoxby 1996; Lovenheim 2009)
-\item Impact on student spending, teacher salaries
-	\begin{itemize}
-	\item Hoxby (1996) finds increased spending by 12\%
-	\item Paglayan (2019) estimates precise zero in an event study model using ever-treated states
-	\end{itemize}
-\item They're going to re-analyze using all states and synth models
-\end{itemize}
-
-\end{frame}
-
-
-
-\imageframe{./lecture_includes/augsynth_7.png}
-
-\begin{frame}{Their paper}
-
-\begin{enumerate}
-\item \textbf{Methods}: Extend synth to staggered adoption
-\item \textbf{Substance}: Application will find minimal effect of unions on spending
-\item \textbf{Connection}: Propensity score weighting with shrinkage
-\end{enumerate}
-
-\end{frame}
-
-
-
-\imageframe{./lecture_includes/augsynth_8.png}
-
-\begin{frame}{Synth treatment effect: average all the synths}
-
-\begin{itemize}
-\item Suppose the first $J$ units are treated at times $T_1, \dots, T_J$
-\item Suppose we find a synthetic control for each, with $w_{ij}$ the weight on donor unit $i$ for treated unit $j$
-\item Our estimate of the ATT at event time $k$ will then be
-\end{itemize}
-
-\begin{eqnarray*}
-\widehat{\delta} = \frac{1}{J} \sum_{j=1}^{J+1} \bigg ( Y_{j,T_j+k} - \sum_i w_{ij} Y_{i,T_j+k} \bigg )
-\end{eqnarray*}Average of $J$ separate synth estimates
-
-\end{frame}
-
-
-\begin{frame}{Synth treatment effect: average treated unit}
-
-Or, we can think of it as Synth estimate for average treated unit
-
-\begin{eqnarray*}
-\widehat{\delta} = \frac{1}{J} \sum_{j=2}^{J+1} Y_{j,T_j+k} - \frac{1}{J} \bigg ( \sum_{j=2}^{J+1} \sum_i w_{ij} Y_{i,T_j+k} \bigg )
-\end{eqnarray*}
-
-\end{frame}
-
-
-\begin{frame}{Two definitions of ATT}
-
-
-\begin{eqnarray*}
-\widehat{\delta} &=& \frac{1}{J} \sum_{j=1}^J \bigg ( Y_{j,T_j+k} - \sum_i w_{ij} Y_{i,T_j+k} \bigg ) \\
-&=& \frac{1}{J} \sum_{j=2}^{J+1} Y_{j,T_j+k} - \frac{1}{J} \bigg ( \sum_{j=2}^{J+1} \sum_i w_{ij} Y_{i,T_j+k} \bigg )
-\end{eqnarray*}
-
-\end{frame}
-
-\begin{frame}{Optimization problem}
-
-Do we want to optimize the sum of the separate imbalances or the imbalance of the sum (the pooled imbalance)?
-
-\begin{eqnarray*}
-\sum_{j=2}^{J+1} || X_j - \sum_i w_{ij}X_i ||^2\textrm{   or  } ||\sum_{j=2}^{J+1} X_j - \sum_i w_{ij} X_i ||^2
-\end{eqnarray*}where $j$ is treatment group and $i$ is donor pool units. Notice summations are inside or outside the norm
-\end{frame}
-
-\imageframe{./lecture_includes/augsynth_9.png}
-
-\imageframe{./lecture_includes/augsynth_10.png}
-
-\imageframe{./lecture_includes/augsynth_11.png}
-
-\imageframe{./lecture_includes/augsynth_12.png}
-
-\imageframe{./lecture_includes/augsynth_13.png}
-
-\imageframe{./lecture_includes/augsynth_14.png}
-
-\imageframe{./lecture_includes/augsynth_15.png}
-
-\imageframe{./lecture_includes/augsynth_16.png}
-
-\imageframe{./lecture_includes/augsynth_17.png}
-
-\imageframe{./lecture_includes/augsynth_18.png}
-
-
-
-\begin{frame}{Proposal: Partially pool synth}
-
-Instead of minimizing pooled imbalance or average state imbalance, minimize a \emph{weighted average}:
-
-\begin{eqnarray*}
-\textrm{min  }_{\Gamma \in \Delta^{synth}}  &&v|| \textrm{Pooled balance} ||^2_2 \\
-&&+ (1-v) \frac{1}{J} \sum_{j=2}^{J+1} ||\textrm{ State balance } ||^2_2 \\
-&&+ \textrm{ penalty }
-\end{eqnarray*}``Returns'' to this are highly convex: setting $v$ just a little below 1 yields a big improvement in state-level imbalance with very little cost in pooled imbalance
-
-\end{frame}
-
-
-
-\imageframe{./lecture_includes/augsynth_19.png}
-
-\imageframe{./lecture_includes/augsynth_20.png}
-
-\imageframe{./lecture_includes/augsynth_21.png}
-
-\imageframe{./lecture_includes/augsynth_22.png}
-
-\imageframe{./lecture_includes/augsynth_23.png}
-
-\imageframe{./lecture_includes/augsynth_24.png}
-
-\imageframe{./lecture_includes/augsynth_25.png}
-
-
-\begin{frame}{Augment staggered adoption}
-
-\begin{enumerate}
-\item Estimate an outcome model
-\item Estimate the partially pooled synth model
-\item Use the outcome model to adjust synth for imbalance (bias correction) or alternatively just use synth on the residuals from the outcome model (double robust)
-\end{enumerate}
-
-\end{frame}
-
-\begin{frame}{Special case: weighted event study}
-
-\begin{itemize}
-\item Estimate unit fixed effects via pre-treatment average: $\overline{Y}_{i,T_j}^{pre}$
-\item Estimate synth using residuals (Doudchenko and Imbens 2017; Ferman and Pinto 2018)
-\end{itemize}
-
-
-\begin{eqnarray*}
-\widehat{Y}^{aug}_{j,T_j+k}(0) = \overline{Y}_{j,T_j}^{pre} + \sum_{i=1}^N \widehat{w}_{ij} \bigg ( Y_{i,T_j+k} - \overline{Y}_{i,T_j}^{pre} \bigg )
-\end{eqnarray*}where $Y(0)=Y^0$
-
-\end{frame}
-
-\begin{frame}{Special case: weighted event study}
-
-Treatment effect estimate is \textbf{weighted diff-in-diff}:
-
-\begin{eqnarray*}
-\widehat{\delta}_{jk}^{aug} = \bigg ( Y_{j,T_j+k} - \overline{Y}_{j,T_j}^{pre} \bigg ) - \sum_{i=1}^N \widehat{w}_{ij} \bigg (Y_{i,T_j+k} - \overline{Y}_{i,T_j}^{pre} \bigg )
-\end{eqnarray*}Uniform weights correspond to ``standard DiD''
-
-\end{frame}
-
-
-\begin{frame}[plain]
-
-	\begin{figure}
-	\includegraphics[scale=0.4]{./lecture_includes/augsynth_26.png}
-	\end{figure}
-
-\end{frame}
-\begin{frame}[plain]
-
-	\begin{figure}
-	\includegraphics[scale=0.4]{./lecture_includes/augsynth_27.png}
-	\end{figure}
-
-\end{frame}
-\begin{frame}[plain]
-
-	\begin{figure}
-	\includegraphics[scale=0.4]{./lecture_includes/augsynth_28.png}
-	\end{figure}
-
-\end{frame}
-\begin{frame}[plain]
-
-	\begin{figure}
-	\includegraphics[scale=0.4]{./lecture_includes/augsynth_29.png}
-	\end{figure}
-
-\end{frame}
-\begin{frame}[plain]
-
-	\begin{figure}
-	\includegraphics[scale=0.4]{./lecture_includes/augsynth_30.png}
-	\end{figure}
-
-\end{frame}
-\begin{frame}[plain]
-
-	\begin{figure}
-	\includegraphics[scale=0.4]{./lecture_includes/augsynth_31.png}
-	\end{figure}
-
-\end{frame}
 
 \begin{frame}{Conclusions}
 
@@ -2454,185 +2686,8 @@ Treatment effect estimate is \textbf{weighted diff-in-diff}:
 \end{frame}
 
 
-\begin{frame}{Conclusions}
-
-\begin{itemize}
-\item Augmented synth allows us to salvage the method, using an outcome model to remove bias from imperfect balance
-\item Partially pooled synth allows extension to the staggered adoption setting
-\item Combining the two methods gives us the best hope 
-	\begin{itemize}
-	\item A simple fixed effect outcome model leads to a weighted event study
-	\item This generalizes recent recommendations for two-way fixed effects
-	\end{itemize}
-\end{itemize}
-
-\end{frame}
 
 
-
-
-
-\subsection{Event studies in finance}
-
-\begin{frame}{Possibilities for detecting corruption}
-
-\begin{itemize}
-
-\item Event studies in finance have been used to detect abnormal patterns around ``events'' involving single firms
-\item Baker and Gelbach (2020) proposes a type of synthetic control estimator that uses machine learning to estimate a counterfactual, as opposed to imposing strong parametric assumptions
-\item Examples of its use have been applied to disruptions with the Elon Musk Twitter deal which while not corruption does involve estimating potential damages from stock price movements
-
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Largest Securities Class Action Settlements}
-
-\begin{enumerate}
-
-\item Enron: \$7.2b
-\item WorldCom Inc: \$6.1b
-\item Tyco International Ltd.: \$3.2b
-\item Cendant Corporation: \$3.2b
-
-\end{enumerate}
-
-\end{frame}
-
-\begin{frame}{Over time}
-
-\begin{figure}
-\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_1}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Event studies and securities litigation}
-
-\begin{itemize}
-
-\item Historically, the ``event study'' estimated ``abnormal'' returns under strong parametric assumptions (e.g., normality), but non-normal returns are normal
-
-\begin{quote}
-``The abnormal returns are the parameters that determine the damage estimates in securities suits, it is worthwhile to explore whether methods exist that can provide more accurate estimates of the abnormal return itself.''
-\end{quote}
-
-\item They argue that the event study is an out-of-sample prediction problem, which ML is used for, but it is also an extension of the synth modeling framework
-
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Basic idea}
-
-\begin{figure}
-\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_2}
-\end{figure}
-\end{frame}
-
-
-\begin{frame}{Event studies as a prediction problem}
-
-\begin{itemize}
-\item Let the daily return for firm $i$ on date $t$ be $r_{i,t}$ and variables used for prediction is $X_{i,t}$ (e.g., market return, Fama-French and Carhart factors, a 1 for intercept, etc.)
-\item Suppose an event reveals fraud.  It's effect on daily return is $r^1_{i,t} - r^0_{i,t}$ and we want to estimate $r^0_{i,t}$ with $\widehat{r}^0_{i,t}$
-\item Construct a predicted residual as $\widehat{\varepsilon}_{i,t} = r_{i,t} - \widehat{r}^0_{i,t}$
-\item Typically people would estimate this with OLS $$r_{i,t} = \alpha + \beta_1 X_{i,t} + \varepsilon_{i,t}$$
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{OLS, ML, MSE, Bias, Variance}
-
-\begin{itemize}
-\item MSE of predicted abnormal return for $\widehat{\varepsilon}_{i,t} = r_{i,t} - \widehat{\beta}X_{i,t}$ is the sum of a squared bias term and a variance term
-\item It's possible that the variance of one specification is lower enough than another to make up for a difference in bias
-\item OLS also suffers because it overfits data when used for prediction -- it is best unbiased linear predictor but at the price of greater out-of-sample variance linear prediction
-\item Since MSE is the basis for measuring prediction accuracy, ML estimators may outperform conventional OLS as we can explore increasing bias and reducing variance
-\item ML methods accept bias in exchange for reduced variance out-of-sample accomplished through ``training''
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Paper's punchline}
-
-\begin{quote}
-``Using real stock return data, we demonstrate that a number of out-of-the-box statistical approaches that are relatively easy to interpret perform better than the standard, OLS-based event study specifications used in court proceedings.
-
-\bigskip
-
-We find that specifications using penalized regression generally perform well.  Specifications that adjust for daily market performance using data-driven peer indexes also generally perform well.
-
-\bigskip
-
-Finally, we obtain generally good performance from specifications that use a cross-validation technique that is robust to otherwise unmodeled time-series properties of the DGP. The best specifications provide noticeable improvements over event study approaches conventionally used in securities litigation. 
-
-\end{quote}
-
-\end{frame}
-
-\begin{frame}{Peer index}
-
-\begin{itemize}
-\item They note that the best-performing specification makes use of both penalized regression and data-driven peer firm choice.
-\item They call this the ``reasonable peer index'', and they show that ML methods can usefully serve as a basis for choosing \emph{which} peer firms to include in an event study (again, making this a synth-like method) which can mitigate the subjective researcher bias that synth is meant to overcome
-\item Rather than subjectively picking which firms represent the counterfactual (over which there can be debate clearly, some disingenuous given the amount of money at stake), they propose letting the data say who the best peer is
-\item But using \emph{any} peer index appears to mitigate this too
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Ranking all the ML methods}
-
-\begin{figure}
-\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_5}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Elon Musk example}
-
-\begin{itemize}
-\item In an unpublished analysis, Baker examined Elon Musk's attempt to buy Twitter on Twitter's stock price
-\item Unlike his published paper, he's only going to use one form of ``penalized'' machine learning called ridge regression (which constrains what the coefficients can be in his model)
-\item He will use peer index and the S\&P500 for prediction purposes
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Purpose of the exercise}
-
-\begin{quote}
-``The goal here is to get a rough estimate of what TWTR would be trading at had Elon never put the stock in play. Note, this does not mean that the prediction is equivalent to what TWTR would trade at were the deal to not go through (without any damage payments), as Elon has likely destroyed value in the process. This prediction could in fact be used as a baseline price in any tort-type damages claim that the company would want to bring against Elon after the process is over.''
-\end{quote}
-
-\end{frame}
-
-\begin{frame}{Basic idea}
-
-\begin{figure}
-\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_3}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Basic idea}
-
-\begin{figure}
-\includegraphics[scale=0.35]{./lecture_includes/baker_gelbach_4}
-\end{figure}
-\end{frame}
-
-\section{Concluding remarks}
-
-\begin{frame}{Summarizing}
-
-\begin{itemize}
-\item Randomized treatments are great but not always available 
-\item Causal inference methods can utilize naturally occurring variation, but still must make adequate adjustments to find suitable controls
-\item Synthetic control and recent work on event studies can be possibilities
-\item Thank you!
-
-\end{itemize}
-
-\end{frame}
 
 
 
