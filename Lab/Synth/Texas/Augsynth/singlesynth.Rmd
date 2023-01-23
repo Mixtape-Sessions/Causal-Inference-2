@@ -1,0 +1,254 @@
+---
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Single Outcome AugSynth Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+  )
+## Install kableExtra if not already installed
+#install.packages("kableExtra")
+library(kableExtra)
+```
+
+# `augsynth`: The Augmented Synthetic Control Method
+
+
+## Installation
+
+You can install `augsynth` from github using `devtools`.
+
+```{r install, results="hide", message=F, eval=F}
+## Install devtools if not already installed
+#install.packages("devtools", repos='http://cran.us.r-project.org')
+## Install augsynth from github
+devtools::install_github("ebenmichael/augsynth")
+```
+
+## Example: Effects of the 2012 Kansas Tax Cuts 
+
+### The data
+To show the usage and features of `augsynth`, we'll use data on the impact of personal income tax cuts in Kansas that comes with the `AugSynth` package. Our interest is in estimating the effect of income tax cuts on gross state product (GSP) per capita.
+
+```{r load_data, results="hide", warning=F, message=F}
+library(magrittr)
+library(dplyr)
+library(augsynth)
+library(gridExtra)
+library(ggplot2)
+
+data(kansas)
+View(kansas)
+```
+
+The `kansas` dataset contains the GSP per capita (the outcome measure) `lngdpcapita` for all 50 states from the first quarter of 1990 to the first quarter of 2016.
+
+To run `augsynth`, we need to include a treatment status column that indicates which region was treated and at what time. The table in `kansas` contains the column `treated` to denote this. In the original study, the second quarter of 2012 was the implementation of the tax cut in Kansas.
+
+```{r treated_units}
+kansas %>% 
+  select(year, qtr, year_qtr, state, treated, gdp, lngdpcapita) %>% 
+  filter(state == "Kansas" & year_qtr >= 2012 & year_qtr < 2013) 
+```
+
+
+### Synth (no covariates)
+Now to find a synthetic control using the entire series of pre-intervention outcomes (and no auxiliary covariates), we can use `augsynth`. To do so we just need to give `augsynth` a formula like `outcome ~ treatment`, tell it what the unit and time variables are, optionally provide when intervention took place (the code will automatically determine this if `t_int` is not provided), and specify that we don't want to fit an outcome model
+
+```{r fit_synth, message=F, warning=F}
+syn <- augsynth(lngdpcapita ~ treated, fips, year_qtr, kansas,
+                progfunc = "None", scm = T)
+```
+
+We can then look at the ATT estimates for each post-intervention time period and overall. 
+We'll also see the quality of the synthetic control fit measured by the L2 distance between Kansas and its synthetic control, and the percent improvement over uniform weights.
+By default, we'll also see pointwise confidence intervals using a [conformal inference procedure](https://arxiv.org/abs/1712.09089).
+
+```{r summ_syn}
+summary(syn)
+
+```
+
+
+The default test statistic is the sum of the absolute treatment effects `function(x) sum(abs(x))`. We can change the test statistic via the `stat_func` argument. For instance, if we want to perform a one-way test against postive effects, we can set the test statistic to be the negative sum `function(x) -sum(x)`:
+```{r summ_syn_neg}
+summary(syn, stat_func = function(x) -sum(x))
+```
+Or if we want to priotize testing the average post-treatment effect, we can set it to be the absolute sum:
+```{r summ_syn_sum}
+summary(syn, stat_func = function(x) abs(sum(x)))
+```
+
+
+It's easier to see this information visually. Below we plot the difference between Kansas and it's synthetic control. Before the tax cuts (to the left of the dashed line) we expect these to be close, and after the tax cuts we measure the effect (with point-wise confidence intervals).
+
+```{r fig_syn, fig.width=8, fig.height=4.5, echo=T, fig.align="center"}
+plot(syn)
+```
+
+We can also compute point-wise confidence intervals using the [Jackknife+ procedure](https://arxiv.org/abs/1905.02928) by changing the `inf_type` argument, although this requires additional assumptions.
+
+```{r fig_syn_plus, fig.width=8, fig.height=4.5, echo=T, fig.align="center"}
+plot(syn, inf_type = "jackknife+")
+```
+
+
+### Augmenting synth with an outcome model
+In this example the pre-intervention synthetic control fit has an L2 imbalance of 0.083, about 20% of the imbalance between Kansas and the average of the other states. We can reduce this by _augmenting_ synth with ridge regression. To do this we change `progfunc` to `"Ridge"`. We can also choose the ridge hyper-parameter by setting `lambda`, while not specifying `lambda` will determine one through cross validation:
+```{r fit_asynth, message=F, warning=F}
+asyn <- augsynth(lngdpcapita ~ treated, fips, year_qtr, kansas,
+                progfunc = "Ridge", scm = T)
+```
+
+We can plot the cross-validation MSE when dropping pre-treatment time periods by setting `cv = T` in the `plot` function:
+
+```{r fig_asyn_cv, fig.width=8, fig.height=4.5, echo=T, fig.align="center"}
+plot(asyn, cv = T)
+```
+
+By default, the CV procedure chooses the maximal value of `lambda` with MSE within one standard deviation of the minimal MSE. To instead choose the `lambda` that minimizes the cross validation MSE, set `min_1se = FALSE`.
+
+
+We can look at the summary and plot the results. Now in the summary output we see an estimate of the overall bias of synth; we measure this with the average amount that augmentation changes the synth estimate. Notice that the estimates become somewhat larger in magnitude, and the standard errors are tighter.
+```{r summ_asyn}
+summary(asyn)
+```
+
+```{r fig_asyn, fig.width=8, fig.height=4.5, echo=T, fig.align="center"}
+plot(asyn)
+```
+
+There are also several auxiliary covariates. We can include these in the augmentation by fitting an outcome model using the auxiliary covariates. To do this we simply add the covariates into the formula after `|`. By default this will create time invariant covariates by averaging the auxiliary covariates over the pre-intervention period, dropping `NA` values. We can use a custom aggregation function by setting the `cov_agg` argument. Then the lagged outcomes and the auxiliary covariates are jointly balanced by SCM and the ridge outcome model includes both.
+
+```{r fit_covsynth, message=F, warning=F}
+covsyn <- augsynth(lngdpcapita ~ treated | lngdpcapita + log(revstatecapita) +
+                                           log(revlocalcapita) + log(avgwklywagecapita) +
+                                           estabscapita + emplvlcapita,
+                   fips, year_qtr, kansas,
+                   progfunc = "ridge", scm = T)
+
+```
+
+Again we can look at the summary and plot the results.
+```{r summ_cvsyn}
+summary(covsyn)
+```
+
+```{r fig_covsyn, fig.width=8, fig.height=4.5, echo=T, fig.align="center"}
+plot(covsyn)
+```
+
+Now we can additionally fit ridge ASCM on the residuals, look at the summary, and plot the results.
+```{r fit_covsynth_aug, message=F, warning=F}
+
+covsyn_resid <- augsynth(lngdpcapita ~ treated | lngdpcapita + log(revstatecapita) +
+                                           log(revlocalcapita) + log(avgwklywagecapita) +
+                                           estabscapita + emplvlcapita,
+                   fips, year_qtr, kansas,
+                   progfunc = "ridge", scm = T, lambda = asyn$lambda,
+                   residualize = T)
+```
+
+```{r summ_cvsyn_resid}
+summary(covsyn_resid)
+```
+
+
+```{r fig_covsyn_resid, fig.width=8, fig.height=4.5, echo=T, fig.align="center"}
+plot(covsyn_resid)
+```
+
+
+Finally, we can augment synth with many different outcome models. The simplest outcome model is a unit fixed effect model, which we can include by setting `fixedeff = T`.
+```{r fit_desyn, message=F, warning=F}
+
+desyn <- augsynth(lngdpcapita ~ treated,
+                   fips, year_qtr, kansas,
+                   progfunc = "none", scm = T,
+                   fixedeff = T)
+```
+
+
+```{r summ_desyn}
+summary(desyn)
+```
+
+
+```{r fig_desyn, fig.width=8, fig.height=4.5, echo=T, fig.align="center"}
+plot(desyn)
+```
+We can incorproate other outcome models by changing the `progfunc`.
+Several outcome models are available, including, fitting the factor model directly with `gsynth`, general elastic net regression, bayesian structural time series estimation with `CausalImpact`, and matrix completion with `MCPanel`. For each outcome model you can supply an optional set of parameters, see documentation for details.
+
+```{r fig_all, fig.width=8, fig.height=5, echo=T, fig.align="center"}
+##All plots in one##
+
+p1 <- (plot(syn)+ ggtitle('SCM') + theme(plot.title=element_text(size=10)))
+p2 <- (plot(asyn) + ggtitle('Ridge ASCM') + theme(plot.title=element_text(size=10)))
+p3 <- (plot(covsyn)+ ggtitle('Ridge ASCM + Covariates') + theme(plot.title=element_text(size=10)))
+p4 <- (plot(covsyn_resid)+ ggtitle('Ridge ASCM + Covariates (Residualized)') + theme(plot.title=element_text(size=10)))  
+  
+grid.arrange(p1, p2, p3, p4) 
+     
+```
+
+
+```{r fig_desyn, fig.width=8, fig.height=5, echo=T, fig.align="center"}
+
+##To replicate Figure 8b##
+
+#Run synth with covariates#
+
+
+covsynt <- augsynth(lngdpcapita ~ treated | lngdpcapita + log(revstatecapita) +
+                                           log(revlocalcapita) + log(avgwklywagecapita) +
+                                           estabscapita + emplvlcapita,
+                   fips, year_qtr, kansas,
+                   progfunc = "None", scm = T)
+
+
+#Combine to graph ACSM and SCM with no cov#
+
+weights1 <- as.data.frame(syn$weights)
+weights1$state <- seq.int(nrow(weights1))
+weights1$order <- rank(weights1$V1)
+
+
+weights2 <- as.data.frame(asyn$weights)
+weights2$state <- seq.int(nrow(weights2))
+weights2$order <- rank(weights2$V1)
+
+
+weights1$Dataset = "Synth"
+weights2$Dataset = "ASCM"
+weights_combined <- rbind(weights1,weights2)
+
+#Combine to graph ASCM and SCM cov#
+
+weights3 <- as.data.frame(covsyn$weights)
+weights3$state <- seq.int(nrow(weights3))
+weights3 <- merge(weights3, weights1[,c("state", "order")], by = "state", all.x = T)
+
+weights4 <- as.data.frame(covsynt$weights)
+weights4$state <- seq.int(nrow(weights4))
+weights4 <- merge(weights4, weights1[,c("state", "order")], by = "state", all.x = T)
+
+weights3$Dataset = "ASCM with Cov"
+weights4$Dataset = "Synth with Cov"
+weights_combined2 <- rbind(weights3,weights4)
+
+p5 <- ggplot(weights_combined, aes(x = V1, y = order, color = Dataset))+
+  geom_point(shape = 16) + theme_bw() + labs(x = "Weight", y = ' ')
+p6 <- ggplot(weights_combined2, aes(x = V1, y = order, color = Dataset))+
+  geom_point(shape = 16) + theme_bw() + labs(x = "Weight", y = ' ')
+     
+grid.arrange(p5, p6, nrow = 1)
+     
+```
+
+
