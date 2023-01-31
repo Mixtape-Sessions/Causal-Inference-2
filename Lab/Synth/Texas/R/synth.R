@@ -5,16 +5,8 @@ library(devtools)
 if(!require(SCtools)) devtools::install_github("bcastanho/SCtools")
 library(SCtools)
 
-read_data <- function(df)
-{
-  full_path <- paste("https://raw.github.com/scunning1975/mixtape/master/", 
-                     df, sep = "")
-  df <- read_dta(full_path)
-  return(df)
-}
-
-texas <- read_data("texas.dta") %>%
-  as.data.frame(.)
+# load the data from github
+texas <- haven::read_dta("https://github.com/scunning1975/causal-inference-class/raw/master/texas.dta")
 
 dataprep_out <- dataprep(
   foo = texas,
@@ -49,5 +41,4 @@ placebos <- generate.placebos(dataprep_out, synth_out, Sigf.ipop = 3)
 plot_placebos(placebos)
 
 mspe.plot(placebos, discard.extreme = TRUE, mspe.limit = 1, plot.hist = TRUE)
-
 
