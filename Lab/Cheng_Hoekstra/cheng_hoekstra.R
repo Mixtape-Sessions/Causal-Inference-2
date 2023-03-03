@@ -18,6 +18,33 @@ castle$rel_year = castle$year - castle$effyear
 castle[castle$effyear == 0, ]$rel_year <- -1
 castle$treat = (castle$year >= castle$effyear) & (castle$effyear != 0)
 
+# 0. TWFE model
+
+# estimate the effect on log(homicide)
+vwatt <- feols(
+  l_homicide ~ treat | sid + year, 
+  castle, cluster = ~ sid
+) 
+
+summary(vwatt)
+
+# Bacon decomposition
+
+df_bacon <- bacon(l_homicide ~ treat, 
+                  data = castle, 
+                  id_var = "sid",
+                  time_var = "year")
+
+# Look at the 2x2s
+df_bacon
+
+# Diff-in-diff estimate is the weighted average of individual 2x2 estimates
+dd_estimate <- sum(df_bacon$estimate*df_bacon$weight)
+
+dd_estimate
+
+
+
 # 1. TWFE Event-study regression -----------------------------------------------
 
 # estimate the effect on log(homicide)
@@ -46,6 +73,12 @@ atts <- att_gt(
   # set the comparison group which is either "nevertreated" or "notyettreated" 
   control_group = "nevertreated"
 )
+
+simple_att <- aggte(atts, type = "simple")
+summary(simple_att)
+
+group_att <- aggte(atts, type="group")
+summary(group_att)
 
 es_cs <- aggte(atts, type = "dynamic")
 ggdid(es_cs)
