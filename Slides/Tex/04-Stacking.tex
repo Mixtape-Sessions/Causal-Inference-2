@@ -40,7 +40,7 @@
 
 \section{Stacking}
 
-\subsection{Minimum wages example}
+\subsection{Motivating example: Minimum wages}
 
 
 \begin{frame}{Keep TWFE but avoid differential timing problems}
@@ -59,9 +59,9 @@
 
 \begin{itemize}
 \item  Cengiz, et al. (2019) call this ``clean controls'' but now it's called ``stacking'' (Baker, et al. 2022)
-\item Paper is known for stacking, but I think it's not as well known for being a model (like Miller, et al. 2021) for how to build the case through tables, figures and various forms of intuitive reasoning that guides estimation
+\item Very good example (like Miller, et al. 2021) for how to build an argument through tables, figures and various forms of intuitive reasoning that guides estimation
 \item Data is 1979 to 2016 US state-level panel, 138 ``prominent'' state-level minimum wage change events
-\item Main model specification is TWFE, but in a robustness section (Appendix D) they introduce a stacking alternative
+\item Main model specification is TWFE, but in a robustness section (Appendix D) they introduce the ``stacking'' alternative
 \end{itemize}
 
 \end{frame}
@@ -83,8 +83,17 @@
 \begin{itemize}
 \item Prior research: ``new minimum wage'' studies starting with the now classic Card and Krueger (1994) which found no effect of minimum wages on employment, but others (many written by David Neumark) found reductions in employment
 \item Prior research had often been on \textbf{aggregate} employment or teenagers
-\item ``Enter the arena, but bring a knife'' -- fake Brene Brown novel from Ted Lasso season 2
+\item This paper will use less aggregated data but in an unusual way I hadn't seen before
 \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Data}
+
+\begin{quote}
+``We use the individual-level NBER Merged Outgoing Rotation Group of the CPS for 1979-2016 to calculate quarterly, state-level distributions of hourly wages. For hourly workers, we use the reported hourly wage, and for other workers, we define the hourly wage to be their usual weekly earnings divided by usual weekly hours.  We do not use any observations with imputed wage data to minimize the role of measurement error.''
+\end{quote}
+
 
 \end{frame}
 
@@ -92,11 +101,9 @@
 
 \begin{itemize}
 \item Hourly wage data from 1976-2016 NBER out-rotation group of the Current Population Survey broken into wage bins (by \$0.25) from \$0 to \$30
-\begin{quote}
-``We use the individual-level NBER Merged Outgoing Rotation Group of the CPS for 1979-2016 to calculate quarterly, state-level distributions of hourly wages. For hourly workers, we use the reported hourly wage, and for other workers, we define the hourly wage to be their usual weekly earnings divided by usual weekly hours.  We do not use any observations with imputed wage data to minimize the role of measurement error.''
-\end{quote}
 \item Wages are deflated to 2016 dollars to get ``real wage''
 \item There are 117 wage bins that are then collapsed into quarterly, state-level employment counts $E_{swt}$ using person-level sampling weights
+\item Why are they doing this? What's wrong with just regressing state-level employment onto minimum hikes?
 \end{itemize}
 
 \end{frame}
@@ -104,42 +111,65 @@
 \begin{frame}{Minimum wage data}
 
 \begin{itemize}
-\item Quarterly max of the state-level daily minimum wage series from Vaghul and Zipperer (2016)
-\item 138 minimum wage events, of which 8.6\% of workers were below the minimum wage the year before the event
-\item Focus will be on ``missing'' vs ``excess'' jobs which is a break in the wage frequency just above and just below the minimum wage cutoff
+\item They get their minimum wage data from Vaghul and Zipperer (2016) which shows quarterly max of the state-level daily minimum wage series 
+\item Paper focuses on 138 treatments or minimum wage events, of which 8.6\% of workers were below the minimum wage the year before the event
+\item Focus is inductive reasoning -- concepts are ``missing'' vs ``excess'' jobs equal to different treatment effects in employment by wage bins just above and just below the minimum wage cutoff
 \end{itemize}
 
 \end{frame}
 
 \begin{frame}{Remember my philosophy on DiD}
 
-\begin{itemize}
-\item \textbf{Show bite}. Oftentimes we study secondary effects -- sex work legalization effect on STIs or violence (Cunningham and Shah 2018). People \emph{need} to see first order effects and they need to be large. We showed reductions in arrests and increases in supply along many data sources before ever showing our ``main results''
-\item \textbf{Falsifications}. You find effects where you expect to; but you shouldn't find effects in places you shouldn't. This style of reasoning is unique to the applied arguments; not as common outside econ but you did see it John Snow's original cholera studies ironically
-\item \textbf{Event studies}. Here we see the core visuals -- show the selection bias problems don't exist by looking at pre-trends; show dynamic treatment effects post-treatment
-\end{itemize}
+\begin{enumerate}
+\item[1. ] \textbf{Show bite}. People \emph{need} to see first order effects and they need to be large.  
+	\begin{itemize}
+	\item Oftentimes we focus only secondary effects -- sex work legalization effect on STIs or violence (Cunningham and Shah 2018) 
+	\item Economics loves counter intuitive results, and they dominate our attention, but they're not credible if we can't show bite oftentimes
+	\item Bite requires the most creativity of all probably as it's finding data and finding theories
+	\end{itemize}
+\end{enumerate}
 
 \end{frame}
 
-\begin{frame}{Bite}
-
-Constant reference to ``bite''.  Footnote 2.
-
-\bigskip
+\begin{frame}{This Paper's Bite}
 
 \begin{quote}
 ``When we refer to the `bite' of the minimum wage, or to the extent to which the minimum wage is `binding', we mean how effective the minimum wage is in raising wages at the bottom.  Therefore, the bite is a function of (i) how many workers are earning below the minimum wage, (ii) how many of those workers are legally covered by the policy, and (iii) the extent of compliance.''
 \end{quote}
 
-\bigskip
+\end{frame}
 
-You can sometimes hear it referred to as the first stage, using IV language, but as this is a DiD and not IV they tend to use the word ``bite'' over and over instead.
 
-\bigskip
 
-The idea is that this paper only makes sense if the policy change has ``bite''. But check out the visual Dube drew to guide the reader. Great visuals go a long way in causal studies (slide after the next)
+\begin{frame}{Remember my philosophy on DiD}
+
+\begin{enumerate}
+\item[2. ] \textbf{Falsifications}. 
+	\begin{itemize}
+	\item Your main results show effects where you expect them
+	\item Your falsifications do not find effects where there should be no effects
+	\item This style of reasoning is unique to the applied work outside the RCT;
+	\item Less common outside econ (though you did see it John Snow's original cholera studies ironically)
+	\item Think carefully -- it must be based on logic and shared opinions
+	\end{itemize}
+\end{enumerate}
 
 \end{frame}
+
+
+\begin{frame}{Remember my philosophy on DiD}
+
+\begin{enumerate}
+\item[3. ] \textbf{Event studies}. 
+	\begin{itemize}
+	\item Event studies support basic ideas like having found good controls, no anticipation, plausible parallel trends
+	\item The visuals are key -- they support the interpretation of the coefficients as dynamic ATT parameters
+	\end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+
 
 
 \begin{frame}{Rhetorical argument}
