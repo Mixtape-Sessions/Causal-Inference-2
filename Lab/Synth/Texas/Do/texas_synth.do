@@ -26,7 +26,7 @@ synth 	bmprison
 		income ur poverty black(1990) black(1991) black(1992) 
 		perc1519(1990)
 		,		
-		trunit(17) trperiod(1993) unitnames(state) 
+		trunit(48) trperiod(1993) unitnames(state) 
 		mspeperiod(1985(1)1993) resultsperiod(1985(1)2000)
 		keep(../data/synth/synth_bmprate.dta) replace fig;
 
