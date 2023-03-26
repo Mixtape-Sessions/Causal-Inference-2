@@ -13,10 +13,11 @@ library(fixest) # Sun & Abraham (and regular TWFE and high-dimensional FEs, etc.
 # load data
 baker = read_dta('https://github.com/scunning1975/mixtape/raw/master/baker.dta')
 
-baker$treated = baker$treat_date!=0 # create a treatment variable
-# NB: All units in this dataset are treated so above is kind of pointless
+baker$treated = baker$treat_date!=0 # change to 0 anyone never treated, but
+# because all units in this dataset are treated it is kind of pointless. But I 
+# include it so you remember to do it, but you don't need to in baker.dta.
 
-# Naive TWFE Event Study (SEs clustered by state)
+# Naive TWFE (bc it assumes homogeneous treatment profiles) Event Study (SEs clustered by state)
 res_naive = feols(y ~ i(time_til, treated, ref = -1) | 
                     id + year,
                   baker, vcov = ~state)

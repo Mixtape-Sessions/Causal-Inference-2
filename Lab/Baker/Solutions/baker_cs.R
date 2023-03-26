@@ -34,7 +34,7 @@ atts <- att_gt(yname = "y", # LHS variable
 # Static model
 # ------------------------------------------------------------------------------
 
-# Calculate group-time ATTs and overall ATT
+# Calculate group-time ("group") ATTs and overall ("simple") ATT
 agg_effects <- aggte(atts, type = "group", balance_e=TRUE)
 summary(agg_effects)
 
