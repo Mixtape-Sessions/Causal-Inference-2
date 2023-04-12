@@ -1345,7 +1345,7 @@ Synthetic DiD is DiD with a synthetic control and a pre-treatment period (on the
 \begin{frame}{Estimation}
 
 \begin{enumerate}
-\item[4. ] Computer the SDID estimator via the weighted DID regression
+\item[4. ] Compute the SDID estimator via the weighted DID regression
 \end{enumerate}
 
 \begin{eqnarray*}
@@ -1769,8 +1769,184 @@ Vignettes: \url{https://synth-inference.github.io/synthdid/articles/more-plottin
 
 \end{frame}
 
+\begin{frame}{Application: Melo, Neilson and Kemboi 2023}
 
 
+``Indoor Vaccine Mandates in US Cities, Vaccination Behavior and COVID-19 Outcomes'' by Vitor Melo, Elijah Neilson and Dorothy Kemboi, 2023 working paper
+
+\bigskip
+
+Study investigates the effect of city-level vaccine mandates (implemented in US cities) on COVID-19 cases, deaths or vaccine uptake in the cities
+
+\bigskip
+
+Authors use Arkhangelsky, et al. (2021) ``synthetic difference-in-differences'', as well as conventional synthetic control and difference-in-differences and finds no effect of either the announcement or implementation of the mandate had any significant effect on the outcomes
+
+\end{frame}
+
+\begin{frame}{Motivation}
+
+\begin{itemize}
+\item Many policies and strategies were taken to incentivize citizens to get vaccinated and reduce COVID-19 spread
+\item Indoor vaccine mandates, one of the more restrictive, prevented people from entering public places (e.g., theaters, restaurants) without proof of vaccination
+\item Many large cities (NYC, San Francisco, LA, Seattle, Boston, Philadelphia) implemented with the stated goal to raise vaccination rates and slow spread and mortality from COVID-19
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Motivation}
+
+\begin{itemize}
+\item Vaccine viewed as crucial step toward controlling the virus and return life to normal
+\item Substantial number of Americans were unwilling to be immunized
+\item February 2021, 30\% of adults say they would probably or definite not be vaccinated
+\item Low vaccination rates led to measures to increase uptake like mandated vaccination and weekly testing, lotteries, etc.
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Mandates}
+
+\begin{itemize}
+\item August 3, 2021, due to the Delta variant, NYC passed mandate requiring proof of vaccination to enter restaurants, concerts, stadiums and gyms
+\item Similar policies were adopted by other major cities soon after (see next table)
+\item I'll skip the prior literature for now
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Timing}
+
+
+\begin{table}[ht]
+\centering
+\caption{Timing of Indoor Vaccine Mandates}
+\begin{tabular}{lccc}
+\toprule\toprule
+City          &  Announced &  Implemented &  Repealed \\ \midrule
+NYC           & 8/3/21     & 8/16/21       & 3/7/22    \\
+San Francisco & 8/12/21     & 8/20/21       & 3/11/22    \\
+New Orleans   & 8/12/21     & 8/16/21       & 3/21/22    \\
+Seattle       & 9/6/21     & 10/25/21       & 3/1/22    \\
+Los Angeles   & 11/8/21     & 11/29/21       & 3/30/22    \\
+Philadelphia  & 12/13/21     & 1/3/22       & 2/16/22    \\
+Boston        & 12/20/21     & 1/15/22       & 2/18/22    \\
+Chicago       & 12/21/21     & 1/3/22       & 2/28/22    \\
+DC            & 12/22/21     & 1/15/22       & 2/15/22    \\ \bottomrule\bottomrule
+\end{tabular}
+\end{table}
+
+
+\end{frame}
+
+\begin{frame}{Research question}
+
+\begin{itemize}
+\item Estimate an ATT for these cities' mandates on vaccination, cases and deaths
+\item Data will come from daily county level COVID-19 vaccinations, cases and deaths from the CDC aggregated to MSA by week scaled by US population estimates
+\item Main outcomes: Weekly measures of administered first doses of COVID-19 vaccines, cases, and deaths per 100,000 residents
+\item Weekly panel from December 21, 2020 to April 18, 2022 for 821 MSAs (they note various issues with data quality required dropping just under 100 MSAs) with 57,470 observations
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[shrink=20]{Descriptive Statistics}
+
+\begin{table}[ht]
+\centering \tiny
+\caption{Descriptive Statistics}
+\begin{tabular}{lccccccccc}
+\toprule\toprule
+ & \multicolumn{3}{c}{All MSAs} & \multicolumn{3}{c}{Treated MSAs} & \multicolumn{3}{c}{Untreated MSAs} \\ \cmidrule(lr){2-4} \cmidrule(lr){5-7} \cmidrule(lr){8-10}
+Variable              & Mean & SD & Median & Mean & SD & Median & Mean & SD & Median \\ \midrule
+First Doses per 100,000  & 817.47 & 1,344.30 & 458.98 & 1,253.50 & 1,237.18 & 827.71 & 812.66 & 1,344.65 & 455.01 \\
+Cases per 100,000        & 273.75 & 373.61 & 147.73 & 247.47 & 394.75 & 121.95 & 274.04 & 373.37 & 148.16 \\
+Deaths per 100,000       & 3.56 & 5.87 & 1.90 & 2.03 & 2.31 & 1.17 & 3.58 & 5.90 & 1.91 \\
+Number of observations  & & 57,470 & & & 630 & & & 56,840 & \\ \bottomrule\bottomrule
+\end{tabular}
+\tiny \newline Notes: The unit of observation is MSA week. Our sample consists of 821 MSAs, 9 of which are treated, and the period spans 70 weeks from December 21, 2020, to April 18, 2022.
+\end{table}
+
+\end{frame}
+
+
+\begin{frame}{Great discussion of synth DiD}
+
+
+\begin{quote}
+``The basic idea is that the unit weights are chosen to find a convex combination of potential control states whose treatment trend in the outcome variable of interest is most parallel to that of the treated state.  The inclusion of the intercept term $\omega_0$ (made possible because of the inclusion of the unit fixed effects) is one way in which the SDID unit weights differ from those of the synthetic control weights.  Instead of the weights needing to make the pre-trend control unit perfectly match that of the treated unit, as is the case with the synthetic control estimator, allowing for this intercept makes it sufficient for the weights to just make the trends parallel.''
+\end{quote}
+
+\end{frame}
+
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.3]{./lecture_includes/vitor_table3}
+	\end{figure}
+
+\end{frame}
+
+
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.3]{./lecture_includes/vitor_table4}
+	\end{figure}
+
+\end{frame}
+
+
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.3]{./lecture_includes/vitor_table5}
+	\end{figure}
+
+\end{frame}
+
+
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.3]{./lecture_includes/vitor_figure1}
+	\end{figure}
+
+\end{frame}
+
+
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.3]{./lecture_includes/vitor_figure2}
+	\end{figure}
+
+\end{frame}
+
+
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.3]{./lecture_includes/vitor_figure3}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Conclusion}
+
+\begin{itemize}
+
+\item They also report synth and DiD analysis as robustness -- something to keep in mind is the presentation of results are subjective
+\item Rather than showing regression results with more controls, we tend to now see different DiD and synth estimators as the robustness
+\item Authors fail to find strong evidence the vaccine mandates slowed COVID-19
+\item What's your response?
+
+\end{itemize}
+
+\end{frame}
+
 
 \subsection{Matrix completion with nuclear norm}
 
