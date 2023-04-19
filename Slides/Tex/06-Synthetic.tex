@@ -1168,36 +1168,16 @@ R: \url{https://github.com/ebenmichael/augsynth}
 \begin{frame}{New developments}
 
 \begin{itemize}
-\item We have been interested in the effect of the treatment on the treated (ATT), and have been using panel data largely to do this -- first with the DiD, then the synthetic control model
-\item Athey and Imbens have been very active in applying machine learning methods to causal inference (``most important innovation in causal inference of the last 15 years'' - Athey and Imbens)
-\item Their work on synthetic control has been in this spirit
+\item Remember what Athey and Imbens said -- ``most important innovation in causal inference of the last 15 years''.
 \item The synthetic DiD bears some similarities to their MCNN model, but focuses on estimating weights, not the $L^*$ matrix
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{When to use this}
-
-\begin{itemize}
-\item Matrix completion with nuclear norm regularization allows for staggered adoption
-\item Use this setting for 2x2 situations with more than one treatment group
-\item So the ``block'' is a binary treatment with units treated in some late period
 \item It will dominate the Abadie, Diamond and Hainmueller (2010) as they will show and addresses overfitting and other things through estimating oracle weights (which I'll explain towards the latter half)
-\item Very technical paper -- this is not your mother's econometrics. We are shifting towards more structural estimation; perhaps a trend
-\item Although parallel trends was in some ways already structural because it placed restrictions on the parallel trends (as opposed to relying on randomization)
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Model selection}
 
-\begin{itemize}
-\item Another thing is that ADH tends to rely on an ``eyeball test'' for the pre-trend fitting
-\item ``Researcher degrees of freedom'' vs ``reducing subjective researcher bias''
-\item This will allow for a more principled approach
-\end{itemize}
 
-\end{frame}
+
 
 \begin{frame}{Imperfect fits}
 
@@ -1229,13 +1209,21 @@ R: \url{https://github.com/ebenmichael/augsynth}
 
 \end{frame}
 
-\begin{frame}{ADH Synth}
+\begin{frame}{Weights and controls}
 
 \begin{itemize}
 \item ADH sought a weighted average over the control units to recreate the pre-trend through a fitting exercise
 \item Synthetic control becomes the weighted average of controls, and then the focus is just on estimating weights
 \item All we ask is that the weighted average follow the same dynamic path as treatment group (a fit for each period)
-\item Doudchenko and Imbens (2015) note that this is just a ``vertical regression'' which yields coefficients on the control units (as opposed to the lags in $T$)
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Regressions up and down}
+
+\begin{itemize}
+\item Doudchenko and Imbens (2015) note that synth weights are based on a ``vertical regression'' yielding coefficients on the control units (as opposed to the lags in $T$ which is a horizontal regression)
 \begin{eqnarray*}
 Y^0_{1,t} = \sum_{j=2}^{J+1} \widehat{\omega_j} \times Y_{j+1,t}
 \end{eqnarray*}
@@ -1244,6 +1232,7 @@ Y^0_{1,t} = \sum_{j=2}^{J+1} \widehat{\omega_j} \times Y_{j+1,t}
 \end{itemize}
 
 \end{frame}
+
 
 \begin{frame}{Weighting across controls}
 
@@ -1934,7 +1923,8 @@ Number of observations  & & 57,470 & & & 630 & & & 56,840 & \\ \bottomrule\botto
 
 \end{frame}
 
-\begin{frame}{Conclusion}
+
+\begin{frame}{Conclusion}
 
 \begin{itemize}
 
@@ -1946,7 +1936,10 @@ Number of observations  & & 57,470 & & & 630 & & & 56,840 & \\ \bottomrule\botto
 \end{itemize}
 
 \end{frame}
-
+
+
+
+
 
 \subsection{Matrix completion with nuclear norm}
 
