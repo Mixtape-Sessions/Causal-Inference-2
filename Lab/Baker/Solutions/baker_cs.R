@@ -6,7 +6,7 @@
 # ------------------------------------------------------------------------------
 
 # load packages
-#install.packages('readstata13')
+install.packages("Rcpp")
 library(readstata13)
 library(ggplot2)
 library(did) # Callaway & Sant'Anna

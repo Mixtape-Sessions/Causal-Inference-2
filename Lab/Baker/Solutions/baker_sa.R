@@ -7,6 +7,7 @@
 # ------------------------------------------------------------------------------
 
 # load libraries
+install.packages("haven")
 library(haven)  # Read Stata .dta files
 library(fixest) # Sun & Abraham (and regular TWFE and high-dimensional FEs, etc., etc.)
 
