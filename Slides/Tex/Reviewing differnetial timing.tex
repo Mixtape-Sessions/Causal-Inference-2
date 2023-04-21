@@ -391,6 +391,12 @@ y_{it} &=& x_{it}\beta + c_i + \varepsilon_{it} \\
 			\item regressors vary over time for at least some $i$ and not collinear
 			\end{itemize}
 		\end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Fixed effects}
+	
+	\begin{itemize}
 	\item Fixed effects estimator
 		\begin{enumerate}
 		\item Demean and regress $\ddot{y}_{it}$ on $\ddot{x}_{it}$ (need to correct degrees of freedom)
@@ -424,10 +430,6 @@ y_{it} &=& x_{it}\beta + c_i + \varepsilon_{it} \\
 		\item Standard errors have to be ``clustered'' by panel unit (e.g., farm) to allow correlation in the $\varepsilon_{it}$'s for the same $i$.
 		\item Yields valid inference as long as number of clusters is reasonably large
 		\end{itemize}	
-	\item Typically we care about $\beta$, but unit fixed effects $c_i$ could be of interest
-		\begin{itemize}
-		\item $\widehat{c}_i$ from dummy variable regression is unbiased but not consistent for $c_i$ (based on fixed $T$ and $N\rightarrow \infty$)
-		\end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -553,12 +555,12 @@ Mean of dependent variable								&        5.57   &        5.57   &        0.00\
 \end{frame}
 
 
-\begin{frame}{Concluding remarks}
+\begin{frame}{Strict exogeneity}
 
 \begin{itemize}
-\item Problem unstated: the treatment parameter was assumed to be constant
-\item Strict exogeneity implied this, and only most sophisticated instructors (i.e., not me) seemed to know and teach this
-\item Gardner (2021) notes that fixed effects are correlated with error term under differential timing which is why it breaks down
+\item So fixed effects estimates the parameter of interest under strict exogeneity, and since it eliminates time invariant heterogeneity in panel settings, the appeal was widespread as more panel data came online
+\item Strict exogeneity assumed constant treatment effects, though, and only most sophisticated instructors (i.e., not me) seemed to know and teach this
+\item Gardner (2021) shows that under treatment effect heterogeneity, the group and period fixed effects became correlated with a composite error term  under differential timing, but we are going to need to first dive into potential outcomes to fully understand this
 \end{itemize}
 
 \end{frame}
@@ -578,9 +580,22 @@ Mean of dependent variable								&        5.57   &        5.57   &        0.00\
 	\end{itemize}
 \item This is a simple review of the potential outcomes model by Jerzy Neyman (1923) and Don Rubin (1973)
 \item Potential outcomes notation is the dominant language of causality, though there are others too (e.g., Pearl)
+
 \end{itemize}
 
 \end{frame}
+
+\begin{frame}{Motivating example}
+
+\begin{itemize}
+\item This is from John Snow's work on cholera
+\item Example will be two firms, called Lambeth or Southwark and Vauxhall, who service water to the city of London's water supply
+\item In 1849, they both pull water from below the city (``pre''), but because of a London policy, they had to move their pipes upstream
+\item Only Lambeth complied by 1854, so that will be our focus
+\end{itemize}
+
+\end{frame}
+
 \begin{frame}{Potential outcomes notation}
 	
 	\begin{itemize}
@@ -1139,7 +1154,7 @@ While large weight on the ``late to early 2x2'' is \emph{suggestive} of an issue
 
 
 
-\section{Implicit imputation}
+\section{Two solutions and a new decomposition}
 
 \subsection{CS}
 
