@@ -1,4 +1,4 @@
-********************************************************************************
+*******************************************************************************
 * baker_sa.do
 * author: Daniel H and scott cunningham
 * implement the Sun and Abraham estimator and plot it
@@ -23,4 +23,4 @@ event_plot e(b_iw)#e(V_iw), default_look graph_opt(xtitle("Periods since the eve
 	title("Sun and Abraham (2020)"))  together
 */
 
-csdid  y ,  ivar(id)  time(year) gvar(treat_date) method(ipw) notyet
+csdid y ,  ivar(id)  time(year) gvar(treat_date) method(ipw) notyet
