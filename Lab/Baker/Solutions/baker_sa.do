@@ -19,7 +19,7 @@ coefplot, keep(dd1 dd2 dd3 dd4 dd5 dd6 dd7 dd8 dd9 dd10 dd11 dd12 dd13 dd14 dd15
 eventstudyinteract y dd1 - dd20 dd22-dd23 dd25-dd48  if year < 2004 ,  cohort(treat_date) control_cohort(lastcohort) absorb(i.id i.year) vce(cluster state)
 
 /* Get event_plot working
-event_plot e(b_iw)#e(V_iw), default_look graph_opt(xtitle("Periods since the event") ytitle("Average causal effect") xlabel(-14(1)5) ///
+event_plot e(b_iw)#e(V_iw), default_look graph_opt(xtitle("Periods since the event ") ytitle("Average causal effect") xlabel(-14(1)5) ///
 	title("Sun and Abraham (2020)"))  together
 */
 
