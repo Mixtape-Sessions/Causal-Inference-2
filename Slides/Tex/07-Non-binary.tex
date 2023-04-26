@@ -43,34 +43,6 @@
 
 \subsection{Dose causal parameter}
 
-\begin{frame}{DiD Revolution}
-
-Standard DiD model with binary treatment $D_{it}$ estimated with TWFE
-
-$$Y_{it} = \delta D_{it} + \alpha_i + \tau_t + \varepsilon_{it}$$
-
-With differential timing, TWFE estimates of $\delta$ are biased when treatment effects ``change over time'' (dynamic), even when $E[\Delta Y^0|D=1] = E[\Delta Y^0|D=0]$.
-
-\bigskip
-
-Borusyak, et al. (2022), de Chaisemartin and D'Haultfouielle (2020), Sun and Abraham (2020), Goodman-Bacon (2021)
-
-\end{frame}
-
-\begin{frame}{Alternative methods}
-
-\begin{itemize}
-\item OLS loves to exploit variation, but this can lead to naive causal inference practices
-\item Causal inference is not focused on exploiting variation but rather estimating treatment effects using appropriate counterfactuals
-\item Alternative estimators avoided ``forbidden contrasts'' altogether allowing us to entertain unrestricted heterogeneity and obtain reasonable versions of ATT parameter
-
-\end{itemize}
-
-\end{frame}
-
-
-
-
 \begin{frame}{Continuous DiD}
 
 \begin{itemize}
@@ -96,6 +68,8 @@ Borusyak, et al. (2022), de Chaisemartin and D'Haultfouielle (2020), Sun and Abr
 
 \end{frame}
 
+\clearpage
+
 \begin{frame}{Continuous DiD}
 
 \begin{figure}
@@ -116,7 +90,257 @@ Borusyak, et al. (2022), de Chaisemartin and D'Haultfouielle (2020), Sun and Abr
 
 \end{frame}
 
+\begin{frame}{Recommended steps of causal projects}
+
+\begin{enumerate}
+\item Define the parameter we want (``ATT''), 
+\item Ask what what beliefs do you need (``identification''), and 
+\item Build cranks that produce the correct numbers (``estimator'')
+\end{enumerate}
+
+\bigskip
+
+People often skip 1 and 2 and go straight to 3 and run regressions then go back and assume exogeneity (step 2), and hope that the estimates are weighted averages of individual treatment effects (1), but that is not guaranteed
+
+\end{frame}
+
+\begin{frame}{Dangers of skipping 1 and 2}
+
+\begin{itemize}
+
+\item TWFE was arguably a case where people skipped 1 and 2 and went straight to 3
+\item We now know that the ``constant treatment effect'' static specification does not recover the ATT under parallel trends, but the VWATT and requires no dynamics
+\item We can see this too in simulations even with matching and regression -- defining the parameter ahead of time then clearly indicates what assumptions to make, pushing into specifications
+\item Let's look at this now
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Data Generating Process}
+
+\begin{itemize}
+\item Covariate imbalance
+\item Heterogenous treatment effects with respect to covariates
+\item Linear data generating process
+\item Question: How do we estimate the ATE vs the ATT?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Data Generating Process}
+\begin{itemize}
+\item Age is generated from a normal distribution:
+\begin{itemize}
+\item Treatment group: mean 25, standard deviation 2.5
+\item Control group: mean 30, standard deviation 3
+\end{itemize}
+\item GPA is generated from a normal distribution:
+\begin{itemize}
+\item Treatment group: mean 1.76, standard deviation 0.5
+\item Control group: mean 2.3, standard deviation 0.75
+\end{itemize}
+\item Age and GPA are centered around their respective means
+\item Squared terms and interaction terms are generated:
+\begin{itemize}
+\item Age squared (age_sq), GPA squared (gpa_sq)
+\item Interaction between age and GPA (interaction)
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Data Generating Process}
+\begin{itemize}
+\item Outcome variables are generated:
+\begin{itemize}
+\item No treatment (y0): $15000 + 10.25 \cdot \text{age} - 10.5 \cdot \text{age_sq} + 1000 \cdot \text{gpa} - 10.5 \cdot \text{gpa_sq} + 500 \cdot \text{interaction} + \epsilon$
+\item Treatment (y1): $y0 + 2500 + 100 \cdot \text{age} + 1000 \cdot \text{gpa}$
+\item Treatment effect (delta): $y1 - y0$
+\end{itemize}
+\item Average treatment effect (ATE) is estimated at 2500
+\item Average treatment effect on the treated (ATT) is estimated at 1971
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Covariate imbalance (expressed as propensity score)}
+
+\begin{figure}
+\begin{center}
+             \includegraphics[scale=0.1]{./lecture_includes/covariate_imbalance.jpg}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Regression specifications 1 and 2}
+
+We will look at several different specifications.  These first two are standard ways of incorporating covariates. You enter them in linearly as controls. 
+
+\begin{eqnarray}
+\text{earnings} &=& \beta_0 + \beta_1 \text{treat} + \beta_2 \text{age} + \beta_3 \text{gpa} + \epsilon \\
+\text{earnings} &=& \beta_0 + \beta_1 \text{treat} + \beta_2 \text{age} + \beta_3 \text{age\_sq} + \beta_4 \text{gpa} \nonumber \\
+&&+ \beta_5 \text{gpa\_sq} + \beta_6 (\text{gpa} \times \text{age}) + \epsilon 
+\end{eqnarray}
+
+\bigskip
+
+Interpretation focuses on $\widehat{\beta_1}$.  But what does it mean?  Look at top two.  Remember ATE is 2500.
+
+\end{frame}
+
+\begin{frame}{ATE estimates across different specifications}
+
+\begin{figure}
+\begin{center}
+             \includegraphics[scale=0.1]{./lecture_includes/combined_kernels_ate.jpg}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{ATT Calculation: Regression 3}
+\tiny
+
+Saturated regressions: interact treatment dummy with all covariates. 
+
+\begin{itemize}
+\item Regression Specification:
+\begin{eqnarray*}
+\text{earnings} &=& \beta_0 + \beta_{1t} \text{treat} + \beta_{2a} \text{age} + \beta_{3g} \text{gpa} + \beta_{4ta} (\text{treat} \times \text{age}) + \beta_{5tg} (\text{treat} \times \text{gpa}) + \beta_{6age} (\text{age} \times \text{gpa})  \nonumber \\
+&&+ \beta_{6tag} (\text{treat} \times \text{age} \times \text{gpa}) + \epsilon
+\end{eqnarray*}
+
+\bigskip
+
+Estimated ATE is the coefficient, $\widehat{\beta_{1t}}$, but how do we get the estimated ATT?
+
+\item Calculating ATT:
+\begin{equation*}
+    \text{ATT}_3 = \beta_{1t} + \beta_{4ta} \cdot \bar{\text{age}} + \beta_{5tg} \cdot \bar{\text{gpa}} + \beta_{6tag} \cdot \bar{\text{age}} \cdot \bar{\text{gpa}}
+\end{equation*}using the means of all covariates
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{ATT Calculation: Regression 4}
+
+
+\tiny 
+Saturated regressions: interact it with covariates, higher order polynomials, and all interactions
+
+
+\begin{itemize}
+\item Regression Specification:
+\begin{eqnarray*}
+\text{earnings} &=& \beta_0 + \beta_{1t} \text{treat} + \beta_{2a} \text{age} + \beta_{3a_sq} \text{age_sq} + \beta_{4g} \text{gpa} + \beta_{5g_sq} \text{gpa_sq} + \\
+&& \beta_{6ta} (\text{treat} \times \text{age}) + \beta_{7ta_sq} (\text{treat} \times \text{age_sq}) + \beta_{8tg} (\text{treat} \times \text{gpa}) + \\
+&& \beta_{9tg_sq} (\text{treat} \times \text{gpa_sq}) + \beta_{10ag} (\text{age} \times \text{gpa}) + \beta_{11a_sqg} (\text{age_sq} \times \text{gpa}) + \\
+&& \beta_{12ag_sq} (\text{age} \times \text{gpa_sq}) + \beta_{13a_sqg_sq} (\text{age_sq} \times \text{gpa_sq}) + \epsilon
+\end{eqnarray*}
+
+\bigskip
+
+Estimated ATE is the coefficient, $\widehat{\beta_{1t}}$, but how do we get the estimated ATT?
+
+\item Calculating ATT:
+\begin{eqnarray*}
+\text{earnings} &=& \beta_0 + \beta_{1t} \text{treat} + \beta_{2a} \text{age} + \beta_{3a\_sq} \text{age\_sq} + \beta_{4g} \text{gpa} + \beta_{5g\_sq} \text{gpa\_sq} + \beta_{6ta} (\text{treat} \times \text{age})  \nonumber \\ 
+&&+ \beta_{7ta\_sq} (\text{treat} \times \text{age\_sq}) + \beta_{8tg} (\text{treat} \times \text{gpa}) + \beta_{9tg\_sq} (\text{treat} \times \text{gpa\_sq}) + \beta_{10ag} (\text{age} \times \text{gpa})  \nonumber \\
+&&+ \beta_{11a\_sqg} (\text{age\_sq} \times \text{gpa}) + \beta_{12ag\_sq} (\text{age} \times \text{gpa\_sq}) + \beta_{13a\_sqg\_sq} (\text{age\_sq} \times \text{gpa\_sq}) + \epsilon
+\end{eqnarray*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Interpretations}
+
+\begin{itemize}
+\item ATE is 2500
+\item ATT is 1980
+\item Key point here: the same regression contains both parameters, but only when done correctly, and only when interpreted correctly
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{ATE estimates across different specifications}
+
+\begin{figure}
+\begin{center}
+             \includegraphics[scale=0.1]{./lecture_includes/combined_kernels_ate.jpg}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}{ATT estimates across different specifications}
+
+\begin{figure}
+\begin{center}
+             \includegraphics[scale=0.1]{./lecture_includes/combined_kernels_att.jpg}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Matching by minimizing Maha distance metric}
+
+\begin{itemize}
+\item Next I just estimated the ATT using a simpler model -- nonparametric matching using Abadie and Imbens (2006;2011)
+\item It's biased when the matches aren't exact, but you can use regression adjustment to estimate the selection bias
+\item Similar to what augmented synth does 
+\item Much less difficult syntax
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{ATT estimates across different matching specifications}
+
+\begin{figure}
+\begin{center}
+             \includegraphics[scale=0.1]{./lecture_includes/combined_kernels_maha.jpg}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Recommended steps of causal projects}
+
+\begin{enumerate}
+\item Define the parameter we want (``ATT''), 
+\item Ask what what beliefs do you need (``identification''), and 
+\item Build cranks that produce the correct numbers (``estimator'')
+\end{enumerate}
+
+\bigskip
+
+See how when we skep 1 and 2 and go straight to 3, heterogenous treatment effects makes major problems for interpretation?  It isn't that regressions can't recover parameters, but you have to saturate when you're attempting to recover ATE or ATT, and even then it's challenging to interpret -- and programming, you often don't have code that will do it for you.
+
+\end{frame}
+
+
+
+
+
+
 \begin{frame}{Introducing a new causal parameter}
+
+
 
 \begin{itemize}
 \item \textbf{ATT}: Extensive margin causal parameter.  Do this versus don't do this.
@@ -407,6 +631,18 @@ Draw the ACRT for top curve and selection bias.
 
 \end{frame}
 
+\begin{frame}{New estimator}
+
+\begin{itemize}
+
+\item There is a new estimator in their new version, but I haven't read it yet
+\item Today I just wanted to emphasize the basic principles though -- define the parameter, figure out the assumptions, then build the estimators
+\item Just running regressions doesn't work once we have heterogenous treatment effects
+
+\end{itemize}
+
+\end{frame}
+
 
 \begin{frame}{Conclusion}
 
@@ -415,93 +651,9 @@ Draw the ACRT for top curve and selection bias.
 \item Most intuitive for me is the parallel trends plus homogenous treatment effects across units around the dosages
 \item But interpretations are hard because you're having to think about a new parameter, and you could have nonlinearities in the ACRT that since TWFE is a weighted average of them, could flip sign 
 \item Not a problem but could be a challenge for you as you try to make sense of it (particularly given how the weights are)
-\item Unclear to me how we might develop original falsification exercises for this homogeneity assumption except it does imply equalities (covariate balance?)
 \end{itemize}
 
 \end{frame}
-
-
-\section{Concluding remarks}
-
-\begin{frame}{Empirical micro model}
-\begin{itemize}
-
-\item In 2014, David Card gave a speech at Michigan in which he told the history of the ``empirical micro model'', particularly labor
-\item He notes the different role that economic models have played throughout the history of modern applied (empirical) work
-	\begin{enumerate}
-	\item Simple approximations of the theoretical model (regress earnings on education)
-	\item Structural modeling (often highly parametrized models)
-	\item Princeton (essentially this entire workshop) where focus is on physical (manipulated) treatment assignment
-	\end{enumerate}
-\item Models are valuable even under \#3, but largely to suggest question, interpret results -- not to solve the identification problem
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Unrestricted heterogeneity and selection on gains}
-
-\begin{itemize}
-\item Over time, applied economists (at least the modal one) is far less likely to believe they know enough about treatment assignment or the underlying treatment effects that they are willing to make any theoretical restrictions
-\item Treatment effects come from unknown production functions, and whether we have heterogeneity across treatment groups involves selection, most likely from a Roy model type of situation
-\item By and large, this is my conjecture, economists are either unwilling to restrict heterogeneity ex ante, and the only models many of us are by and large committed to are Roy like rational sorting models
-\item Without restrictions on heterogeneity ex ante, Roy models imply sorting on gains which create the very problems we find 
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{Consequences of being ``deeply a-theoretical''}
-
-\begin{itemize}
-\item Insofar as people sort on the gains from treatment, then given unknown and unrestricted heterogeneous treatment effects, we do not know enough to rule out situations like those in our ``baker'' dataset
-\item Baker dataset was extreme, but before this literature, it's not clear anyone would've known it was extreme
-\item Linear dynamics that never stabilized, large treatment effects in the ATT, heterogenous treatment profiles
-\item TWFE in the canonical specification performs poorly and in our case flipped sign
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Decision making under uncertainty}
-
-\begin{itemize}
-
-\item If you cannot restrict heterogeneity, and Roy like models are driving selection into treatment, then there's risks
-\item TWFE will be efficient if model is correctly specified, which requires no dynamic treatment effects, and most of us when pushed cannot credibly claim we have enough prior knowledge to say that as we are often working on something for which underly production technology around treatment effects are not well known or external validity is unknown
-\item You will need to take this seriously, and adjust practices \emph{away} from naive TWFE modeling
-\item You are, though, the first wave of researchers to have to, so you are unfortunately caught in a bit of limbo moment
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Future work}
-
-\begin{itemize}
-
-\item We are going to cover more differential timing modeling, but I think some of this is a bit redundant
-\item We start to see similar fixes to the underlying problem performed in different, though internally valid, ways
-\item Much of this is a bit cloudy to even the most up-to-date practitioner -- differences between estimators are based on which control groups are used, whether PT holds for those control groups, and how best to think about the parallel trends assumption (some of which have stronger additive forms imposing pre-treatment parallel trends and others which do not)
-\item Cherry picking diff-in-diff could be on the horizon, and this workshop is meant to prepare you for this situation as worst case scenario you will be reading referee reports of people using methods which you may yourself think are inferior but which you still need to understand
-\item You will need to continue to invest in good judgment, as always; most likely going forward returns to econometric skill has shifted up
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Suggestions}
-
-\begin{itemize}
-
-\item These papers have made the careers of young econometricians to be honest -- the growth in citations in short period of time is very weird for econometrics papers (even the IV papers by Angrist and Imbens don't show this pattern)
-\item Think of a monopolistic competition model -- entry stops when zero profits at the margin
-\item \textbf{Profits are shrinking but not zero at the margin}
-\item There's a lot of activity, it will continue, and you'll need to allocate your time accordingly
-\item Good luck with your research and pursuit of meaning and happiness -- don't lose sight of what's important
-
-\end{itemize}
-
-\end{frame}
-
-
-\end{document}
 
 
 \section{Fuzzy DiD}
@@ -991,6 +1143,91 @@ where $g_decr$ is the treatment group dummy, post1 is the post period dummy, and
 \end{frame}
 
 
+
+
+
+
+\section{Concluding remarks}
+
+\begin{frame}{Empirical micro model}
+\begin{itemize}
+
+\item In 2014, David Card gave a speech at Michigan in which he told the history of the ``empirical micro model'', particularly labor
+\item He notes the different role that economic models have played throughout the history of modern applied (empirical) work
+	\begin{enumerate}
+	\item Simple approximations of the theoretical model (regress earnings on education)
+	\item Structural modeling (often highly parametrized models)
+	\item Princeton (essentially this entire workshop) where focus is on physical (manipulated) treatment assignment
+	\end{enumerate}
+\item Models are valuable even under \#3, but largely to suggest question, interpret results -- not to solve the identification problem
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Unrestricted heterogeneity and selection on gains}
+
+\begin{itemize}
+\item Over time, applied economists (at least the modal one) is far less likely to believe they know enough about treatment assignment or the underlying treatment effects that they are willing to make any theoretical restrictions
+\item Treatment effects come from unknown production functions, and whether we have heterogeneity across treatment groups involves selection, most likely from a Roy model type of situation
+\item By and large, this is my conjecture, economists are either unwilling to restrict heterogeneity ex ante, and the only models many of us are by and large committed to are Roy like rational sorting models
+\item Without restrictions on heterogeneity ex ante, Roy models imply sorting on gains which create the very problems we find 
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Consequences of being ``deeply a-theoretical''}
+
+\begin{itemize}
+\item Insofar as people sort on the gains from treatment, then given unknown and unrestricted heterogeneous treatment effects, we do not know enough to rule out situations like those in our ``baker'' dataset
+\item Baker dataset was extreme, but before this literature, it's not clear anyone would've known it was extreme
+\item Linear dynamics that never stabilized, large treatment effects in the ATT, heterogenous treatment profiles
+\item TWFE in the canonical specification performs poorly and in our case flipped sign
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Decision making under uncertainty}
+
+\begin{itemize}
+
+\item If you cannot restrict heterogeneity, and Roy like models are driving selection into treatment, then there's risks
+\item TWFE will be efficient if model is correctly specified, which requires no dynamic treatment effects, and most of us when pushed cannot credibly claim we have enough prior knowledge to say that as we are often working on something for which underly production technology around treatment effects are not well known or external validity is unknown
+\item You will need to take this seriously, and adjust practices \emph{away} from naive TWFE modeling
+\item You are, though, the first wave of researchers to have to, so you are unfortunately caught in a bit of limbo moment
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Future work}
+
+\begin{itemize}
+
+\item We are going to cover more differential timing modeling, but I think some of this is a bit redundant
+\item We start to see similar fixes to the underlying problem performed in different, though internally valid, ways
+\item Much of this is a bit cloudy to even the most up-to-date practitioner -- differences between estimators are based on which control groups are used, whether PT holds for those control groups, and how best to think about the parallel trends assumption (some of which have stronger additive forms imposing pre-treatment parallel trends and others which do not)
+\item Cherry picking diff-in-diff could be on the horizon, and this workshop is meant to prepare you for this situation as worst case scenario you will be reading referee reports of people using methods which you may yourself think are inferior but which you still need to understand
+\item You will need to continue to invest in good judgment, as always; most likely going forward returns to econometric skill has shifted up
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Suggestions}
+
+\begin{itemize}
+
+\item These papers have made the careers of young econometricians to be honest -- the growth in citations in short period of time is very weird for econometrics papers (even the IV papers by Angrist and Imbens don't show this pattern)
+\item Think of a monopolistic competition model -- entry stops when zero profits at the margin
+\item \textbf{Profits are shrinking but not zero at the margin}
+\item There's a lot of activity, it will continue, and you'll need to allocate your time accordingly
+\item Good luck with your research and pursuit of meaning and happiness -- don't lose sight of what's important
+
+\end{itemize}
+
+\end{frame}
+
+
+\end{document}
 
 
 
