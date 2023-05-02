@@ -223,7 +223,6 @@ twoway
 (line gap2 year ,lp(solid)lw(vthin)) 
 (line gap4 year ,lp(solid)lw(vthin)) 
 (line gap5 year ,lp(solid)lw(vthin))
-(line gap6 year ,lp(solid)lw(vthin)) 
 (line gap8 year ,lp(solid)lw(vthin)) 
 (line gap9 year ,lp(solid)lw(vthin)) 
 (line gap10 year ,lp(solid)lw(vthin)) 
