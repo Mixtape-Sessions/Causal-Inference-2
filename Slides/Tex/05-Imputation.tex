@@ -3,6 +3,9 @@
 \input{preamble.tex}
 \usepackage{breqn} % Breaks lines
 
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
 \usepackage{amsmath}
 \usepackage{mathtools}
 
@@ -621,6 +624,224 @@ y_{gpit} = \lambda_g + \gamma_p + \sum_{r=-R}^P \beta_rD_{rgp} + \varepsilon_{gp
 \end{itemize}
 
 \end{frame}
+
+\section{Example: Facebook and Mental Health}
+
+\begin{frame}{Bringing them together}
+
+\begin{itemize}
+
+\item Examine a paper that is contemporary with respect to all that we've reviewed
+\item Staggered rollout, important question, high quality data
+\item Braghieri, Levy and Makarin (2022), ``Social Media and Mental Health'', \emph{American Economic Review}, 112(11): 3660-3693
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Big picture}
+
+\begin{itemize}
+\item Widely cited that social media causes mental health problems in youth
+\item Anecdotal, documentaries, but no causal evidence (``slim to none'')
+\item Study will use staggered rollout of Facebook platform to college campuses from 2004 to 2006 to estimate the effect on aggregate mental health scores from a survey
+\item You be the judge, but they present what in most cases would be strong evidence that Facebook harmed college students mental health
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Many things to like}
+
+\begin{itemize}
+\item Important question: mental health, suicide, review descriptive stats together
+\item Strong design: staggered rollout
+\item Event study is eye popping
+\item Lots of ``applied wisdom'' we haven't discussed such as mechanism
+\item Very interesting dataset
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Read together}
+
+\begin{itemize}
+
+\item We will read together and discuss most of the introduction now
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Fourth part of a strong DiD}
+
+\begin{enumerate}
+
+\item \textbf{Bite}: They cannot really show much here.  No data on Facebook usage.  More an ITT
+\item \textbf{Falsifications}: I can't really see very strong falsifications either.
+\item \textbf{Event studies}: POW.  Just wait
+\item \textcolor{red}{Mechanism}: What's that?
+
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Mechanism}
+
+\begin{tikzpicture}[
+  ->,>=stealth, % defines the style of the edge/arrow
+  shorten >=1pt, % shortens the arrow at the target node
+  auto,
+  node distance=3cm, % defines the space between the nodes
+  thick,
+  main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, % style of the main nodes
+  dashed node/.style={circle,fill=blue!20,draw,dashed,font=\sffamily\Large\bfseries} % style of the dashed node
+  ]
+
+  \node[main node] (D) {D}; 
+  \node[main node] (M) [above right of=D] {M}; 
+  \node[main node] (X) [below right of=D] {X};
+  \node[main node] (Y) [right of=M, below of=M] {Y};
+  \node[dashed node] (U) [above of=M] {U};
+  
+  \path[every node/.style={font=\sffamily\small}]
+    (D) edge node {} (M)
+    (D) edge node {} (X)
+    (M) edge node {} (Y)
+    (X) edge node {} (Y)
+    (U) edge[dashed] node {} (D)
+    (U) edge[dashed] node {} (M)
+    (U) edge[dashed] node {} (X)
+    (U) edge[dashed] node {} (Y);
+\end{tikzpicture}
+
+\end{frame}
+
+
+\begin{frame}{Mechanism}
+
+\begin{tikzpicture}[
+  ->,>=stealth, % defines the style of the edge/arrow
+  shorten >=1pt, % shortens the arrow at the target node
+  auto,
+  node distance=3cm, % defines the space between the nodes
+  thick,
+  main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, % style of the main nodes
+  dashed node/.style={circle,fill=blue!20,draw,dashed,font=\sffamily\Large\bfseries} % style of the dashed node
+  ]
+
+  \node[main node] (D) {D}; 
+  \node[main node] (M) [right of=D] {M}; 
+  \node[main node] (Y) [right of=M] {Y};
+  \node[dashed node] (U) [above of=M] {U};
+  
+  \path[every node/.style={font=\sffamily\small}]
+    (D) edge node {} (M)
+    (M) edge node {} (Y)
+    (U) edge[dashed] node {} (D)
+    (U) edge[dashed] node {} (M)
+    (U) edge[dashed] node {} (Y);
+\end{tikzpicture}
+
+
+\end{frame}
+
+\begin{frame}{Mechanism}
+
+\begin{itemize}
+\item $D$ is the treatment variable, and the ATT is over all possible channels, but what if you want to say $M$ is the mechanism
+\item When you can't rule out competing theories with falsifications, you have to try and build the case that the effect is coming through a channel
+\item Goal here is to try and present evidence (not proof) that it's probably the story you're saying
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Mechanism}
+
+\begin{itemize}
+
+\item Story is interpersonal comparisons which they try to show 
+\item We can discuss how plausible we found it, but ask yourself at the end -- did the event study help you believe it?  Why/why not?
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Data}
+
+\begin{itemize}
+
+\item Read Section II together.  
+\item Discuss ``shoeleather'' concept
+\item You must go the distance to get the data because if you don't, someone else will
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{TWFE}
+
+\begin{equation}
+Y_{icgt} = \alpha_g + \delta_t + \beta \times Facebook_{gt} + X_i \times \gamma + X_c \times \psi + \varepsilon_{icgt}
+\end{equation}
+
+\bigskip
+
+Read page 3671
+
+\end{frame}
+
+
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_1}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_2}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_3}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_4}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_5}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_6}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_7}
+\end{center}
+\end{frame}
+
+
 
 
 
