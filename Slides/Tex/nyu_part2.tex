@@ -49,7 +49,7 @@
 \item Brief review of TWFE and idea of strict exogeneity
 \item Brief review of potential outcomes, ATT, and the parallel trends assumption
 \item Discussion of standard ``constant treatment effect'' TWFE pathologies using Goodman-Bacon
-\item Discussion of two solutions and if we have time a third
+\item Discussion of two solutions and a new study using these new methods
 \end{itemize}
 
 \end{frame}
@@ -171,7 +171,7 @@
 
 
 
-\begin{frame}{``CS''}
+\begin{frame}{``SA''}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{itemize}
@@ -203,11 +203,10 @@
 
 \begin{itemize}
 
-\item We once though difference-in-differences was the simplest of all designs
-\item That's because we had an incorrect understanding of what strict exogeneity implied in a panel fixed effects estimator
+\item Because difference-in-differences is the simplest of all designs, and could be estimated with OLS, differential timing estimated with TWFE was thought to be a trivial extension
+\item Most people in fact though DiD and TWFE were the same thing
 \item Strict exogeneity, as it turned out, had functional form assumptions and constant treatment effects assumptions buried in it
 \item There are ways around it, but the dominant model used for decades (which probably all of us have published using) was more assumption laden than we knew
-\item Hence why you are seeing so much about differential timing these days -- take heart!  It's solveable
 
 \end{itemize}
 
@@ -266,27 +265,17 @@
 	\begin{itemize}
 	\item Let $y$ and $x\equiv(x_1, x_2, \dots, x_k)$ be observable random variables and $c$ be an unobservable random variable
 	\item We are interested in the partial effects of variable $x_j$ in the population regression function$$E[y|x_1,x_2,\dots,x_k,c]$$
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Notation}
-
-\begin{itemize}
-	\item We observe a sample of $i=1,2,\dots,N$ cross-sectional units for $t=1,2,\dots,T$ time periods (a balanced panel)
-		\begin{itemize}
-		\item For each unit $i$, we denote the observable variables for all time periods as $\{(y_{it},x_{it}):t=1,2,\dots,T\}$
-		\item $x_{it}\equiv(x_{it1},x_{it2}, \dots, x_{itk})$ is a $1\times K$ vector
-		\end{itemize}
-	\item Typically assume that cross-sectional units are i.i.d. draws from the population: $\{y_i, x_i, c_i\}^N_{i=1}\sim i.i.d.$ (cross-sectional independence)
-		\begin{itemize}
-		\item $y_i \equiv (y_{i1}, y_{i2}, \dots, y_{iT})'$ and $x_i \equiv (x_{i1},x_{i2}, \dots, x_{iT})$
-		\item Consider asymptotic properties with $T$ fixed and $N\rightarrow \infty$
-		\end{itemize}
+	\item We stack individual observations into matrices shown next slide
 \end{itemize}
 
 \end{frame}
 
+
+
 \begin{frame}{Notation}
+
+\footnotesize
+
 Single unit:
 
 \[ y_i = \left( \begin{array}{c}
@@ -346,25 +335,25 @@ X_N
 	\begin{itemize}
 	\item Our unobserved effects model is:$$y_{it} = x_{it}\beta + c_i + \varepsilon_{it}; t=1,2,\dots,T$$
 	\item If we have data on multiple time periods, we can think of $c_i$ as \textbf{fixed effects} to be estimated
-	\item OLS estimation with fixed effects yields$$(\widehat{\beta}, \widehat{c}_1, \dots, \widehat{c}_N) = \underset{b,m_1,\dots,m_N}{\arg\!\min} \sum_{i=1}^N\sum_{t=1}^T (y_{it} - x_{it}b - m_i)^2$$this amounts to including $N$ individual dummies in regression of $y_{it}$ on $x_{it}$
+	\item OLS estimation with fixed effects estimates coefficients that minimizes:$$(\widehat{\beta}, \widehat{c}_1, \dots, \widehat{c}_N) = \underset{b,m_1,\dots,m_N}{\arg\!\min} \sum_{i=1}^N\sum_{t=1}^T (y_{it} - x_{it}b - m_i)^2$$this amounts to including $N$ individual dummies in regression of $y_{it}$ on $x_{it}$
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Fixed effects}
+\begin{frame}{What does fixed effects do to the data?}
 	
 Running a regression with the time-demeaned variables $\ddot{y}_{it}\equiv y_{it} - \bar{y}_i$ and $\ddot{x}_{it} \equiv x_{it} - \bar{x}$ is numerically equivalent to a regression of $y_{it}$ on $x_{it}$ and unit specific dummy variables.
 
-\vspace{10mm}
-
-Even better, the regression with the time demeaned variables is consistent for $\beta$ even when $Cov[x_{it},c_i]\neq 0$ because time-demeaning eliminates the unobserved effects
-
 \begin{eqnarray*}
 y_{it} &=& x_{it}\beta + c_i + \varepsilon_{it} \\
-\bar{y}_i &=& \bar{x}_i \beta + c_i + \bar{\varepsilon}_{i}\\
+\bar{y}_i &=& \bar{x}_i \beta + \bar{c_i} + \bar{\varepsilon}_{i}\\
 \hline \\
-(y_{it} - \bar{y}_i) &=& (x_{it} - \bar{x})\beta + (c_i - c_i) + (\varepsilon_{it} - \bar{\varepsilon}_i) \\
+(y_{it} - \bar{y}_i) &=& (x_{it} - \bar{x})\beta + (c_i - \bar{c_i}) + (\varepsilon_{it} - \bar{\varepsilon}_i) \\
 \ddot{y}_{it} &=& \ddot{x}_{it}\beta + \ddot{\varepsilon}_{it}
 \end{eqnarray*}
+
+\bigskip
+
+The term $(c_i - \bar{c_i})=0$ because the mean of a constant is the constant itself
 
 \end{frame}
 
@@ -373,7 +362,7 @@ y_{it} &=& x_{it}\beta + c_i + \varepsilon_{it} \\
 	\begin{itemize}
 	\item Identification assumptions:	
 		\begin{enumerate}
-		\item $E[\varepsilon_{it} | x_{i1}, x+{i2}, \dots, x_{iT}, c_i]=0; t=1,2,\dots,T$
+		\item $E[\varepsilon_{it} | x_{i1}, x_{i2}, \dots, x_{iT}, c_i]=0; t=1,2,\dots,T$
 			\begin{itemize}
 			\item regressors are strictly exogenous conditional on the unobserved effect
 			\item allows $x_{it}$ to be arbitrarily related to $c_i$
@@ -389,7 +378,7 @@ y_{it} &=& x_{it}\beta + c_i + \varepsilon_{it} \\
 \begin{frame}{Fixed effects}
 	
 	\begin{itemize}
-	\item Fixed effects estimator
+	\item Estimation using fixed effects
 		\begin{enumerate}
 		\item Demean and regress $\ddot{y}_{it}$ on $\ddot{x}_{it}$ (need to correct degrees of freedom)
 		\item Regress $y_{it}$ on $x_{it}$ and unit dummies (dummy variable regression)
@@ -399,13 +388,10 @@ y_{it} &=& x_{it}\beta + c_i + \varepsilon_{it} \\
 			\end{itemize}
 		\end{enumerate}
 	\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Fixed effects}
-
+	
+	
 \begin{itemize}
-	\item Properties (under assumptions 1-2):
+	\item Estimator properties (under assumptions 1-2):
 		\begin{itemize}
 		\item $\widehat{\beta}_{FE}$ is consistent: $\underset{N\rightarrow \infty}{plim} \widehat{\beta}_{FE,N}=\beta$
 		\item $\widehat{\beta}_{FE}$ is unbiased conditional on \textbf{X}
@@ -413,6 +399,8 @@ y_{it} &=& x_{it}\beta + c_i + \varepsilon_{it} \\
 \end{itemize}
 
 \end{frame}
+
+
 
 \begin{frame}{Fixed effects}
 	
@@ -547,15 +535,6 @@ Mean of dependent variable								&        5.57   &        5.57   &        0.00\
 \end{frame}
 
 
-\begin{frame}{Strict exogeneity}
-
-\begin{itemize}
-\item So fixed effects estimates the parameter of interest under strict exogeneity, and since it eliminates time invariant heterogeneity in panel settings, the appeal was widespread as more panel data came online
-\item Strict exogeneity assumed constant treatment effects, though, and only most sophisticated instructors (i.e., not me) seemed to know and teach this
-\item Gardner (2021) shows that under treatment effect heterogeneity, the group and period fixed effects became correlated with a composite error term  under differential timing, but we are going to need to first dive into potential outcomes to fully understand this
-\end{itemize}
-
-\end{frame}
 
 
 
@@ -567,19 +546,27 @@ Mean of dependent variable								&        5.57   &        5.57   &        0.00\
 \subsection{Bacon decomposition}
 
 
-
-
-
-
-\begin{frame}{Differential timing}
+\begin{frame}{Strict exogeneity}
 
 \begin{itemize}
-\item In the two group case, we can estimate the ATT under parallel trends using OLS with unit and time fixed effects
-\item If we have covariates, then we can use TWFE under restrictive assumptions, or we have other options (OR, IPW, DR)
-\item Now let's move to a more common scenario where we have more than two groups who get treated at various times
+\item Fixed effects estimates the parameter of interest under strict exogeneity, and since it eliminates time invariant heterogeneity in panel settings, the appeal was widespread as more panel data came online
+\item But does this mean fixed effects estimates the ATT under differential timing -- the answer is not necessariliy
 \end{itemize}
 
 \end{frame}
+
+
+\begin{frame}{Strict exogeneity}
+
+\begin{itemize}
+\item Strict exogeneity assumed parallel trends \emph{and} constant treatment effects -- something not clearly understood until recently
+\item Treatment effect heterogeneity created a new composite error term that was correlated with both group and time fixed effects and the treatment 
+\item Traditional panel econometrics notation can show this, but it's easier to see with potential outcomes notation
+\end{itemize}
+
+\end{frame}
+
+
 
 \begin{frame}{2x2 versus differential timing}
 
@@ -599,18 +586,12 @@ Mean of dependent variable								&        5.57   &        5.57   &        0.00\
 \begin{itemize}
 \item TWFE estimates a parameter that is a weighted average over all 2x2 in your sample
 \item TWFE assigns weights that are a function of sample sizes of each ``group'' and the variance of the treatment dummies for those groups
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Decomposition (cont.)}
-
-\begin{itemize}
 \item TWFE needs two assumptions: that the variance weighted parallel trends are zero (far more parallel trends iow) and no dynamic treatment effects (not the case with 2x2)
 \item Under those assumptions, TWFE estimator estimates the variance weighted ATT as a weighted average of all possible ATTs
 \end{itemize}
 
 \end{frame}
+
 
 
 \begin{frame}{$K^2$ distinct DDs}
@@ -977,13 +958,13 @@ Just some examples of when you'd want to consider it:
 \begin{enumerate}
 \item When treatment effects differ depending on when it was adopted
 \item When treatment effects change over time
-\item When shortrun treatment effects more pronounced than longrun effects
+\item When shortrun treatment effects are different than longrun effects
 \item When treatment effect dynamics differ if people are first treated in a recession relative to expansion years
 \end{enumerate}
 
 \bigskip
 
-In other words -- CS is used to identity and aggregate heterogenous treatment effects
+CS estimates the ATT by identifying smaller causal effects and aggregating them using non-negative weights
 
 \end{frame}
 
@@ -1033,14 +1014,14 @@ Group-time ATT is the ATT for a specific group and time
 	\begin{itemize}
 	\item Recall the problem with TWFE on using treatment units as controls
 	\end{itemize}
-\item Generalized propensity score enters into the estimator as a weight: $$\widehat{p(X)} = Pr(G_g=1 | X,G_c+C=1)$$
+\item Generalized propensity score enters into the estimator as a weight: $$\widehat{p(X)} = Pr(G_g=1 | X,G_g+C=1)$$
 \end{itemize}
 
 \end{frame}
 
 \begin{frame}{Assumptions}
 
-Assumption 1: Sampling is iid (panel data) \\
+Assumption 1: Sampling is iid (panel data, but repeated cross-sections are possible) \\
 \bigskip
 Assumption 2: Conditional parallel trends (for either never treated or not yet treated) \\
 \begin{eqnarray*}
@@ -1060,20 +1041,11 @@ Assumption 5: Limited treatment anticipation (i.e., treatment effects are zero p
 ATT(g,t) = E \bigg [ \bigg ( \frac{G_g}{E[G_g]} - \frac{ \frac{\hat{p}(X)C}{1-\hat{p}(X)}}{E \bigg [ \frac{\hat{p}(X)C}{1-\hat{p}(X)} \bigg ]} \bigg ) (Y_t - Y_{g-1} ) \bigg ) \bigg ]
 \end{eqnarray*}
 
-This is the inverse probability weighting estimator.  Alternatively, there is an outcome regression approach and a doubly robust. Sant'Anna recommends DR. Notice hw CS doesn't use already-treated as controls.
+This is the inverse probability weighting estimator.  Alternatively, there is an outcome regression approach and a doubly robust. Sant'Anna recommends DR.  CS uses the never-treated or the not-yet-treated as controls but never the already-treated 
 \end{frame}
 
 
 
-\begin{frame}{Staggered adoption (i.e., universal coverage)}
-
-
-\begin{proof}{\textbf{Remark 1:}}
-In some applications, eventually all units are treated, implying that $C$ is never equal to one. In such cases one can consider the ``not yet treated'' ($D_t = 0$) as a control group instead of
-the ``never treated?'' ($C = 1$).
-\end{proof}
-
-\end{frame}
 
 \begin{frame}{Aggregated vs single year/group ATT}
 
@@ -1337,6 +1309,8 @@ Essentially means that pre-treatment, the causal effect is zero.  Most plausible
 
 \begin{frame}{Event study model}
 
+Dynamic TWFE model
+
 \begin{eqnarray*}
 Y_{i,t} = \alpha_i + \delta_t + \sum_{g \in G} \mu_g1\{t-E_i \in g \} + \varepsilon_{i,t}
 \end{eqnarray*}
@@ -1348,32 +1322,6 @@ We are interested in the properties of $\mu_g$ under differential timing as well
 \end{frame}
 
 
-\begin{frame}{Specifying the leads and lags}
-
-How will we specify the $1\{t-E_i \in g \} $ term?  SA considers a couple:
-
-\begin{enumerate}
-\item Static specification: $$Y_{i,t} = \alpha_i + \delta_t + \mu_g \sum_{l \geq 0}D^l_{i,t} + \varepsilon_{i,t}$$
-\item Dynamic specification: $$Y_{i,t} = \alpha_i + \delta_t + \sum_{l = -K}^{-2} \mu_l D^l_{i,t} + \sum_{l=0}^L\mu_lD^l_{i,t}+ \varepsilon_{i,t}$$
-\end{enumerate}
-
-\end{frame}
-
-
-
-\begin{frame}{Dropping, trimming and binning}
-
-\begin{itemize}
-\item Dynamic specification with differential timing requires dropping two leads: 
-	\begin{enumerate}
-	\item Drop the baseline to avoid multicollinearity in the relative time indicators 
-	\item Drop a second one because of the multicollinearity coming from the linear relationship between TWFE and the relative period indicators.
-	\end{enumerate}
-\item Binning means placing all ``distant'' relative time indicators into a single one due to imbalance in relative event time
-\item Trimming is done for the same reason but drops any relative time period for which you do not have balance
-\end{itemize}
-
-\end{frame}
 
 \begin{frame}[plain, shrink=20]
 \begin{center}
@@ -1625,6 +1573,290 @@ Question: why is TWFE \emph{falling} pre-treatment?  Why is SA rising, but jagge
 
 \end{frame}
 
+\section{Example: Facebook and Mental Health}
+
+\begin{frame}{Bringing them together}
+
+\begin{itemize}
+
+\item Examine a paper that is contemporary with respect to all that we've reviewed
+\item Staggered rollout, important question, high quality data
+\item Braghieri, Levy and Makarin (2022), ``Social Media and Mental Health'', \emph{American Economic Review}, 112(11): 3660-3693
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Big picture}
+
+\begin{itemize}
+\item Widely cited that social media causes mental health problems in youth
+\item Anecdotal, documentaries, but no causal evidence (``slim to none'')
+\item Study will use staggered rollout of Facebook platform to college campuses from 2004 to 2006 to estimate the effect on aggregate mental health scores from a survey
+\item You be the judge, but they present what in most cases would be strong evidence that Facebook harmed college students mental health
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Many things to like}
+
+\begin{itemize}
+\item Important question: mental health, suicide, review descriptive stats together
+\item Strong design: staggered rollout
+\item Event study is eye popping
+\item Mechanism and main results
+\item Very interesting dataset
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Fives parts of a strong DiD}
+
+\begin{enumerate}
+
+\item \textbf{Bite}: They cannot really show much here.  No data on Facebook usage.  More an ITT
+\item \textbf{Main Results}: Estimated effect on mental health measures
+\item \textcolor{red}{Mechanism}: Speculative
+\item \textbf{Falsifications}: I can't really see very strong falsifications either.
+\item \textbf{Event studies}: POW.  Just wait
+
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Mechanism}
+
+\begin{tikzpicture}[
+  ->,>=stealth, % defines the style of the edge/arrow
+  shorten >=1pt, % shortens the arrow at the target node
+  auto,
+  node distance=3cm, % defines the space between the nodes
+  thick,
+  main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, % style of the main nodes
+  dashed node/.style={circle,fill=blue!20,draw,dashed,font=\sffamily\Large\bfseries} % style of the dashed node
+  ]
+
+  \node[main node] (D) {D}; 
+  \node[main node] (M) [above right of=D] {M}; 
+  \node[main node] (X) [below right of=D] {X};
+  \node[main node] (Y) [right of=M, below of=M] {Y};
+  \node[dashed node] (U) [above of=M] {U};
+  
+  \path[every node/.style={font=\sffamily\small}]
+    (D) edge node {} (M)
+    (D) edge node {} (X)
+    (M) edge node {} (Y)
+    (X) edge node {} (Y)
+    (U) edge[dashed] node {} (D)
+    (U) edge[dashed] node {} (M)
+    (U) edge[dashed] node {} (X)
+    (U) edge[dashed] node {} (Y);
+\end{tikzpicture}
+
+\end{frame}
+
+\begin{frame}{Mechanism}
+
+\begin{itemize}
+\item $D$ is the treatment variable, and the ATT is over all possible channels, but what if you want to think $M$ is the mechanism
+\item When you can't rule out competing theories with falsifications, you have to try and build the case that the effect is coming through a channel
+\item Rule out $X$ and provide evidence for $M$
+\item Goal here is to try and present evidence (not proof) that it's probably the story you're saying
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Ruling out alternative mechanism}
+
+\begin{tikzpicture}[
+  ->,>=stealth, % defines the style of the edge/arrow
+  shorten >=1pt, % shortens the arrow at the target node
+  auto,
+  node distance=3cm, % defines the space between the nodes
+  thick,
+  main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, % style of the main nodes
+  dashed node/.style={circle,fill=blue!20,draw,dashed,font=\sffamily\Large\bfseries} % style of the dashed node
+  ]
+
+  \node[main node] (D) {D}; 
+  \node[main node] (M) [right of=D] {M}; 
+  \node[main node] (Y) [right of=M] {Y};
+  \node[dashed node] (U) [above of=M] {U};
+  
+  \path[every node/.style={font=\sffamily\small}]
+    (D) edge node {} (M)
+    (M) edge node {} (Y)
+    (U) edge[dashed] node {} (D)
+    (U) edge[dashed] node {} (M)
+    (U) edge[dashed] node {} (Y);
+\end{tikzpicture}
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Mechanism}
+
+\begin{itemize}
+
+\item Story is interpersonal comparisons which they try to show 
+\item We can discuss how plausible we found it, but ask yourself at the end -- did the event study help you believe it?  Why/why not?
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Data on Facebook}
+
+\begin{itemize}
+
+\item Ingenious use of the Wayback Time Machine
+\item Looked at over 700 schools using Facebook screen shots
+\item When Facebook first mentions a school on its front page, that school is marked as having gotten Facebook
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{New schools being adopted}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/timemachine_1}
+\end{center}
+\end{frame}
+
+\begin{frame}{New schools being adopted}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/timemachine_2}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Data on college students}
+
+\begin{itemize}
+\item NCHA Data is survey administered to college students on a semi-annual basis by American College Health Assoc
+\item Inquires about demographics, physical health, mental health, alcohol and drug use, sexual behaviors, and perception of these behaviors by peers
+\item ACHA merged a treatment indicator to each respondent based on Facebook dataset provided to them so that privacy could be maintained
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Mental health}
+
+\begin{itemize}
+
+\item Self-reported symptoms are standard medical practice in mental health -- DSM-5 relies on self-reports such as difficulty sleeping, fatigue, feelings of guilt, suicidal ideation
+\item No data on Facebook or social media usage so this is ITT version of the ATT
+\item Respondent answers to the questions are aggregated into indices such as \emph{poor mental health} where larger numbers are worse
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Main TWFE Model}
+
+\begin{equation}
+Y_{icgt} = \alpha_g + \delta_t + \beta \times Facebook_{gt} + X_i \times \gamma + X_c \times \psi + \varepsilon_{icgt}
+\end{equation}
+
+\bigskip
+
+$Y_{icgt}$ is an outcome for person $i$ in wave $t$ attending college $c$ in expansion group $g$; $\alpha_g$ is expansion-group or college fixed effects; $\delta_t$ are survey-wave fixed effects; $Facebook_{gt}$ indicates the respondents' campus has Facebook by time $t$ at expansion group $g$; $X_i$ and $X_c$ are individual and college-level controls; and standard errors are clustered at college level.
+
+\bigskip
+
+$\widehat{\beta}$ identifies the ATT under parallel trends in the robust models
+
+
+\end{frame}
+
+\begin{frame}{Robustness}
+
+\begin{itemize}
+
+\item Main static results will all be in TWFE, but appendix shows other methods like CS and SA 
+\item Event studies will show all models including some we haven't reviewed
+\item Growing popularity to show ``all the robust DiD'' models so that readers can see you aren't cherry picking
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_1}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_2}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_3}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_4}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_5}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_6}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_7}
+\end{center}
+\end{frame}
+
+\begin{frame}{Conclusion}
+
+\begin{itemize}
+\item Good question, good data, and you can publish well with DiD
+\item First evidence that social media caused mental health to worsen
+\item Hardly definitive, but the staggered design is a solution to our inability to run the RCT
+\item Remember -- many questions can be randomized in theory but not practice (e.g., smoking)
+\item Clearly more work needs to be done, but this is a start
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+\end{document}
+
+
 
 \subsection{dCH}
 
@@ -1771,6 +2003,3 @@ Assuming SUTVA, no anticipation and the strong PT, then let $\delta$ be the TWFE
 
 \end{frame}
 
-
-
-\end{document}

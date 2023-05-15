@@ -6,10 +6,10 @@
 # ------------------------------------------------------------------------------
 
 # load packages
-install.packages("readstata13", dependencies = TRUE)
+#install.packages("readstata13", dependencies = TRUE)
 library(readstata13)
-install.packages("devtools")
-devtools::install_github("bcallaway11/did")
+#install.packages("devtools")
+#devtools::install_github("bcallaway11/did")
 library(ggplot2)
 library(did) # Callaway & Sant'Anna
 
