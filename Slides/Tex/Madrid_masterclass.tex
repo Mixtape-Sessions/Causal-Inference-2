@@ -1011,23 +1011,8 @@ TWFE is no longer negative, interestingly, once we eliminate the last group (giv
 \end{frame}
 
 
+
 \begin{frame}{Differential timing complicates plotting sample averages}
-
-\begin{itemize}
-\item New Jersey treated in late 1992, New York in late 1993, Pennsylvania never treated
-\item What years are each state's post-treatment?
-	\begin{itemize}
-	\item New Jersey: post-1992
-	\item New York: post-1993
-	\item Pennsylvania: ?
-	\end{itemize}
-\item How did people go about event studies then?
-
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Early efforts at event studies}
 
 	\begin{figure}
 	\includegraphics[scale=0.25]{./lecture_includes/mml_eventstudy.png}
@@ -1040,12 +1025,12 @@ TWFE is no longer negative, interestingly, once we eliminate the last group (giv
 
 	\begin{figure}
 	\includegraphics[scale=0.5]{./lecture_includes/dd.pdf}
-	\caption{From one of my studies. Looks decent right?}
+	\caption{Roll out of Craigslist ``personal ads'' for casual intimate encounters and birth rates using the ``randomized treatment assignment'' approach for visualization}
 	\end{figure}
 
 \end{frame}
 
-\begin{frame}{Canonical event study specification with TWFE}
+\begin{frame}{Event study specification with TWFE}
 
 
 \begin{eqnarray*}
@@ -1054,7 +1039,7 @@ Y_{i,t} = \alpha_i + \delta_t + \sum_{g \in G} \mu_g1\{t-E_i \in g \} + \varepsi
 
 \bigskip
 
-Coefficient $\mu_g$ on a dummy measuring the number of years prior to or after that unit was treated.  This model, it turned out, suffered from model misspecification. 
+Coefficient $\mu_g$ on a dummy measuring the number of years prior to or after that unit was treated.  
 
 \end{frame}
 
@@ -1067,28 +1052,26 @@ Same data as a couple slides ago, leads don't look good, so I abandoned the proj
 	
 \end{frame}
 
-
-
-
-
-\begin{frame}{Sun and Abraham 2020}
+\begin{frame}{Bias of TWFE Event Study Specificaiton}
 
 \begin{itemize}
-\item Now that we know about the biases of the constant treatment effect model estimated with TWFE, let's revisit event studies under differential timing
-\item Goodman-Bacon focused on decomposition of TWFE to show bias under differential timing, but only for a single parameter (``static'')
-\item Callaway and Sant'anna presented alternative estimator that yields unbiased estimates of group-time ATTs which can be aggregated or put into event study plots
-\item Sun and Abraham (SA) is like a combination of the two papers
+\item Bacon only focused on the static specification, and that's where the biases due to dynamics revealed itself
+\item He was unable to get into the leads and lags using the FWL method he was using (``it's hard!'' - Bacon)
+\item Sophie Sun and Sarah Abraham did though -- prompted by a stray comment by their professor
+\item But they also unlike Bacon present a solution (which is like CS, but discovered independently)
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}{Summarizing (cont.)}
+
+\begin{frame}{Sun and Abraham 2020}
 
 	\begin{enumerate}
-	\item SA is a decomposition of the population regression coefficient on event study leads and lags with differential timing estimated with TWFE
-	\item They show that the population regression coefficient is ``contaminated'' by information from other leads and lags
+	\item SA shows a decomposition of the population regression coefficient on event study leads and lags with differential timing estimated with TWFE
+	\item They show that the population regression coefficient is ``contaminated'' by information from other leads and lags (which is then later generalized by Goldsmith-Pinkham, Hull and Kolsar 2022)
 	\item SA presents an alternative estimator that is a version of CS only using the ``last cohort'' as the treatment group (not the not-yet-treated)
+	\item Derives the variance of the estimator instead of bootstrapping, handles covariates differently than CS, but otherwise identical
 	\end{enumerate}
 
 \end{frame}
