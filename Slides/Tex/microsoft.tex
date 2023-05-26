@@ -1,0 +1,2238 @@
+\documentclass{beamer}
+
+\input{preamble.tex}
+\usepackage{breqn} % Breaks lines
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\usepackage{pdfpages} % \includepdf
+
+\usepackage{listings} % R code
+\usepackage{verbatim} % verbatim
+
+% Video stuff
+\usepackage{media9}
+
+% packages for bibs and cites
+\usepackage{natbib}
+\usepackage{har2nat}
+\newcommand{\possessivecite}[1]{\citeauthor{#1}'s \citeyearpar{#1}}
+\usepackage{breakcites}
+\usepackage{alltt}
+
+% Setup math operators
+\DeclareMathOperator{\E}{E} \DeclareMathOperator{\tr}{tr} \DeclareMathOperator{\se}{se} \DeclareMathOperator{\I}{I} \DeclareMathOperator{\sign}{sign} \DeclareMathOperator{\supp}{supp} \DeclareMathOperator{\plim}{plim}
+\DeclareMathOperator*{\dlim}{\mathnormal{d}\mkern2mu-lim}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+   \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand*\colvec[1]{\begin{pmatrix}#1\end{pmatrix}}
+
+\newcommand{\myurlshort}[2]{\href{#1}{\textcolor{gray}{\textsf{#2}}}}
+
+
+\begin{document}
+
+\imageframe{./lecture_includes/mixtape_did_cover.png}
+
+
+% ---- Content ----
+
+\section{Background}
+
+
+\section{Introduction to course}
+
+\subsection{What is Mixtape Sessions?}
+
+
+\begin{frame}{Welcome!}
+
+  \begin{itemize}
+	\item Scott Cunningham, professor of economics at Baylor University, author of \underline{Causal Inference: the Mixtape}
+	\item I run workshops on causal inference all over the world, but I am not an econometrician -- I'm a run of the mill applied microeconomist who studies severe mental illness who just happens to love learning and teaching
+	\item Workshops can be helpful ways to plug into one's methodological training, and online workshops are very helpful because of the recordings, the coding together, and bunch of bells and whistles (e.g., github repositories)
+	\item Causal inference is an old field but which has increasingly drawn people to it (Nobel Prize two years ago maybe helped) 
+  \end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{What is Mixtape Sessions?}
+
+  \begin{itemize}
+    \item Mixtape Sessions is my online platform started in November 2022 to ``democratize causal inference'' by helping connect people, from beginner to advanced, with material and teachers that for various reasons may not be accessible otherwise
+    \item I became obsessed with teaching and writing about causal inference because of a strong conviction that (a) it is important and (b) not everyone had the same chances to learn it
+    \item I wrote a 3-part sociological history of it on my substack that I encourage you to read so you can better understand the context for why I say that
+    \item I tend to emphasize intuition, mechanics, narrow calculations, meaning, assumptions, code including actually taking time to code, advocate for data visualization -- in other words the art and the science
+  \end{itemize}
+
+\end{frame}
+
+\subsection{Managing your expectations}
+
+\begin{frame}{Class goals}
+
+  \begin{enumerate}
+    \item \textbf{Confidence}: You will feel like you have a good understanding of causal inference so that by the end it doesn't feel all that mysterious or intimidating
+    \item \textbf{Comprehension}: You will have learned a lot both conceptually and in the specifics, particularly with regards to issues around identification and estimation
+    \item \textbf{Competency}: You will have more knowledge of programming syntax in Stata and R (and python!) so that later you can apply this in your own work
+  \end{enumerate}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Workshop (Part 1) Topics}
+
+  \begin{enumerate}
+    \item Potential outcomes
+    \item Selection Bias and Treatment Assignment
+    \item Unconfoundedness
+    \item Synthetic control
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Today: Day 1}
+
+\begin{enumerate}
+\item Potential outcomes
+\item Randomization inference
+\item Directed acyclic graphs
+\end{enumerate}
+
+\end{frame}
+
+\subsection{Future Tracks}
+
+\begin{frame}{What's coming this spring?}
+
+\begin{itemize}
+\item Lots of great ``Mixtape Tracks'' -- shorter workshops taught by top professors at Brown, MIT, BYU and elsewhere
+\item Think of Mixtape Sessions as a bridge to more content and more people
+\end{itemize}
+
+\bigskip
+
+\url{https://www.mixtapesessions.io/sessions/}
+
+\end{frame}
+
+\begin{frame}{Causal Inference Part 2}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/causal_part2a}
+\end{frame}
+
+\begin{frame}{Causal Inference Part 2}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/causal_part2b}
+\end{frame}
+
+\begin{frame}{Machine Learnings and Causal Inference}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/brigham_part1a}
+\end{frame}
+
+\begin{frame}{Machine Learnings and Causal Inference}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/brigham_part1b}
+\end{frame}
+
+\begin{frame}{Advanced DID}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/roth_part1a}
+\end{frame}
+
+\begin{frame}{Advanced DID}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/roth_part1b}
+\end{frame}
+
+\begin{frame}{Doing Applied Research}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/doing_part1a}
+\end{frame}
+
+\begin{frame}{Doing Applied Research}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/doing_part1b}
+\end{frame}
+
+
+\begin{frame}{Synthetic control and Clustering}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/abadie_part1a}
+\end{frame}
+
+\begin{frame}{Synthetic control and Clustering}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/abadie_part1b}
+\end{frame}
+
+\begin{frame}{Heterogenous treatment effects and machine learning}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/brigham_part2a}
+\end{frame}
+
+\begin{frame}{Heterogenous treatment effects and machine learning}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/brigham_part2b}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Potential outcomes}
+
+
+
+\subsection{Naive causal inference}
+
+
+\begin{frame}{Coming to causal inference}
+
+\begin{itemize}
+\item Many roads lead to this material -- from computer science, to statistics, to economics, to philosophy, to epidemiology and so on and so forth
+\item Therefore any effort to teach it will always have a degree of subjectivity reflecting the presenter
+\item But even on something as narrow as what I'm going to discuss, there are even subtleties I want to take note of, and this reflects my own subjectivity
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Sociological history of causal inference}
+
+\begin{itemize}
+
+\item You can get a sense of my own perspective in my 3-part substack series on the sociological history of late 20th century quantitative causal inference (\url{https://causalinf.substack.com/p/a-selected-history-of-quantitative})
+\item I'm not going to review it here, as it takes a long time, but I encourage you to read it as it can help you understand where this came from and why it looks the way it does, but also my own beliefs
+\item All I will say is in my opinion, causal inference in the applied social sciences has two parents -- the statistician/econometricians and the ``ordinary data workers'' -- and that gives it the shape it has taken on
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Spurious correlations}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/spurious_correlation}
+\end{frame}
+
+\begin{frame}{Spurious correlations}
+
+\begin{itemize}
+
+\item What is causality?  \textbf{We need a definition}.
+\item Philosophers created a definition, but statisticians found a trick to make it tractable
+\item That trick combined notation (a definition) and a mechanism (treatment assignment) into ``acceptable solutions''
+\item Let's now dig into the issues around definitions and then the first major breakthrough -- randomization
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Causality, causal inference}
+
+\begin{itemize}
+
+\item Philosophers have been interrogating what causality is going back to antiquity
+\item It is one of the most important topics in both the fields of epistemology (how do I know if something causes something else?) and metaphysics (we will see why it involved metaphysics)
+\item But I want you to distinguish for this workshop between the topic of ``causality'' and the topic of ``causal inference'', because the former is a much broader topic that includes many differing views
+\item The latter is really a description of contemporary scientific methods bridging many sciences, including medicine, computer science, and much of the social sciences
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Philosophical origins of causal inference concepts}
+
+  \begin{quote}
+    ``If a person eats of a particular dish, and dies in consequence, that is, would not have died if he had not eaten it, people would be apt to say that eating of that dish was the source of his death.'' -- John Stuart Mill (19th century moral philosopher and economist)
+  \end{quote}
+
+  \bigskip
+  
+    \begin{quote}
+    ``Causation is something that makes a difference, and the difference it makes must be a difference from what would have happened without it.'' -- David Lewis (20th century metaphysical philosopher)
+  \end{quote}
+
+\end{frame}
+
+
+
+\begin{frame}{Ancient One explains it}
+
+  Both people pinned the idea of causality in \emph{comparisons} between (1) different actions taken and (2) different timelines
+  
+  \bigskip
+  
+  Let's start off and listen to the Ancient One explain to Bruce Banner (aka the Incredible Hulk) from \underline{Avengers: Endgame}
+  
+  \bigskip
+  
+  \url{https://youtu.be/1S3I0PqkooA?t=50}
+  
+  \end{frame}
+  
+  \begin{frame}{Counterfactuals}
+  
+  Philosophers and stories alike eventually settled on the idea that causality was rooted in a particular kind of comparison, like ``treatment'' versus ``control'' groups
+  
+  \bigskip
+  
+  But the comparison as you heard the Ancient One say was much weirder than comparing two groups -- it was comparing two possible events (choices) across two possible timelines that may (or may not) trigger two different outcomes
+  
+  \bigskip
+  
+  The key idea in contemporary causal inference is the idea of the counterfactual. Counterfactuals are neither past nor future.  They are alternative histories created by thought experiments but we use them as framing devices to decipher causality in our timeline
+
+\end{frame}
+
+\begin{frame}{Statistical origins}
+
+\begin{quote}
+``Yet, although the seeds of the idea that [causal effects are comparisons of potential outcomes] can be traced back at least to the 18th century [most likely he means David Hume], the formal notation for potential outcomes was not introduced until 1923 by Neyman.'' -- Don Rubin (1990)
+\end{quote}
+
+\end{frame}
+
+
+\begin{frame}{Jerzy Neyman introduces his definition}
+
+\begin{itemize}
+\item Early 20th century statistician, one of the ``fathers'' of modern statistics
+\item 1923 article describes a field experiment with differing plots of land (imagine hundreds of square gardens) and many different ``varieties'' of fertilizer that farmers could apply to the land
+\item ``$U_{ik}$ is the yield of the $i$th variety on the $k$th plot...'' (Neyman 1923)
+\item He calls $U_{ik}$ ``potential yield'', as opposed to the realized yield because $i$ (the fertilizer type) described all possible fertilizers that could be assigned to each $k$ square garden
+\item Though only one fertilizer will be assigned to the land, many possibilities exist in other words
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Urn model}
+
+\begin{itemize}
+
+\item For each fertilizer there is an associated ``potential yield'' that he collapses into $U$ and each of them he considers to be ``a priori fixed but unknown'' (Rubin 1990)
+\item Farmers draw fertilizer from an urn, like a bingo ball from a bingo ball machine, and apply it to each square garden
+\item Once the fertilizer is assigned, we go from ``all possible outcomes'' to ``realized outcome'' terminology
+\item Interestingly -- the urn model was a thought experiment, but it was stochastically identical to the completely randomized experiment, and he doesn't notice it
+\item His arch-rival, Ronald Fisher, does notice it and publishes a book two years later recommending randomized experiments rooted in this paper
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Treatment assignment mechanism}
+
+\begin{quote}
+
+``Before the 20th century, there appears to have been only limited awareness of the concept of the assignment mechanism.  Although by the 1930s, randomized experiments were firmly established in some areas of scientific investigation, notably in agricultural experiments, there was no formal statement for a general assignment mechanism and, moreover, not even formal arguments in favor of randomization until Fisher (1925).'' (Imbens and Rubin 2015)
+
+\end{quote}
+
+\end{frame}
+
+\begin{frame}{Progress is made and progress is not made}
+
+\begin{itemize}
+
+\item Whereas the RCT takes off in medicine and agriculture, it is not adopted as universally in social sciences, like economics
+\item Economics ironically does have in its history early econometricians who thought about causality like Neyman and Fisher, but listen to Guido Imbens describe the transition towards modeling causality in terms of ``realized outcomes
+
+\end{itemize}
+
+\bigskip
+
+\url{https://www.youtube.com/watch?v=drGkRy53bB4}
+
+\end{frame}
+
+\begin{frame}{Prediction vs causal inference}
+
+\begin{itemize}
+
+\item Statistics was not merely interested in causal inference
+\item It was also interested in prediction, as are many of the social sciences
+\item But causal inference appeared to progress from Neyman-Fisher until Rubin's 1970s work without explicit references to Neyman's original ideas
+\item I think sometimes therefore the ``clarity'' as Imbens said was lost and as such, prediction and causal inference did not have sharp lines separating them
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Different types of prediction}
+
+  \begin{columns}
+    \column{0.48\linewidth}
+    \centering
+    \textbf{Traditional prediction}
+    \begin{itemize}
+      \item Traditional prediction seeks to detect patterns in data and fit functional relationships between variables with a high degree of accuracy
+      \item ``Does this person have heart disease?'', ``How many books will I sell?''
+      \item It is not predictions of what effect a choice will have, though
+    \end{itemize}
+    \column{0.48\linewidth}
+    \centering
+    \textbf{Causal inference}
+    \begin{itemize}
+      \item Causal inference is also a type of prediction, but it's a prediction of a \emph{counterfactual} associated with a particular \emph{choice taken}
+      \item Causal inference takes that predicted (or imputed) counterfactual and constructs a causal effect that we hope tells us about a future in the event of a similar choice taken
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{Identification problem}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/prediction_causality.png}
+\end{frame}
+
+
+
+
+\begin{frame}{Naive causal inference}
+
+  \begin{itemize}
+    \item Aliens come and orbit earth, see people dying in hospitals and conclude ``doctors are hurting people''
+    \item They kill the doctors, unplug patients from machines, throw open the doors -- many patients inexplicably die
+    \item \emph{We are the aliens in our research}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{\#1: Correlation and causality are different concepts}
+
+  Causal is one unit, correlation is many units
+  \begin{itemize}
+    \item Causal question: ``If a doctor puts a patient on a ventilator (D), will her covid symptoms (Y) improve?''
+    \item Correlation question:  $$\frac{Cov(D,Y)}{\sqrt{Var_D}\sqrt{{Var_Y}}}$$
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{\#2: Coming first may not mean causality!}
+
+  \begin{itemize}
+    \item Every morning the rooster crows and then the sun rises
+    \item Did the rooster cause the sun to rise? Or did the sun cause the rooster to crow?
+    \item What if cat killed the rooster?
+    \item \emph{Post hoc ergo propter hoc}: ``after this, therefore, because of this''
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{\#3: Causality may mask correlations!}
+
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.04]{./lecture_includes/scottboat.jpg}
+  \end{figure}
+
+\end{frame}
+
+
+\subsection{Potential outcomes notation}
+
+
+
+
+
+\begin{frame}{Potential outcomes notation}
+
+  \begin{itemize}
+    \item Let the treatment be a binary variable: $$D_{i,t} =\begin{cases} 1 \text{ if placed on ventilator at time $t$} \\ 0 \text{ if not placed on ventilator at time $t$} \end{cases}$$where $i$ indexes an individual observation, such as a person
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Potential outcomes notation}
+
+  \begin{itemize}
+    \item Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{ health if placed on ventilator at time $t$} \\ 0 \text{ health if not placed on ventilator at time $t$} \end{cases}$$where $j$ indexes a potential treatment status for the same $i$ person at the same $t$ point in time
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Realized vs potential outcomes}
+
+  \begin{itemize}
+    \item Potential outcomes $Y^1$ and realized outcomes $Y$ are not the same ideas or notation
+    \item Potential outcomes refer to the ``a priori fixed but unknown'' outcomes associated with different possible treatment assignments
+    \item Realized outcomes refer to the ``posterior and known'' outcome associated with a specific treatment assignment
+    \item This distinction is more subtle than I can emphasize, and so we have to spend time on the front end in spreadsheets and code
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Important definitions}
+
+    \begin{block}{Definition 1: Individual treatment effect}
+      The individual treatment effect,  $\delta_i$, associated with a ventilator is equal to $Y_i^1-Y_i^0$.
+    \end{block}
+\end{frame}
+
+
+\begin{frame}{Important definitions}
+
+
+    \begin{block}{Definition 2: Switching equation}
+      An individual's realized health outcome, $Y_i$, is determined by treatment assignment, $D_i$ which selects one of the potential outcomes:
+      \begin{eqnarray*}
+        Y_i& = D_iY^1_i+(1-D_i)Y^0_i& \\
+        Y_i& = \begin{cases}
+          Y^1_i\text{ if }D_i=1 \\
+          Y^0_i\text{ if }D_i=0
+        \end{cases}
+      \end{eqnarray*}
+    \end{block}
+
+\end{frame}
+
+
+\begin{frame}{Missing data problem}
+
+
+    \begin{block}{Definition 3: Fundamental problem of causal inference}
+      If you need both potential outcomes to know causality with certainty, then since it is impossible to observe both $Y_i^1$ and $Y_i^0$ for the same individual, $\delta_i$, is \emph{unknowable}.
+    \end{block}
+    
+      \begin{itemize}
+    \item Fundamental problem of causal inference is a consequence of what the switching equation does and cannot be fixed with more data -- always missing one of the potential outcomes
+    \item Causal inference is a missing data problem requiring imputation of missing counterfactuals (sometimes explicitly such as with nearest neighbor or synthetic control, sometimes implicitly as with RDD)
+  \end{itemize}
+
+    
+\end{frame}
+
+
+
+\begin{frame}{Average Treatment Effects}
+
+  \begin{block}{Definition 4: Average treatment effect (ATE)}
+    The average treatment effect is the population average of all $i$ individual treatment effects
+    \begin{eqnarray*}
+      E[\delta_i]&=&E[Y_i^1-Y_i^0]\\
+      &=&E[Y^1_i] - E[Y^0_i]
+    \end{eqnarray*}
+  \end{block}
+
+  \bigskip
+
+Aggregate parameters based on individual treatment effects are \emph{summaries} of individual treatment effects
+
+\bigskip
+
+  Cannot be calculated because $Y^1_i$ and $Y^0_i$ do not exist \emph{for the same unit i} due to switching equation
+
+\end{frame}
+
+
+
+\begin{frame}{Conditional Average Treatment Effects}
+
+
+  \begin{block}{Definition 5: Average Treatment Effect on the Treated (ATT)}
+    The average treatment effect on the treatment group is equal to the average treatment effect conditional on being a treatment group member:
+    \begin{eqnarray*}
+      E[\delta|D=1]&=&E[Y^1-Y^0|D=1] \nonumber \\
+      &=&E[Y^1|D=1]-E[Y^0|D=1]
+    \end{eqnarray*}
+  \end{block}
+  Cannot be calculated because $Y^1_i$ and $Y^0_i$ do not exist \emph{for the same unit i} due to switching equation. 
+
+
+\end{frame}
+
+
+
+\begin{frame}{Conditional Average Treatment Effects}
+
+  \begin{block}{Definition 6: Average Treatment Effect on the Untreated (ATU)}
+    The average treatment effect on the untreated group is equal to the average treatment effect conditional on being untreated:
+    \begin{eqnarray*}
+      E[\delta|D=0]&=&E[Y^1-Y^0|D=0] \nonumber \\
+      &=&E[Y^1|D=0]-E[Y^0|D=0]
+    \end{eqnarray*}
+  \end{block}
+  Cannot be calculated because $Y^1_i$ and $Y^0_i$ do not exist \emph{for the same unit i} due to switching equation
+
+\end{frame}
+
+
+\begin{frame}{Any collection of treatment effects}
+
+  \begin{itemize}
+	\item Notice how in all three of these, all we did was take the defined treatment effect at the individual and aggregate
+	\item The aggregate causal parameters are \emph{definitions} of summaries but cannot be calculated directly bc of missing data problem
+	\item But they can be estimated, which is probably a distinction in epistemology as it's knowledge but of a different type (``warranted belief'')
+  \end{itemize}
+
+\end{frame}
+
+\subsection{Selection bias}
+
+\begin{frame}{Naive causal inference and selection bias}
+
+  \begin{itemize}
+    \item Naive causal inference is often caused by confusing prediction or description with causal inference
+    \item It is naive if it does not directly address, in a reasonable way, the problem of \emph{selection bias}
+    \item This is better seen with a story and a decomposition
+  \end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[plain]
+
+
+  \begin{block}{Definition 7: Simple difference in mean outcomes (SDO)}
+    A simple difference in mean outcomes (SDO) can be approximated by the sample averages:\begin{eqnarray*}
+      SDO &=& E[Y^1 | D=1] - E[Y^0 | D=0] \\
+      &=& E[Y | D=1] - E[Y | D=0]
+    \end{eqnarray*}
+  \end{block}
+  \bigskip
+
+Notice how I moved between potential outcomes ($Y^1$) to realized outcomes ($Y$ for $D=1$) using the switching equation
+
+\end{frame}
+
+\begin{frame}{Simple difference in mean outcomes}
+
+  \begin{itemize}
+    \item Simple difference in mean outcomes may or may not be ``naive''
+    \item It can be calculated manually by differencing averages, or with a regression $$Y_i = \alpha + \delta D_i + \varepsilon_{i}$$where $\widehat{\delta}$ is the SDO from the previous slide
+    \item SDO creates a number (i.e., it's a calculation), but what does that number mean in terms of causality and bias?
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Decomposition of the SDO}
+
+  \begin{block}{Decomposition of the SDO}
+    The SDO is made up of three things:
+    \begin{eqnarray*}
+      E[Y^1 | D=1] - E[Y^0 | D=0]&=& ATE\nonumber \\
+      &&+ E[Y^0|D=1] - E[Y^0|D=0] \nonumber \\
+      && + (1-\pi)(ATT - ATU)
+    \end{eqnarray*}
+  \end{block}
+
+\bigskip
+
+We need to see this as everything hinges on getting it
+\end{frame}
+
+
+\begin{frame}{Begin with ATE definition}
+
+  \begin{block}{Law of iterated expectations}
+    \begin{eqnarray*}
+      \text{ATE}&=&E[Y^1]-E[Y^0]  \\
+      &=& \{\pi E[Y^1 | D=1] + (1-\pi)E[Y^1 | D=0]\}  \\
+      & & - \{\pi E[Y^0|D=1] + (1-\pi) E[Y^0 | D=0]\}
+    \end{eqnarray*}
+  \end{block}
+
+
+
+\end{frame}
+
+\begin{frame}{Change notation}
+
+
+
+  \begin{block}{Substitute letters for expectations to go easy on the eyes}
+    \begin{eqnarray*}
+      E[Y^1|D=1] &=& a  \\
+      E[Y^1|D=0] &=& b  \\
+      E[Y^0|D=1] &=& c  \\
+      E[Y^0|D=0] &=& d  \\
+      \text{ATE} &=& e
+    \end{eqnarray*}
+  \end{block}
+
+
+\end{frame}
+
+\begin{frame}{Rewrite ATE definition}
+
+
+  \begin{block}{Rewrite ATE}
+    \begin{eqnarray*}
+      e&=&\{\pi{a} + (1-\pi)b\} - \{\pi{c} + (1-\pi)d\}
+    \end{eqnarray*}
+  \end{block}
+
+\end{frame}
+
+
+
+
+\begin{frame}[plain]
+
+  \begin{block}{Simple manipulation of ATE definition}
+    \begin{eqnarray*}
+      e&=&\{\pi{a} + (1-\pi)b\} - \{\pi{c} + (1-\pi)d\}  \\
+      e&=&\pi{a} + b - \pi{b} - \pi{c} - d + \pi{d}  \\
+      e&=&\pi{a} + b - \pi{b} - \pi{c} - d + \pi{d} + (\textbf{a} - \textbf{a}) + (\textbf{c} - \textbf{c}) + (\textbf{d} - \textbf{d})  \\
+      0&=&e-\pi{a} - b + \pi{b} + \pi{c} + d - \pi{d} - \textbf{a} + \textbf{a} - \textbf{c} + \textbf{c} - \textbf{d} + \textbf{d}  \\
+      \textbf{a}-\textbf{d}&=&e-\pi{a} - b + \pi{b} + \pi{c} + d - \pi{d}  + \textbf{a} - \textbf{c} + \textbf{c} - \textbf{d}  \\
+      \textbf{a}-\textbf{d}&=&e  + (\textbf{c} - \textbf{d}) + \textbf{a}-\pi{a} - b + \pi{b} - \textbf{c} + \pi{c} + d - \pi{d} \\
+      \textbf{a}-\textbf{d}&=&e  + (\textbf{c} - \textbf{d}) + (1-\pi)a -(1-\pi)b + (1-\pi)d - (1-\pi)c  \\
+      \textbf{a}-\textbf{d}&=&e  + (\textbf{c} - \textbf{d}) + (1-\pi)(a-c) -(1-\pi)(b-d)
+    \end{eqnarray*}
+  \end{block}
+
+
+\end{frame}
+
+\begin{frame}[shrink=20,plain]
+  \begin{block}{Carry forward from previous slide}
+    \begin{eqnarray*}
+      \textbf{a}-\textbf{d}&=&e  + (\textbf{c} - \textbf{d}) + (1-\pi)(a-c) -(1-\pi)(b-d)
+    \end{eqnarray*}
+  \end{block}
+
+  \begin{block}{Replace letters with original terms }
+    \begin{eqnarray*}
+      E[Y^1|D=1] - E[Y^0|D=0] &=& \text{ATE}  \\
+      &&+ (E[Y^0|D=1] - E[Y^0|D=0])  \\
+      && + (1-\pi)( \underbrace{\{E[Y^1|D=1] - \alert{E[Y^0|D=1]}\}}_{ \mathclap{\text{ATT}}}  \\
+      && - (1-\pi)( \underbrace{\{E[Y^1|D=0] - \alert{E[Y^0|D=0]}\}}_{ \mathclap{\text{ATU}}}  \\
+    \end{eqnarray*}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Decomposition of the SDO}
+
+  \begin{block}{Decomposition of the SDO}
+    \begin{eqnarray*}
+      E[Y^1 | D=1] - E[Y^0 | D=0]  &=& ATE \\
+      &&+ (E[Y^0|D=1] - E[Y^0|D=0])  \\
+      && + (1-\pi)(ATT - ATU)
+    \end{eqnarray*}
+  \end{block}
+  
+  \bigskip
+  
+  Note: this is a \emph{rewritten} formula for the definition of the ATE and so is \emph{always} true.  Also, notice that we started with $\pi$ but in the end we weight by $1-\pi$.
+\end{frame}
+
+
+\begin{frame}[plain]
+
+  \begin{block}{Estimate SDO with sample averages}
+    \begin{eqnarray*}
+      \underbrace{E_N[Y_i | D_i=1] - E_N[Y_i | D_i=0]}_{ \mathclap{\text{Estimate of SDO}}}&=& \underbrace{E[Y^1] - E[Y^0]}_{ \mathclap{\text{Average Treatment Effect}}} \\
+      &&+ \underbrace{E[Y^0|D=1] - E[Y^0 | D=0]}_{ \mathclap{\text{Selection bias}}}  \\
+      && + \underbrace{(1-\pi)(ATT - ATU)}_{ \mathclap{\text{Heterogenous treatment effect bias}}}
+    \end{eqnarray*}
+  \end{block}
+
+\bigskip
+
+    Using the switching equation and sample averages, we can calculate $E_N[Y|D=1] \to E[Y^1 | D=1]$, $E_N[Y|D=0] \to E[Y^0|D=0]$ and $(1-\pi)$ is the share of the population in the control group.
+
+\end{frame}
+
+
+\begin{frame}{Selection bias}
+
+\begin{itemize}
+\item For many of us, we have heard the word ``selection bias'' before but it was with respect to ``non-random samples''
+\item In causal inference, that isn't what we mean.  We mean mean potential outcomes differ for two groups.
+\item We cannot observe this though because one of the comparisons is counterfactual and the other is realized
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Bias \#1: Selection bias}
+
+  \begin{itemize}
+    \item Look very closely at the selection bias terms on their left and right hand sides $$E[Y^0|D=1] \neq E[Y^0 |D=0]$$
+    \item Ask yourself: do you think that the people placed on vents would've had the same mean health outcomes as the people not on vents had they not been on vents? Why do you think that?
+      \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Bias \#1: Selection bias}
+
+Probably not. Had they not been on vents, many would've died.
+
+\bigskip
+
+  $$\underbrace{E[Y^0|D=1]}_{\mathclap{\text{Worse off vents}}} < \underbrace{E[Y^0|D=0]}_{\mathclap{\text{Better off vents}}}$$
+
+\bigskip
+
+Bias was caused by \emph{the doctors} being good at their jobs!  
+
+\bigskip
+
+Bias was caused by the \emph{treatment assignment mechanism}, and Imbens and Rubin said that was not really emphasized until Fisher (1925) 
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{Humans cause selection bias, not statistical model}
+
+\begin{itemize}
+\item People cause the bias bc people choose treatments to make their lives better which means choosing $D=1$ if $Y^1-Y^0>0$.
+	\begin{enumerate}
+	\item I chose to get a PhD because I thought I would be less happy without it -- i.e., $Y^0$ maybe was lower for me than others
+	\item I chose to get a PhD because I thought it would make me happier -- i.e., $Y^1$ maybe was higher for me than others
+	\end{enumerate}
+\item Selection bias is associated with the first; heterogenous treatment effect bias with the second
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Illustrating selection bias with spreadsheets}
+
+  \begin{itemize}
+    \item Chronic PTSD has historically been treated with cognitive behavior therapies like mindfulness, but recent work shows therapist assisted MDMA (street name: ecstasy), are effective too
+    \item Ongoing work in psychopharmacology has begun experimenting with long dormant approaches in the psychedelics and empathogens for treating mental illness, including PTSD
+    \item Several states have legalized it, Australia just legalized it this week, and FDA is expected to ``reschedule'' it soon
+    \item MAPS organization has been funding RCTs in compliance with FDA trials to study MDMA's effect on PTSD \url{https://www.nature.com/articles/s41591-021-01336-3}
+    \end{itemize}
+    
+\end{frame}
+
+
+\begin{frame}{Illustrating selection bias with spreadsheets}
+\begin{itemize}
+\item Perfect Doctor can accurately determine whether mindfulness practices or MDMA is more beneficial for treating a patient's chronic PTSD ($Y^1 - Y^0$ is positive or negative), and makes treatment assignments ($D=1$ or $0$) depending on its impact
+\item We will go through an exercise together (copy this google sheet) analyzing the implications of the perfect doctor's choices on a range of statistics, followed by discussion \url{https://docs.google.com/spreadsheets/d/10DuQqGtH_Ewea7zQoLTFYHbnvqaTVDhn2GDzq3Oa6EQ/edit?usp=sharing}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Summarizing the goals of causal inference}
+
+  Our goal in causal inference is to estimate aggregate causal parameters with data by exploiting what is known about the treatment assignment mechanism
+
+  \bigskip
+
+Depending on the treatment assignment mechanism, certain procedures are allowed and others are prohibited
+
+  \bigskip
+
+  Let's look what happens in an RCT \emph{and why} this addresses selection bias term $E[Y^0|D=1]$ and $E[Y^0|D=0]$ to see why Fisher (1925) recommended it
+
+\end{frame}
+
+
+
+\subsection{Independence}
+
+
+\begin{frame}{Independence}
+
+
+  \begin{block}{Independence assumption}
+    Treatment is assigned to a population independent of that population's potential outcomes  $$(Y^0,Y^1)\independent{D}$$
+  \end{block}
+  This is random or quasi-random assignment and ensures mean potential outcomes for the treatment group and control group are the same.  Also ensures other variables are distributed the same for a large sample.
+  \begin{eqnarray*}
+    E[Y^0|D=1] &=& E[Y^0 | D=0] \\
+    E[Y^1|D=1] &=& E[Y^1 | D=0]
+  \end{eqnarray*}
+\end{frame}
+
+\begin{frame}{Random Assignment Solves the Selection Problem}
+
+  \begin{eqnarray*}
+    \underbrace{E_N[y_i | d_i=1] - E_N[y_i | d_i=0]}_{ \mathclap{\text{SDO}}}&=& \underbrace{E[Y^1] - E[Y^0]}_{ \mathclap{\text{Average Treatment Effect}}} \\
+    &&+ \underbrace{E[Y^0|D=1] - E[Y^0 | D=0]}_{ \mathclap{\text{Selection bias}}}  \\
+    && + \underbrace{(1-\pi)(ATT - ATU)}_{ \mathclap{\text{Heterogenous treatment effect bias}}}
+  \end{eqnarray*}
+
+
+  \begin{itemize}
+    \item If treatment is independent of potential outcomes, then swap out equations and \textbf{selection bias} zeroes out:
+          \begin{eqnarray*}
+            E[Y^0 | D=1] - E[Y^0 | D=0] &=& 0
+          \end{eqnarray*}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[shrink=20,plain]
+  \begin{center}
+    \textbf{Random Assignment Solves the Heterogenous Treatment Effects}
+  \end{center}
+
+  \begin{itemize}
+    \item How does randomization affect heterogeneity treatment effects bias from the third line?  Rewrite definitions for ATT and ATU:\begin{eqnarray*}
+            \text{ATT} = E[Y^1 | D=1] - E[Y^0 | D=1] \\
+            \text{ATU} = E[Y^1 | D=0] - E[Y^0 | D=0] \\
+          \end{eqnarray*}
+    \item Rewrite the third row bias after $1-\pi$:\begin{eqnarray*}
+            ATT - ATU &=& \textbf{E[Y$^1$ $|$ D=1]} - E[Y^0 | D=1] \\
+            && - \textbf{E[Y$^1$ $|$ D=0]} + E[Y^0 | D=0] \\
+            &=& 0
+          \end{eqnarray*}
+    \item If treatment is independent of potential outcomes, then:\begin{eqnarray*}
+            E_N[y_i | d_i=1] - E_N[y_i | d_i=0]  &=& E[Y^1] - E[Y^0] \\
+            SDO &=& ATE
+          \end{eqnarray*}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Bad Doctor and Perfect Doctor Lab}
+
+Now let's spent a half hour on a lab in code in R and Stata to try and illustrate this again
+
+\end{frame}
+
+\begin{frame}[plain]
+
+  \begin{block}{Identification with Randomization}
+    \begin{eqnarray*}
+      \underbrace{E_N[Y_i | D_i=1] - E_N[Y_i | D_i=0]}_{ \mathclap{\text{Estimate of SDO}}}&=& \underbrace{E[Y^1] - E[Y^0]}_{ \mathclap{\text{Average Treatment Effect}}} \\
+    &&+ \underbrace{0}_{ \mathclap{\text{Selection bias}}}  \\
+    && + \underbrace{0}_{ \mathclap{\text{Heterogenous treatment effect bias}}}
+    \end{eqnarray*}
+  \end{block}
+  
+  SDO is unbiased estimate of ATE with randomized treatment assignment because it sets selection bias to zero and $ATT=ATU$.
+
+
+
+\end{frame}
+
+
+\begin{frame}{Different paths may have implications}
+
+Strange things when we discuss randomization with potential outcomes -- for example, selection bias is zero because randomization distributed potential outcomes equally across treatment and control, but one of them doesn't exist!  $$\underbrace{\textcolor{red}{E[Y^0|D=1]}}_{\mathclap{\text{Doesn't exist}}} = \underbrace{E[Y^0|D=0]}_{\mathclap{\text{Exists}}}$$
+
+\bigskip
+
+Contrast that with people who come to randomization via experimental design tradition -- randomization distributes \emph{realized variables} equally across treatment and control -- but note we never even discussed variables
+
+\bigskip
+
+I wonder if this is why some stop at RCT but some branch into quasi-experimental?
+
+\end{frame}
+
+\begin{frame}{Interference when aggregating units}
+
+\begin{itemize}
+\item While treatment effects are defined at individual level, aggregate parameters combine units
+\item This therefore means that for the aggregate parameters to be stable, there cannot be ``interference'' between one unit's treatment choice and another unit's potential outcome
+\item Creates challenges for definitions and estimation that are probably huge headaches, even in the RCT
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{SUTVA}
+
+  \begin{itemize}
+    \item SUTVA stands for ``stable unit-treatment value assumption''
+          \begin{enumerate}
+            \item \textbf{S}: \emph{\textbf{s}table}
+            \item \textbf{U}: across all \emph{\textbf{u}nits}, or the population
+            \item \textbf{TV}: \emph{\textbf{t}reatment-value} (``treatment effect'', ``causal effect'')
+            \item \textbf{A}: \emph{\textbf{a}ssumption}
+          \end{enumerate}
+    \item Largely about interference when aggregating but also poorly defined treatments and scale
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{SUTVA: No spillovers to other units}
+
+  \begin{itemize}
+    \item What if we impose a treatment at one neighborhood but not a contiguous one?
+    \item Treatment may spill over causing $Y=Y^1$ even for the control units because of spillovers from treatment group
+    \item Can be mitigated with careful delineation of treatment and control units so that interference is impossible, may even require aggregation (e.g., classroom becomes the unit, not students)
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{SUTVA: No Hidden Variation in Treatment}
+
+  \begin{itemize}
+    \item SUTVA requires each unit receive the same treatment dosage; this is what it means by ``stable'' (i.e., notice that the super scripts contain either 0 or 1, not 0.55, 0.27)
+    \item If we are estimating the effect of aspirin on headaches, we assume treatment is 200mg per person in the treatment
+    \item Easy to imagine violations if hospital quality, staffing or even the vents themselves vary across treatment group
+    \item Be careful what we are and are not defining as \emph{the treatment}; you may have to think of it as multiple arms
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{SUTVA: Scale can affect stability of treatment effects}
+
+  Easier to imagine this with a different example.
+  \begin{itemize}
+    \item Let's say we estimate a causal effect of early childhood intervention in Texas
+    \item Now President Biden wants to roll it out for the whole United States -- will it have the same effect as we found?
+    \item Scaling up a policy can be challenging to predict if there are rising costs of production
+    \item What if expansion requires hiring lower quality teachers just to make classes?
+    \item That's a general equilibrium effect; we only estimated a partial equilibrium effect (external versus internal validity)
+  \end{itemize}
+\end{frame}
+% \input{lectures_fisher.tex}
+
+\subsection{Industry example of RCT: eBay advertising}
+
+\begin{frame}
+
+\begin{figure}[hpt]
+\begin{center}
+\includegraphics[scale=0.25]{./lecture_includes/econometrica_steve.png}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Internet advertising facts}
+
+\begin{itemize}
+\item In 2012, revenues from Internet advertising was \$36.6 billion and has only grown since
+\item Paid search (``search engine marketing'') is the largest format by revenue (46.3\% of 2012 revenues, or \$16.9 billion)
+\item Google is leading provider (registered \$46 billion in global revenues in 2012 of which 95\% was attributed to advertising)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Selection bias}
+
+\begin{itemize}
+\item Treatment was targeted ads at particular people conducting particular types of keyword search
+\item Consumers who choose to click on ads are loyal and already informed about products with high likelihood to buy already 
+\item Problem is ads are targeting people at the end of their search, so the question is whether they would've found it already (i.e., $E[Y^0|D=1] \neq E[Y^0|D=0]$)
+\end{itemize}
+
+
+\end{frame}
+
+
+
+\begin{frame}{Selection bias}
+
+\begin{itemize}
+\item Estimated return on investment using OLS  found ROI of over 1600\%
+\item Compared this to experimental methods and found ROI of -63\% with a 95\% CI of $[-124\%, -3\%]$, rejecting the hypothesis that the channel yielded short-run positive returns
+\item Think back to perfect doctor -- Even without the treatment ($Y^0$), the treated group observationally would've still found a way
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Natural experiment}
+
+\begin{itemize}
+\item Study began with a naturally occurring and somewhat fortuitous  event at eBay
+\item eBay halted SEM queries for brand words (i.e., queries that included the term eBay) on Yahoo! and Microsoft but continued to pay for these terms on Google
+\item Blake, Nosky and Tadelis (2015) showed almost all of the foregone click traffic and attributed sales were captured by natural search
+\item Substitution between paid and unpaid traffic was nearly one to one complete
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.2]{./lecture_includes/tadelis_fig1.png}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Interpretation of natural experiment}
+
+\begin{quote}
+``The evidence strongly supports the intuitive notion that for brand keywords, natural search is close to a perfect substitute for paid search, making brand keyword SEM ineffective for short-term sales.  After all, the users who type the brand keyword in the search query intend to reach the company's website, and most likely will execute on their intent regardless of the appearance of a paid search ad.''
+\end{quote}
+
+\end{frame}
+
+\begin{frame}{Selection bias}
+
+Observational data masked causal effect (recall the decomposition of the any non-designed estimation strategy)
+
+\bigskip
+
+\begin{quote}
+``Advertising may appear to attract these consumers, when in reality they would have found other channels to visit the company's website.  We overcome this endogeneity challenge with our controlled experiments.''
+\end{quote}
+
+\end{frame}
+
+
+
+
+\begin{frame}{RCT}
+
+Natural experiment was valuable, but eBay could run a large scale RCT.
+
+\bigskip
+
+
+Use this finding of a nearly one-to-one substitution once paid search was dropped to convince eBay to field a large scale RCT discontinuing non-band key words
+
+\bigskip
+
+
+\end{frame}
+
+\begin{frame}{Design of the experiment}
+
+\begin{itemize}
+\item Randomly assigned 30 percent of eBay's US traffic to stop all bidding for all non-brand keywords for 60 days
+\item Some random group of users, in other words, were exposed to ads; a control group did not see the ads
+\item Used Google's geographic bid feature that can accurately identify geographic market of the user conducting the search
+\item Ads were suspended in 30 percent of markets to reduce the scope of the test and minimize the potential cost and impact to the business
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.2]{./lecture_includes/tadelis_fig3.png}
+\caption{Attributed sales due to clicking on a Google link (treatment group)}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.2]{./lecture_includes/tadelis_fig2.png}
+\caption{Differences in total sales by market (treatment to control)}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.2]{./lecture_includes/tadelis_ols1.png}
+\caption{Spending effect on revenue using OLS but not the randomization. Effects are gigantic. }
+\end{center}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.2]{./lecture_includes/tadelis_ols2.png}
+\caption{Spending effect on revenue using the randomization. Effects are negative. }
+\end{center}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Heterogenous treatment effects}
+
+\begin{itemize}
+\item Recall how the potential outcomes model explicitly models individual treatment effects could be unique and that the perfect doctor showed selection on gains masked treatment effects, perhaps even reversing sign
+\item Search advertising in this RCT only worked if the consumer had no idea that the company had the desired product
+\item Large firms like eBay with powerful brands will see little benefit from paid search advertising because most consumers already know that they exist, as well as what they have to offer
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.2]{./lecture_includes/tadelis_newuser_fig1.png}
+\caption{Effects on new users are positive and large, but not others. }
+\end{center}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.2]{./lecture_includes/tadelis_newuser_fig2.png}
+\caption{Effects are largest for ``least active'' customers. }
+\end{center}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Why are causal effects small?}
+
+\begin{itemize}
+\item They suggest that the brand query tests found small causal returns because users simply substituted from the paid search clicks to the natural search clicks
+\item If that's the case, then it's explicitly a selection bias story $$E[Y^0|D=1] \neq E[Y^0|D=0]$$ where $D$ is being shown the branded advertisement based on search (i.e., they were already going there)
+\item They weren't using branded search for information; they were using to \emph{navigate}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Self selection based on gains}
+
+\begin{itemize}
+\item Potential outcomes is the foundation of the physical experiment because the physical experiment assigns units to treatments \emph{independent} of potential outcomes, $Y^0,Y^1$
+\item This is important because outside of the physical experiment, we expect people select those important treatments based on whether, subjectively, they think $Y^1>Y^0$ or $Y^1\leq Y^0$. 
+\item Rational actors almost by definition are thought to ``self-select into treatment'' making non-designed comparisons potentially misleading -- sometimes by a little, sometimes by a lot
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Comments}
+
+\begin{itemize}
+\item Natural experiments are valuable, but they don't always have the same certainty the way an RCT does
+\item We use natural experiments when people won't let us run the RCTs we want to run!
+\item Findings from natural experiments often push others to run RCTs -- like at eBay
+\end{itemize}
+
+\end{frame}
+
+
+
+\subsection{Policy example of RCT: HIV status}
+
+\begin{frame}{Demand for Learning HIV Status}
+
+
+  \begin{itemize}
+    \item Rebecca Thornton implemented an RCT in rural Malawi for her job market paper at Harvard in mid-2000s
+    \item At the time, it was an article of faith that you could fight the HIV epidemic in Africa by encouraging people to get tested; but Thornton wanted to see if this was true
+    \item She randomly assigned cash incentives to people to incentivize learning their HIV status
+    \item Also examined whether learning changed sexual behavior.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Experimental design}
+
+  \begin{itemize}
+    \item Respondents were offered a free door-to-door HIV test
+    \item Treatment is randomized vouchers worth between zero and three dollars
+    \item These vouchers were redeemable once they visited a nearby voluntary counseling and testing center (VCT)
+    \item Estimates her models using OLS with controls
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Why Include Control Variables?}
+
+  To evaluate experimental data, one may want to add additional controls in the multivariate regression model.  So, instead of estimating the SDO, we might estimate:
+  \begin{eqnarray*}
+    Y_i = \alpha + \delta D_i + \gamma X_i + \eta_i
+  \end{eqnarray*}
+\end{frame}
+
+
+\begin{frame}{Why Control Variables?}
+  \begin{itemize}
+    \item There are 2 main reasons for including additional controls in the regression models:
+          \begin{enumerate}
+            \item Conditional random assignment.  Sometimes randomization is done \emph{conditional} on some observable (e.g., gender, school, districts)
+            \item Exogenous controls increase precision.  Although control variables $X_i$ are uncorrelated with $D_i$, they may have substantial explanatory power for $Y_i$. Including controls thus reduces variance in the residuals which lowers the standard errors of the regression estimates.
+          \end{enumerate}
+    \item Ongoing work by econometricians is investigating this more carefully
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[plain]
+  \begin{table}[htbp]\centering
+    \scriptsize
+    \caption{Impact of Monetary Incentives and Distance on Learning HIV Results}
+    \label{tab:thornton_main}
+    \centering
+    \begin{threeparttable}
+      \begin{tabular}{l*{5}{c}}
+        \toprule
+        \multicolumn{1}{l}{\textbf{}}&
+        \multicolumn{1}{c}{\textbf{1}}&
+        \multicolumn{1}{c}{\textbf{2}}&
+        \multicolumn{1}{c}{\textbf{3}}&
+        \multicolumn{1}{c}{\textbf{4}}&
+        \multicolumn{1}{c}{\textbf{5}}\\
+        \midrule
+        Any incentive           & 0.431***  & 0.309*** & 0.219***    & 0.220***    & 0.219 ***
+        \\
+                                & (0.023)   & (0.026)  & (0.029)     & (0.029)     & (0.029)
+        \\
+        Amount of incentive     &           & 0.091*** & 0.274***    & 0.274***    & 0.273***
+        \\
+                                &           & (0.012)  & (0.036)     & (0.035)     & (0.036)
+        \\
+        Amount of incentive$^2$ &           &          & $-0.063$*** & $-0.063$*** & $-0.063$***
+        \\
+                                &           &          & (0.011)     & (0.011)     & (0.011)
+        \\
+        HIV                     & $-0.055$* & $-0.052$ & $-0.05$     & $-0.058$*   & $-0.055$*   \\
+                                & (0.031)   & (0.032)  & (0.032)     & (0.031)     & (0.031)
+        \\
+        Distance (km)           &           &          &             & $-0.076$*** &
+        \\
+                                &           &          &             & (0.027)     &             \\
+        Distance$^2$            &           &          &             & 0.010**     &
+        \\
+                                &           &          &             & (0.005)     &
+        \\\midrule
+        Controls                & Yes       & Yes      & Yes         & Yes         & Yes
+        \\
+        Sample size             & 2,812     & 2,812    & 2,812       & 2,812       & 2,812
+        \\
+        Average attendance      & 0.69      & 0.69     & 0.69        & 0.69        & 0.69
+        \\
+        \bottomrule
+      \end{tabular}
+    \end{threeparttable}
+  \end{table}
+
+\end{frame}
+
+\begin{frame}[plain]
+
+  \begin{figure}[htb]\centering
+    \includegraphics[scale=0.5]{./lecture_includes/FigA.jpg}
+    \caption{Visual representation of cash transfers on learning HIV test results.}
+    \label{fig:thorntonfig}
+  \end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Results}
+
+  \begin{itemize}
+    \item Any incentive increases learning HIV status by 43 percentage points compared to the control (34\% of controls learned HIV status)
+    \item Next she looks at the effect that learning HIV status has on risky sexual behavior 
+    \item She had to do a lot of planning by creating two sources of randomization -- the voucher and the distance to clinics -- which required using instruments (we discuss it next week)
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[plain]
+
+  \begin{figure}[htb]\centering
+    \includegraphics[scale=0.5]{./lecture_includes/FigC.jpg}
+    \caption{Visual representation of cash transfers on condom purchases for HIV positive individuals.}
+    \label{fig:thorntoncondomfig}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}[plain]
+
+  \begin{table}[htb]\centering
+    \scriptsize
+    \caption{Reactions to Learning HIV Results among Sexually Active at Baseline}
+    \label{tab:thornton_condoms}
+    \centering
+    \begin{threeparttable}
+      \begin{tabular}{l*{5}{c}}
+        \toprule
+        \multicolumn{1}{l}{\textbf{Dependent variables:}}&
+        \multicolumn{2}{c}{\textbf{Bought}}&
+        \multicolumn{2}{c}{\textbf{Number of}}\\
+        \multicolumn{1}{l}{}&
+        \multicolumn{2}{c}{\textbf{condoms}}&
+        \multicolumn{2}{c}{\textbf{condoms bought}}\\
+        \multicolumn{1}{l}{}&
+        \multicolumn{1}{c}{\textbf{OLS}}&
+        \multicolumn{1}{c}{\textbf{IV}}&
+        \multicolumn{1}{c}{\textbf{OLS}}&
+        \multicolumn{1}{c}{\textbf{IV}}\\
+        \midrule
+        Got results              & $-0.022$   & $-0.069$ & $-0.193$ & $-0.303$
+        \\
+                                 & (0.025)    & (0.062)  & (0.148)  & (0.285)
+        \\
+        Got results $\times$ HIV & 0.418***   & 0.248    & 1.778*** & 1.689**
+        \\
+                                 & (0.143)    & (0.169)  & (0.564)  & (0.784)  \\
+        HIV                      & $-0.175$** & $-0.073$ & $-0.873$ & $-0.831$
+        \\
+                                 & (0.085)    & (0.123)  & (0.275)  & (0.375)  \\\midrule
+        Controls                 & Yes        & Yes      & Yes      & Yes
+        \\
+        Sample size              & 1,008      & 1,008    & 1,008    & 1,008    \\
+        Mean                     & 0.26       & 0.26     & 0.95     & 0.95     \\
+        \bottomrule
+      \end{tabular}
+    \end{threeparttable}
+  \end{table}
+
+\end{frame}
+
+\begin{frame}{Results}
+
+  \begin{itemize}
+    \item For those who were HIV$+$ and got their test results, 42\% more likely to buy condoms (but shrinks and becomes insignificant at conventional levels with IV).
+    \item Number of condoms bought -- very small. HIV$+$ respondents who learned their status bought 2 more condoms
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Thoughts you want to keep in mind}
+
+  \begin{itemize}
+    \item Describe the way you would conduct the RCT by explaining the following:
+          \begin{itemize}
+            \item What's the treatment?  Who will be treated? Who will not?
+            \item Write down a regression with a binary variable as sometimes that alone will clarify it
+            \item What is the outcome you are interested in?
+            \item How will you assign this so that SUTVA holds and independence is achieved?
+          \end{itemize}
+    \item Describe the steps you would take to do this if you had all the money in the world
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Comment}
+
+\begin{itemize}
+
+\item Methods do not drive the question
+\item Questions drive the methods
+\item Don't lose sight of the ball -- the importance of the questions should be what motivate you
+
+\end{itemize}
+
+\end{frame}
+
+
+\section{Difference-in-differences}
+
+\begin{frame}{Natural experiments}
+
+\begin{quote}
+``A good way to do econometrics is to look for good natural experiments and use statistical methods that can tidy up the confounding factors that nature has not controlled for us.'' -- Daniel McFadden (Nobel Laureate recipient with Heckman 1992)
+\end{quote}
+
+\end{frame}
+
+
+\imageframe{./lecture_includes/bumpersticker.jpeg}
+
+
+
+
+
+
+\begin{frame}{What is difference-in-differences (DiD)}
+
+\begin{itemize}
+\item DiD is a very old, relatively straightforward, intuitive research design often used with ``natural experiment'' methodologies
+\item One of the most widely used quasi-experimental methods in economics and even used in industry
+\item Basic idea: a group of units receive some treatment and then compared to a group of units that do not
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+
+	\begin{figure}
+	\caption{Currie, et al. (2020)}
+	\includegraphics[scale=0.25]{./lecture_includes/currie_did.png}
+	\end{figure}
+
+
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}{Origins in Economics and Public Health}
+
+\begin{itemize}
+\item In economics, David Card and Orley Ashenfelter are often associated with its origin -- used in the 1970s and 1980s, with mixed success, to study job training programs
+\item Their dissatisfaction with it led to a call for more randomized controlled trials because, as we will see, it is not able to solve every kind of problem
+\item But it predates economics by 150 years when two health scientists (separately) used it to prove disease transmission mechanisms
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Case I: Ignaz Semmelweis and washing hands}
+
+\begin{itemize}
+\item 1840s, Vienna maternity wards had high postpartum mortality in wings with doctors and trainee doctors, but not in wings with midwives and trainee midwives
+\item Training hospitals of students had earlier moved to ``anatomical'' training involving cadavers for classes
+\item Semmelweis thinks the mortality is caused by working with cadavers and proposes in 1847 physicians wash their hands with chlorine (but not midwives)
+\item Comparing the two over time, he shows mortality in physician wing falls and concludes he was right (others disagree)
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Case II: John Snow and cholera}
+
+\begin{itemize}
+\item Three major waves of cholera in the early to mid 1800s in London and people mistakenly thought the cause was ``smelly air'' (or \emph{miasma})
+\item John Snow argued that cholera was spread through host's evacuations, entering Thames river, returning through water supply
+\item Strong evidence with maps and a novel DiD design: Lambeth water company moves its pipe between 1849 and 1854 but Southwark and Vauxhall delays
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+
+	\begin{figure}
+	\caption{Two water utility companies in London 1854}
+	\includegraphics[scale=0.225]{./lecture_includes/lambeth.png}
+	\end{figure}
+
+
+\end{frame}
+
+
+\begin{frame}{Three ways to study this}
+
+\begin{enumerate}
+\item Simple cross-section: compare mortality in 1854 for the two neighborhoods
+\item Before and after: also called interrupted time series. Compare Lambeth in 1854 to 1849
+\item Difference-in-differences: a combination of both
+\end{enumerate}
+
+\end{frame}
+
+
+
+\begin{frame}{3) Difference-in-differences}
+
+\begin{table}\centering
+		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
+		\begin{center}
+		\begin{tabular}{lll|lc}
+		\toprule
+		\multicolumn{1}{l}{\textbf{Companies}}&
+		\multicolumn{1}{c}{\textbf{Time}}&
+		\multicolumn{1}{c}{\textbf{Outcome}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}\\
+		\midrule
+		Lambeth & Before & $Y=L$ \\
+		& After & $Y=L + \textcolor{red}{T_L} + \textcolor{blue}{D}$ & $\textcolor{red}{T_L}+\textcolor{blue}{D}$\\
+		\midrule
+		& & & & $\textcolor{blue}{D}$ \\
+		\midrule
+		Southwark and Vauxhall & Before & $Y=SV$ \\
+		& After & $Y=SV + T_{SV}$ & $T_{SV}$\\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{eqnarray*}
+\widehat{\delta}_{did} = \textcolor{blue}{D} + (\textcolor{red}{T_L} - T_{SV})
+\end{eqnarray*}\textcolor{blue}{D} is the ``treatment effect''.  It's the effect of moving the water on Lambeth mortality and it's in blue because we can't see it 
+
+\end{frame}
+
+\begin{frame}{3) Difference-in-differences}
+
+\begin{table}\centering
+		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
+		\begin{center}
+		\begin{tabular}{lll|lc}
+		\toprule
+		\multicolumn{1}{l}{\textbf{Companies}}&
+		\multicolumn{1}{c}{\textbf{Time}}&
+		\multicolumn{1}{c}{\textbf{Outcome}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}\\
+		\midrule
+		Lambeth & Before & $Y=L$ \\
+		& After & $Y=L + \textcolor{red}{T_L} + \textcolor{blue}{D}$ & $\textcolor{red}{T_L}+\textcolor{blue}{D}$\\
+		\midrule
+		& & & & $\textcolor{blue}{D}$ \\
+		\midrule
+		Southwark and Vauxhall & Before & $Y=SV$ \\
+		& After & $Y=SV + T_{SV}$ & $T_{SV}$\\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{eqnarray*}
+\widehat{\delta}_{did} = \textcolor{blue}{D} + (\textcolor{red}{T_L} - T_{SV})
+\end{eqnarray*}\textcolor{red}{$T_L$} is a natural change in mortality that would have happened had they not moved the pipe upstream.  It creates problems for us
+
+\end{frame}
+
+
+
+\begin{frame}{3) Difference-in-differences}
+
+\begin{table}\centering
+		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
+		\begin{center}
+		\begin{tabular}{lll|lc}
+		\toprule
+		\multicolumn{1}{l}{\textbf{Companies}}&
+		\multicolumn{1}{c}{\textbf{Time}}&
+		\multicolumn{1}{c}{\textbf{Outcome}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}\\
+		\midrule
+		Lambeth & Before & $Y=L$ \\
+		& After & $Y=L + \textcolor{red}{T_L} + \textcolor{blue}{D}$ & $\textcolor{red}{T_L}+\textcolor{blue}{D}$\\
+		\midrule
+		& & & & $D$ \\
+		\midrule
+		Southwark and Vauxhall & Before & $Y=SV$ \\
+		& After & $Y=SV + T_{SV}$ & $T_{SV}$\\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{eqnarray*}
+\widehat{\delta}_{did} = \textcolor{blue}{D} + (\textcolor{red}{T_L} - T_{SV})
+\end{eqnarray*}But, if $\textcolor{red}{T_L}=\textcolor{black}{T_{SV}}$, which is called ``parallel trends'', then we can identify $\textcolor{blue}{D}$ using DiD.  And that's DiD in a nutshell. 
+
+\end{frame}
+
+
+
+\subsection{Potential outcomes}
+
+
+
+\begin{frame}{Potential outcomes notation}
+
+We need formal notation to understand DiD and that's the potential outcomes model
+
+\bigskip
+	
+	\begin{itemize}
+	\item Let the treatment be a binary variable: $$D_{i,t} =\begin{cases} 1 \text{ if pipe inlet is upstream at time $t$} \\ 0 \text{ if pipe inlet is downstream at time $t$} \end{cases}$$where $i$ indexes an individual observation, such as a person
+
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Potential outcomes notation}
+	
+	\begin{itemize}
+
+	\item Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{: health if drank from upstream at time $t$} \\ 0 \text{: health if drank from downstream at time $t$} \end{cases}$$where $j$ indexes a counterfactual state of the world
+
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Potential vs realized}
+
+\begin{itemize}
+\item Data are ``realized outcomes'' not ``potential outcomes''
+\item Realized outcomes is ``selected'' when treatments are assigned: $$Y_{it}=D_{it}Y_{it}^1 + (1-D_{it})Y_{it}^0$$
+\item Example: My wages if I go to college are $Y^1$ and my wages if I don't go to college are $Y^0$, but since I went to college ($D=1$), my wages are $Y=Y^1$.
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Treatment effect definitions}
+
+
+	\begin{block}{Individual treatment effect}
+	    The individual treatment effect,  $\delta_i$, equals $Y_i^1-Y_i^0$
+	\end{block}
+
+Core building block of causal inference is the individual treatment effect. 
+	
+\end{frame}
+
+
+
+\begin{frame}{Conditional Average Treatment Effects}	
+	\begin{block}{Average Treatment Effect on the Treated (ATT)}
+	The average treatment effect on the treatment group is equal to the average treatment effect conditional on being a treatment group member:
+		\begin{eqnarray*}
+		E[\delta|D=1]&=&E[Y^1-Y^0|D=1] \nonumber \\
+		&=&E[Y^1|D=1]-\textcolor{red}{E[Y^0|D=1]} \\
+		&=&E[Y|D=1]-\textcolor{red}{E[Y^0|D=1]}
+		\end{eqnarray*}
+	\end{block}
+	
+	\bigskip
+	
+We have $E[Y^1|D=1]$ but we don't have \textcolor{red}{$E[Y^0|D=1]$} so DiD imputes it using something called ``parallel trends'' (a strong assumption)
+
+	
+\end{frame}
+
+\section{Identification and Estimation}
+
+\subsection{Parallel trends}
+
+
+\begin{frame}{Steps of your causal projects}
+
+\begin{enumerate}
+\item Define the parameter we want (``ATT''), 
+\item Ask what what beliefs do you need (``identification''), and 
+\item Build cranks that produce the correct numbers (``estimator'')
+\end{enumerate}
+
+\bigskip
+
+People often skip 1 and 2 and go straight to 3 and run regressions then go back and assume exogeneity (step 2), and hope that the estimates are weighted averages of individual treatment effects (1), but that is not guaranteed
+
+\bigskip
+
+Assume we are interested in the ATT.  What must be true for which method to estimate it correctly?
+
+\end{frame}
+
+
+
+\begin{frame}{DiD is four averages and three differences}
+
+Let $k$ and $U$ index the treatment (Lambeth) and untreated group (Southwark and Vauxhall)
+
+\begin{eqnarray*}
+\widehat{\delta}^{2x2}_{kU} = \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
+\end{eqnarray*}
+
+\bigskip
+
+``Pre'' (1849) and ``Post'' (1854) refer to when Lambeth, $k$, was treated which is why it is the same for both $k$ and $U$ groups
+
+
+\end{frame}
+
+
+
+\begin{frame}{Potential outcomes and the switching equation}
+
+From DiD to ATT
+
+\begin{eqnarray*}
+\widehat{\delta}^{2x2}_{kU} &=&  \bigg ( \underbrace{E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre]}_{\mathclap{\text{DiD equation}}} \bigg)  \\
+&=& \bigg ( \underbrace{E[Y^1_k|Post] - E[Y^0_k|Pre] \bigg ) - \bigg ( E[Y^0_U | Post ] - E[ Y^0_U | Pre]}_{\mathclap{\text{Replace with potential outcomes using switching equation}}} \bigg)  \\
+&&+ \underbrace{\textcolor{red}{E[Y_k^0 |Post] - E[Y^0_k | Post]}}_{\mathclap{\text{Plus zero}}} 
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{Parallel trends bias}
+
+Rearrange and we get this:
+
+\begin{eqnarray*}
+\widehat{\delta}^{2x2}_{kU} &=& \underbrace{E[Y^1_k | Post] - \textcolor{red}{E[Y^0_k | Post]}}_{\mathclap{\text{ATT}}} \\
+&& + \bigg [  \underbrace{\textcolor{red}{E[Y^0_k | Post]} - E[Y^0_k | Pre] \bigg ] - \bigg [ E[Y^0_U | Post] - E[Y_U^0 | Pre] }_{\mathclap{\text{Non-parallel trends bias}}} \bigg ]
+\end{eqnarray*}
+
+\bigskip
+
+The left hand side is our DiD estimator (i..e, four averages, three differences); the right hand side has our parameter (top) and assumption (parallel trends, bottom).  
+
+\bigskip
+
+Recall from the earlier table how DiD was equal to $D+(\textcolor{red}{T_L} - T_{SV})$.  That's this.
+
+
+
+\end{frame}
+
+
+
+\begin{frame}{Identification through parallel trends}
+	
+
+	\begin{block}{Parallel trends}
+	Assume two groups, treated and comparison group, then we define parallel trends as:	 $$\textcolor{red}{E(}\textcolor{red}{\Delta Y^0_k)} = E(\Delta Y^0_U)$$
+	\end{block}
+
+\textbf{In words}: ``The \textcolor{red}{evolution of cholera mortality for Lambeth \emph{had it kept its pipe downstream}} is the same as the evolution of cholera mortality for Southwark and Vauxhall''.  
+
+\bigskip
+
+It's in \textcolor{red}{red} so you know it's a nontrivial assumption.  But why?  Can't we just check?
+
+	
+
+	
+\end{frame}
+
+
+\begin{frame}{Homework}
+
+\begin{itemize}
+\item I've included a simple exercise to really pin down these core ideas with simple calculations
+\item Please at your leisure work through this exercise
+\end{itemize}
+
+\bigskip 
+
+\url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
+
+\end{frame}
+
+
+
+\subsection{Estimation with OLS specification}
+
+\begin{frame}{OLS Specification}
+	
+	\begin{itemize}
+	\item Simple DiD equation (four averages, three differences) estimates ATT under parallel trends; don't need regression
+	\item But there is an OLS specification that is numerically identical to four averages and three differences
+	\item OLS was historically preferred because
+		\begin{itemize}
+		\item OLS estimates the ATT under parallel trends so it is valid
+		\item Easy to calculate the standard errors
+		\item Easy to include multiple periods which increases power and makes estimates more precise
+		\end{itemize}
+	\item This specification is not appropriate under differential timing or with the inclusion of covariates
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Minimum wages}
+
+\begin{itemize}
+\item Card and Krueger (1994) have a famous study estimating causal effect (ATT) of minimum wages on employment
+\item Exploited a policy change in New Jersey between February and November in mid-1990s where minimum wage was increased, but neighbor PA did not
+\item Using DiD, they do not find a negative effect of the minimum wage on employment which is part of its legacy today, but I mainly present it to illustrate the history and the design principles
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/minwage_whore}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Quick comment}
+
+\begin{itemize}
+\item Buchanan's comment gets taken out of historical context to a degree
+\item Empirical labor and empirical macroeconomics (e.g., Lucas Critique) had been going back to the 1970s in a bit of a ``empirical crisis'' much like we see sometimes today with debates about p-hacking, but theirs was more basic confusion of causality and correlation
+\item Consequently, the dominant paradigm in ``knowing facts in economics'' was theory, not empiricism
+\item So Buchanan's dismissiveness probably had traces of that; quality of empirical work was sub standard so people tended to not take it very seriously
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Card on that study}
+
+\begin{quote}
+``I’ve subsequently stayed away from the minimum wage literature for a number of reasons. First, it cost me a lot of friends. People that I had known for many years, for instance, some of the ones I met at my first job at the University of Chicago, became very angry or disappointed. They thought that in publishing our work we were being traitors to the cause of economics as a whole.''
+\end{quote}
+
+\bigskip
+
+But let's listen to Orley's opinion about the paper's controversy at the time.  \url{https://youtu.be/bbW62axQum8}
+
+\end{frame}
+
+
+
+\begin{frame}{OLS specification of the DiD equation}
+	
+	\begin{itemize}
+	\item The correctly specified OLS regression is an interaction with time and group fixed effects:$$Y_{its} = \alpha + \gamma NJ_s + \lambda d_t + \delta (NJ \times d)_{st} + \varepsilon_{its}$$
+		\begin{itemize}
+		\item NJ is a dummy equal to 1 if the observation is from NJ
+		\item d is a dummy equal to 1 if the observation is from November (the post period)
+		\end{itemize}
+	\item This equation takes the following values
+		\begin{itemize}
+		\item PA Pre: $\alpha$
+		\item PA Post: $\alpha + \lambda$
+		\item NJ Pre: $\alpha + \gamma$
+		\item NJ Post: $\alpha + \gamma + \lambda + \delta$
+		\end{itemize}
+	\item DiD equation: (NJ Post - NJ Pre) - (PA Post - PA Pre) $= \delta$
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[plain]
+	$$Y_{ist} = \alpha + \gamma NJ_s + \lambda d_t + \delta(NJ\times d)_{st} + \varepsilon_{ist}$$
+	\begin{figure}
+	\includegraphics[scale=0.90]{./lecture_includes/waldinger_dd_5.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}[plain]
+	$$Y_{ist} = \alpha + \gamma NJ_s + \lambda d_t + \delta(NJ\times d)_{st} + \varepsilon_{ist}$$
+	\begin{figure}
+	\includegraphics[scale=0.90]{./lecture_includes/waldinger_dd_5.pdf}
+	\end{figure}
+
+Notice how OLS is ``imputing'' $E[Y^0|D=1,Post]$ for the treatment group in the post period? It is only ``correct'', though, if parallel trends is a good approximation
+
+\end{frame}
+
+\subsection{Inference}
+
+\begin{frame}{Inference}
+	
+	\begin{itemize}
+	\item  Bertrand, Duflo and Mullainathan (2004) show that conventional standard errors will often severely understate the standard deviation of the estimators
+	\item Standard errors are biased downward (i.e., too small, over reject)
+	\item They proposed three solutions, but most only use one of them (clustering)
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Inference}
+	
+		\begin{enumerate}
+		\item[1 ] Block bootstrapping standard errors (if you analyze states the block should be the states and you would sample whole states with replacement for bootstrapping)
+		\item[2 ] Clustering standard errors at the group level (in Stata one would simply add \texttt{, cluster(state)} to the regression equation if one analyzes state level variation)
+		\end{enumerate}
+
+\bigskip
+
+Most people will simply cluster, but there are issues if you have too few clusters. They mention a third way but it's only a curiosity.
+		
+\end{frame}
+
+
+
+
+\section{Parallel trends violations}
+
+\subsection{How parallel trends can get violated}
+
+
+\begin{frame}{Violating parallel trends exercise}
+
+\begin{itemize}
+\item Parallel trends guides the regression's hand to correctly impute counterfactual \textcolor{red}{$E[Y^0|D=1]$} using $\Delta E[Y^0|D=0]$ 
+\item OLS \emph{always} imputes using $\Delta E[Y^0|D=0]$ but is only valid under parallel trends which means control groups matter
+\item To illustrate this, I've included a document (tab is ``DID 2'') for you to work on at your leisure
+\end{itemize}
+
+\url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
+
+\end{frame}
+
+
+
+
+
+
+\subsection{Types of evidence}
+
+\begin{frame}{Think like a prosecutor}
+
+\begin{itemize}
+\item You are a prosecutor building a case before a judge and jury battling the expert defense attorney and their witnesses -- what should evidence look like?
+\item Some example of commonly used forms of evidence can help you
+\item Common evidence mixes careful and informed logic about main results and mechanisms with falsifications and data visualization, primarily with the event study
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Five types of evidence}
+
+\begin{enumerate}
+\item \textbf{Bite}: Show that the treatment impacted first order behavior before showing how it affected second order behavior
+\item \textbf{Main Results}: Show the primary outcome that your project is about
+\item \textcolor{red}{\textbf{Mechanisms}}: Can you provide evidence of a plausible pathway by which the treatment moves from first order to second order outcomes?
+\item \textbf{Event studies}: A particular kind of data visualization focused on pre- and post-treatment DiD coefficients in a regression equation
+\item \textbf{Placebos}: Ruling out reasonable competing theories using the same regression model on different outcomes; can include triple differences
+\end{enumerate}
+
+\end{frame}
+
+
+\begin{frame}{Event studies are mandatory}
+
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/currie_eventstudy.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Intuition behind event studies}
+
+\begin{itemize}
+	\item We cannot verify parallel trends, but we can verify parallel \emph{pre-trends} 
+	\item Pre-trends are a type of falsification -- there should not be any effect of the treatment before the treatment occurred
+	\item Also provides some evidence that your comparison group may satisfy parallel trends since it satisfied it earlier
+	\item Even if pre-trends are the same one still has to worry about other policies changing at the same time (omitted variable bias is a parallel trends violation)
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Plot the raw data when there's only two groups}
+
+	\begin{figure}
+	\includegraphics[scale=2.5]{./lecture_includes/waldinger_dd_6.pdf}
+	\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}{Event study regression}
+	
+	\begin{itemize}
+	\item Event studies have a simple OLS specification with only one treatment group and one never-treated group $$Y_{its} = \alpha +  \sum_{\tau=-2}^{-q}\mu_{\tau}D_{s\tau} + \sum_{\tau=0}^m\delta_{\tau}D_{s\tau}+\varepsilon_{ist}$$
+		\begin{itemize}
+		\item where $D$ is an interaction of the treatment group $s$ with the calendar year $\tau$
+		\item Treatment occurs in year 0, no anticipation, drop baseline $t-1$
+		\item Includes $q$ leads or anticipatory effects and $m$ lags or post treatment effects
+		\end{itemize}
+	\item But each OLS estimate of $\mu_\tau$ and $\delta_\tau$ are just ``four averages and three differences'' as that's the form of the saturated regression
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Event study regression}
+
+
+$$Y_{its} = \alpha + \sum_{\tau=-2}^{-q}\mu_{\tau}D_{s\tau} + \sum_{\tau=0}^m\delta_{\tau}D_{s\tau}+\varepsilon_{ist}$$
+
+\bigskip
+
+Typically you'll plot the coefficients and 95\% CI on all leads and lags (binned or not, trimmed or not) 
+
+\bigskip
+
+Under no anticipation, then you expect $\widehat{\mu}$ coefficients to be zero, which gives you confidence that parallel trends holds (but is not a guarantee, and there are still specification issues -- see Jon Roth's work)
+
+\bigskip
+
+Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in time
+
+\end{frame}
+
+
+
+\begin{frame}{Medicaid and Affordable Care Act example}
+
+\begin{figure}
+\includegraphics[scale=0.25]{./lecture_includes/medicaid_qje}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Their five types of evidence}
+
+\begin{itemize}
+\item \textbf{Bite} -- show that the expansion shifted people into Medicaid and out of uninsured status
+\item \textbf{Main results} -- show that Medicaid expansion caused near-elderly mortality to fall 0.132pp or 9.4\% reduction from sample mean
+\item \textcolor{red}{\textbf{Mechanism}} -- They suggest this is coming from reduced disease-related deaths which grows over time
+\item \textbf{Placebos} -- Show that there's no effect on mortality for groups it shouldn't be affecting (people 65+)
+\item \textbf{Event study} -- Show leads and lags on mortality
+\end{itemize}
+
+\end{frame}
+
+
+\imageframe{./lecture_includes/Miller_Medicaid1.png}
+
+\imageframe{./lecture_includes/Miller_Medicaid2.png}
+
+\imageframe{./lecture_includes/Miller_Medicaid3.png}
+
+\begin{frame}{Quick review}
+
+\begin{itemize}
+
+\item \textbf{Bite}: Did the expansion of Medicaid put more people on Medicaid?
+	\begin{enumerate}
+	\item 40pp increase in people eligible (but this was mechanical)
+	\item 6-10pp increase in people on Medicaid (but maybe it was crowding out private insurance?)
+	\item 4-6pp decrease in uninsured (at least some of the marginal Medicaid enrollees had been uninsured)
+	\end{enumerate}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{65 and older mortality placebo}
+
+	\includegraphics[scale=0.3]{./lecture_includes/medicaid_qje_placebo}
+
+\textbf{Discussion}: Why do they do this?  Explain to me like I'm 5 the value of a picture like this.
+
+\end{frame}
+\begin{frame}{Main Results: Medicaid expansion and near-elderly mortality}
+
+	\begin{figure}
+	\includegraphics[scale=0.3]{./lecture_includes/Miller_Medicaid4.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Lab}
+
+\begin{itemize}
+
+\item I've provided a lab for you to deepen your understanding of the simple mechanics involved in estimating DiD and event studies
+\item Please go to this link \url{https://github.com/Mixtape-Sessions/Causal-Inference-2/tree/main/Lab/Lalonde}
+\item Q1:a-c vs. Q2a.  Skip the covariates
+
+\end{itemize}
+
+\end{frame}
+
+\subsection{Triple difference}
+
+\begin{frame}{Triple differences as alternative strategy}
+	
+	\begin{itemize}
+	\item Very common for readers and others to request a variety of ``robustness checks'' from a DD design
+	\item We saw some of these just now (e.g., falsification test using data for alternative control group, the Medicare population)
+	\item Triple differences uses a within-state untreated group; little trickier, so let's use the table again
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{DDD Example by Gruber}
+	
+	\begin{figure}
+	\includegraphics{./lecture_includes/gruber_ddd_3.pdf}
+	\end{figure}
+	
+\end{frame}
+
+
+
+\begin{frame}[shrink=20]
+
+\begin{table}\centering
+		\caption{Difference-in-Difference-in-Differences numerical example}
+		\tiny
+		\begin{center}
+		\begin{tabular}{lll|l|lll}
+		\hline \hline
+		\multicolumn{1}{l}{\textbf{States}}&
+		\multicolumn{1}{c}{\textbf{Group}}&
+		\multicolumn{1}{c}{\textbf{Period}}&
+		\multicolumn{1}{c}{\textbf{Outcomes}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}&
+		\multicolumn{1}{c}{$D_3$}\\
+		\hline
+		&&After	&$NJ+T+NJ_t+l_t+D$					\\
+	&Married women, 20-40yo			&&&$T+NJ_t+l_t+D$			\\
+		&&Before	&$NJ$					\\
+Experimental states					&&&&&$D+\textcolor{red}{l_t-s_t}$			\\
+		&&After	&$NJ+T+NJ_t+s_t$					\\
+	&Older 40, Single men 20-40yo		&&	&$T+NJ_t+s_t$				\\
+		&&Before	&$NJ$					\\
+								\\
+&&&&&&$D$
+\\
+		&&After	&$PA+T+PA_t+l_t$				\\
+	&Married women, 20-40yo			&&&$T+PA_t+l_t$ \\				
+		&&Before	&$PA$					\\
+Non-experimental states					&&&&&$l_t-s_t$		\\
+		&&After	&$PA+T+PA_t+s_t$					\\
+	&Older 40, Single men 20-40yo		&&&	$T+PA_t+s_t$				\\
+		&&Before	&$PA$					\\
+		\hline \hline
+		\end{tabular}
+		\end{center}
+	\end{table}
+	
+\textbf{What is our identifying assumption?} 
+
+\bigskip
+
+\textbf{Answer:} $\textcolor{red}{l_t-s_t}$ is the same for both experimental and non-experimental states. This is ``change in inequality between two groups hourly wages'' from pre to post.  It's a new parallel trend assumption.
+
+
+
+\end{frame}
+
+
+\begin{frame}{DDD in Regression}
+	
+	\begin{eqnarray*}
+	Y_{ijt} &=&\alpha +  \beta_2 \tau_t + \beta_3 \delta_j  + \beta_4 D_i + \beta_5(\delta \times \tau)_{jt} \\
+	&& +\ \beta_6(\tau \times D)_{ti} +  \beta_7(\delta \times D)_{ij} +  \textcolor{red}{\beta_8(\delta \times \tau \times  D)_{ijt}}+  \varepsilon_{ijt}
+	\end{eqnarray*}
+	
+	\begin{itemize}
+	\item Your panel is now a group $j$ state $i$ (e.g., AR high wage worker 1991, AR high wage worker 1992, etc.)
+	\item Assume we drop $\tau_t$ but I just want to show it to you for now.
+	\item If the placebo DD is non-zero, it might be difficult to convince the reviewer that the DDD removed all the bias 
+	\end{itemize}
+	
+\end{frame}
+
+
+
+
+\begin{frame}{Concluding remarks}
+
+\begin{itemize}
+\item So we hopefully see a few of the key elements of DiD
+	\begin{itemize}
+	\item Remember: the DiD equation and ATT equation are distinct concepts and definitions
+	\item DiD designs can be implemented with OLS specifications that calculate differences in means
+	\item Parallel pre-trends and parallel trends are not the same thing -- the first is testable, the latter is not testable
+	\item Event studies are mandatory but pre-trends are smoking guns, but can mislead nonetheless
+	\end{itemize}
+\item Now we want to move into the fixed effects work
+\end{itemize}
+
+\end{frame}
+
+
+
+\end{document}

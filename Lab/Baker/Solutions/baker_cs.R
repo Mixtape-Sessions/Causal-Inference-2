@@ -3,8 +3,8 @@
 # author: scott cunningham (baylor), pedro sant'anna (microsoft, vandy)
 # description: implement cs on the baker simulated dataset
 # last updated: february 19, 2022
-# ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
 # load packages
 #install.packages("readstata13", dependencies = TRUE)
 library(readstata13)
@@ -38,7 +38,7 @@ atts <- att_gt(yname = "y", # LHS variable
 # ------------------------------------------------------------------------------
 
 # Calculate group-time ("group") ATTs and overall ("simple") ATT
-agg_effects <- aggte(atts, type = "simple", balance_e=TRUE)
+agg_effects <- aggte(atts, type = "group", balance_e=TRUE)
 summary(agg_effects)
 
 # Group-time ATTs
