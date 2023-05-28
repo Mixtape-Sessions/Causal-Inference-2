@@ -1,6 +1,6 @@
 * name: simple_eventstudy.do
 * author: scott cunningham
-* description: illustrating an event study with Stata
+* description: illustrating an event study with Stata manually
 
 clear 
 capture log close
@@ -112,3 +112,44 @@ replace ll = `ll10' in 11
 
 
 twoway (rcap ul ll year, sort lcolor(black) lwidth(medium) lpattern(solid)) (scatter coef year, sort mcolor(black) msize(6-pt) msymbol(circle)), yline(0, lwidth(medthin) lpattern(solid) lcolor(blue)) xtitle(`"Year"') xline(2005.5, lwidth(medium) lpattern(dash) lcolor(blue)) xlabel(2000(1)2010) title(`"Ln(Homicides)"') legend(off)
+
+****
+
+* name: simple_eventstudy.do
+* author: scott cunningham
+* description: illustrating an event study with Stata using Ben Jann's coefplot
+
+
+clear 
+capture log close
+ssc install coefplot, replace
+
+use https://github.com/scunning1975/mixtape/raw/master/castle.dta, clear
+
+* Prepare the dataset
+xtset sid year
+
+drop if effyear==2005 | effyear==2007 | effyear==2008 | effyear==2009
+
+drop post
+gen 	post = 0
+replace post = 1 if year>=2006
+
+gen 	treat=0
+replace treat=1 if effyear==2006
+
+* Event study
+tabulate year, gen(pre)
+tabulate year, gen(post)
+
+gen 	treated=0
+replace treated=1 if effyear==2006 & year>=2006
+
+reg l_homicide treat##ib2005.year, cluster(state)
+
+* addon by Ben Jann, 21may2023
+
+coefplot, keep(1.treat#*) omitted baselevels cirecast(rcap) ///
+    rename(1.treat#([0-9]+).year = \1, regex) at(_coef) ///
+    yline(0, lp(solid)) xline(2005.5, lpattern(dash)) ///
+    xlab(2000(1)2010)
