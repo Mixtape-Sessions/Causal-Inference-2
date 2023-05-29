@@ -1097,29 +1097,25 @@ Sometimes, an empirical literature may be criticized using nothing more than pla
 
 \subsection{Inverse probability weighting}
 
-\begin{frame}{Diff-in-diff had belonged to the empiricists}
+\begin{frame}{Covariates and violations}
 
-	\begin{figure}
-	\caption{Currie, et al. (2020)}
-	\includegraphics[scale=0.25]{./lecture_includes/currie_did.png}
-	\end{figure}
+\begin{itemize}
+\item There is an assumption called ``unconfoundedness'' $$( Y^0, Y^1 ) \perp\!\!\!\perp D | X $$
+\item It means that within the dimensions of X (e.g., Asian males aged 45), D is assigned to units independent of their potential outcomes or any combination of them (e.g., treatment effects)
+\item It's the basis for running regressions with covariates in order to recover aggregate causal parameters outside of the experiment but it claims that with the inclusion of the covariates, you have isolated a randomized experiment
+\item We usually motivate this assumption in diff-in-diff, too, but it is technically not what is going on
 
-\bigskip
-
-\footnotesize
-
-With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertrand, Duflo and Mullainthan 2004), econometricians had not given it much notice. Let's review now the few papers that had covered by econometricians as well as a new one
+\end{itemize}
 
 \end{frame}
 
-
-
-\begin{frame}{Controls}
+\begin{frame}{Why covariates?}
 
 \begin{itemize}
-\item Controls can address omitted variable bias (backdoor criterion), and they can improve precision
-\item OLS can accommodate controls, and so we tend to include them so long as they are time varying 
-\item But unfortunately, time varying covariates can create problems, especially if the treatment causes the covariates (bad controls, colliders)
+
+\item The inclusion of covariates in diff-in-diff models is not about trying to find random variation in the treatment within values of the dimension of X
+\item It is based on the claim that the inclusion of covariates is necessary to re-establish parallel trends
+\item This is itself different than how covariates will be used in synthetic control, too
 \end{itemize}
 
 \end{frame}
@@ -1128,51 +1124,167 @@ With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertran
 
 
 
+\begin{frame}{Correcting the missingness problem}
 
-\begin{frame}{Semiparametric DiD}
+\begin{eqnarray*}
+\text{ATT} &=& E[\delta | D=1] \\
+&=& E[Y^1-\textcolor{red}{Y^0} | D=1] \\
+&=& E[Y^1 | D=1] - \textcolor{red}{E[Y^0|D=1]} \\
+&=& E[Y | D=1] - \textcolor{red}{E[Y^0|D=1]} 
+\end{eqnarray*}
 
- Abadie (2005) incorporates baseline covariates into the propensity score which are then used as weights to estimate the ATT in a simple 3-step process
-	\begin{enumerate}
-	\item Calculate each unit's ``after minus before'' (DiD equation)
-	\item Estimate the conditional probability of treatment based on baseline covariates (propensity score estimation)
-	\item Weight the comparison group's DiD equation with the IPW
-	\end{enumerate}
+\bigskip
+
+We were always missing $Y^0$ values for the treatment group units, but parallel trends allowed us to impute it using the change in $[Y^0]|D=0]$ as a guide
+
+\bigskip
+
+But if that trend is not a good guide, then we cannot.  
+
 
 \end{frame}
 
-\begin{frame}{Terms}
+
+\begin{frame}{Conditional parallel trends}
+
+The DiD equation yields:
+
+\begin{eqnarray*}
+\widehat{\delta} &=& \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
+&=& \text{ATT} + \text{Non-parallel trends bias}
+\end{eqnarray*}
+
+\bigskip
+
+If we believe that conditional on covariates, parallel trends holds, but only within values of $X$, then there are methods we can use that incorporate covariates into the DiD equation and unbiasedness returns
+
+\bigskip 
+
+The inclusion of covariates has particular regression specifications, plus there are alternative methods too, and we will review them
+
+\end{frame}
+
+
+
+
+\begin{frame}{Three covariate DiD papers}
+
+Three papers (though sometimes you see others) about covariate adjustment in DiD:
+\begin{enumerate}
+\item Abadie (2005) on semiparametric DiD -- reweights the comparison group part of the DID equation using a propensity score based on X
+\item Heckman, Ichimura and Todd (1997) on outcome regression uses baseline X and control group only to impute the missing counterfactual $Y^0$ for treatment group units in a DiD equation
+\item Sant'Anna and Zhou (2020) is double robust which means the method does both of these at the same time so that you don't have to choose between them
+\end{enumerate}
+
+\bigskip
+
+We will discuss both of them and then compare their performance with the more straightforward fixed effects model
+
+\end{frame}
+
+
+
+\begin{frame}{Semiparametric DiD}
+
+
+ Abadie (2005) proposed a model that simply reweights the control group in the DiD equation using a particular specification (``semiparametric'') of the propensity score on pretreatment covariates
+ 
+	\begin{enumerate}
+	\item Calculate each unit's ``after minus before'' (DiD equation)
+	\item Estimate the conditional probability of treatment based on baseline covariates (propensity score estimation)
+	\item Weight the comparison group's DiD equation with the propensity score 
+	\end{enumerate}
+
+Remember -- ATT is only missing $Y^0$ for treatment, so we only have to apply weights to the comparison group units
+
+\end{frame}
+
+\begin{frame}{Novel elements of time in Abadie's model}
 
 \begin{itemize}
-\item $t$ is year of treatment which doesn't vary across units (so no differential timing)
-\item $Y^1$ and $Y^0$ are potential outcomes (counterfactual versus actual)
-\item $D$ is 1 or 0 based on group and time
-\item $X_b$ are ``baseline'' covariates \textbf{only} -- they do not vary over time, which means propensity scores are estimated off the $b$ period \textbf{only}
+\item There is only one treatment group so therefore there is only one relevant treatment date, $t$
+\item The period prior to treatment is called the baseline, or $b$, period and it is when treated units were not treated 
+\item $X_b$ are ``baseline'' covariates meaning the value of $X$ in the pre-treatment period for either the treated or comparison group units
+\item Propensity scores are estimated off the $b$ period \emph{only} 
+\item Abadie ``throws away'' covariates after treatment because this is all about re-establishing parallel trends which is a \emph{baseline} concept recall
 \end{itemize}
 
 \end{frame}
 
 \begin{frame}{Assumptions}
 
-Kind of common for this propensity score literature to only have two assumptions.  But usually the first conditional independence.  Now it is parallel trends because this is DD
+Three main assumptions
 
 \begin{enumerate}
-\item Conditional parallel trends $$E[Y^0_t - Y^0_b|D=1,X_b] - E[Y^0_t - Y^0_t | D=0, X_b]$$ (Notice the $b$ subscript.  What is that you think?)
-\item Common support $$Pr(D=1)>0; Pr(D=1|X)<1$$ Let's see a picture of common support that I drew.  Apologies it's horrible
+\item Conditional parallel trends $$E[Y^0_t - Y^0_b|D=1,X_b] - E[Y^0_t - Y^0_t | D=0, X_b]$$ 
+\item Common support $$Pr(D=1)>0; Pr(D=1|X)<1$$ 
+\item Propensity score model is properly specified 
 \end{enumerate}
 
 \end{frame}
 
-\begin{frame}{Common support}
+\begin{frame}{Propensity scores as dimension reduction}
 
-As we are identifying the ATT, we only need common support with respect to treated units
+\begin{itemize}
+
+\item Propensity scores are ways of dealing with a conditioning set $X$ that has large dimensions
+\item Dimensions are not the same as covariates -- if you have continuous $X$, then it has infinite dimensions
+\item Common support means that \emph{within} all combinations of the covariates (e.g., white male 47yo versus whites, males, age) there are units in treatment and control
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Common support example}
+
+Think of common support like ``exact matches'' but on the propensity score
 
 \bigskip
 
-Your identify assumptions are always with respect to the missing covariates in other words and for the ATT, you are missing $Y^0$ for the treatment group
+I'm a white male 47 years old with a PhD; can I find a white male 47 years old without a PhD
 
 \bigskip
 
-If we were estimating ATU, we'd be missing $Y^1$ for controls and need common support ($Y$ in treatment for all ranges of control), and for ATE we'd need both
+If I can, that's common support; if I cannot that's off support
+
+\end{frame}
+
+
+\begin{frame}{Propensity scores as dimension reduction}
+
+\begin{itemize}
+
+\item Propensity score theorem (Rosenbaum and Rubin 1983) showed that if you need $X$ to satisfy some assumption, the propensity score will satisfy too
+\item Propensity scores essentially transform your large dimensional problem into a single scalar called the propensity score, which is the conditional probability of treatment (conditional on $X$)
+\item But we need to estimate the propensity score because we don't usually know it (only an experimentalist ``knows'' the true propensity score)
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Common support and the propensity score}
+
+\begin{itemize}
+\item Exact matches mean you have people who are identical on covariate values in both treatment and control
+\item Common support and the propensity score means you have people nearly identical on their probability of treatment
+\item I am 47yo white male with a PhD with a propensity score of 0.75, but you are an Asian female 27yo without a PhD and have a propensity score of 0.75
+\item Same idea, but for this to work, we need to have ``matches'' like that (just on the propensity score)
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{How do these work together?}
+
+Since we are identifying the ATT, and the ATT is missing $Y^0$ for the treated group, we are using the control group $Y^0$ in its place 
+
+\bigskip
+
+Under conditional parallel trends and common support, some of the comparison group units are recovering the parallel trends because of their $X$ values creating projections that in their differences perfectly aligned in expectation with the missing $\Delta E[Y^0|D=1]$
+
+\bigskip
+
+But we have to have all three for it to work
 
 \end{frame}
 
@@ -1187,18 +1299,38 @@ If we were estimating ATU, we'd be missing $Y^1$ for controls and need common su
 \begin{frame}{Definition and estimation}
 
 Defining the ATT parameter of interest
-\begin{equation}
-ATT=E[Y^1_t - Y^0_t |D_t=1]
-\end{equation}
+\begin{eqnarray*}
+ATT &=& E[Y^1_t - \textcolor{red}{Y^0_t} |D=1] \\
+&=&E[Y^1_t  | D = 1 ] - \textcolor{red}{E[Y^0_t | D=1]}
+\end{eqnarray*}
 
 \bigskip
-Abadie's estimator
-\begin{equation}
+Abadie's inverse probability weighting (IPW) estimator
+\begin{eqnarray*}
 E\bigg [ \frac{Y_t - Y_b}{Pr(D_t=1)} \times \frac{D_t - Pr(D=1|X_b)}{1-Pr(D=1|X_b)} \bigg ]
-\end{equation}
+\end{eqnarray*}
+
+\bigskip
+
+The first is our causal parameter; the second is our reweighted DiD equation that \emph{estimates} our causal parameter, but we need to estimate that propensity score
 
 
 \end{frame}
+
+\begin{frame}{Abadie's IPW estimator}
+
+Look closely; what happens mathematically when you substitute $D=1$ vs $D=0$?
+
+\begin{eqnarray*}
+E\bigg [ \frac{Y_t - Y_b}{Pr(D_t=1)} \times \frac{D_t - Pr(D=1|X_b)}{1-Pr(D=1|X_b)} \bigg ]
+\end{eqnarray*}
+
+\bigskip
+
+The reweighting with the propensity only happens to the comparison group's first differences -- not the treatment groups!  Why?  Because it's the $Y^0$ that is missing, not the $Y^1$
+
+\end{frame}
+
 
 
 \begin{frame}{Propensity scores}
@@ -1223,7 +1355,26 @@ E\bigg [ \frac{Y_t - Y_b}{Pr(D_t=1)} \times \frac{D_t - Pr(D=1|X_b)}{1-Pr(D=1|X_
 
 
 
-\subsection{Outcome Regression Double Robust}
+\subsection{Outcome Regression and Double Robust}
+
+\begin{frame}{Outcome Regression Paper}
+
+	\begin{figure}
+	\includegraphics[scale=0.25]{./lecture_includes/or_cites}
+	\end{figure}Heckman, Ichimura and Todd (1997) is Petra and Hide's most cited paper and Heckman's second most cited!
+
+\end{frame}
+
+
+
+\begin{frame}{Doubly Robust Paper}
+
+	\begin{figure}
+	\includegraphics[scale=0.25]{./lecture_includes/pedro_dr_cites}
+	\end{figure}Sant'Anna and Zhao (2020) is Pedro's second most cited paper
+
+\end{frame}
+
 
 
 
@@ -1237,35 +1388,12 @@ E\bigg [ \frac{Y_t - Y_b}{Pr(D_t=1)} \times \frac{D_t - Pr(D=1|X_b)}{1-Pr(D=1|X_
 	\end{itemize}
 \item Sant'Anna and Zhao (2020) incorporated DR into DiD by combining inverse probability weighting and outcome regression into a single DiD model
 \item It's in the engine of Callaway and Sant'Anna (2020) that we discuss later so it merits close study
-\item One of my favorite lesser known of the new DiD papers
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Patterns in econometrician reasoning}
-
-\begin{enumerate}
-\item Define the target parameter first (as opposed to writing down a regression specification first)
-\item Identification (e.g., parallel trends)
-\item Estimation
-\item Aggregation
-\item Inference
-\end{enumerate}
-
-\end{frame}
 
 
-\begin{frame}{Defining the target parameter}
-
-Major part of the new econometrics is to always start with the target parameter and build to it using estimation and identification that ``works''
-
-\bigskip
-
-\begin{eqnarray*}
-\delta = E[Y^1_{it} - Y^0_{it} | D_i=1]
-\end{eqnarray*}
-
-\end{frame}
 
 \begin{frame}{Identification assumptions I: Data}
 
@@ -1305,7 +1433,7 @@ For some $e>0$, the probability of being in the treatment group is greater than 
 
 \bigskip
 
-Intuition of assumption 3: Called overlap or common support. Means there is at least a small fraction of the population that is treated and that for every value of the covariates $X$ there is at least a small chance that the unit is not treated. It's called common support when it's a propensity score but it's just about the distribution of treatment and control across values of $X$. Very common when dealing with covariate comparisons as otherwise you're extrapolating (curse of dimensionality)
+Heckman, et al doesn't use the propensity score so we need a more general expression of support
 
 \end{frame}
 
@@ -1313,18 +1441,9 @@ Intuition of assumption 3: Called overlap or common support. Means there is at l
 
 \begin{itemize}
 \item Assumptions 1-3 gives us a couple of options of estimating the DiD
-\item We can either use the outcome regression (OR) approach of Heckman, et al 1997
-\item Or we can use the inverse probability weighting (IPW) approach of Abadie (2005)
+\item We can either use the outcome regression (OR) approach of Heckman, et al 1997 (will require correct model too)
+\item Or we can use the inverse probability weighting (IPW) approach of Abadie (2005) (will require correct model too)
 \end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{Heckman, et al. 1997}
-
-	\begin{figure}
-	\includegraphics[scale=0.35]{./lecture_includes/petra_restud_1997}
-	\end{figure}
 
 \end{frame}
 
@@ -1332,7 +1451,7 @@ Intuition of assumption 3: Called overlap or common support. Means there is at l
 
 \begin{frame}{Outcome regression}
 
-This is the Heckman, et al. (1997) approach where the outcome evolution is modeled with a regression
+This is the Heckman, et al. (1997) approach where the potential outcome evolution for the treatment group is imputed with a regression based only on $X_b$ for the control group \emph{only}
 
 \bigskip
 
