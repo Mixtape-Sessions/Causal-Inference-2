@@ -526,7 +526,7 @@ else {  // windows
 * Jon Roth Stata code
 *********************************************************************************
 
-* net install github, from("https://haghish.github.io/github/")
+net install github, from("https://haghish.github.io/github/")
 github install haghish/rcall, stable
 github install jonathandroth/staggered_stata
 
