@@ -721,34 +721,6 @@ Assuming SUTVA, no anticipation and the strong PT, then let $\delta$ be the TWFE
 \end{frame}
 
 
-\begin{frame}{Synthetic control method: disadvantages}
-
-\begin{enumerate}
-\item Subjective researcher bias kicked down to the model selection stage
-\item Significant diversity at the moment as to how to principally select models - from machine learning to modifications - as well as estimation and software
-\item Part of the purpose of this procedure is to reduce subjective researcher bias
-\item Ferman, Pinto and Possbaum (2020) suggest specific specifications and report all of them
-\end{enumerate}
-
-\end{frame}
-
-
-\begin{frame}{Avoiding cherry picking}
-
-	\begin{figure}
-	\includegraphics[scale=0.5]{./lecture_includes/cherry_picking_1.png}
-	\end{figure}
-
-\end{frame}
-
-\begin{frame}{Avoiding cherry picking}
-
-	\begin{figure}
-	\includegraphics[scale=0.5]{./lecture_includes/cherry_picking_2.png}
-	\end{figure}
-
-\end{frame}
-
 
 \begin{frame}{Notation and setup}
 	
@@ -801,6 +773,20 @@ Typically, $V$ is diagonal with main diagonal $v_1, \dots, v_k$.  Then, the synt
 
 \end{frame}
 
+\begin{frame}{How this works}
+
+This method of ``minimizing pre-treatment characteristics'' is very similar to nearest neighbor matching from Abadie and Imbens (2006)
+
+\bigskip
+
+Let's look at it together; it should help you understand, too, the idea of the V matrix being crucial
+
+\bigskip
+
+\url{https://docs.google.com/spreadsheets/d/1iro1Qzrr1eLDY_LJVzOYvnQZWmxY8JyTcDf6YcdhkwQ/edit?usp=sharing}
+
+\end{frame}
+
 \begin{frame}{Choice of $V$ is critical}
 	
 		\begin{itemize}
@@ -824,6 +810,8 @@ Typically, $V$ is diagonal with main diagonal $v_1, \dots, v_k$.  Then, the synt
 
 \begin{frame}{Cross validation}
 
+Abadie suggests model selection based on training and validation:
+
 \begin{itemize}
 		\item Divide the pre-treatment period into an initial \textbf{training} period and a subsequent \textbf{validation} period
 		\item For any given $V$, calculate $W^*(V)$ in the training period.
@@ -832,8 +820,54 @@ Typically, $V$ is diagonal with main diagonal $v_1, \dots, v_k$.  Then, the synt
 
 \end{frame}
 
+\begin{frame}{Avoiding Cherry Picking Synth}
 
-\begin{frame}{Suppose $Y^0$ is given by a factor model}
+\begin{itemize}
+\item Subjective researcher bias kicked down to the model selection stage
+\item Significant diversity at the moment as to how to principally select models - from machine learning to modifications - as well as estimation and software
+\item Part of the purpose of this procedure is to reduce subjective researcher bias
+\item So Ferman, Pinto and Possbaum (2020) suggest specific specifications and report all of them
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Avoiding Cherry Picking Synth}
+
+\begin{enumerate}
+\item Use all pre-treatment lagged outcomes as your $X$ characteristics
+\item Use first three-fourths
+\item Use first half
+\item Use all odd years
+\item Use all even years
+\item Use pre-treatment outcome mean
+\item Use three outcome values
+\end{enumerate}
+
+\bigskip
+
+With and without covariates, report p-values and event study plot
+
+\end{frame}
+
+\begin{frame}{Avoiding Cherry Picking Synth}
+
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/cherry_picking_1.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Avoiding Cherry Picking Synth}
+
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/cherry_picking_2.png}
+	\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}{Assumption: $Y^0$ is determined by factor model}
 
 What about unmeasured factors affecting the outcome variables as well as heterogeneity in the effect of observed and unobserved factors?
 \begin{eqnarray*}
@@ -853,7 +887,7 @@ Y^0_{1t} - \sum^{J+1}_{j=2}w^*_jY_{jt} &=& \sum_{j=2}^{J+1} w_j^* \sum_{s=1}^{T_
 \begin{itemize}
 \item If $\sum_{t=1}^{T_0} \lambda_t' \lambda_t$ is nonsingular, then RHS will be close to zero if number of preintervention periods is ``large''  relative to size of transitory shocks 
 \item Only units that are alike in observables and unobservables should produce similar trajectories of the outcome variable over extended periods of time
-\item Proof in Appendix B of ADH (2011)
+\item Main takeaway: you need a long pre-treatment time period to use this and the fit must be excellent
 \end{itemize}
 
 
@@ -1003,8 +1037,13 @@ Y^0_{1t} - \sum^{J+1}_{j=2}w^*_jY_{jt} &=& \sum_{j=2}^{J+1} w_j^* \sum_{s=1}^{T_
 	\end{itemize}
 \end{frame}
 
+\begin{frame}[shrink=30,plain]
 
+\begin{figure}
 \includegraphics{./lecture_includes/flow_rate_figure.pdf}
+\end{figure}
+\end{frame}
+
 
 
 \begin{frame}{Texas prison boom}
@@ -1061,6 +1100,359 @@ Governor Ann Richards (D) 1991-1995
 \end{itemize}
 
 \end{frame}
+
+
+\subsection{Example: Legalizing sex work}
+
+\begin{frame}{Example}
+
+\begin{itemize}
+
+\item Let's look at an example now from my own work
+\item Rhode Island legalized sex work in 1980 (indoor anyway) but did so accidentally
+\item Judge enforced it in 2003
+\item Use DiD and synth to estimate the effect on violence and STIs
+\item Also bite and mechanism
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Institutional details}
+
+\begin{itemize}
+	\item Google alert in 2009 took me to an article that told this whole story
+	\item There is no evidence that anyone knew about the 1980 legalization
+	\item Appears to be unintentional legalization due to poorly worded amendments to \S 11-34
+	\item  July/August 2003 ``Operation Rubdown'' and judicial decriminalization
+		\begin{itemize}
+		\item Wave of arrests of massage parlor employees.
+		\item Judge dismisses charges against massage parlor employees and police stop arresting indoor sex workers
+		\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{``Accidental'' and unknown legalization}
+
+		\begin{itemize}
+		\item Senator John Revens Jr. (2009) on the 1980 General Assembly
+			\begin{itemize}
+			\item ``they would never sponsor a bill decriminalizing prostitution if they knew what it was.  No way.  Not in a million years'' (Arditi 2009)
+			\end{itemize}
+		\item Senator John F. McBurney III (from the 1980 GA) 
+			\begin{itemize}
+			\item ``We probably vote on 500 bills a year.  \dots Legislators didn't know what they were voting for.''
+			\end{itemize}
+		\item Unusual lack of awareness of the 1980 law from 1980--2005
+			\begin{itemize}
+			\item Not a single mention of the law change in any newspaper until Breton (2005)
+			\item No legal scholars mention it (e.g., Posner and Silberbaugh 1996)
+			\end{itemize}
+		\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Discovery of Loophole}
+	\begin{itemize}
+	\item 1997 \emph{State vs. DeMagistris}:  \S 11-34-8 and \S 11-34-8.1 apply only to street prostitution
+	\item  July/August 2003 ``Operation Rubdown'' and judicial decriminalization
+		\begin{itemize}
+		\item Wave of arrests of massage parlor employees.
+		\item Judge dismisses charges against massage parlor employees and police stop arresting indoor sex workers
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Learning}
+	\begin{itemize}
+		\item Police stop arresting indoor sex workers
+		\bigskip
+		
+		\begin{quote}``Chief of Police Tom Verdi says that until 2 years ago, Providence police were arresting alleged prostitutes inside massage parlors.  But they stopped doing so after [Kiselica] persuaded District Court judges to dismiss prostitution cases \emph{based on the wording of the current law}.'' (2005 newspaper article)
+		\end{quote}
+		
+%		\item Kiselica begins advises Korean community
+		\item Re-criminalization in 2009
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Our study}
+
+\begin{itemize}
+\item Tons of evidence that sex workers are raped at a higher rate than the general population
+\item Tons of evidence that sex workers have been the drivers of STI epidemics in areas
+\item But is this causal, or is it correlational?
+\item And is this caused by sex work or is it caused by sex work policy?
+\item We didn't know -- humility! -- until this study
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Proposed Mechanism Framework: Rape}
+\begin{enumerate}
+  \item Decriminalization $\Uparrow$ rape offenses:
+  \begin{itemize}
+    \item Increase number transactions in indoor sex market by reducing costs of indoor sex work $\Rightarrow$ increase prostitution related violence 
+  \end{itemize}
+  \item Decriminalization $\Downarrow$ rape offenses:
+ \begin{itemize}
+   \item Freeing up of police personnel and resources
+  \item Firms invest in locks, security cameras, security personnel to reduce opportunity of premeditated client violence \begin{footnotesize}(Brents and Hausbeck 2005)\end{footnotesize}
+  \item Sex workers more willing to cooperate with police/less police abuse \begin{footnotesize}(Church et al. 2001, Levitt and Venkatesh, 2007)\end{footnotesize}
+   \item Could reduce male violence if prostitution is substitute for violence against women \begin{footnotesize}(Posner 1994)\end{footnotesize}
+
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}{Proposed Mechanism Framework: STIs}
+\begin{enumerate}
+  \item Decriminalization $\Uparrow$ population STIs:
+  \begin{itemize}
+    \item Increase number transactions in indoor sex market $\Rightarrow$ increase the scale and growth rate of a gonorrhea epidemic 
+  \end{itemize}
+  \item Decriminalization $\Downarrow$ population STIs:
+ \begin{itemize}
+  \item If decriminalization shifts transactions indoors to lower STI risk sex workers and/or draws in lower risk sex workers $\Rightarrow$ decrease an epidemic \begin{footnotesize}(Kremer 1996)\end{footnotesize}
+  \item \begin{footnotesize}Empirical evidence of safer indoor sex work:\end{footnotesize}
+   \begin{itemize}
+   \item \begin{footnotesize} More indoor transactions (relative to street) lower STI rates \begin{scriptsize}(Gertler and Shah 2011)\end{scriptsize}
+   \item  Massage parlor SWs in UK use condoms more, receive STI screens more, report fewer weekly transaction than street-based SWs \begin{scriptsize}(Jeal and Salisbury 2007)\end{scriptsize}
+       \item  Higher gonorrhea incidence and more requests for non-condom sex among illegal street SWs than licensed indoor SWs in Australia \begin{scriptsize}(Seib et al. 2009)\end{scriptsize}\end{footnotesize}
+\end{itemize}
+  \end{itemize}
+\end{enumerate}
+\end{frame}
+
+
+
+
+
+%\begin{frame}[shrink=20]{Synthetic Control Model: Rape}
+%\begin{figure}
+%\includegraphics{./lecture_includes/rape_synthetic.pdf}
+%\end{figure}
+%\end{frame}
+
+
+
+%\begin{frame}[shrink=20]{Synthetic Control Female Gonorrhea}
+%\begin{figure}
+%\includegraphics{./lecture_includes/synth_gon.pdf}
+%\end{figure}
+%\end{frame}
+
+
+
+
+\begin{frame}{We collected a lot of different data}
+\begin{itemize}
+	\item Lots of crime data (from the FBI from police)
+	\item Lots of data on gonorrhea (from the CDC)
+	\item Lots of data on classified ads for massage parlors (from the Providence Phoenix)
+	\item Lots of data on prostitution arrests (from the FBI from police)
+	\item Lots of data on indoor sex workers reviewed online by clients (from The Erotic Review)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Evidence}
+
+\begin{enumerate}
+\item \textbf{Bite}: Advertising and sex worker reviews
+\item \textbf{Falsifications}: Other crimes
+\item \textbf{Mechanism}: Entry and sex acts
+\item \textbf{Main results}: DiD and synth estimates of ATT for rape and gonorrhea
+\item \textbf{Visuals}: Lots of event study and synth plots
+\end{enumerate}
+
+\end{frame}
+
+
+\begin{frame}[shrink=20]{Providence Phoenix Advertising}
+	\begin{figure}
+	\includegraphics[totalheight=0.95 \textheight]{./lecture_includes/phx_ndx.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}[shrink=20]{Providence Phoenix Advertising (Before)}
+	\begin{figure}
+	\includegraphics[totalheight=0.95 \textheight]{./lecture_includes/spa_jan03.jpg}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}[shrink=20]{Providence Phoenix Advertising (After)}
+	\begin{figure}
+	\includegraphics[totalheight=0.95 \textheight]{./lecture_includes/spa_july04.jpg}
+	\end{figure}
+\end{frame}
+
+% Quantities and prices
+\begin{frame}{Market Prices and Composition}
+	\begin{figure}
+	\includegraphics[scale=0.4]{./lecture_includes/table3.pdf}
+	\end{figure}
+Prices fell, number of massage sex workers rose, risky sex fell, and number of asian sex workers rose
+\end{frame}
+
+\clearpage
+\newpage
+
+
+\begin{frame}{Arrests, rapes and gonorrhea}
+So it looks like the policy caused sex work to increase -- itself new, as many don't think it can change
+
+\bigskip
+
+But Gary Becker (Rest in Peace) said our goal needs to be to minimize the social costs of crime -- so did this policy increase or decrease those social costs?
+
+\bigskip
+
+Let's look at sex worker arrests, rapes, and gonorrhea
+
+\bigskip
+
+Causal assumption: if what happens in other states is what \emph{would have happened}  (``parallel trends'') in Rhode Island, then we can use the other states as substitutes for Rhode Island counterfactuals
+
+\end{frame}
+
+
+
+\begin{frame}[shrink=20]{Parallel trends: prostitution arrests}
+	\begin{figure}
+	\includegraphics[scale=0.35]{./lecture_includes/figure2c.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[shrink=20]{Parallel trends: rape offenses}
+	\begin{figure}
+	\includegraphics[scale=0.35]{./lecture_includes/figure2a.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[shrink=20]{Parallel trends: gonorrhea offenses}
+	\begin{figure}
+	\includegraphics[scale=0.35]{./lecture_includes/figure2b.pdf}
+	\end{figure}
+\end{frame}
+
+
+\clearpage
+
+
+
+
+\begin{frame}[shrink=20]{Arrests, Rapes and Gonorrhea}
+	\begin{figure}
+	\includegraphics[scale=0.35]{./lecture_includes/table2.pdf}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Synthetic Control Analysis}\label{weights}
+\begin{itemize}
+\item Think about minimum wage increases -- they happen in different places at different points in time
+\item Synthetic control estimator is useful when only one group is treated at one point in time
+\item Similar to what we did only 1) we don't need parallel trends anymore and 2) only uses the best states as controls
+\item What's the best states?  The ones that had the same time path in rapes, gonorrhea and arrests before the legalization event
+\item ``If they looked the same before, why wouldn't they look the same after?''
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[shrink=20]{Synthetic Control Model: Rape}
+\begin{figure}
+\includegraphics[scale=1.25]{./lecture_includes/raperate_synthetic.pdf}
+\end{figure}
+\end{frame}
+
+\begin{frame}[shrink=20]{Synthetic Control Female Gonorrhea}\label{sc_femgon}
+\begin{figure}
+\includegraphics{./lecture_includes/synth_gonorrhea_estimate}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Why did reported female rape offenses fall?}
+
+Some possible explanations
+
+\begin{enumerate}
+  \item Did police reallocate resources away from arrests to investigating rapist? Defense attorney told us \textbf{no}
+  \item Did definitions of rape change?  \textbf{Not at this time}
+  \item Did fewer sex workers get raped after decriminalization? Probably but most \emph{reported} rapes \textbf{are not} sex workers in the first place
+  \item Did violent males think of rape and sex with prostitutes as substitutes?  \textcolor{red}{Maybe?}
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}{PotentialWhy did female gonorrhea rates fall?}
+
+Some possible explanations
+
+\begin{enumerate}
+  \item Safer sex workers entered the market thus diluting the propagation of gonorrhea 
+  \item Safer sex in relevant part of sexual network thus diluting the propagation of gonorrhea
+  \item Spillovers to males causing feedbacks throughout the network
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Compositional effects}
+	\begin{figure}
+	\includegraphics[scale=0.4]{./lecture_includes/table3.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Spillovers}
+	\begin{figure}
+	\includegraphics[scale=0.65]{./lecture_includes/table6a.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{Recriminalization}
+
+	\begin{itemize}
+	\item November 2009: sweeping sex trafficking legislation
+	\item Prostitution in all its forms (including indoor) recriminalized
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Market Prices and Composition}
+	\begin{figure}
+	\includegraphics[scale=0.4]{./lecture_includes/table7.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[shrink=20]{Recriminalization: Arrests}
+	\begin{figure}
+	\includegraphics[scale=1]{./lecture_includes/eclplot_2012_pro_2.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[shrink=20]{Recriminalization: Rape Offenses}
+	\begin{figure}
+	\includegraphics[scale=1]{./lecture_includes/eclplot_2012_rape_2.pdf}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[shrink=20]{Recriminalization: Gonorrhea}
+	\begin{figure}
+	\includegraphics[scale=1]{./lecture_includes/eclplot_2012_lngon_2}
+	\end{figure}
+\end{frame}
+
+
 
 
 
