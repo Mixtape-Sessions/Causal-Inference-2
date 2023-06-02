@@ -580,6 +580,10 @@ p\text{ }lim\text{ } \widehat{\delta}^{TWFE}_{n\to\infty} &=& VWATT + VWPT - \De
 
 \item Two types of situations: constant versus dynamic treatment effects
 \end{itemize}
+
+\bigskip
+
+\url{https://docs.google.com/spreadsheets/d/1dI67eNNE2zrX4KrkoFvej-cKxqHkM8yJdMpD-0uE4q8/edit?usp=sharing}
 \end{frame}
 
 
@@ -1771,18 +1775,10 @@ Suppose that we observe $J+1$ units in periods $1, 2, \dots, T$
 \end{frame}
 
 
-\begin{frame}{Potential outcomes notation}
-
-		\begin{itemize}
-		\item Let $Y_{it}^0$ be the outcome that would be observed for unit $i$ at time $t$ in the absence of the intervention
-		\item Let $Y_{it}^1$ be the outcome that would be observed for unit $i$ at time $t$ if unit $i$ is exposed to the intervention in periods $T_0+1$ to $T$.
-		\end{itemize}
-
-\end{frame}
 
 \begin{frame}{Group-time ATT with only one treated group}
 
-Treatment effect parameter is defined as dynamic ATT where 
+Using same potential outcomes notation as we've been using, define the ATT parameter as a dynamic group-time
 
 \begin{eqnarray*}
 \delta_{1t}&=&Y_{1t}^1 - Y_{1t}^0 \\
@@ -1791,7 +1787,7 @@ Treatment effect parameter is defined as dynamic ATT where
 
 \end{frame}
 
-\begin{frame}{Optimal weights}
+\begin{frame}{Estimating W weights}
 	
 	\begin{itemize}
 	\item Let $W=(w_2, \dots, w_{J+1})'$ with $w_j\geq 0$ for $j=2, \dots, J+1$ and $w_2+\dots+w_{j+1}=1$. Each value of $W$ represents a potential synthetic control
@@ -1800,9 +1796,11 @@ Treatment effect parameter is defined as dynamic ATT where
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Optimal weights differ by another weighting matrix}
+\begin{frame}{Donor weights and characteristic weights}
 	
 Abadie, et al. consider $$||X_1 - X_0W||=\sqrt{(X_1-X_0W)'V(X_1-X_0W)}$$where $X_{jm}$ is the value of the $m$-th covariates for unit $j$ and $V$ is some $(k\times k)$ symmetric and positive semidefinite matrix
+
+
 
 \end{frame}
 
@@ -1811,6 +1809,8 @@ Abadie, et al. consider $$||X_1 - X_0W||=\sqrt{(X_1-X_0W)'V(X_1-X_0W)}$$where $X
 Typically, $V$ is diagonal with main diagonal $v_1, \dots, v_k$.  Then, the synthetic control weights $w_2^*, \dots, w_{J+1}^*$ minimize: $$\sum_{m=1}^k v_m \bigg(X_{1m} - \sum_{j=2}^{J+1}w_jX_{jm}\bigg)^2$$ where $v_m$ is a weight that reflects the relative importance that we assign to the $m$-th variable when we measure the discrepancy between the treated unit and the synthetic controls
 
 \end{frame}
+
+
 
 \begin{frame}{How this works}
 
@@ -1826,7 +1826,18 @@ Let's look at it together; it should help you understand, too, the idea of the V
 
 \end{frame}
 
-\begin{frame}{Choice of $V$ is critical}
+\begin{frame}{Donor weights and characteristic weights}
+
+\begin{itemize}
+\item If all pre-treatment characteristics are treated equally, then there exists a solution to the minimization, $W^*$
+\item But if pre-treatment characteristics were emphasized differently in the minimization (say one was given a weight of 0.00001), then there is a different solution, $W*'$.
+\item Making a choice about $V$ (the weight on pre-treatment characteristics' importance) is unavoidable -- a non-choice is a choice as you'll just weight all characteristics the same
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Keeping in mind our goal - create a good synth}
 	
 		\begin{itemize}
 		\item The synthetic control $W^*(V^*)$ is meant to reproduce the behavior of the outcome variable for the treated unit in the absence of the treatment
@@ -1847,9 +1858,19 @@ Let's look at it together; it should help you understand, too, the idea of the V
 		\end{itemize}
 \end{frame}
 
+\begin{frame}{Choosing pre-treatment characteristics}
+
+\begin{itemize}
+\item Original papers provided no guidance, and it's unclear how these characteristics connect to the factor model
+\item Goal is over a long stretch pre-treatment to create the convex hull that contains the treatment group
+\item Lots of early variation in what was done (including my papers), and some effort has now been made to be more principled to avoid p-hacking
+\end{itemize}
+
+\end{frame}
+
 \begin{frame}{Cross validation}
 
-Abadie suggests model selection based on training and validation:
+Abadie suggests model selection using specifications guided by sample splitting into training and validation:
 
 \begin{itemize}
 		\item Divide the pre-treatment period into an initial \textbf{training} period and a subsequent \textbf{validation} period
@@ -1859,18 +1880,10 @@ Abadie suggests model selection based on training and validation:
 
 \end{frame}
 
-\begin{frame}{Avoiding Cherry Picking Synth}
-
-\begin{itemize}
-\item Subjective researcher bias kicked down to the model selection stage
-\item Significant diversity at the moment as to how to principally select models - from machine learning to modifications - as well as estimation and software
-\item Part of the purpose of this procedure is to reduce subjective researcher bias
-\item So Ferman, Pinto and Possbaum (2020) suggest specific specifications and report all of them
-\end{itemize}
-
-\end{frame}
 
 \begin{frame}{Avoiding Cherry Picking Synth}
+
+Ferman, Pinto and Possbaum (2020) note that there are opportunities for p-hacking in model selection and recommend reporting a variety of specifications rather than just one
 
 \begin{enumerate}
 \item Use all pre-treatment lagged outcomes as your $X$ characteristics
@@ -1884,11 +1897,11 @@ Abadie suggests model selection based on training and validation:
 
 \bigskip
 
-With and without covariates, report p-values and event study plot
+With and without covariates, report p-values (explained later) and event study plot
 
 \end{frame}
 
-\begin{frame}{Avoiding Cherry Picking Synth}
+\begin{frame}{14 specification p-values}
 
 	\begin{figure}
 	\includegraphics[scale=0.5]{./lecture_includes/cherry_picking_1.png}
@@ -1896,7 +1909,7 @@ With and without covariates, report p-values and event study plot
 
 \end{frame}
 
-\begin{frame}{Avoiding Cherry Picking Synth}
+\begin{frame}{14 specification event studies}
 
 	\begin{figure}
 	\includegraphics[scale=0.5]{./lecture_includes/cherry_picking_2.png}
@@ -1904,6 +1917,17 @@ With and without covariates, report p-values and event study plot
 
 \end{frame}
 
+
+\begin{frame}{Synth identification}
+
+\begin{itemize}
+\item In diff-in-diff, the core assumption was parallel trends
+\item Only needed one pretreatment period for identification but needed parallel trends starting at that period
+\item Synthetic control does not use parallel trends for identification; it uses a factor model of $Y^0$
+\item But you need a long pre-treatment series, not just for the event study, but for modeling the heterogeneity adequately
+\end{itemize}
+
+\end{frame}
 
 
 \begin{frame}{Assumption: $Y^0$ is determined by factor model}
