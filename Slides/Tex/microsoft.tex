@@ -58,7 +58,7 @@
   \begin{itemize}
 	\item Scott Cunningham, professor of economics at Baylor University, author of \underline{Causal Inference: the Mixtape}
 	\item Identifying the causal parameter, ATT, using unconfoundedness and synthetic control (maybe diff-in-diff)
-	\item Deep dive into the potential outcomes framework 
+	\item Deep dive into the potential outcomes framework, which is surprisingly powerful as notation for causal inference when combined with modern statistics
 
   \end{itemize}
 
@@ -102,10 +102,10 @@
 \begin{frame}{What is Causality?}
 
 \begin{itemize}
+\item Causality is metaphysics; causal inference is epistemology -- what makes a causal belief a ``warranted belief''?
 \item Causal inference has many mothers and fathers
-\item Aristotle was different than Hume, Mill, and Lewis -- I am not comfortable saying to Aristotle he was wrong
-\item What I can do is explain the potential outcomes framework of causal inference and use it to discuss methods and tools that estimate parameters consistent with that view
-\item ``All models are wrong but some are useful'' -- George Box
+\item Aristotle was different than Hume, Mill, and Lewis and as I am not comfortable saying Aristotle was wrong, I won't
+\item What I can do is explain the potential outcomes framework of causal inference and use it to discuss methods and tools that estimate unbiased and meaningful causal parameters as defined by that framework
 \end{itemize}
 
 \end{frame}
@@ -143,7 +143,7 @@
 
   \begin{itemize}
     \item Aliens estimate a model showing a systematic correlation between COVID deaths and ventilators
-    \item They conclude doctors are killing patients with ventilators so they come to earth, and try to liberate the patients, but it only makes things worse
+    \item They conclude doctors are killing patients with ventilators so they come to earth to liberate the patients, but it only makes things worse
     \item Their error was they confused correlation with causality, but deeper than that, they didn't understand how the world worked
     \item \emph{We are the aliens in our research}
   \end{itemize}
@@ -156,6 +156,7 @@
   \begin{itemize}
     \item Causal question: ``If a doctor puts a patient on a ventilator (D), will her covid symptoms (Y) improve?''
     \item Correlation question:  $$\frac{Cov(D,Y)}{\sqrt{Var_D}\sqrt{{Var_Y}}}$$
+    \item Error extends to predictive modeling that isn't based on causal frameworks
   \end{itemize}
 
 \end{frame}
@@ -185,7 +186,11 @@
 
 \begin{frame}{Modeling is Not the First Step}
 
-Most of us simply estimate models and cross our fingers that that coefficient is causal, but is it? And which causal effect is it?  And why should we believe it is? We have to introduce concepts and notation first otherwise we will extend the correlation fallacy
+Most of us simply estimate models and cross our fingers that that coefficient is causal, but is it? When is it?  Why is it? And which causal effect is it?  And when is it reasonable to believe it? 
+
+\bigskip
+
+We have to introduce concepts and notation first otherwise we will extend the correlation fallacy
 
 
 \end{frame}
@@ -197,7 +202,7 @@ Most of us simply estimate models and cross our fingers that that coefficient is
 \begin{enumerate}
 \item \textbf{Counterfactual}: Philosophers come to it first and its central role in causal inference makes causality \emph{unknowable} that the project is nearly derailed
 \item \textbf{Treatment assignment mechanism}: Neyman and Fisher solve the counterfactual problem in statistics and lay the foundation of the modern randomized controlled trial (RCT) with their focus on the selection process
-\item \textbf{No One Causal Effect}: There is no such thing as``the causal effect''; there's many and your first step is to pick one
+\item \textbf{No One Causal Effect}: There is no such thing as``the causal effect''; there's many and your first step is to pick a parameter (not as easy as it sounds)
 \end{enumerate}
 
 
@@ -236,11 +241,15 @@ Most of us skip (1) and many skip (2) and go straight to (3) but hopefully today
 \end{frame}
 
   
-\begin{frame}{Counterfactuals Nearly Killed Causal Inference}
+\begin{frame}{Counterfactuals Almost Derailed Causal Inference}
 
 
 
-Mill's counterfactuals were immensely valuable though for the clarity of the definition of causality, but it came at a huge price -- it made the knowledge impossible because of missing information
+Mill's counterfactuals were immensely valuable for the clarity of the definition as well as its intuitive validity of causality, but it came at a huge price 
+
+\bigskip
+
+If I have to know what would have happened had I not eaten the dish, but I did eat the dish, then isn't it actually impossible to know the causal effect of eating the dish?
 
 \bigskip
 
@@ -331,6 +340,16 @@ Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{ health if placed on vent
   \end{itemize}
 \end{frame}
 
+
+\begin{frame}{Models vs Treatment Assignment}
+
+\begin{itemize}
+    \item Treatment assignment \emph{mechanism} drives the entire effort to identify causal effects as some make it easy and some make it potentially \emph{impossible}
+	\item Put another way, the same model can be unbiased and biased depending on the treatment assignment and be utterly detectable otherwise
+	\item Means modeling does not come first -- it comes last
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Important definitions}
 
     \begin{block}{Definition 1: Individual treatment effect}
@@ -352,6 +371,8 @@ Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{ health if placed on vent
         \end{cases}
       \end{eqnarray*}
     \end{block}
+    
+    Not the same as treatment assignment mechanism.  Treatment assignment mechanism describes how $D$ was assigned, not whether it was assigned.
 
 \end{frame}
 
@@ -363,6 +384,7 @@ Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{ health if placed on vent
       If you need both potential outcomes to know causality with certainty, then since it is impossible to observe both $Y_i^1$ and $Y_i^0$ for the same individual, $\delta_i$, is \emph{unknowable}.
     \end{block}
 
+This is my reason from saying Mill's counterfactual framework derailed the quest for causal effects given counterfactuals are fictional
     
 \end{frame}
 
@@ -439,8 +461,9 @@ Aggregate parameters based on individual treatment effects are \emph{summaries} 
 
   \begin{itemize}
 	\item Notice how in all three of these, all we did was take the defined treatment effect at the individual and aggregate
-	\item The aggregate causal parameters are \emph{definitions} of summaries but cannot be calculated directly bc of missing data problem
-	\item But they can be estimated, which is probably a distinction in epistemology as it's knowledge but of a different type (``warranted belief'')
+	\item Because aggregate causal parameters are \emph{summaries} of individual treatment effects, each of which cannot be calculated, the aggregates cannot be calculated either
+	\item Missing data in this context isn't missing your car keys -- it's missing unicorns and fire breathing dragons (fictional vs real data)
+	\item While we cannot measure average causal effects, we can estimate them, but only in situations and we review one -- randomization
   \end{itemize}
 
 \end{frame}
@@ -577,15 +600,15 @@ $\alert{\text{Purple terms}}$ are explicitly missing counterfactuals
 
   \begin{block}{Decomposition of the SDO}
     \begin{eqnarray*}
-      E[Y^1 | D=1] - E[Y^0 | D=0]  &=& ATE \\
-      &&+ (E[Y^0|D=1] - E[Y^0|D=0])  \\
-      && + (1-\pi)(ATT - ATU)
+      E[Y^1 | D=1] - E[Y^0 | D=0]  &=& \alert{ATE} \\
+      &&+ (\alert{E[Y^0|D=1]} - E[Y^0|D=0])  \\
+      && + (1-\pi)(\alert{ATT - ATU})
     \end{eqnarray*}
   \end{block}
   
   \bigskip
   
-  Note: this is a \emph{rewritten} formula for the definition of the ATE and so is \emph{always} true.  Also, notice that we started with $\pi$ but in the end we weight by $1-\pi$.
+  Note: this is a \emph{rewritten} formula for the definition of the ATE and so it is an identity and thus \emph{always} true.  Also, we started with $\pi$ but in the end we weight by $1-\pi$.
 \end{frame}
 
 
@@ -636,11 +659,11 @@ covariates
 \item Eliminating selection bias requires understanding the selection mechanism -- why did units end up treated but not others?
 \item Sorting into treatment based on potential outcomes always implies selection bias
 	\begin{enumerate}
-	\item I chose to get a PhD because I thought I would be less happy without it -- i.e., $Y^0$ maybe was lower for me than others
-	\item I chose to get a PhD because I thought it would make me happier -- i.e., $Y^1$ maybe was higher for me than others
-	\item I chose to get a PhD because treatment effects were positive -- $\delta = Y^1-Y^0$
+	\item I chose to get a PhD because I thought I would be less happy without it -- i.e., selection on $Y^0$ 
+	\item I chose to get a PhD because I thought it would make me happier -- i.e., selection on $Y^1$ 
+	\item I chose to get a PhD because treatment effects were positive -- i.e., selection on treatment gains, $\delta = Y^1-Y^0$
 	\end{enumerate}
-\item More rational, more efficient, our decision making processes, the \emph{worse} the bias gets!
+\item More rational, more efficient, our decision making processes are, the \emph{worse} the bias gets without research designed to address it
 \end{itemize}
 
 \end{frame}
