@@ -3787,21 +3787,6 @@ There are actually three DiD assumptions in the basic design, but you usually on
 
 
 
-
-
-
-\begin{frame}{Violating parallel trends exercise}
-
-\begin{itemize}
-\item Parallel trends are needed so we can impute the missing $E[Y^0|D=1]$ with $E[Y^0|D=0]$ either explicitly or implicitly
-\item Which means if parallel trends isn't true, then the imputation isn't correct and therefore estimates are biased
-\item To illustrate this, let's go through the document again -- this time to tab 2
-\end{itemize}
-
-\url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
-
-\end{frame}
-
 \begin{frame}{Event studies and pre-trends}
 
 \begin{itemize}
@@ -3868,55 +3853,37 @@ Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in 
 
 \end{frame}
 
-
-
-\begin{frame}{Medicaid and Affordable Care Act example}
-
-\begin{figure}
-\includegraphics[scale=0.25]{./lecture_includes/medicaid_qje}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}{Types of evidence}
+\begin{frame}{ChatGPT in Italy}
 
 \begin{itemize}
-\item \textbf{Bite} -- show that the expansion shifted people into Medicaid and out of uninsured status
-\item \textbf{Main Results} -- Show your main results (the point of the paper)
-\item \textcolor{red}{\textbf{Placebos}} -- Show that there's no effect on mortality for groups it shouldn't be affecting (people 65+)
-\item \textcolor{blue}{\textbf{Mechanisms}} -- Find some reason explaining why the treatment affects the outcome via some ``mechanism''
-\item \textbf{Event study} -- Show leads and lags on mortality
+
+\item New working paper also used diff-in-diff and synthetic control (from earlier) to study Italy's ban on ChatGPT
+\item Event studies showed using github and google search data a temporary search for TOR and VPN
+\item Productivity fell for two days, then returned -- suggesting they spent a couple of days working around it
+
 \end{itemize}
 
 \end{frame}
 
-
-\imageframe{./lecture_includes/Miller_Medicaid1.png}
-
-\imageframe{./lecture_includes/Miller_Medicaid2.png}
-
-\imageframe{./lecture_includes/Miller_Medicaid3.png}
-
-
-\begin{frame}{Falsifications on elderly}
-
-	\begin{figure}
-\includegraphics[scale=0.425]{./lecture_includes/placebo_medicaid}
-	\end{figure}
+\begin{frame}{ChatGPT Example}
+             \includegraphics[scale=0.35]{./lecture_includes/gpt_title}
 
 \end{frame}
 
-
-
-\begin{frame}[plain]
-
-	\begin{figure}
-	\includegraphics[scale=0.3]{./lecture_includes/Miller_Medicaid4.png}
-	\caption{Miller, et al. (2019) estimates of Medicaid expansion's effects on on annual mortality}
-	\end{figure}
+\begin{frame}{ChatGPT Example}
+             \includegraphics[scale=0.45]{./lecture_includes/gpt_github}
 
 \end{frame}
 
+\begin{frame}{ChatGPT Example}
+             \includegraphics[scale=0.375]{./lecture_includes/gpt_vpn}
+
+\end{frame}
+
+\begin{frame}{ChatGPT Example}
+             \includegraphics[scale=0.3]{./lecture_includes/gpt_tor}
+
+\end{frame}
 
 
 \subsection{Covariates}
@@ -4970,14 +4937,38 @@ This is the inverse probability weighting estimator.  Alternatively, there is an
 
 
 
-\section{Conclusion}
 
 
+\begin{frame}{ChatGPT Example}
+             \includegraphics[scale=0.3]{./lecture_includes/chatgpt_title}
 
+\end{frame}
+
+\begin{frame}{ChatGPT Example}
+             \includegraphics[scale=0.3]{./lecture_includes/chatgt_rollout}
+
+\end{frame}
+
+
+\begin{frame}{ChatGPT Example}
+             \includegraphics[scale=0.35]{./lecture_includes/chatgpt_results}
+
+\end{frame}
+
+\begin{frame}{ChatGPT Example}
+             \includegraphics[scale=0.45]{./lecture_includes/chatgpt_log}
+
+\end{frame}
+
+\begin{frame}{ChatGPT Example}
+             \includegraphics[scale=0.3]{./lecture_includes/chatgpt_skill}
+
+\end{frame}
 
 \begin{frame}{Concluding remarks}
 
 \begin{itemize}
+\item Sometimes it's the only way to evaluate a ``big'' study
 \item Important elements of the diff-in-diff design
 	\begin{itemize}
 	\item DiD equation is four averages and three differences
@@ -4991,17 +4982,26 @@ This is the inverse probability weighting estimator.  Alternatively, there is an
 \end{frame}
 
 
+\section{Conclusion}
+
+
+
+
+
+
 \begin{frame}{Weights and Imputation}
 
 \begin{itemize}
 
-\item Lots of mention of negative weights
+\item Lots of mention of positive and negative weights
 	\begin{itemize}
 	\item OLS in synth negatively weighted \emph{donor pool units}
 	\item TWFE in staggered adoption diff-in-diff negatively weighted \emph{treatment effects}
+	\item Propensity scores are weights on the comparison group
+	\item Variance weights are positive weights on diff-in-diff equations
 	\end{itemize}
 \item Causal inference itself is a series of weighted averages or imputations which are justified under strict assumptions
-\item Remember: parameters first
+\item Remember: parameters first. Your research question must have a specific aggregate causal parameter first
 \item Thank you so much!
 
 \end{itemize}
