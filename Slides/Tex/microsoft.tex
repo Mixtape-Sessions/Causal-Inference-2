@@ -656,14 +656,14 @@ covariates
 \begin{frame}{Humans cause selection bias, not statistical model}
 
 \begin{itemize}
-\item Eliminating selection bias requires understanding the selection mechanism -- why did units end up treated but not others?
-\item Sorting into treatment based on potential outcomes always implies selection bias
+\item Sorting into treatment based on potential outcomes will always create selection bias 
+\item Following correlations between a PhD and happiness are not causal:
 	\begin{enumerate}
-	\item I chose to get a PhD because I thought I would be less happy without it -- i.e., selection on $Y^0$ 
-	\item I chose to get a PhD because I thought it would make me happier -- i.e., selection on $Y^1$ 
+	\item I chose to get a PhD because I thought I would be unhappy without one -- i.e., selection on $Y^0$ 
+	\item I chose to get a PhD because I thought it would be happy with one -- i.e., selection on $Y^1$ 
 	\item I chose to get a PhD because treatment effects were positive -- i.e., selection on treatment gains, $\delta = Y^1-Y^0$
 	\end{enumerate}
-\item More rational, more efficient, our decision making processes are, the \emph{worse} the bias gets without research designed to address it
+\item More rational and efficient our decision making processes become, the more they are like selection on gains, the worse selection bias is
 \end{itemize}
 
 \end{frame}
@@ -675,7 +675,8 @@ covariates
 
 \begin{frame}{Illustrating selection bias with spreadsheets}
 \begin{itemize}
-\item Patients come to the Perfect Doctor who knows each person's treatment effects and assigns treatment based on it
+\item Eliminating selection bias requires understanding the selection mechanism -- why did units end up treated but not others?
+\item Illustrate with Perfect Doctor exercise -- doctor knows each person's treatment effects, despite counterfactuals, and assigns treatment based on whether gains are positive or not
 \item Illustrate decomposition using numerical example \url{https://docs.google.com/spreadsheets/d/10DuQqGtH_Ewea7zQoLTFYHbnvqaTVDhn2GDzq3Oa6EQ/edit?usp=sharing}
 \end{itemize}
 \end{frame}
@@ -1159,6 +1160,20 @@ Write down all paths, both direct from $D$ to $Y$ and indirect or ``backdoor pat
 
 \end{frame}
 
+\begin{frame}{M-bias as collider}
+
+
+
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/mbias}
+
+\footnotesize
+$X$ is pre-treatment, but if you conditioned on it, then $D\leftarrow U1 \rightarrow \mbox{X} \leftarrow U2 \rightarrow Y$ and $X$ is a collider. Colliders take strange forms, so the conditioning set \emph{must} be thoughtfully chosen based on being a strong predictor of $Y^0$, preferably based on expert knowledge and not a kitchen sink of all available regressors
+
+\end{frame}
+
+
+
 \begin{frame}{Contrast this with ordinary practices}
 
 \begin{itemize}
@@ -1169,7 +1184,7 @@ Write down all paths, both direct from $D$ to $Y$ and indirect or ``backdoor pat
 
 \end{frame}
 
-\begin{frame}{Ad Hoc}
+\begin{frame}{Covariate selection without DAGs}
 
 \begin{itemize}
 \item Short of an outright DAG, then the thing to be thinking about is this:
@@ -1183,6 +1198,17 @@ Write down all paths, both direct from $D$ to $Y$ and indirect or ``backdoor pat
 
 \end{frame}
 
+\begin{frame}{Falsifications}
+
+\begin{itemize}
+\item Covariates should not be affected by the treatment, so examining them as falsifications can help establish the credibility of unconfoundedness
+\item Falsification exercises are sometimes versions of this -- a gun control law shouldn't affect automobile theft or petty larceny
+\item Imbens and Rubin (2015) suggested using the lagged outcome (pre-treatment) as a way of checking, as those have similar confounder structures
+\item One study questioned a finding that obesity was contagious in social networks by estimating the same model on things that cannot be contagious like acne, headaches and height and found the same things (likely confounding existed)
+\end{itemize}
+
+\end{frame}
+
 
 \begin{frame}[plain]
 
@@ -1191,7 +1217,7 @@ Write down all paths, both direct from $D$ to $Y$ and indirect or ``backdoor pat
 	\end{block}
 	
 	\begin{itemize}
-	\item Conditional on $X$, treatment assignment is \textbf{random}
+	\item Conditional on $X$, treatment assignment is randomly distributed (i.e., independent of both potential outcomes) -- strong assumption
 	\item For a large group of people within the same strata, they flipped coins as opposed to sought treatments that helped them
 	\item Eliminating all backdoor paths on a DAG through blocking satisfies unconfoundedness; also called ignorability
 	\end{itemize}
@@ -1270,17 +1296,14 @@ The second term implies we have people in treatment and control for every strata
 \end{frame}
 
 
-\begin{frame}{In Defense of the ATT}
+\begin{frame}{Maybe You Want the ATT}
 
-If we want the ATE, we need strong unconfoundedness and strong overlap
 
-\bigskip
-
-But if we want the ATT, we can go with strictly weaker assumptions
+If we want the ATT, we can go with strictly weaker assumptions -- weak unconfoundedness and weak overlap
 
 \bigskip
 
-ATT requires weak unconfoundedness and a weaker common support condition
+You can get a PhD because you care about your happiness with one $Y^1$; you just have to have acted independent of what you gave up $Y^0$
 
 \end{frame}
 
@@ -1339,7 +1362,7 @@ We match units in treatment and control because under weak unconfoundedness they
 
 \bigskip
 
-Stratification weighting doesn't exactly always help you see the imputation -- where you literally ``fill in'' missing counterfactuals either through estimating them or simply plug-in, but matching does
+Matching goes back at least to Rubin's early work on the propensity score, but we will start with nearest neighbor matching as there's ideas there we draw upon later with synth I want to emphasize
 
 \bigskip
 
@@ -1422,7 +1445,7 @@ $SDO = \$24,150-27,923 = -\$3,773$
 \begin{itemize}
 \item Exact matching finds a person in the control group whose value of $X_j$ is \emph{exactly} equal to each person in the treatment group $i$
 \item Will not work if the conditioning set includes a continuous variable
-\item Will also not work if $K$ gets large (curse of dimensionality)
+\item Will also not work if $K$ gets large (curse of dimensionality we discuss later)
 \end{itemize}
 
 \end{frame}
@@ -1534,23 +1557,13 @@ Even weak support is rare due to the curse of dimensionality
 
 \end{frame}
 
-\begin{frame}{Curse of Dimensionality}
-	
-	\begin{itemize}
-	\item Assume we have $k$ covariates and we divide each into 3 coarse categories (e.g., age: young, middle age, old; income: low, medium, high, etc.)
-	\item The number of strata is $3^k$. For $k=10$, then it's $3^{10}=59,049$
-	\item Common support problems isn't about the covariates -- you probably will find white people in treatment and control, women in both groups, college educated in both groups
-	\item Common support is about white women with a college degree in both groups -- it's about the dimensions which is why the curse grows fast
-	\end{itemize}
-\end{frame}
 
 \begin{frame}{Curse of Dimensionality}
 	
 	\begin{itemize}
-	\item If sparseness occurs, it means many cells may contain either only treatment units or only control units but not both, and that violates our second assumption
+	\item If no matches can be found, it means many cells may contain either only treatment units or only control units but not both, and that violates our common support assumption
 	\item We can always use ``finer'' classifications, but finer cells worsens the dimensional problem, so we don't gain  much from that.  ex: using $10$ variables and $5$ categories for each, we get $5^{10} = 9,765,625$.  
-	\item Matching methods really force us to see these curses; they're often hidden from OLS because OLS doesn't tell us it is just doing various extrapolations
-	\item Simple weighting methods is also a problem if the cells are ``too coarse''
+	\item Matching methods really force us to see these curses; they're often hidden from OLS because OLS uses extrapolations based off functional form
 	\end{itemize}
 \end{frame}	
 
