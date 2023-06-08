@@ -48,7 +48,7 @@ Outcome regression [(Heckman, Ichimura and Todd 1997)](http://jenni.uchicago.edu
 
 Inverse probability weight estimator [(Abadie 2005)](https://academic.oup.com/restud/article-abstract/72/1/1/1581053?redirectedFrom=fulltext), 
 
-Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620301901)           
+Doubly robust [(Sant'Anna and Zhao 2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620301901)           
 
 
 </details><br />
@@ -85,7 +85,7 @@ Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/
 
 <b>Slides</b>
            
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Callaway and Sant'anna (2020)</a>
+<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Callaway and Sant'Anna (2021)</a>
 
 <b>Code</b>
 
@@ -95,7 +95,7 @@ Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/
 
 <b>Readings</b>
 
-[Callaway and Sant'anna (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub)
+[Callaway and Sant'Anna (2021)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620303948?via%3Dihub)
 
 </details><br />
 
@@ -105,7 +105,7 @@ Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/
 
 <b>Slides</b>
            
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Sun and Abraham (2020)</a>
+<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Sun and Abraham (2021)</a>
 
 <b>Code</b>
 
@@ -117,7 +117,7 @@ Doubly robust [(Sant'anna and Zhao 2020)](https://www.sciencedirect.com/science/
 
 <b>Readings</b>
 
-[Sun and Abraham (2020)](https://www.sciencedirect.com/science/article/abs/pii/S030440762030378X)
+[Sun and Abraham (2021)](https://www.sciencedirect.com/science/article/abs/pii/S030440762030378X)
 
 </details><br />
 
@@ -174,14 +174,14 @@ Robust efficient imputation estimator
 
 <b>Slides</b>
            
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/07-Non-binary.pdf">Callaway, Goodman-Bacon and Sant'anna (2021)</a>
+<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/07-Non-binary.pdf">Callaway, Goodman-Bacon and Sant'Anna (2021)</a>
 
 <b>Code</b>
            
 
 <b>Readings</b>
 
-[Callaway, Goodman-Bacon and Sant'anna (2021)](https://arxiv.org/abs/2107.02637)
+[Callaway, Goodman-Bacon and Sant'Anna (2021)](https://arxiv.org/abs/2107.02637)
 
 </details><br />
 
