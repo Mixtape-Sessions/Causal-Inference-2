@@ -54,58 +54,67 @@
 \end{frame}
 
 
-\begin{frame}{Workshop outline}
+\begin{frame}{What my pedagogy is like}
+
+\begin{itemize}
+\item Long days that don't feel long because it's high energy, with regular breaks including lunch
+\item Move between the econometrics, history of thought, videos, applications, code, spreadsheets, exercises
+\item Ask questions at any point; I'll do my best to answer them
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Class goals}
+Pedagogical goal is to break down the procedures into plain English, rebuilding it into something you can and want to use, but also:
+
+  \begin{enumerate}
+    \item \textbf{Confidence}: You will feel like you have a good enough understanding of diff-in-diff and synthetic control, both in its basics and some more contemporary issues, so that by the end of the week it a very intuitive, friendly, and useful tool
+    \item \textbf{Comprehension}: You will have learned a lot both conceptually and in the specifics, particularly with regards to issues around identification and estimation in the diff-in-diff and synth context
+    \item \textbf{Competency}: You will have more knowledge of programming syntax in Stata and R so that later you can apply this in your own work
+  \end{enumerate}
+
+\end{frame}
+
+
+
+\begin{frame}{Day 1 outline}
 
 Introduction to DiD basics 
 	\begin{itemize}
-	\item Potential outcomes review
-	\item DiD equation and estimation with OLS
+	\item Potential outcomes review and the ATT parameter
+	\item DiD equation (``four averages and three differences''), parallel trends and estimation with OLS
 	\item Evaluating parallel trends with falsifications, event studies 
-	\item Triple differences
-	\item Including covariates
+	\item Compositional changes, triple differences and covariates
 	\end{itemize}
 
 \end{frame}
 
 
-\begin{frame}{Workshop outline}
+\begin{frame}{Day 2 outline}
 
  Differential timing
 	\begin{itemize}
-	\item Bacon decomposition 
-	\item Aggregating group-time ATTs
-	\item Issues and solutions with event studies
-	\item Turning treatments on and off
-	\item Stacked regression
-	\item Imputation estimators
-	\item Continuous treatments
+	\item TWFE Pathologies in static and dynamic specifications (``event study'')
+	\item Solution 1: Aggregating group-time ATTs
+	\item Solution 2: Imputation estimators
+	\item Solution 3: Stacked regression
 	\end{itemize}
 
 \end{frame}
 
-\begin{frame}{Workshop outline}
-
-Synthetic control
+\begin{frame}{Day 3 outline}
 
 \begin{itemize}
-\item Canonical synth
+\item Canonical synth (Abadie papers)
+\item Augmented synth (Ben-Michael, et al)
+\item Matrix completion with nuclear norm regularization (Athey, et al.)
+\item Exercises and estimation 
 \end{itemize}
 
 \end{frame}
 
 \subsection{Introducing difference-in-differences}
-
-\imageframe{./lecture_includes/bumpersticker.jpeg}
-
-
-\begin{frame}{Natural experiments}
-
-\begin{quote}
-``A good way to do econometrics is to look for good natural experiments and use statistical methods that can tidy up the confounding factors that nature has not controlled for us.'' -- Daniel McFadden (Nobel Laureate recipient with Heckman 1992)
-\end{quote}
-
-\end{frame}
-
 
 
 
@@ -114,9 +123,14 @@ Synthetic control
 \begin{itemize}
 \item DiD is a very old, relatively straightforward, intuitive research design
 \item A group of units are assigned some treatment and then compared to a group of units that weren't
-\item One of the most widely used quasi-experimental methods in economics and even used in industry
+\item One of the most widely used quasi-experimental methods in economics and increasingly in industry
 \item Mostly associated with ``big shocks'' happening in space over time
 \end{itemize}
+
+
+\begin{quote}
+``A good way to do econometrics is to look for good natural experiments and use statistical methods that can tidy up the confounding factors that nature has not controlled for us.'' -- Daniel McFadden (Nobel Laureate recipient with Heckman 2002)
+\end{quote}
 
 \end{frame}
 
@@ -136,33 +150,16 @@ Synthetic control
 
 
 
-\begin{frame}{Why an entire workshop on DiD?}
+
+
+
+
+
+
+
+\begin{frame}{Origins of diff-in-diff}
 
 \begin{itemize}
-\item \textbf{Research advantages}: DiD is sometimes the only way we have to study large social policies 
-\item \textbf{Good time to retool}: Recent wave of scholarship suggest model misspecification is pronounced
-\item \textbf{Good news}: Better understanding of our models, new tools, new programs
-\item \textbf{Hope}: I think we can get to the bottom of this in a way that will stick with you
-\end{itemize}
-
-\end{frame}
-
-
-
-
-
-
-
-
-
-
-
-\subsection{History}
-
-\begin{frame}{Brief history of diff-in-diff}
-
-\begin{itemize}
-\item David Card and Orley Ashenfelter are often associated with it in economics, but it goes back further to the 19th century
 \item Difference-in-differences (DiD) was quietly and largely unnoticed introduced in the 19th century as a way to convince skeptics in health policy arguments
 \item Dominant disease theory in 19th century was \emph{miasma} -- disease caused by smelly vapor
 \item Keep in mind -- microorganisms would not be identified until much later, partly caused by poor resolution in microscopes (Freedman 2007)
@@ -319,93 +316,64 @@ Synthetic control
 
 \begin{eqnarray*}
 \widehat{\delta}_{did} = D + (T_L - T_{SV})
-\end{eqnarray*}How do we calculate $T_{SV}$?  
-
-\end{frame}
-
-\begin{frame}{3) Difference-in-differences}
-
-\begin{table}\centering
-		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
-		\begin{center}
-		\begin{tabular}{lll|lc}
-		\toprule
-		\multicolumn{1}{l}{\textbf{Companies}}&
-		\multicolumn{1}{c}{\textbf{Time}}&
-		\multicolumn{1}{c}{\textbf{Outcome}}&
-		\multicolumn{1}{c}{$D_1$}&
-		\multicolumn{1}{c}{$D_2$}\\
-		\midrule
-		Lambeth & Before & $Y=L$ \\
-		& After & $Y=L + T_L + D$ & $T_L+D$\\
-		\midrule
-		& & & & $D$ \\
-		\midrule
-		Southwark and Vauxhall & Before & $Y=SV$ \\
-		& After & $Y=SV + T_{SV}$ & $T_{SV}$\\
-		\bottomrule
-		\end{tabular}
-		\end{center}
-	\end{table}
-
-\begin{eqnarray*}
-\widehat{\delta}_{did} = D + (T_L - T_{SV})
-\end{eqnarray*}How do we calculate $T_{L}$?  
+\end{eqnarray*}This method yields an unbiased estimate of D if $T_{SV} = \textcolor{red}{T_L}$
 
 \end{frame}
 
 
-\begin{frame}{3) Difference-in-differences}
+\begin{frame}{Orley goes to Washington}
 
-\begin{table}\centering
-		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
-		\begin{center}
-		\begin{tabular}{lll|lc}
-		\toprule
-		\multicolumn{1}{l}{\textbf{Companies}}&
-		\multicolumn{1}{c}{\textbf{Time}}&
-		\multicolumn{1}{c}{\textbf{Outcome}}&
-		\multicolumn{1}{c}{$D_1$}&
-		\multicolumn{1}{c}{$D_2$}\\
-		\midrule
-		Lambeth & Before & $Y=L$ \\
-		& After & $Y=L + T_L + D$ & $T_L+D$\\
-		\midrule
-		& & & & $D$ \\
-		\midrule
-		Southwark and Vauxhall & Before & $Y=SV$ \\
-		& After & $Y=SV + T_{SV}$ & $T_{SV}$\\
-		\bottomrule
-		\end{tabular}
-		\end{center}
-	\end{table}
+\begin{itemize}
+\item Orley Ashenfelter graduated from Princeton in the 1970s, takes a job in Washington DC and begins studying ``job trainings programs''
+\item Empirical crisis in empirical macro and empirical labor back in the 1970s -- Orley, David Card, Bob Lalonde, Alan Krueger at Princeton all helped bring attention to it and began pushing for solutions, one of which was RCTs in labor but also diff-in-diff as well as better instruments
+\item Listen to Orley explain the connection he made between twoway fixed effects and difference-in-differences; it was born out of a need to explain OLS to an American bureaucrat
 
-\begin{eqnarray*}
-\widehat{\delta}_{did} = D + (T_L - T_{SV})
-\end{eqnarray*}This second term is called ``parallel trends''
+\end{itemize}
+
+\url{https://youtu.be/WnB3EJ8K7lg?t=126}
 
 \end{frame}
 
+\begin{frame}{Steps of a project}
 
+\begin{enumerate}
+\item Convert research question into causal parameter
+\item Deduce beliefs needed to estimate that causal parameter with data
+\item Create a calculator that will use data and estimate the causal parameter
+\end{enumerate}
+
+\bigskip
+
+Most of us skip (1) and maybe even (2) and instead simply ``run regressions'' and cross our fingers that that coefficient is causal, but is it? And why is it?  And what is it?  Let's dig into Orley's comment a little more. 
+
+\end{frame}
 
 \subsection{Potential outcomes}
 
+\begin{frame}{Equivalence}
+$$Y_{ist} = \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \textcolor{blue}{\delta} (Treat_{is} \times Post_t) + \varepsilon_{ist} $$
 
+\bigskip
 
-\begin{frame}{Potential outcomes review}
+$$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overline{y}_k^{pre(k)} \bigg ) - \bigg ( \overline{y}_U^{post(k)} - \overline{y}_U^{pre(k)} \bigg ) $$
 
 \begin{itemize}
-\item DiD really can't be understood without committing to useful causality notation
-\item Standard language is the potential outcomes model, sometimes called the Rubin-Neyman model
-\item Potential outcomes are thought experiments about worlds that never existed, but which \emph{could have}
-\item Important we are all on the same page, so I'm going to review this
+\item Orley claims that the OLS estimator of $\delta$ and the ``four averages and three subtractions'' are the same thing numerically
+\item And they are -- they are numerically \emph{identical}
+\item And under a particular assumption, they are also unbiased estimates of an aggregate causal parameter
+\item But to see this we need new notation -- potential outcomes
 \end{itemize}
 
 \end{frame}
+
+
+
+
+
 \begin{frame}{Potential outcomes notation}
 	
 	\begin{itemize}
-	\item Let the treatment be a binary variable: $$D_{i,t} =\begin{cases} 1 \text{ if pipe inlet is upstream at time $t$} \\ 0 \text{ if pipe inlet is downstream at time $t$} \end{cases}$$where $i$ indexes an individual observation, such as a person
+	\item Let the treatment be a binary variable: $$D_{i,t} =\begin{cases} 1 \text{ if in job training program $t$} \\ 0 \text{ if not in job training program at time $t$} \end{cases}$$where $i$ indexes an individual observation, such as a person
 
 	\end{itemize}
 \end{frame}
@@ -414,21 +382,9 @@ Synthetic control
 	
 	\begin{itemize}
 
-	\item Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{: health if drank from upstream at time $t$} \\ 0 \text{: health if drank from downstream at time $t$} \end{cases}$$where $j$ indexes a counterfactual state of the world
+	\item Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{: wages at time $t$ if trained} \\ 0 \text{: wages at time $t$ if not trained} \end{cases}$$where $j$ indexes a counterfactual state of the world
 
 	\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Potential vs observed}
-
-\begin{itemize}
-\item A potential outcome $Y^1$ and an observed outcome $Y$ are distinct
-\item Potential outcomes are \emph{hypothetical} possibilities describing states of the world but historical outcomes actually occurred
-\item Potential outcomes become observed outcomes when treatments are assigned (the ``switching equation'') $$Y_{it}=D_{it}Y_{it}^1 + (1-D_{it})Y_{it}^0$$
-\item I'll often drop the subscripts to reduce clutter, but note the key point here is one's own realized outcome at some point in time is based on one's own treatment assignment at that time 
-
-\end{itemize}
 \end{frame}
 
 
@@ -440,7 +396,7 @@ Synthetic control
 	    The individual treatment effect,  $\delta_i$, equals $Y_i^1-Y_i^0$
 	\end{block}
 
-Individual causal effects cannot be calculated because one of the two needed potential outcomes will always be missing. Epistemologically ``unknowable'' in some important but difficult to define way.	
+Missing data problem:  I don't know my own counterfactual
 	
 \end{frame}
 
@@ -455,55 +411,46 @@ Individual causal effects cannot be calculated because one of the two needed pot
 	\end{block}
 	
 	\bigskip
-	
- Again that ``epistemological'' uncertainty.  We can estimate the ATT, but never be sure due to \textcolor{red}{missing potential outcomes} for the treated group
+
+This is one of the most important policy parameters, if not the most important, and coincidentally it's also the parameter you get with diff-in-diff (even with heterogeneity)
 
 	
 \end{frame}
 
-
-
-\subsection{Identification}
-
-\begin{frame}{Identification without randomization}
+\begin{frame}{Potential outcomes vs data}
 
 \begin{itemize}
-\item We may be unable to randomize -- not because we lack the imagination, but because we lack the permission
-\item If we cannot randomize, then how does DiD identify a treatment effect, and which treatment effect?
-\item DiD identifies the ATT, and since we are missing $Y^0$ for treated group, we will restrict counterfactual $Y^0$ in expectation
-\item One of the main advantages of DiD is the hope that we can identify the ATT \emph{without} randomization
-\end{itemize}
+\item ATT is expressed in terms of potential outcomes, but we do not use potential outcomes for estimation; we use data
+\item Potential outcomes are unknown and \emph{hypothetical} possibilities describing states of the world but our data are realized outcomes, or ``data'', that actually occurred
+\item Potential outcomes become realized under treatment assignment $$Y_{it}=D_{it}Y_{it}^1 + (1-D_{it})Y_{it}^0$$
+\item Depending on how the treatment is assigned really dictates whether correlations reveal causal effects or bias
 
+\end{itemize}
 \end{frame}
 
-
+\subsection{Four averages and three subtractions}
 
 
 \begin{frame}{DiD equation}
 
-I call this the DiD equation, but Goodman-Bacon calls it the ``2x2''; I'll use his $k$ and $U$ notation for treated and untreated groups
+Orley's ``four averages and three subtractions'', or what Bacon will call the 2x2
 
 \begin{eqnarray*}
-\widehat{\delta}^{2x2}_{kU} = \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
-\end{eqnarray*}$k$ index people with Lambeth, $U$ index people with Southwark and Vauxhall, $Post$ is after Lambeth moved pipe upstream, $Pre$ before Lambeth moved its pipe (baseline), and $E[y]$ mean cholera mortality. 
-
-\end{frame}
-
-\begin{frame}{DiD equation}
-
-``Pre'' and ``Post'' refer to when Lambeth, $k$, was treated which is why it is the same for both $k$ and $U$ groups
+\widehat{\delta} = \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
+\end{eqnarray*}$k$ are the people in the job training program, $U$ are the untreated people not in the program, $Post$ is after the trainees took the class, $Pre$ is the period just before they took the class, and $E[y]$ is mean earnings. 
 
 \bigskip
 
-If we had more than one treatment group, then ``Pre'' and ``Post'' no longer are defined for all units
+Does $\widehat{\delta}$ equal the ATT?  If so when? If not why not?
 
 \end{frame}
+
 
 
 \begin{frame}{Potential outcomes and the switching equation}
 
 \begin{eqnarray*}
-\widehat{\delta}^{2x2}_{kU} &=& \bigg ( \underbrace{E[Y^1_k|Post] - E[Y^0_k|Pre] \bigg ) - \bigg ( E[Y^0_U | Post ] - E[ Y^0_U | Pre]}_{\mathclap{\text{Switching equation}}} \bigg)  \\
+\widehat{\delta} &=& \bigg ( \underbrace{E[Y^1_k|Post] - E[Y^0_k|Pre] \bigg ) - \bigg ( E[Y^0_U | Post ] - E[ Y^0_U | Pre]}_{\mathclap{\text{Switching equation}}} \bigg)  \\
 &&+ \underbrace{\textcolor{red}{E[Y_k^0 |Post] - E[Y^0_k | Post]}}_{\mathclap{\text{Adding zero}}} 
 \end{eqnarray*}
 
@@ -512,7 +459,7 @@ If we had more than one treatment group, then ``Pre'' and ``Post'' no longer are
 \begin{frame}{Parallel trends bias}
 
 \begin{eqnarray*}
-\widehat{\delta}^{2x2}_{kU} &=& \underbrace{E[Y^1_k | Post] - \textcolor{red}{E[Y^0_k | Post]}}_{\mathclap{\text{ATT}}} \\
+\widehat{\delta} &=& \underbrace{E[Y^1_k | Post] - \textcolor{red}{E[Y^0_k | Post]}}_{\mathclap{\text{ATT}}} \\
 && + \bigg [  \underbrace{\textcolor{red}{E[Y^0_k | Post]} - E[Y^0_k | Pre] \bigg ] - \bigg [ E[Y^0_U | Post] - E[Y_U^0 | Pre] }_{\mathclap{\text{Non-parallel trends bias in 2x2 case}}} \bigg ]
 \end{eqnarray*}
 
@@ -526,11 +473,11 @@ If we had more than one treatment group, then ``Pre'' and ``Post'' no longer are
 	Assume two groups, treated and comparison group, then we define parallel trends as:	 $$\textcolor{red}{E(}\textcolor{red}{\Delta Y^0_k)} = E(\Delta Y^0_U)$$
 	\end{block}
 
-\textbf{In words}: ``The \textcolor{red}{evolution of cholera mortality for Lambeth \emph{had it kept its pipe downstream}} is the same as the evolution of cholera mortality for Southwark and Vauxhall''.  
+\textbf{In words}: ``The \textcolor{red}{evolution of earnings for our trainees \emph{had they not trained}} is the same as the evolution of mean earnings for non-trainees''.  
 
 \bigskip
 
-It's in \textcolor{red}{red} so you know it's a nontrivial assumption.  But why?  Can't we just check?
+It's in \textcolor{red}{red} because parallel trends is untestable and critically important to estimation of the ATT using any method, OLS or ``four averages and three subtractions''
 
 	
 
@@ -538,55 +485,29 @@ It's in \textcolor{red}{red} so you know it's a nontrivial assumption.  But why?
 \end{frame}
 
 
-
-
-\begin{frame}{What is ``The Science''?}
+\begin{frame}{What is parallel trends}
 
 \begin{itemize}
-\item You've probably heard people say RCT is the gold standard for causal inference.  But why?
-\item Because randomization gives \emph{near certainty} that selection bias won't exist
-\item Don Rubin commented once, ``we know how the science works''
-\item DiD \textbf{does not} use ``the science'' though
+\item Parallel trends assumes away the selection bias associated with comparisons
+\item The assumption is thought to be more plausible than simply assuming simple comparisons held equal $E[Y^0|D=0]=E[Y^0|D=1]$
+\item But it is still a strong assumption, and differs from the assumptions have in the RCT which though also untestable, is nearly guaranteed by randomization
+\item Most of the hard part of the work involves the old fashioned detective work and the work of making good arguments with good exhibits (tables and figures)
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}{Identification with Independence (``the Science'')}
 
+\begin{frame}{Understanding parallel trends through worksheets}
 
-\begin{block}{Independence assumption}
-Treatment is independent of potential outcomes  $$(Y^0,Y^1)\independent{D}$$
-\end{block}	
-
-RCTs use \emph{independence} to estimate causal effects; DiD does not
-
-\end{frame}
-
-\begin{frame}{Independence}
-
-Independence allows us to write down conditional expected potential outcome equations (i.e., impute) like $$E[Y^0|D=1]=E[Y^0|D=0]$$ 
-
-\bigskip
-
-In the simple comparison in means, $\widehat{\delta}_{cs} = D + (L-SV)$, independence implies $L=SV$ (no selection bias).
-
-\end{frame}
-
-
-\begin{frame}{Parallel trends is hard}
-
-\begin{itemize}
-\item \textbf{There is no guaranteed ``science'' in parallel trends}
-\item IMO, this makes DiD a ``hard'' design -- \emph{because} it doesn't rely on randomization (it relies on parallel trends), there are no ``slam dunks'' and evidence tends to be multi-layered
-\item Before we move into regression, let's go through a simple exercise to really pin down these core ideas with simple calculations
-\end{itemize}
+Before we move into regression, let's go through a simple exercise to really pin down these core ideas with simple calculations
 
 \bigskip 
 
 \url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
 
 \end{frame}
+
 
 \begin{frame}{No Anticipation}
 
@@ -616,47 +537,6 @@ In the simple comparison in means, $\widehat{\delta}_{cs} = D + (L-SV)$, indepen
 
 \end{frame}
 
-
-
-\documentclass{beamer}
-
-\input{preamble.tex}
-\usepackage{breqn} % Breaks lines
-
-\usepackage{amsmath}
-\usepackage{mathtools}
-
-\usepackage{pdfpages} % \includepdf
-
-\usepackage{listings} % R code
-\usepackage{verbatim} % verbatim
-
-% Video stuff
-\usepackage{media9}
-
-% packages for bibs and cites
-\usepackage{natbib}
-\usepackage{har2nat}
-\newcommand{\possessivecite}[1]{\citeauthor{#1}'s \citeyearpar{#1}}
-\usepackage{breakcites}
-\usepackage{alltt}
-
-% Setup math operators
-\DeclareMathOperator{\E}{E} \DeclareMathOperator{\tr}{tr} \DeclareMathOperator{\se}{se} \DeclareMathOperator{\I}{I} \DeclareMathOperator{\sign}{sign} \DeclareMathOperator{\supp}{supp} \DeclareMathOperator{\plim}{plim}
-\DeclareMathOperator*{\dlim}{\mathnormal{d}\mkern2mu-lim}
-\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
-   \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
-\newcommand*\colvec[1]{\begin{pmatrix}#1\end{pmatrix}}
-
-\newcommand{\myurlshort}[2]{\href{#1}{\textcolor{gray}{\textsf{#2}}}}
-
-
-\begin{document}
-
-\imageframe{./lecture_includes/mixtape_did_cover.png}
-
-
-% ---- Content ----
 
 
 
@@ -1123,781 +1003,6 @@ Sometimes, an empirical literature may be criticized using nothing more than pla
 \end{frame}
 
 
-
-\section{Including Covariates}
-
-\subsection{Inverse probability weighting}
-
-\begin{frame}{Controls}
-
-\begin{itemize}
-\item Controls can address omitted variable bias (backdoor criterion), and they can improve precision
-\item OLS can accommodate controls, and so we tend to include them so long as they are time varying 
-\item But unfortunately, time varying covariates can create problems, especially if the treatment causes the covariates (bad controls, colliders)
-\end{itemize}
-
-\end{frame}
-
-
-
-
-
-
-\begin{frame}{Inverse probability weighting DiD}
-
- Abadie (2005) incorporates baseline covariates into the propensity score which are then used as weights to estimate the ATT in a simple 3-step process
-	\begin{enumerate}
-	\item Calculate each unit's ``after minus before'' (DiD equation)
-	\item Estimate the conditional probability of treatment based on baseline covariates (propensity score estimation)
-	\item Weight the comparison group's DiD equation with the IPW
-	\end{enumerate}
-
-\end{frame}
-
-\begin{frame}{Terms}
-
-\begin{itemize}
-\item $t$ is year of treatment which doesn't vary across units (so no differential timing)
-\item $Y^1$ and $Y^0$ are potential outcomes (counterfactual versus actual)
-\item $D$ is 1 or 0 based on group and time
-\item $X_b$ are ``baseline'' covariates \textbf{only} -- they do not vary over time, which means propensity scores are estimated off the $b$ period \textbf{only}
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Assumptions}
-
-Kind of common for this propensity score literature to only have two assumptions.  But usually the first conditional independence.  Now it is parallel trends because this is DD
-
-\begin{enumerate}
-\item Conditional parallel trends $$E[Y^0_t - Y^0_b|D=1,X_b] - E[Y^0_t - Y^0_t | D=0, X_b]$$ (Notice the $b$ subscript.  What is that you think?)
-\item Common support $$Pr(D=1)>0; Pr(D=1|X)<1$$ Let's see a picture of common support that I drew.  Apologies it's horrible
-\end{enumerate}
-
-\end{frame}
-
-\begin{frame}{Common support}
-
-As we are identifying the ATT, we only need common support with respect to treated units
-
-\bigskip
-
-Your identify assumptions are always with respect to the missing covariates in other words and for the ATT, you are missing $Y^0$ for the treatment group
-
-\bigskip
-
-If we were estimating ATU, we'd be missing $Y^1$ for controls and need common support ($Y$ in treatment for all ranges of control), and for ATE we'd need both
-
-\end{frame}
-
-\begin{frame}{Visualizing propensity score to get common support}
-
-	\begin{figure}
-	\includegraphics[scale=0.05]{./lecture_includes/common_support_abadie.png}
-	\end{figure}
-
-\end{frame}
-
-\begin{frame}{Definition and estimation}
-
-Defining the ATT parameter of interest
-\begin{equation}
-ATT=E[Y^1_t - Y^0_t |D_t=1]
-\end{equation}
-
-\bigskip
-Abadie's estimator
-\begin{equation}
-E\bigg [ \frac{Y_t - Y_b}{Pr(D_t=1)} \times \frac{D_t - Pr(D=1|X_b)}{1-Pr(D=1|X_b)} \bigg ]
-\end{equation}
-
-
-\end{frame}
-
-
-\begin{frame}{Propensity scores}
-
-\begin{itemize}
-\item It's common to hear people say that we don't know the propensity score; we can only estimate it. Same here -- we approximate it with regressions
-\item Paper is titled ``Semi-parametric DiD'' because Abadie imposes structure on the polynomials used to construct the propensity score (``series logit'')
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}{Abadie 2005 influence}
-
-	\begin{figure}
-	\includegraphics[scale=0.25]{./lecture_includes/abadie_restud_ipw}
-	\end{figure}Abadie (2005) is his fourth most cited paper
-
-\end{frame}
-
-
-
-
-\subsection{Double Robust DiD}
-
-\begin{frame}{Doubly Robust Difference-in-differences}
-
-\begin{itemize}
-\item DR models control for covariates twice -- once using the propensity score, once using outcomes adjusted by regression -- and are unbiased so long as:
-	\begin{itemize}
-	\item The regression specification for the outcome is correctly specified
-	\item The propensity score specification is correctly specified
-	\end{itemize}
-\item Sant'Anna and Zhao (2020) incorporated DR into DiD by combining inverse probability weighting and outcome regression into a single DiD model
-\item It's in the engine of Callaway and Sant'Anna (2020) that we discuss later so it merits close study
-\item One of my favorite lesser known of the new DiD papers
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Patterns in econometrician reasoning}
-
-\begin{enumerate}
-\item Define the target parameter first (as opposed to writing down a regression specification first)
-\item Identification (e.g., parallel trends)
-\item Estimation
-\item Aggregation
-\item Inference
-\end{enumerate}
-
-\end{frame}
-
-
-\begin{frame}{Defining the target parameter}
-
-Major part of the new econometrics is to always start with the target parameter and build to it using estimation and identification that ``works''
-
-\bigskip
-
-\begin{eqnarray*}
-\delta = E[Y^1_{it} - Y^0_{it} | D_i=1]
-\end{eqnarray*}
-
-\end{frame}
-
-\begin{frame}{Identification assumptions I: Data}
-
-Assumption 1: Assume panel data or repeated cross-sectional data
-
-\bigskip
-
-Handling repeated cross-sectional data is possible but assumes stationarity which is a kind of stability assumption, but I'll use panel representation. 
-
-\bigskip
-
-Cross-sections will be potentially violated with changing sample compositions (e.g., the Napster example). 
-
-\end{frame}
-
-\begin{frame}{Identification assumptions II: Modification to parallel trends}
-
-Assumption 2: Conditional parallel trends
-
-\bigskip
-
-Counterfactual trends for the treatment group are the same as the control group for all values of $X$
-
-\begin{eqnarray*}
-E[Y_1^0 - Y_0^0 | X, D=1] = E[Y^0_1 - Y^0_0 | X, D=0]
-\end{eqnarray*}
-
-\end{frame}
-
-\begin{frame}{Identification assumptions III: Common support}
-
-Assumption 3: Common support
-
-\bigskip
-
-For some $e>0$, the probability of being in the treatment group is greater than $e$ and the probability of being in the treatment group conditional on $X$ is $\leq1-e$. 
-
-\bigskip
-
-Intuition of assumption 3: Called overlap or common support. Means there is at least a small fraction of the population that is treated and that for every value of the covariates $X$ there is at least a small chance that the unit is not treated. It's called common support when it's a propensity score but it's just about the distribution of treatment and control across values of $X$. Very common when dealing with covariate comparisons as otherwise you're extrapolating (curse of dimensionality)
-
-\end{frame}
-
-\begin{frame}{Estimating DD with Assumptions 1-3}
-
-\begin{itemize}
-\item Assumptions 1-3 gives us a couple of options of estimating the DiD
-\item We can either use the outcome regression (OR) approach of Heckman, et al 1997
-\item Or we can use the inverse probability weighting (IPW) approach of Abadie (2005)
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{Heckman, et al. 1997}
-
-	\begin{figure}
-	\includegraphics[scale=0.35]{./lecture_includes/petra_restud_1997}
-	\end{figure}
-
-\end{frame}
-
-
-
-\begin{frame}{Outcome regression}
-
-This is the Heckman, et al. (1997) approach where the outcome evolution is modeled with a regression
-
-\bigskip
-
-\begin{eqnarray*}
-\widehat{\delta}^{OR} = \overline{Y}_{1,1} - \bigg [ \overline{Y}_{1,0} + \frac{1}{n^T} \sum_{i|D_i=1} ( \widehat{\mu}_{0,1}(X_i) - \widehat{\mu}_{0,0}(X_i)) \bigg ]
-\end{eqnarray*}
-
-where $\overline{Y}$ is the sample average of $Y$ among units in the treatment group at time $t$ and $\widehat{\mu}(X)$ is an estimator of the true, but unknown, $m_{d,t}(X)$ which is by definition equal to $E[Y_t|D=d,X=x]$.
-
-\end{frame}
-
-
-
-
-\begin{frame}{Outcome regression}
-
-\begin{eqnarray*}
-\widehat{\delta}^{OR} = \overline{Y}_{1,1} - \bigg [ \overline{Y}_{1,0} + \frac{1}{n^T} \sum_{i|D_i=1} ( \widehat{\mu}_{0,1}(X_i) - \widehat{\mu}_{0,0}(X_i)) \bigg ]
-\end{eqnarray*}
-
-\begin{enumerate}
-\item Regress changes $\Delta Y$ on $X$ among untreated groups using baseline covariates only
-\item Get fitted values of the regression using all $X$ from $D=1$ only.  Average those
-\item Calculate change in this fitted $Y$ among treated with the average fitted values
-\end{enumerate}
-
-\end{frame}
-
-\begin{frame}{Inverse probability weighting}
-
-This is the Abadie (2005) approach where we use weighting
-
-\begin{eqnarray*}
-\widehat{\delta}^{ipw} = \frac{1}{E_N[D]} E \bigg [ \frac{D-\widehat{p}(X)}{1-\widehat{p}(X)} (Y_1-Y_0) \bigg ]
-\end{eqnarray*}
-
-where $\widehat{p}(X)$ is an estimator for the true propensity score. Reduces the dimensionality of $X$ into a single scalar.
-
-\end{frame}
-
-\begin{frame}{These models cannot be ranked}
-
-\begin{itemize}
-\item Outcome regression needs $\widehat{\mu}(X)$ to be correctly specified, whereas
-\item Inverse probability weighting needs $\widehat{p}(X)$ to be correctly specified
-\item It's hard to ``rank'' these two in practice with regards to model misspecification because each is inconsistent when their own models are misspecified
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{TWFE}
-
-Consider our earlier TWFE specification:
-
-\begin{eqnarray*}
-Y_{it} = \alpha_1  + \alpha_2 T_t + \alpha_3 D_i +  \delta (T_i \times D_t)  + \varepsilon_{it}
-\end{eqnarray*}
-
-\bigskip
-
-Just add in covariates then right?
-
-\begin{eqnarray*}
-Y_{it} = \alpha_1  + \alpha_2 T_t + \alpha_3 D_i  + \delta (T_i \times D_t) + \theta \cdot X_{it} + \varepsilon_{it}
-\end{eqnarray*}
-
-Sure! If you're willing to impose three \emph{more} assumptions
-
-\end{frame}
-
-
-
-
-\begin{frame}{Decomposing TWFE with covariates}
-
-TWFE places restrictions on the DGP. Previous TWFE regression under assumptions 1-3 implies the following:
-
-\bigskip
-
-\begin{eqnarray*}
-E[Y^1_1|D=1,X] = \alpha_1 + \alpha_2 + \alpha_3 + \delta + \theta X
-\end{eqnarray*}
-
-\bigskip
-
-Conditional parallel trends implies
-
-\small
-\begin{eqnarray*}
-&&E[Y^0_{1} - Y^0_{0}|D=1,X]= E[Y^0_{1} - Y^0_{0}|D=0,X] \\
-&&E[Y^0_{1}|D=1,X] - E[Y^0_{0}|D=1,X]= E[Y^0_{1}|D=0,X] - E[Y^0_{0}|D=0,X] \\
-&&E[Y^0_{1}|D=1,X] = E[Y^0_{0}|D=1,X] + E[Y^0_{1}|D=0,X] - E[Y^0_{0}|D=0,X] \\
-&&E[Y^0_{1}|D=1,X] = E[Y_{0}|D=1,X] + E[Y_{1}|D=0,X] - E[Y_{0}|D=0,X] \\
-\end{eqnarray*}
-
-
-\end{frame}
-
-\begin{frame}{Switching equation substitution}
-
-Last line from the switching equation. This gives us:
-
-\begin{eqnarray*}
-E[Y^0_{1}|D=1,X] = \alpha_1  + \alpha_2 + \alpha_3 + \theta X
-\end{eqnarray*}
-
-Now compare this with our earlier $Y^1$ expression
-
-\begin{eqnarray*}
-E[Y^1_1|D=1,X] = \alpha_1 + \alpha_2 + \alpha_3 + \delta + \theta X
-\end{eqnarray*}
-
-We can define our target parameter, the ATT, now in terms of the fixed effects representation
-
-\end{frame}
-
-
-\begin{frame}{Collecting terms}
-
-TWFE representation of our conditional expectations of the potential outcomes
-\begin{eqnarray*}
-&&E[Y^1_1|D=1,X] = \alpha_1 + \alpha_2 + \alpha_3 + \delta + \theta_1 X \\
-&&E[Y^0_{1}|D=1,X] = \alpha_1  + \alpha_2 + \alpha_3 + \theta_2 X \\
-\end{eqnarray*}
-
-Substitute these into our target parameter
-
-\begin{eqnarray*}
-ATT &=& E[Y^1_1|D=1,X]  - E[Y^0_{1}|D=1,X]   \\
-&&=(\alpha_1 + \alpha_2 + \alpha_3 + \delta + \theta_1 X) - ( \alpha_1  + \alpha_2 + \alpha_3 + \theta_2 X )\\
-&&=\delta + (\theta_1 X - \theta_2 X)
-\end{eqnarray*}
-
-\bigskip
-
-What if $\theta_1 X \neq \theta_2 X$?
-
-\end{frame}
-
-\begin{frame}{Assumption 4: Homogeneous treatment effects in X}
-
-
-TWFE requires homogenous treatment effects in $X$ (i.e., the treatment effect is the same for all $X$)
-
-\bigskip
-
-If $X$ is sex, then effects are the same for males and females.
-
-\bigskip
-
-  If $X$ is continuous, like income, then the effect is the same whether someone makes \$1 or \$1 million.
-
-\end{frame}
-
-\begin{frame}{X-specific trends}
-
-TWFE also places restrictions on covariate trends for the two groups too.  Take conditional expectations of our TWFE equation. 
-
-\begin{eqnarray*}
-E[Y_1|D=1] &=& \alpha_1 + \alpha_2 + \alpha_3 + \delta + \theta X_{11} \\
-E[Y_0|D=1] &=& \alpha_1 + \alpha_3 + \theta X_{10} \\
-E[Y_1|D=0] &=& \alpha_1 + \alpha_2 + \theta X_{01} \\
-E[Y_0|D=0] &=& \alpha_1 + \theta X_{00}
-\end{eqnarray*}
-
-
-\end{frame}
-
-
-\begin{frame}{X-specific trends}
-
-Now take the DiD formula:
-
-\begin{eqnarray*}
-\delta^{DD} = &&\bigg ( (\alpha_1 + \alpha_2 + \alpha_3 + \delta + \theta X_{11} ) - (\alpha_1 + \alpha_3 + \theta X_{10} ) \bigg )- \\
-&& \bigg ( (\alpha_1 + \alpha_2 + \theta X_{01}) - (\alpha_1 + \theta X_{00}) \bigg )
-\end{eqnarray*}
-
-\bigskip
-
-Eliminating terms, we get:
-
-\begin{eqnarray*}
-\delta^{DD} = &&\delta + \\
-&& (\theta X_{11} - \theta X_{10} ) - (\theta X_{01} - \theta X_{00} )
-\end{eqnarray*}
-
-\bigskip
-
-Second line requires that trends in X for treatment group equal trends in X for control group.
-
-\end{frame}
-
-
-\begin{frame}{Assumption 5 and 6}
-
-We need ``no X-specific trends'' for the treatment group (assumption 5) and comparison group (assumption 6)
-
-\bigskip
-
-\textbf{Intuition}: No X-specific trends means the evolution of potential outcome $Y^0$ is the same regardless of $X$. This would mean you cannot allow rich people to be on a different trend than poor people, for instance.
-
-\bigskip
-
-Without these six, in general TWFE will not identify ATT. 
-
-\end{frame}
-
-\begin{frame}{Why not both?}
-
-\begin{itemize}
-\item Let's review the problem.  What if you claim you need $X$ for conditional parallel trends?
-\item You have three options:
-	\begin{enumerate}
-	\item Outcome regression (Heckman, et al. 1997) -- needs Assumptions 1-3
-	\item Inverse probability weighting (Abadie 2005) -- needs Assumptions 1-3
-	\item TWFE (everybody everywhere all the time) -- needs Assumptions 1-6
-	\end{enumerate}
-\item Problem is 1 and 2 need the models to be correctly specified
-\item Doubly robust combines them to give us insurance; we now get two chances to be wrong, as opposed to just one
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{Double Robust DiD}
-\begin{eqnarray*}
-\delta^{dr} = E \bigg [ \bigg ( \frac{D}{E[D]} -\frac{ \frac{p(X)(1-D)}{(1-p(X))} }{E \bigg [\frac{p(X)(1-D)}{(1-p(X))} \bigg ]} \bigg  )( \Delta Y - \mu_{0,\Delta}(X)) \bigg ]
-\end{eqnarray*}
-
-\begin{eqnarray*}
-&&p(x): \text{propensity score model} \\
-&& \Delta Y = Y_1 - Y_0 = Y_{post} - Y_{pre} \\
-&& \mu_{d,\Delta} = \mu_{d,1}(X) - \mu_{d,0}(X), \text{ where } \mu(X) \text{ is a model for} \\
-&& m_{d,t} = E[Y_t|D=d,X=x]
-\end{eqnarray*}So that means $\mu_{0,\Delta}$ is just the control group's change in average $Y$ for each $X=x$
-
-\end{frame}
-
-\begin{frame}{Double Robust DiD}
-
-\begin{eqnarray*}
-\delta^{dr} = E \bigg [ \bigg ( \frac{D}{E[D]} -\frac{ \frac{p(X)(1-D)}{(1-p(X))} }{E \bigg [\frac{p(X)(1-D)}{(1-p(X))} \bigg ]} \bigg  )( \Delta Y - \mu_{0,\Delta}(X)) \bigg ]
-\end{eqnarray*}
-
-Notice how the model controls for $X$: you're weighting the adjusted outcomes using the propensity score
-
-\bigskip
-
-The reason you control for $X$ twice is because you don't know which model is right.  DR DiD frees you from making a choice without making you pay too much for it
-
-
-\end{frame}
-
-\begin{frame}{Efficiency}
-
-\begin{itemize}
-\item Authors exploit all the restrictions implied by the assumptions to construct semiparametric bounds
-\item This is where the influence function comes in, which those who have studied the DID code closely may have noticed
-\item One of the main results of the paper is that the DR DiD estimator is also DR for inference
-\item Let's skip to Monte Carlos
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Monte Carlo details}
-
-\begin{itemize}
-\item Compare DR with TWFE, OR and IPW
-\item Sample size is 1,000
-\item 10,000 Monte Carlo experiments
-\item Propensity score estimated with logit; OR estimated using linear specification
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}[plain]
-
-\begin{table}[htbp]\centering
-\scriptsize
-\caption{Monte Carlo Simulations, DGP1, Both OR and Propensity score correct}
-\centering
-\begin{threeparttable}
-\begin{tabular}{l*{5}{c}}
-\toprule
-\multicolumn{1}{l}{\textbf{}}&
-\multicolumn{1}{c}{\textbf{Bias}}&
-\multicolumn{1}{c}{\textbf{RMSE}}&
-\multicolumn{1}{c}{\textbf{SE}}&
-\multicolumn{1}{c}{\textbf{Coverage}}&
-\multicolumn{1}{c}{\textbf{CI length}}\\
-\midrule
-TWFE & -20.9518 & 21.1227 & 2.5271 & 0.000 & 9.9061 \\
-OR & -0.0012 & 0.1005 & 0.1010 & 0.9500 & 0.3960 \\
-IPW & 0.0257 & 2.7743 & 2.6636 & 0.9518 & 10.4412 \\
-DR & -0.0014 & 0.1059 & 0.1052 & 0.9473 & 0.4124 \\
-\bottomrule
-\end{tabular}
-\end{threeparttable}
-\end{table}
-
-\end{frame}
-
-
-\begin{frame}[plain]
-	\begin{figure}
-	\includegraphics[scale=0.25]{./lecture_includes/mc_dr_1.png}
-	\end{figure}
-
-\end{frame}
-
-
-\begin{frame}[plain]
-
-\begin{table}[htbp]\centering
-\scriptsize
-\caption{Monte Carlo Simulations, DGP4, Neither OR and Propensity score correct}
-\centering
-\begin{threeparttable}
-\begin{tabular}{l*{5}{c}}
-\toprule
-\multicolumn{1}{l}{\textbf{}}&
-\multicolumn{1}{c}{\textbf{Bias}}&
-\multicolumn{1}{c}{\textbf{RMSE}}&
-\multicolumn{1}{c}{\textbf{SE}}&
-\multicolumn{1}{c}{\textbf{Coverage}}&
-\multicolumn{1}{c}{\textbf{CI length}}\\
-\midrule
-TWFE & -16.3846 & 16.5383 & 3.6268 & 0.000 & 14.2169 \\
-OR & -5.2045 & 5.3641 & 1.2890 & 0.0145 & 5.0531 \\
-IPW & -1.0846 & 2.6557 & 2.3746 & 0.9487 & 9.3084 \\
-DR & -3.1878 & 3.4544 & 1.2946 & 0.3076 & 5.0749 \\
-\bottomrule
-\end{tabular}
-\end{threeparttable}
-\end{table}
-
-\end{frame}
-
-\begin{frame}[plain]
-	\begin{figure}
-	\includegraphics[scale=0.12]{./lecture_includes/mc_dr_2.png}
-	\end{figure}
-
-
-\end{frame}
-
-\subsection{Lalonde lab}
-
-\begin{frame}{R and Stata Code}
-
-There is code in R and Stata (all DiD estimators are now beautifully arranged at a website hosted by Asjad Naqvi)
-\begin{itemize}
-\item Stata: \textbf{drdid}
-\item R: \textbf{drdid}
-\end{itemize}
-
-\bigskip
-
-\url{https://asjadnaqvi.github.io/DiD/docs/01_stata/}
-
-\bigskip
-
-Remember -- it's for 2x2 with covariates (i.e., one treatment group). 
-
-\end{frame}
-
-\begin{frame}{Application using real data}
-
-\begin{itemize}
-\item Let's now use a real example with real data and see how well this does
-\item Famous paper in AER by Lalonde (1986), an Orley and Card student at Princeton
-\item Found that most program evaluation did badly, but let's revisit it with diff-in-diff
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Description of NSW Job Trainings Program}
-	
-The National Supported Work Demonstration (NSW), operated by Manpower Demonstration Research Corp in the mid-1970s:
-	\begin{itemize}
-	\item was a temporary employment program designed to help disadvantaged workers lacking basic job skills move into the labor market by giving them work experience and counseling in a sheltered environment
-	\item was also unique in that it \textbf{randomly assigned} qualified applicants to training positions:
-		\begin{itemize}
-		\item \textbf{Treatment group}: received all the benefits of NSW program
-		\item \textbf{Control group}: left to fend for themselves
-		\end{itemize}
-	\item admitted AFDC females, ex-drug addicts, ex-criminal offenders, and high school dropouts of both sexes
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{NSW Program}
-	
-	\begin{itemize}
-	\item Treatment group members were:
-		\begin{itemize}
-		\item guaranteed a job for 9-18 months depending on the target group and site
-		\item divided into crews of 3-5 participants who worked together and met frequently with an NSW counselor to discuss grievances and performance
-		\item paid for their work
-		\end{itemize}
-	\item Control group members were randomized so the same
-	\item Note: the randomization balanced observables and unobservables across the two arms, thus enabling the estimation of an ATE for the people who self-selected into the program
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{NSW Program}
-
-\begin{itemize}
-	\item Other details about the NSW program:
-		\begin{itemize}
-		\item \underline{Wages}:  NSW offered the trainees lower wage rates than they would've received on a regular job, but allowed their earnings to increase for satisfactory performance and attendance
-		\item \underline{Post-treatment}: after their term expired, they were forced to find regular employment
-		\item \underline{Job types}:  varied within sites -- gas station attendant, working at a printer shop -- and males and females were frequently performing different kinds of work
-		\end{itemize}
-\end{itemize}
-
-\end{frame}
-	
-\begin{frame}{NSW Data}
-	
-	\begin{itemize}
-	\item \underline{NSW data collection}:
-		\begin{itemize}
-		\item MDRC collected earnings and demographic information from both treatment and control at baseline and every 9 months thereafter
-		\item Conducted up to 4 post-baseline interviews
-		\item Different sample sizes from study to study can be confusing, but has simple explanations
-		\end{itemize}
-	\end{itemize}
-\end{frame}
-	
-
-\begin{frame}{NSW Data}
-
-\begin{itemize}
-	\item \underline{Estimation}:
-		\begin{itemize}
-		\item NSW was a randomized job trainings program; therefore estimating the average treatment effect is straightforward:
-			\begin{eqnarray*}
-			\frac{1}{N_t}\sum_{D_i=1}Y_i - \frac{1}{N_c}\sum_{D_i=0}Y_i \approx E[Y^1-Y^0] 
-			\end{eqnarray*}in large samples assuming treatment selection is independent of potential outcomes (randomization) -- i.e., $(Y^0,Y^1)\independent{D}$. 
-		\end{itemize}
-	\item \underline{NSW worked}: Treatment group participants' real earnings post-treatment (1978) was positive and economically meaningful -- $\approx$ \$900 (LaLonde 1986) to \$1,800 (Dehejia and Wahba 2002) depending on the sample used
-\end{itemize}
-
-\end{frame}
-	
-\begin{frame}[plain]
-	\begin{center}
-	LaLonde, Robert J. (1986). \myurlshort{http://business.baylor.edu/scott_cunningham/teaching/lalonde-1986.pdf}{``Evaluating the Econometric Evaluations of Training Programs with Experimental Data''}. \emph{American Economic Review}. 
-	\end{center}
-	
-\underline{LaLonde's study} was \textbf{not} an evaluation of the NSW program, as that had been done, but rather an evaluation of econometric models done by:
-		\begin{itemize}
-		\item replacing the experimental NSW control group with non-experimental control group drawn from two nationally representative survey datasets: Current Population Survey (CPS) and Panel Study of Income Dynamics (PSID)
-		\item estimating the average effect using non-experimental workers as controls for the NSW trainees 
-		\item comparing his non-experimental estimates to the experimental estimates of \$900
-		\end{itemize}
-\end{frame}
-
-\begin{frame}{LaLonde (1986)}
-
-\begin{itemize}
-
-	\item \underline{LaLonde's conclusion}: available econometric approaches were biased and inconsistent
-		\begin{itemize}
-		\item His estimates were way off and usually the wrong sign
-		\item Conclusion was influential in policy circles and led to greater push for more experimental evaluations
-		\end{itemize}
-
-\end{itemize}
-
-\end{frame}
-
-\imageframe{./lecture_includes/lalonde_table5a.png}
-\imageframe{./lecture_includes/lalonde_table5b.png}
-
-\begin{frame}[plain,shrink=10]{Imbalanced covariates for experimental and non-experimental samples}
-
-    \begin{center}
-		\begin{table}
-		\begin{tabular}{lcccccc}
-		\hline \hline
-		\multicolumn{3}{c}{}&
-		\multicolumn{1}{c}{CPS}&
-		\multicolumn{1}{c}{NSW}\\
-		
-		\multicolumn{1}{c}{}&
-		\multicolumn{2}{c}{All} &
-		\multicolumn{1}{c}{Controls} &
-		\multicolumn{1}{c}{Trainees} \\
-
-		\multicolumn{3}{c}{}&
-		\multicolumn{1}{c}{$N_c=15,992$}&
-		\multicolumn{1}{c}{$N_t=297$}&
-		\multicolumn{1}{c}{}&
-		\multicolumn{1}{c}{}\\
-
-		\multicolumn{1}{l}{covariate}&
-		\multicolumn{1}{c}{mean}&
-		\multicolumn{1}{c}{(s.d.)}&
-		\multicolumn{1}{c}{mean}&
-		\multicolumn{1}{c}{mean}&
-		\multicolumn{1}{c}{t-stat}&
-		\multicolumn{1}{c}{diff}\\
-		\hline
-Black    & 0.09 & 0.28 & 0.07 & 0.80 & 47.04 & -0.73\\
-Hispanic & 0.07 & 0.26 & 0.07 & 0.94 & 1.47 & -0.02\\
-Age & 33.07 & 11.04 & 33.2 & 24.63 & 13.37  & 8.6\\
-Married & 0.70 & 0.46 & 0.71 & 0.17 & 20.54 & 0.54\\
-No degree & 0.30 & 0.46 & 0.30 & 0.73 & 16.27 & -0.43\\
-Education & 12.0 & 2.86 & 12.03 & 10.38 & 9.85 & 1.65 \\
-1975 Earnings   & 13.51 & 9.31 & 13.65 & 3.1 & 19.63 & 10.6\\
-1975 Unemp  & 0.11 & 0.32 & 0.11 & 0.37 & 14.29 & -0.26\\
-		\hline 
-		\end{tabular}
-		\end{table}
-    \end{center}
-
-\end{frame}
-
-
-\begin{frame}{Lab}
-
-\url{https://github.com/Mixtape-Sessions/Causal-Inference-2/tree/main/Lab/Lalonde}
-
-\bigskip
-
-Together let's do questions 1 and 2a-c
-
-\end{frame}
-
-
-
-
-
-\begin{frame}{Concluding remarks}
-
-\begin{itemize}
-\item So we hopefully see a few of the key elements of DiD
-	\begin{itemize}
-	\item Remember: the DiD equation and ATT equation are distinct concepts and definitions
-	\item DiD designs can be implemented with OLS specifications that calculate differences in means
-	\item Parallel pre-trends and parallel trends are not the same thing -- the first is testable, the latter is not testable
-	\item Event studies are mandatory but pre-trends are smoking guns, but can mislead nonetheless
-	\end{itemize}
-\item Including \emph{time-varying} covariates in the canonical OLS specification requires additional assumptions
-\item Doubly robust and IPW incorporate covariates through propensity scores and outcome regressions (or both) using baseline covariate means only
-\end{itemize}
-
-\end{frame}
 
 
 \end{document}
