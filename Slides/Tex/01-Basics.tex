@@ -484,6 +484,32 @@ It's in \textcolor{red}{red} because parallel trends is untestable and criticall
 	
 \end{frame}
 
+\begin{frame}{Work together \#1}
+
+Work together: 
+
+\begin{eqnarray*}
+\widehat{\delta} &=& \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
+\end{eqnarray*}Assume that the $U$ group is treated in both periods.  Replace expectations with potential outcomes and rewrite using the ``add zero'' trick we did.  How is this similar to what we did before?  Is parallel trends enough?
+
+
+\end{frame}
+
+\begin{frame}{Work together \#2}
+
+Work together: 
+
+\begin{eqnarray*}
+\widehat{\delta} &=& \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
+\end{eqnarray*}In the pre-period, how important is it that the $U$ group and $k$ group have the same treatment status?  
+
+
+\end{frame}
+
+
+
+
+
 
 \begin{frame}{What is parallel trends}
 
@@ -584,6 +610,12 @@ Before we move into regression, let's go through a simple exercise to really pin
 \bigskip
 
 But let's listen to Orley's opinion about the paper's controversy at the time.  \url{https://youtu.be/MOtbuRX4eyQ?t=1882}
+
+\end{frame}
+
+\begin{frame}{Reaction to the paper according to Card}
+
+\url{https://youtu.be/1soLdywFb_Q?t=3097}
 
 \end{frame}
 
@@ -758,6 +790,14 @@ Most people will simply cluster, but there are issues if you have too few cluste
 	\item Even if pre-trends are the same one still has to worry about other policies changing at the same time (omitted variable bias is a parallel trends violation)
 
 \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Ashenfelter's dip}
+
+Orley: \url{https://youtu.be/MOtbuRX4eyQ?t=960}
+
+Card: \url{https://youtu.be/1soLdywFb_Q?t=3333}
 
 \end{frame}
 
