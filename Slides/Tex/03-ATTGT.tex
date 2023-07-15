@@ -39,7 +39,269 @@
 % ---- Content ----
 
 \section{Differential timing}
-\subsection{Twoway fixed effects }
+
+\subsection{Introduction}
+
+\begin{frame}{Differential timing outline}
+
+We will cover some of the properties of twoway fixed effects (TWFE), some solutions and my personal opinions
+
+\bigskip
+
+\begin{enumerate}
+	\item Introduce TWFE as a panel estimator and its use in DiD
+	\item TWFE Pathologies in static specification
+		\begin{itemize}
+		\item Goodman-Bacon decomposition as diagnosis of the problem
+		\item Aggregating group-time ATT to weaken assumptions
+		\end{itemize}
+	\item TWFE Pathologies in event study specification
+		\begin{itemize}
+		\item Sun and Abraham as both a diagnosis and a cure 
+		\item Comparing with Callaway and Sant'anna
+		\end{itemize}
+	\item Application, practical advice and code
+\end{enumerate}
+
+\end{frame}	
+
+
+\begin{frame}{Beaver dam and diff-in-diff credibility crisis}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+\item Differential timing literature is like a stick that struck a beaver's dam
+\item Stick made a hole causing a leak
+\item Gradually that hole got larger and the leak got bigger
+\item Eventually the dam collapsed 
+\item That's now
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[scale=0.25]{./lecture_includes/beaverdam}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Difference-in-differences credibility crisis}
+
+\begin{itemize}
+\item I'll start with circa 2016 onward -- several grad students and assistant professors found critical pathologies with TWFE and developed solutions  
+\item Many simultaneous discoveries, some redundancies, and \textbf{sudden} awareness of the issues started happening around 2017, eventually became a massive thing
+\item Extreme meteoric rise, unusual for econometrics
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Compare with LATE paper}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+\item Compare with Imbens and Angrist 1995 LATE in \emph{Econometrica}
+\item 61 annual cites the year Imbens is denied tenure at Harvard for what would later win him a Nobel Prize
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[scale=0.25]{./lecture_includes/guido_late}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{Compare with synth paper}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+\item Athey and Imbens called synth the most important innovation in causal inference of the last two decades
+\item Most econometrics papers, even influential ones, show slow growth
+\item Something was different about diff-in-diff even before the econometricians recently shifted their attention to it
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[scale=0.25]{./lecture_includes/basque_synth}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{Diff-in-diff had belonged to the empiricists}
+
+	\begin{figure}
+	\caption{Currie, et al. (2020)}
+	\includegraphics[scale=0.25]{./lecture_includes/currie_did.png}
+	\end{figure}
+
+\bigskip
+
+\footnotesize
+
+With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertrand, Duflo and Mullainthan 2004), econometricians had not given it much notice
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Borusyak et al}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+\item Starts it all; written as grad students at Harvard
+\item Goes through many revisions, posted as working paper
+\item Returned to a few years ago with a third coauthor, Jahn Spiess, now R\&R at Restud
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[scale=0.25]{./lecture_includes/kirill_cites}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{``dCdH''}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+\item First major hit (in AER), may have been in working paper in 2017 (at least 2018)
+\item Very thorough decomposition of the TWFE pathology, very general solution, included Stata code
+\item Very active and talented young team (assistant profs when this was done)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[scale=0.25]{./lecture_includes/dcdh_cites}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Goodman-Bacon}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+\item Arguably the most influential in terms of bringing attention to the problem (but no solution)
+\item Begun while grad student at Michigan, published last of the crop
+\item Probably Twitter network had a role as he was very active, also not an econometrician
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[scale=0.25]{./lecture_includes/andrew_cites}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{``CS''}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+\item Second published solution to the problem, written while assistant professors at Vanderbilt and Ole Miss, 
+\item Pedro is a UC3M alum (2015 grad) and Brantly is a Vanderbilt grad
+\item Both are now coauthors with Andrew Goodman-Bacon
+\item Introduced new terms like group-time ATT, released very tight R code (``did'')
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[scale=0.25]{./lecture_includes/pedro_cites}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\begin{frame}{``SA''}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+\item Third published solution to the problem, very similar to CS
+\item Focus was on decomposing the event study
+\item Written while grad students at MIT but Sophie Sun is now an assistant professor at CEMFI!
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[scale=0.25]{./lecture_includes/sun_cites}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{There's even more and more coming}
+
+\begin{itemize}
+\item Gardner, Wooldridge, John Roth, and on and on
+\item Too many people to name at this point
+\item Given the large cites, we are likely to keep seeing more on this
+\item Probably shifting applied practice for the better but there are some growing pains
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+\section{TWFE Pathologies}
+
+
+\subsection{TWFE }
+
+
+
+
+\begin{frame}{Twoway fixed effects}
+
+\begin{itemize}
+\item When working with panel data, the so-called ``twoway fixed effects'' (TWFE) estimator was the workhorse estimator
+\item And from the start, it was used with diff-in-diff
+\item But at the start, it wasn't staggered adoption -- it was a much simpler design in which a group was treated in one year, and a comparison group wasn't
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Two OLS Models}
+
+\begin{eqnarray}
+Y_{ist} &=& \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \delta (Treat_{is} \times Post_t) + \varepsilon_{ist} \\
+Y_{ist} &=& \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}
+\end{eqnarray}
+
+\bigskip
+
+First equation is used for simple designs when everyone is treated at once; second equation was used when different groups were treated at different times (``differential timing'')
+
+\bigskip
+
+First equation works; second one only sometimes works
+
+\end{frame}
+
+
+\subsection{Potential outcomes}
+
+\begin{frame}{Equivalence}
+$$Y_{ist} = \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \textcolor{blue}{\delta} (Treat_{is} \times Post_t) + \varepsilon_{ist} $$
+
+\bigskip
+
+$$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overline{y}_k^{pre(k)} \bigg ) - \bigg ( \overline{y}_U^{post(k)} - \overline{y}_U^{pre(k)} \bigg ) $$
+
+\begin{itemize}
+\item Orley claims that the TWFE estimator of $\delta$ and the ``four averages and three subtractions'' are the same thing numerically
+\item And they are -- they are numerically \emph{identical}
+\item And under a particular assumption, they are also unbiased estimates of an aggregate causal parameter
+\item But what if we aren't in the typical 2x2 case? Researchers used the twoway fixed effects method traditionally
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
 
 
 \begin{frame}{Twoway fixed effects}
@@ -176,6 +438,9 @@ Directed acyclic graph showing when to use TWFE
 \end{frame}
 
 \begin{frame}{Notation}
+
+\footnotesize
+
 Single unit:
 
 \[ y_i = \left( \begin{array}{c}
@@ -553,7 +818,35 @@ Gave Client a Massage&       0.022   \\
 
 \end{frame}
 
-\subsection{Castle doctrine reform}
+\begin{frame}{Difference-in-differences}
+
+Keep in mind that yesterday, we had reviewed OLS used for diff-in-diff with two groups and two time periods
+
+$$Y_{ist} = \alpha + \lambda NJ_s + \gamma d_t + \delta (NJ_s \times d_t) + \varepsilon_{ist}$$
+
+\bigskip
+
+But what if there are more than two treatment groups treated at separate times?  What specification?
+
+\end{frame}
+
+
+
+\begin{frame}{Difference-in-differences}
+
+\begin{itemize}
+\item Unclear exactly when it was used, but at some point economists simply began using TWFE with state and year fixed effects and treatment dummy
+
+$$ Y_{ist} = \alpha + \delta D_{st} + \sigma_s + \tau_t + \varepsilon_{ist}$$
+
+\item The hope was that $\widehat{\delta}$ equaled a ``reasonably weighted average'' over all underlying treatment effects and therefore was the ATT
+\item Let's look at an example that is prototypical of a traditional DiD using TWFE with multiple treatment groups (five to be precise)
+\end{itemize}
+
+\end{frame}
+
+
+\subsection{Empirical application of traditional DID}
 
 
 \begin{frame}[plain]
@@ -664,93 +957,88 @@ Main data: FBI Uniform Crime Reports Part 1 Offenses (2000-2010)
 
 
 
-\subsection{Diff-in-diff wars}
 
-\begin{frame}{Difference-in-differences}
+
+
+\section{TWFE Pathologies}
+
+\begin{frame}{Twoway fixed effects}
 
 \begin{itemize}
-\item Keep in mind that yesterday, we had reviewed OLS used for diff-in-diff with two groups and two time periods
-
-$$Y_{ist} = \alpha + \lambda NJ_s + \gamma d_t + \delta (NJ_s \times d_t) + \varepsilon_{ist}$$
-
-\item But what if there are more than two treatment groups?
-\item Unclear exactly when it was used, but at some point economists simply began using TWFE with state and year fixed effects and treatment dummy
-
-$$ Y_{ist} = \alpha + \delta D_{st} + \sigma_s + \tau_t + \varepsilon_{ist}$$
-
-\item The hope was that $\widehat{\delta}$ equaled a ``reasonably weighted average'' over all underlying treatment effects and therefore was the ATT
+\item When working with panel data, the so-called ``twoway fixed effects'' (TWFE) estimator was the workhorse estimator
+\item And from the start, it was used with diff-in-diff
+\item But at the start, it wasn't staggered adoption -- it was a much simpler design in which a group was treated in one year, and a comparison group wasn't
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Diff-in-diff wars}
+\begin{frame}{Two OLS Models}
+
+\begin{eqnarray}
+Y_{ist} &=& \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \delta (Treat_{is} \times Post_t) + \varepsilon_{ist} \\
+Y_{ist} &=& \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}
+\end{eqnarray}
+
+\bigskip
+
+First equation is used for simple designs when everyone is treated at once; second equation was used when different groups were treated at different times (``differential timing'')
+
+\bigskip
+
+First equation works; second one only sometimes works
+
+\end{frame}
+
+
+\subsection{Potential outcomes}
+
+\begin{frame}{Equivalence}
+$$Y_{ist} = \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \textcolor{blue}{\delta} (Treat_{is} \times Post_t) + \varepsilon_{ist} $$
+
+\bigskip
+
+$$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overline{y}_k^{pre(k)} \bigg ) - \bigg ( \overline{y}_U^{post(k)} - \overline{y}_U^{pre(k)} \bigg ) $$
 
 \begin{itemize}
-\item Series of important papers starting in 2016, born independent of one another, by grad students and assistant professors found critical pathologies with TWFE and developed solutions
-\item We're going to basically go in order, but I wanted to show you a little of their influence by focusing on their google cites
-\item Extreme meteoric rise, unusual for econometrics
+\item Orley claims that the TWFE estimator of $\delta$ and the ``four averages and three subtractions'' are the same thing numerically
+\item And they are -- they are numerically \emph{identical}
+\item And under a particular assumption, they are also unbiased estimates of an aggregate causal parameter
+\item But to see this we need new notation -- potential outcomes
 \end{itemize}
 
 \end{frame}
 
 
-\imageframe{./lecture_includes/bjs.png}
-
-\imageframe{./lecture_includes/stacking.png}
-
-\imageframe{./lecture_includes/dcdh.png}
-
-\imageframe{./lecture_includes/bacon.png}
-
-\imageframe{./lecture_includes/cs.png}
-
-\imageframe{./lecture_includes/sa.png}
-
-\imageframe{./lecture_includes/2sdid.png}
-
-\imageframe{./lecture_includes/jeff.png}
-
-
-\begin{frame}{Overview}
-
-\begin{enumerate}
-\item Review TWFE pathologies using Bacon decomposition
-\item Discuss solutions (CS)
-\item Review event study pathology and solution (CS and SA)
-\item Review turning on and off (dCdH)
-\item Stacking (Cengiz, et al. 2019)
-\item Imputation estimators (BJS and 2SDID)
-\end{enumerate}
-
-\end{frame}
-
-
-
-\subsection{TWFE Pathologies}
 
 
 
 
 
 
-\begin{frame}{Differential timing}
+
+
+
+
+
+
+
+
+
+
+\subsection{Bacon decomposition}
+
+\begin{frame}{Discussion of estimate}
+
+
+$$Y_{ist} = \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}$$
+
 
 \begin{itemize}
-\item We covered mostly the simple two group case
-\item In the two group case, we can estimate the ATT under parallel trends using OLS with unit and time fixed effects
-\item If we have covariates, then we can use TWFE under restrictive assumptions, or we have other options (OR, IPW, DR)
-\item Now let's move to a more common scenario where we have more than two groups who get treated at various times
-\end{itemize}
+\item So that's the simple case; what about the differential timing case?  
 
-\end{frame}
+\item If you estimate with OLS with differential timing, what does $\widehat{\delta}$ correspond to?
+\item It also corresponds to the previous ``four averages and three subtractions'' -- but it's numerous of them, not just one
 
-\begin{frame}{2x2 versus differential timing}
-
-\begin{itemize}
-	\item For this next part, similar to how we did with Sant'Anna and Zhao (2020), we will decompose TWFE to understand what it needs for unbiasedness under differential timing
-	\item All of this is from Goodman-Bacon (2021, forthcoming) though the expression of the weights is from 2018 for personal preference
-	\item Goodman-Bacon (2021, forthcoming) shows that parallel trends is \textbf{not enough} for TWFE to be unbiased when treatment adoption is described by differential timing
-	\item TWFE with differential timing uses treated groups as controls -- not all estimators do -- and this can introduce bias
 \end{itemize}
 
 \end{frame}
@@ -759,21 +1047,15 @@ $$ Y_{ist} = \alpha + \delta D_{st} + \sigma_s + \tau_t + \varepsilon_{ist}$$
 
 \begin{frame}{Decomposition Preview}
 
+
 \begin{itemize}
-\item TWFE estimates a parameter that is a weighted average over all 2x2 in your sample
-\item TWFE assigns weights that are a function of sample sizes of each ``group'' and the variance of the treatment dummies for those groups
+\item Andrew Goodman-Bacon decomposed $\widehat{\delta}$ and showed it is numerically identical to a weighted average of all ``four averages and three subtractions''
+\item But, even before we get to causality there are unusual features
+\item TWFE model assigns its own weights which are a function of the size of a ``group'' and the variance of group treatment dummies
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Decomposition (cont.)}
-
-\begin{itemize}
-\item TWFE needs two assumptions: that the variance weighted parallel trends are zero (far more parallel trends iow) and no dynamic treatment effects (not the case with 2x2)
-\item Under those assumptions, TWFE estimator estimates the variance weighted ATT as a weighted average of all possible ATTs
-\end{itemize}
-
-\end{frame}
 
 
 \begin{frame}{$K^2$ distinct DDs}
@@ -853,32 +1135,16 @@ $$\delta_{lk}^{2x2,l} = \bigg ( \overline{y}_l^{POST(k,l)} - \overline{y}_l^{MID
 \end{frame}
 
 
-%\begin{frame}[plain]
-%\begin{center}
-%\textbf{Typical regression equation}
-%\end{center}
-
-%$$y_{it}  =  \delta D_{it}  + \alpha_i + \alpha_t + \epsilon_{it}$$
-
-%\begin{enumerate}
-%\item Partial out the fixed effects (Frisch-Waugh-Lovell theorem) 
-%	\begin{eqnarray*}
-%	\tilde{D}_{it} = (D_{it} - \overline{\overline{D}} ) - (\overline{D}_i - \overline{\overline{D}}) - (\overline{D}_t - \overline{\overline{D}} )\\
-%	\tilde{y}_{it} = (D_{it} - \overline{\overline{y}} ) - (\overline{y}_i - \overline{\overline{y}}) - (\overline{y}_t - \overline{\overline{y}})
-%	\end{eqnarray*}where $\overline{\overline{x}} = \frac{1}{NT}\sum_i \sum_t x_{it}$
-%\item Calculate univariate coefficient by brute force
-%$$\widehat{\delta}^{DD} = \frac{ \widehat{Cov}(\tilde{D}_{it}, \tilde{y}_{it})}{\widehat{Var}(\tilde{D}_{it})} = \frac{ \frac{1}{NT} \sum_i \sum_t (y_{it} - \overline{\overline{y}})(D_{it} - \overline{\overline{D}})}{ \frac{1}{NT} \sum_i \sum_t (D_{it} - \overline{\overline{D}} ) }$$
-%\end{enumerate}
-
-%\end{frame}
 	
 
 \begin{frame}{Bacon decomposition}
 
+$$Y_{ist} = \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}$$
 
-TWFE estimate yields a weighted combination of each groups' respective 2x2 (of which there are 4 in this example)
+
+TWFE estimate of $\widehat{\delta}$ is equal to a weighted average over all group 2x2 (of which there are 4 in this example)
 \begin{eqnarray*}	
-\widehat{\delta}^{DD} = \sum_{k \neq U} s_{kU}\widehat{\delta}_{kU}^{2x2} + \sum_{k \neq U} \sum_{l>k} s_{kl}  \bigg [ \mu_{kl}\widehat{\delta}_{kl}^{2x2,k} + (1-\mu_{kl}) \widehat{\delta}_{lk}^{2x2,l} \bigg]
+\widehat{\delta}^{TWFE} = \sum_{k \neq U} s_{kU}\widehat{\delta}_{kU}^{2x2} + \sum_{k \neq U} \sum_{l>k} s_{kl}  \bigg [ \mu_{kl}\widehat{\delta}_{kl}^{2x2,k} + (1-\mu_{kl}) \widehat{\delta}_{lk}^{2x2,l} \bigg]
 \end{eqnarray*}where that first 2x2 combines the k compared to U and the l to U (combined to make the equation shorter)
 
 \end{frame}
@@ -934,21 +1200,30 @@ s_{kl} &=& \frac{ n_k n_l (\overline{D}_k - \overline{D}_{l} ) ( 1- ( \overline{
 
 \end{frame}
 
-%\begin{frame}[plain]
-%\begin{center}
-%\textbf{DD Decomposition Theorem}
-%\end{center}
 
-%Assume that there are $k=1,\dots,K$ groups of treated units ordered by treatment time $_k^*$ and one control group $U$ which does not receive treatment in the data.  The share of units in group $k$ is $n_k$ and the share of periods that group $k$ spends under treatment is $\overline{D}_k$. The DD estimate from a two-way fixed effects model is a weighted average of all two-group DD estimators.
 
-%\begin{eqnarray*}
-%\widehat{\delta}^{DD} = \sum_{k \neq u} s_{ku} \widehat{\delta}_{ku}^{DD} + \sum_{k \neq u} \sum_{l > k} s_{kl} \bigg [ \mu_{kl} \widehat{\delta}_{kl}^{DD,k} + (1-\mu_{kl} ) \widehat{\delta}_{kl}^{DD,l} \bigg ]
-%\end{eqnarray*}with weights equal to  \begin{eqnarray*} s_{ku} &=& \frac{ n_k n_u \overline{D}_k (1- \overline{D}_k ) }{ \widehat{Var} ( \tilde{D}_{it} )} \\
-%s_{kl'} &=& \frac{ n_k n_l (\overline{D}_k - \overline{D}_{l} ) ( 1- ( \overline{D}_k - \overline{D}_{l} )) }{\widehat{Var}(\tilde{D}_{it})} \\
-%\mu_{kl} &=& \frac{1 - \overline{D}_k }{1 - ( \overline{D}_k - \overline{D}_{j'} )}
-%\end{eqnarray*}
 
-%\end{frame}
+\begin{frame}{Back to TWFE}
+
+
+$$Y_{ist} = \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}$$
+
+
+\begin{itemize}
+
+\item So we know that the estimate is a weighted average over all ``four averages and three subtractions'' but is that good or bad?
+\item It's good if it's unbiased; it's bad if it isn't, and the decomposition doesn't tell us which unless we replace realized outcomes with potential outcomes
+\item Bacon shows that TWFE estimate of $\delta$ needs two assumptions for unbiasedness:
+	\begin{enumerate}
+	\item variance weighted parallel trends are zero and 
+	\item no dynamic treatment effects (not the case with 2x2)
+	\end{enumerate}
+\item Under those assumptions, TWFE estimator estimates the variance weighted ATT as a weighted average of all possible ATTs (not just weighted average of DiDs)
+
+\end{itemize}
+
+\end{frame}
+
 
 \begin{frame}{Moving from 2x2s to causal effects and bias terms}
 
@@ -1006,17 +1281,35 @@ p\text{ }lim\text{ } \widehat{\delta}^{TWFE}_{n\to\infty} &=& VWATT + VWPT - \De
 
 \subsection{Simulation}
 
+
+
 \begin{frame}{Simulated data}
 
 \begin{itemize}
 \item 1000 firms, 40 states, 25 firms per states, 1980 to 2009 or 30 years, 30,000 observations, four groups
-\item $E[Y^0]$ satisfies ``strong parallel trends''  (stronger than necessary)
 
-$$Y^0_{ist} = \alpha_i + \gamma_t + \varepsilon_{ist}$$
+\item I'll impose ``unit level parallel trends'', which is much stronger than we need (we only need average parallel trends)
 
 \item Also no anticipation of treatment effects until treatment occurs but does \emph{not} guarantee homogenous treatment effects
+
+\item Two types of situations: constant versus dynamic treatment effects
 \end{itemize}
 \end{frame}
+
+
+
+\begin{frame}{Constant vs Dynamic Treatment Effects}
+    \begin{columns}
+        \column{0.5\linewidth}
+        \centering
+        \includegraphics[height=6.5cm, width=5.5cm]{./lecture_includes/constant_te}
+
+        \column{0.5\linewidth}
+        \centering
+        \includegraphics[height=6.5cm, width=5.5cm]{./lecture_includes/dynamic_te}
+    \end{columns} 
+\end{frame}
+
 
 
 
@@ -1098,33 +1391,19 @@ While large weight on the ``late to early 2x2'' is \emph{suggestive} of an issue
 
 
 
-\section{Implicit imputation}
+
+
+
+
+\section{Aggregating building blocks}
 
 \subsection{CS}
 
-\begin{frame}{Causal inference is imputation}
-
-\begin{quote}
-``At some level, all methods for causal inference can be viewed as imputation methods, although some more explicitly than others.'' -- Imbens and Rubin (2015)
-\end{quote}
-
-\end{frame}
-
-
-\begin{frame}{Causal inference involves imputation}
-
-\begin{itemize}
-\item Causal inference is a missing data problem -- we are missing counterfactuals
-\item And recall that estimating the ATT necessarily involved correctly imputing the counterfactual using parallel trends
-\item OLS, therefore, is \emph{implicitly} imputing counterfactuals for estimating the ATT
-\end{itemize}
-
-\end{frame}
 
 
 \begin{frame}{Callaway and Sant'Anna 2020}
 
-CS is a DiD model used for estimating ATT parameters under differential timing and conditional parallel trends
+CS is a DiD estimator used for estimating and then summarizing smaller ATT parameters under differential timing and conditional parallel trends into more policy relevant ATT parameters (either dynamic or static)
 
 
 \begin{figure}
@@ -1140,13 +1419,13 @@ Just some examples of when you'd want to consider it:
 \begin{enumerate}
 \item When treatment effects differ depending on when it was adopted
 \item When treatment effects change over time
-\item When shortrun treatment effects more pronounced than longrun effects
+\item When shortrun treatment effects are different than longrun effects
 \item When treatment effect dynamics differ if people are first treated in a recession relative to expansion years
 \end{enumerate}
 
 \bigskip
 
-In other words -- CS is used to identity and aggregate heterogenous treatment effects
+CS estimates the ATT by identifying smaller causal effects and aggregating them using non-negative weights
 
 \end{frame}
 
@@ -1196,14 +1475,14 @@ Group-time ATT is the ATT for a specific group and time
 	\begin{itemize}
 	\item Recall the problem with TWFE on using treatment units as controls
 	\end{itemize}
-\item Generalized propensity score enters into the estimator as a weight: $$\widehat{p(X)} = Pr(G_g=1 | X,G_c+C=1)$$
+\item Generalized propensity score enters into the estimator as a weight: $$\widehat{p(X)} = Pr(G_g=1 | X,G_g+C=1)$$
 \end{itemize}
 
 \end{frame}
 
 \begin{frame}{Assumptions}
 
-Assumption 1: Sampling is iid (panel data) \\
+Assumption 1: Sampling is iid (panel data, but repeated cross-sections are possible) \\
 \bigskip
 Assumption 2: Conditional parallel trends (for either never treated or not yet treated) \\
 \begin{eqnarray*}
@@ -1223,20 +1502,11 @@ Assumption 5: Limited treatment anticipation (i.e., treatment effects are zero p
 ATT(g,t) = E \bigg [ \bigg ( \frac{G_g}{E[G_g]} - \frac{ \frac{\hat{p}(X)C}{1-\hat{p}(X)}}{E \bigg [ \frac{\hat{p}(X)C}{1-\hat{p}(X)} \bigg ]} \bigg ) (Y_t - Y_{g-1} ) \bigg ) \bigg ]
 \end{eqnarray*}
 
-This is the inverse probability weighting estimator.  Alternatively, there is an outcome regression approach and a doubly robust. Sant'Anna recommends DR. Notice hw CS doesn't use already-treated as controls.
+This is the inverse probability weighting estimator.  Alternatively, there is an outcome regression approach and a doubly robust. Sant'Anna recommends DR.  CS uses the never-treated or the not-yet-treated as controls but never the already-treated 
 \end{frame}
 
 
 
-\begin{frame}{Staggered adoption (i.e., universal coverage)}
-
-
-\begin{proof}{\textbf{Remark 1:}}
-In some applications, eventually all units are treated, implying that $C$ is never equal to one. In such cases one can consider the ``not yet treated'' ($D_t = 0$) as a control group instead of
-the ``never treated?'' ($C = 1$).
-\end{proof}
-
-\end{frame}
 
 \begin{frame}{Aggregated vs single year/group ATT}
 
@@ -1290,6 +1560,7 @@ TWFE is no longer negative, interestingly, once we eliminate the last group (giv
 \begin{frame}{Event study and differential timing}
 
 \begin{itemize}
+\item Sometimes we care about a simple summary, and sometimes we care about separating it out in time and sometimes in even more interesting ways
 \item Event studies with one treatment group and one untreated group were relatively straightforward
 \item Interact treatment group with calendar date to get a series of leads and lags
 \item But when there are more than one treatment group, specification challenges emerge
@@ -1298,23 +1569,8 @@ TWFE is no longer negative, interestingly, once we eliminate the last group (giv
 \end{frame}
 
 
+
 \begin{frame}{Differential timing complicates plotting sample averages}
-
-\begin{itemize}
-\item New Jersey treated in late 1992, New York in late 1993, Pennsylvania never treated
-\item What years are each state's post-treatment?
-	\begin{itemize}
-	\item New Jersey: post-1992
-	\item New York: post-1993
-	\item Pennsylvania: ?
-	\end{itemize}
-\item How did people go about event studies then?
-
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Early efforts at event studies}
 
 	\begin{figure}
 	\includegraphics[scale=0.25]{./lecture_includes/mml_eventstudy.png}
@@ -1327,12 +1583,12 @@ TWFE is no longer negative, interestingly, once we eliminate the last group (giv
 
 	\begin{figure}
 	\includegraphics[scale=0.5]{./lecture_includes/dd.pdf}
-	\caption{From one of my studies. Looks decent right?}
+	\caption{Roll out of Craigslist ``personal ads'' for casual intimate encounters and birth rates using the ``randomized treatment assignment'' approach for visualization}
 	\end{figure}
 
 \end{frame}
 
-\begin{frame}{Canonical event study specification with TWFE}
+\begin{frame}{Event study specification with TWFE}
 
 
 \begin{eqnarray*}
@@ -1341,7 +1597,7 @@ Y_{i,t} = \alpha_i + \delta_t + \sum_{g \in G} \mu_g1\{t-E_i \in g \} + \varepsi
 
 \bigskip
 
-Coefficient $\mu_g$ on a dummy measuring the number of years prior to or after that unit was treated.  This model, it turned out, suffered from model misspecification. 
+Coefficient $\mu_g$ on a dummy measuring the number of years prior to or after that unit was treated.  
 
 \end{frame}
 
@@ -1354,28 +1610,26 @@ Same data as a couple slides ago, leads don't look good, so I abandoned the proj
 	
 \end{frame}
 
-
-
-
-
-\begin{frame}{Sun and Abraham 2020}
+\begin{frame}{Bias of TWFE Event Study Specificaiton}
 
 \begin{itemize}
-\item Now that we know about the biases of the constant treatment effect model estimated with TWFE, let's revisit event studies under differential timing
-\item Goodman-Bacon (2021, forthcoming) focused on decomposition of TWFE to show bias under differential timing
-\item Callaway and Sant'anna (2020) presents alternative estimator that yields unbiased estimates of group-time ATTs which can be aggregated or put into event study plots
-\item Sun and Abraham (SA) is like a combination of the two papers
+\item Bacon only focused on the static specification, and that's where the biases due to dynamics revealed itself
+\item He was unable to get into the leads and lags using the FWL method he was using (``it's hard!'' - Bacon)
+\item Sophie Sun and Sarah Abraham did though -- prompted by a stray comment by their professor
+\item But they also unlike Bacon present a solution (which is like CS, but discovered independently)
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}{Summarizing (cont.)}
+
+\begin{frame}{Sun and Abraham 2020}
 
 	\begin{enumerate}
-	\item SA is a decomposition of the population regression coefficient on event study leads and lags with differential timing estimated with TWFE
-	\item They show that the population regression coefficient is ``contaminated'' by information from other leads and lags
+	\item SA shows a decomposition of the population regression coefficient on event study leads and lags with differential timing estimated with TWFE
+	\item They show that the population regression coefficient is ``contaminated'' by information from other leads and lags (which is then later generalized by Goldsmith-Pinkham, Hull and Kolsar 2022)
 	\item SA presents an alternative estimator that is a version of CS only using the ``last cohort'' as the treatment group (not the not-yet-treated)
+	\item Derives the variance of the estimator instead of bootstrapping, handles covariates differently than CS, but otherwise identical
 	\end{enumerate}
 
 \end{frame}
@@ -1500,6 +1754,8 @@ Essentially means that pre-treatment, the causal effect is zero.  Most plausible
 
 \begin{frame}{Event study model}
 
+Dynamic TWFE model
+
 \begin{eqnarray*}
 Y_{i,t} = \alpha_i + \delta_t + \sum_{g \in G} \mu_g1\{t-E_i \in g \} + \varepsilon_{i,t}
 \end{eqnarray*}
@@ -1511,32 +1767,6 @@ We are interested in the properties of $\mu_g$ under differential timing as well
 \end{frame}
 
 
-\begin{frame}{Specifying the leads and lags}
-
-How will we specify the $1\{t-E_i \in g \} $ term?  SA considers a couple:
-
-\begin{enumerate}
-\item Static specification: $$Y_{i,t} = \alpha_i + \delta_t + \mu_g \sum_{l \geq 0}D^l_{i,t} + \varepsilon_{i,t}$$
-\item Dynamic specification: $$Y_{i,t} = \alpha_i + \delta_t + \sum_{l = -K}^{-2} \mu_l D^l_{i,t} + \sum_{l=0}^L\mu_lD^l_{i,t}+ \varepsilon_{i,t}$$
-\end{enumerate}
-
-\end{frame}
-
-
-
-\begin{frame}{Dropping, trimming and binning}
-
-\begin{itemize}
-\item Dynamic specification with differential timing requires dropping two leads: 
-	\begin{enumerate}
-	\item Drop the baseline to avoid multicollinearity in the relative time indicators 
-	\item Drop a second one because of the multicollinearity coming from the linear relationship between TWFE and the relative period indicators.
-	\end{enumerate}
-\item Binning means placing all ``distant'' relative time indicators into a single one due to imbalance in relative event time
-\item Trimming is done for the same reason but drops any relative time period for which you do not have balance
-\end{itemize}
-
-\end{frame}
 
 \begin{frame}[plain, shrink=20]
 \begin{center}
@@ -1787,7 +2017,6 @@ Two things to notice: (1) there only 17 lags with robust models but will be 24 w
 Question: why is TWFE \emph{falling} pre-treatment?  Why is SA rising, but jagged, post-treatment?
 
 \end{frame}
-
 
 \subsection{dCH}
 

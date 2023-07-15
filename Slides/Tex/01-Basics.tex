@@ -428,7 +428,7 @@ This is one of the most important policy parameters, if not the most important, 
 \end{itemize}
 \end{frame}
 
-\subsection{Four averages and three subtractions}
+\subsection{Estimation}
 
 
 \begin{frame}{DiD equation}
@@ -566,9 +566,6 @@ Before we move into regression, let's go through a simple exercise to really pin
 
 
 
-\section{Estimation}
-
-\subsection{OLS specification}
 
 \begin{frame}{OLS Specification}
 	
@@ -744,12 +741,24 @@ Most people will simply cluster, but there are issues if you have too few cluste
 
 \end{frame}
 
+\begin{frame}{Introduction of Napster and spending on music}
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/hong_napster}
+	\end{figure}
+	
+\end{frame}
+
+
 \begin{frame}[plain]
 	\begin{figure}
 	\includegraphics{./lecture_includes/Hong_1.pdf}
 	\end{figure}
 	
 \end{frame}
+
+
+
+
 
 \begin{frame}[shrink=20,plain]
 	\begin{figure}
@@ -885,12 +894,13 @@ Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in 
 \end{figure}
 
 \end{frame}
-
 \begin{frame}{Types of evidence}
 
 \begin{itemize}
 \item \textbf{Bite} -- show that the expansion shifted people into Medicaid and out of uninsured status
-\item \textbf{Placebos} -- Show that there's no effect on mortality for groups it shouldn't be affecting (people 65+)
+\item \textbf{Main Results} -- Show your main results (the point of the paper)
+\item \textcolor{red}{\textbf{Placebos}} -- Show that there's no effect on mortality for groups it shouldn't be affecting (people 65+)
+\item \textcolor{blue}{\textbf{Mechanisms}} -- Find some reason explaining why the treatment affects the outcome via some ``mechanism''
 \item \textbf{Event study} -- Show leads and lags on mortality
 \end{itemize}
 
@@ -904,7 +914,15 @@ Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in 
 \imageframe{./lecture_includes/Miller_Medicaid3.png}
 
 
-\imageframe{./lecture_includes/medicaid_qje_placebo}
+\begin{frame}{Falsifications on elderly}
+
+	\begin{figure}
+\includegraphics[scale=0.425]{./lecture_includes/placebo_medicaid}
+	\end{figure}
+
+\end{frame}
+
+
 
 \begin{frame}[plain]
 
@@ -915,18 +933,65 @@ Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in 
 
 \end{frame}
 
-\subsection{Triple difference}
+\begin{frame}{Mechanism}
 
-\begin{frame}{Additional identification things}
+\begin{itemize}
+\item Bite: Increases in enrollment and reductions in uninsured support that there is adoption of the treatment
+\item Main Results: 9.2\% reduction in mortality among the near-elderly
+\item Falsifications: no effect on a similar group who isn't eligible
+\item Mechanism: ``The effect is driven by a reduction in disease-related deaths and grows over time.''
+\item Event studies: Compelling once the others are established
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Making event study}
+
+\begin{itemize}
+\item All the simple event study is is an interaction between the treatment group dummy and the calendar year dummies
+\item You must drop a $t-\tau$ as the baseline (e.g., $t-1$) must be $Y^0$ untreated comparisons recall
+\item I have included in a do file that will do it for you either manually or using coefplot in \texttt{simple\_eventstudy.do} at github labs
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Manually creating the event study}
+
+	\begin{figure}
+	\includegraphics[scale=0.20]{./lecture_includes/simple_eventstudy_manual}
+	\end{figure}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Creating the event study with Ben Jann's \texttt{coefplot}}
+
+	\begin{figure}
+	\includegraphics[scale=0.20]{./lecture_includes/simple_eventstudy.png}
+	\end{figure}
+
+\end{frame}
+
+
+
+
+
+\subsection{Falsifications}
+
+
+\begin{frame}{Falsifications on more comparison groups}
 	
 	\begin{itemize}
 	\item Very common for readers and others to request a variety of ``robustness checks'' from a DD design
 	\item We saw some of these just now (e.g., falsification test using data for alternative control group, the Medicare population)
-	\item Triple differences uses a within-state untreated group; little trickier, so let's use the table again
+	\item Triple differences is another way to do that, but it will have a somewhat different parallel trends assumption
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{DDD Example by Gruber}
+\begin{frame}{Triple differences by Gruber (1995)}
 	
 	\begin{figure}
 	\includegraphics{./lecture_includes/gruber_ddd_3.pdf}
@@ -955,12 +1020,12 @@ Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in 
 		&&After	&$NJ+T+NJ_t+l_t+D$					\\
 	&Married women, 20-40yo			&&&$T+NJ_t+l_t+D$			\\
 		&&Before	&$NJ$					\\
-Experimental states					&&&&&$D+l_t-s_t$			\\
+Experimental states					&&&&&$D+\textcolor{red}{l_t-s_t}$			\\
 		&&After	&$NJ+T+NJ_t+s_t$					\\
 	&Older 40, Single men 20-40yo		&&	&$T+NJ_t+s_t$				\\
 		&&Before	&$NJ$					\\
 								\\
-&&&&&&$D$
+&&&&&&$\textcolor{black}{D}$
 \\
 		&&After	&$PA+T+PA_t+l_t$				\\
 	&Married women, 20-40yo			&&&$T+PA_t+l_t$ \\				
@@ -974,11 +1039,16 @@ Non-experimental states					&&&&&$l_t-s_t$		\\
 		\end{center}
 	\end{table}
 	
-\textbf{What is our identifying assumption?} Answer: just another parallel trend assumption but with a slightly different interpretation!
+\begin{center}
+\textbf{Triple diff identification assumption:} 
+\end{center}
+
+\bigskip
+\textbf{Answer}: $\textcolor{red}{l_t-s_t}$ for experimental states equals $\textcolor{black}{l_t-s_t}$ for non-experimental states
 
 \bigskip
 
-$l_t-s_t$ is the same for the experimental and non-experimental states. This is ``change in inequality between two groups hourly wages'' from pre to post.  It's a new parallel trend assumption.
+\textbf{Intuition}: Parallel trends in changes in gaps: change in inequality between two groups hourly wages from pre to post is the same
 
 
 
@@ -1010,9 +1080,8 @@ $l_t-s_t$ is the same for the experimental and non-experimental states. This is 
 
 
 
-\subsection{Placebo outcomes}
 
-\begin{frame}{Falsification test with alternative outcome}
+\begin{frame}{Falsification on outcomes}
 	
 	\begin{itemize}
 	\item The within-group control group (DDD) is a form of placebo analysis using the same \emph{outcome}
@@ -1054,9 +1123,5 @@ Sometimes, an empirical literature may be criticized using nothing more than pla
 
 \end{frame}
 
-
-
-
-\end{document}
 
 \end{document}
