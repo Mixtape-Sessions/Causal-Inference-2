@@ -5,25 +5,13 @@
 ################################################################################
 
 # Load necessary libraries
-# install.packages(c("dplyr", "readr", "tidyr", "broom", "plm", "vctrs", "sandwich"), dependencies = TRUE)
-
-# Load necessary libraries
-library(dplyr)
-library(readr)
-library(tidyr)
-library(broom)
-library(plm)
-library(vctrs)
-library(sandwich)
-library(readstata13)
-library(foreign)  # for reading .dta files
+# install.packages(c("tidyverse", "fixest", "haven"))
+library(tidyverse)
+library(fixest)
+library(haven)
 
 # Load the data
-data <- data.frame(read.dta13("https://github.com/scunning1975/mixtape/raw/master/castle.dta"))
-
-# Convert year and effyear to numeric
-data$year <- as.numeric(as.character(data$year))
-data$effyear <- as.numeric(as.character(data$effyear))
+data <- haven::read_dta("https://github.com/scunning1975/mixtape/raw/master/castle.dta")
 
 # Filter the data
 data <- data %>%
@@ -31,35 +19,37 @@ data <- data %>%
 
 # Generate post and treat variables
 data <- data %>%
-  mutate(year = as.numeric(year),
-         post = ifelse(year >= 2006, 1, 0),
-         treat = ifelse(!is.na(effyear), 1, 0))
+  mutate(
+    year = as.numeric(year),
+    post = ifelse(year >= 2006, 1, 0),
+    treat = ifelse(!is.na(effyear), 1, 0)
+  )
 
 # Calculate means for different groups
-mean_values <- data %>%
+(mean_values <- data %>%
   group_by(post, treat) %>%
-  summarise(mean_l_homicide = mean(l_homicide, na.rm = TRUE))
-
-# Print mean_values for debugging
-print(mean_values)
+  summarise(mean_l_homicide = mean(l_homicide, na.rm = TRUE)))
 
 # Calculate the DiD manually
-did <- ((mean_values %>% filter(post == 1, treat == 1) %>% pull(mean_l_homicide)) -
-          (mean_values %>% filter(post == 0, treat == 1) %>% pull(mean_l_homicide))) -
-  ((mean_values %>% filter(post == 1, treat == 0) %>% pull(mean_l_homicide)) -
-     (mean_values %>% filter(post == 0, treat == 0) %>% pull(mean_l_homicide)))
+(did <- with(mean_values, {
+  (mean_l_homicide[post == 1 & treat == 1] - mean_l_homicide[post == 0 & treat == 1]) - 
+  (mean_l_homicide[post == 1 & treat == 0] - mean_l_homicide[post == 0 & treat == 0])
+}))
 
-print(did)
 
 # Run the regression with clustered standard errors
-model <- plm(l_homicide ~ post*treat, data = data, model = "pooling")
-se_cluster <- sqrt(diag(vcovHC(model, type = "HC1", cluster = "group", adjust = "none")))
+model <- feols(
+  l_homicide ~ i(post) + i(treat) + post:treat, 
+  data = data, cluster = ~ state
+)
 
-# Print the coefficient on the interaction
-print(coef(model)["post:treat"])
+model
 
 # Run the regression with population weights
-model_weighted <- plm(l_homicide ~ post*treat, data = data, model = "pooling", weights = data$popwt)
+model_weighted <- feols(
+  l_homicide ~ i(post) + i(treat) + post:treat, 
+  data = data, cluster = ~ treat,
+  weights = ~ popwt
+)
 
-# Print the coefficient on the interaction
-print(coef(model_weighted)["post:treat"])
+model_weighted
