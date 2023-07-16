@@ -64,7 +64,6 @@ coefs_event <- coefs_event %>%
   )
 
 ggplot(coefs_event, aes(x = year, y = estimate)) +
-  geom_line() +
   geom_point() +
   geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
   geom_vline(xintercept = 2005.5, linetype = "dashed", color = "blue") +
