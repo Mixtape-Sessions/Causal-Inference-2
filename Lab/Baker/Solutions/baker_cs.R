@@ -6,7 +6,7 @@
 
 # ------------------------------------------------------------------------------
 # load packages
-# install.packages("readstata13", dependencies = TRUE)
+# install.packages("haven", dependencies = TRUE)
 library(haven)
 # install.packages("devtools"); devtools::install_github("bcallaway11/did")
 library(ggplot2)
