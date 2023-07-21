@@ -649,6 +649,8 @@ In the second example, the parallel trends term was non-zero, and the DID did no
 
 **Conclusion**: Parallel trends is what allows us to get the correct answer, not the estimator because we used the same estimator both times, and in fact the Y and D columns were the same both times.
 
+---
+
 **Pre-trends vs parallel trends.** We use pre-trends to help us justify a diff-in-diff design. For the following questions, calculate the pre-trends for both worksheets.
 
 1.  Write down the formula for parallel trends using potential outcomes notation
