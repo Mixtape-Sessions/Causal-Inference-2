@@ -316,163 +316,290 @@ Using A1' to A4, we get the ``efficient estimator'' which is for all linear unbi
 
 \end{frame}
 
+\section{Some opinions and an application}
 
+\begin{frame}{Advice}
 
-\begin{frame}{Comparisons to other estimators}
-
-\begin{center}
-\includegraphics[scale=0.35]{./lecture_includes/bjs_sim.pdf}
-\end{center}
+\begin{itemize}
+\item DiD will remain popular for a while, and if anything all this new DiD has brought even more attention to it
+\item But now things are changing -- how do we write the papers?  Not just how do we estimate parameters
+\item Papers are a combination of science and rhetoric -- let's look at a new one
+\item Braghieri, Levy and Makarin (2022), ``Social Media and Mental Health'', \emph{American Economic Review}, 112(11): 3660-3693
+\end{itemize}
 
 \end{frame}
 
-\begin{frame}{Comparisons to other estimators}
+
+\begin{frame}{Big picture}
+
+\begin{itemize}
+\item Widely cited that social media causes mental health problems in youth
+\item Anecdotal, documentaries, but no causal evidence (``slim to none'')
+\item Study will use staggered rollout of Facebook platform to college campuses from 2004 to 2006 to estimate the effect on aggregate mental health scores from a survey
+\item You be the judge, but they present what in most cases would be strong evidence that Facebook harmed college students mental health
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Many things to like}
+
+\begin{itemize}
+\item Important question: mental health, suicide, review descriptive stats together
+\item Strong design: staggered rollout
+\item Event study is eye popping
+\item Mechanism and main results
+\item Very interesting dataset
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Fives parts of a strong DiD}
+
+\begin{enumerate}
+
+\item \textbf{Bite}: They cannot really show much here.  No data on Facebook usage.  More an ITT
+\item \textbf{Main Results}: Estimated effect on mental health measures
+\item \textcolor{red}{Mechanism}: Speculative
+\item \textbf{Falsifications}: I can't really see very strong falsifications either.
+\item \textbf{Event studies}: POW.  Just wait
+
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Mechanism}
+
+\begin{tikzpicture}[
+  ->,>=stealth, % defines the style of the edge/arrow
+  shorten >=1pt, % shortens the arrow at the target node
+  auto,
+  node distance=3cm, % defines the space between the nodes
+  thick,
+  main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, % style of the main nodes
+  dashed node/.style={circle,fill=blue!20,draw,dashed,font=\sffamily\Large\bfseries} % style of the dashed node
+  ]
+
+  \node[main node] (D) {D}; 
+  \node[main node] (M) [above right of=D] {M}; 
+  \node[main node] (X) [below right of=D] {X};
+  \node[main node] (Y) [right of=M, below of=M] {Y};
+  \node[dashed node] (U) [above of=M] {U};
+  
+  \path[every node/.style={font=\sffamily\small}]
+    (D) edge node {} (M)
+    (D) edge node {} (X)
+    (M) edge node {} (Y)
+    (X) edge node {} (Y)
+    (U) edge[dashed] node {} (D)
+    (U) edge[dashed] node {} (M)
+    (U) edge[dashed] node {} (X)
+    (U) edge[dashed] node {} (Y);
+\end{tikzpicture}
+
+\end{frame}
+
+\begin{frame}{Mechanism}
+
+\begin{itemize}
+\item $D$ is the treatment variable, and the ATT is over all possible channels, but what if you want to think $M$ is the mechanism
+\item When you can't rule out competing theories with falsifications, you have to try and build the case that the effect is coming through a channel
+\item Rule out $X$ and provide evidence for $M$
+\item Goal here is to try and present evidence (not proof) that it's probably the story you're saying
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Ruling out alternative mechanism}
+
+\begin{tikzpicture}[
+  ->,>=stealth, % defines the style of the edge/arrow
+  shorten >=1pt, % shortens the arrow at the target node
+  auto,
+  node distance=3cm, % defines the space between the nodes
+  thick,
+  main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, % style of the main nodes
+  dashed node/.style={circle,fill=blue!20,draw,dashed,font=\sffamily\Large\bfseries} % style of the dashed node
+  ]
+
+  \node[main node] (D) {D}; 
+  \node[main node] (M) [right of=D] {M}; 
+  \node[main node] (Y) [right of=M] {Y};
+  \node[dashed node] (U) [above of=M] {U};
+  
+  \path[every node/.style={font=\sffamily\small}]
+    (D) edge node {} (M)
+    (M) edge node {} (Y)
+    (U) edge[dashed] node {} (D)
+    (U) edge[dashed] node {} (M)
+    (U) edge[dashed] node {} (Y);
+\end{tikzpicture}
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Mechanism}
+
+\begin{itemize}
+
+\item Story is interpersonal comparisons which they try to show 
+\item We can discuss how plausible we found it, but ask yourself at the end -- did the event study help you believe it?  Why/why not?
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Data on Facebook}
+
+\begin{itemize}
+
+\item Ingenious use of the Wayback Time Machine
+\item Looked at over 700 schools using Facebook screen shots
+\item When Facebook first mentions a school on its front page, that school is marked as having gotten Facebook
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{New schools being adopted}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/timemachine_1}
+\end{center}
+\end{frame}
+
+\begin{frame}{New schools being adopted}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/timemachine_2}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Data on college students}
+
+\begin{itemize}
+\item NCHA Data is survey administered to college students on a semi-annual basis by American College Health Assoc
+\item Inquires about demographics, physical health, mental health, alcohol and drug use, sexual behaviors, and perception of these behaviors by peers
+\item ACHA merged a treatment indicator to each respondent based on Facebook dataset provided to them so that privacy could be maintained
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Mental health}
+
+\begin{itemize}
+
+\item Self-reported symptoms are standard medical practice in mental health -- DSM-5 relies on self-reports such as difficulty sleeping, fatigue, feelings of guilt, suicidal ideation
+\item No data on Facebook or social media usage so this is ITT version of the ATT
+\item Respondent answers to the questions are aggregated into indices such as \emph{poor mental health} where larger numbers are worse
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Main TWFE Model}
+
+\begin{equation}
+Y_{icgt} = \alpha_g + \delta_t + \beta \times Facebook_{gt} + X_i \times \gamma + X_c \times \psi + \varepsilon_{icgt}
+\end{equation}
+
+\bigskip
+
+$Y_{icgt}$ is an outcome for person $i$ in wave $t$ attending college $c$ in expansion group $g$; $\alpha_g$ is expansion-group or college fixed effects; $\delta_t$ are survey-wave fixed effects; $Facebook_{gt}$ indicates the respondents' campus has Facebook by time $t$ at expansion group $g$; $X_i$ and $X_c$ are individual and college-level controls; and standard errors are clustered at college level.
+
+\bigskip
+
+$\widehat{\beta}$ identifies the ATT under parallel trends in the robust models
+
+
+\end{frame}
+
+\begin{frame}{Robustness}
+
+\begin{itemize}
+
+\item Main static results will all be in TWFE, but appendix shows other methods like CS and SA 
+\item Event studies will show all models including some we haven't reviewed
+\item Growing popularity to show ``all the robust DiD'' models so that readers can see you aren't cherry picking
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_1}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_2}
+\end{center}
+\end{frame}
+
+\begin{frame}
 \begin{center}
 \includegraphics[scale=0.35]{./lecture_includes/facebook_3}
 \end{center}
 \end{frame}
 
-\section{Negative weighting by dCdH}
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_4}
+\end{center}
+\end{frame}
 
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_5}
+\end{center}
+\end{frame}
 
-\begin{frame}{de Chaisemartin and D'Haultfoeulle 2020}
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_6}
+\end{center}
+\end{frame}
 
-de Chaisemartin and D'Haultfouelle 2020 (dCdH) is different from the other papers in several ways
-	\begin{itemize}
-	\item Like SA, it's a diagnosis and a cure
-	\item TWFE decomposition shows coefficient a weighted average of underlying treatment effects, but weights can be negative negating causal interpretation
-	\item Propose a solution for both static and dynamic specification which does not use already treated as controls
-	\item Treatment can turn on and off
-	\end{itemize}
-
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_7}
+\end{center}
 \end{frame}
 
 
-\begin{frame}{Comment on Bacon}
+\begin{frame}{Comments}
 
 \begin{itemize}
-\item Recall the Bacon decomposition -- TWFE coefficients are decomposed into weighted average of all underlying 2x2s. Weights were non-negative and summed to one.
-\item But this decomposition was more a numerical decomposition -- what exactly adds up to equal the TWFE coefficient using the data we observe?
-\item Bacon's decomposition is not ``theoretical'' -- not in the way that other decompositions are. He is just explaining what OLS ``does'' when it calculates $\widehat{\delta}$ (positively weighted average of all 2x2 DiD equations)
-\item dCdH decompose TWFE coefficient into weighted average of \textcolor{red}{treatment effects}, not DiD
+
+\item Can't lose sight of the big picture -- you still have to write a great paper, not just pass your exams, and going from estimation to publishing is a different but related skill
+\item Some of the old exhibits may not carry forward (TWFE with many columns)
+\item Increasingly, people are presenting a single event study graph with ``all the DiD'' against TWFE so as to avoid cherry picking estimators
+\item You should use the tool for the job, but these differences are subtle (``which parallel trends?'', ``which comparison group?'')
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Negative weights}
+\begin{frame}{Conclusion}
 
 \begin{itemize}
-\item dCdH impose causal assumptions and try a different decomposition strategy
-\item Uses as its building block the unit-specific treatment effects (not the 2x2 DiD equation)
-\item Their decomposition reveals that negative weights on the underlying treatment effects form with the TWFE specification we showed yesterday (similar to negative weight on dynamics with Bacon)
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Negative weights (dcdh) vs positive weights (Bacon)}
-
- Bacon decomposition weights were \emph{always} positive, because they were numerical weights on the DiD equation
- 
- \bigskip
- 
- dCdH are sometimes negative weights but not on the 2x2 DiD, but rather on the treatment effects themselves
-
-\end{frame}
-
-
-
-\begin{frame}{dCdH notation}
-
-\begin{itemize}
-\item Individual treatment effects (iow, not the group-time ATT): $$\Delta^g_{i,t} = Y^1_{i,t} - Y^\infty_{i,t}$$ but where the treatment is in time period $g$. Notice --it's not the ATT (it's $i$ individual treatment effect)
-\item with defined error term as $\varepsilon_{i,t}$: $$D_{i,t} = \alpha_i + \alpha_t + \varepsilon_{i,t}$$
-\item Weights: $$w_{i,t} = \frac{\varepsilon_{i,t}}{\frac{1}{N^T} \sum_{i,t:D_{i,t}=1} \varepsilon_{i,t}}$$
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Parallel trend assumption}
-
-\begin{block}{Strong unconditional PT}
-Assume that for every time period $t$ and every group $g,g'$, $$E[Y^\infty_t - Y^\infty_{t-1}|G=g] = E[Y^\infty_t - Y^\infty_{t-1}|G=g'] $$
-\end{block}Assume parallel trends for every unit in every cohort in every time period.
-
-\bigskip
-
-What then does TWFE estimate with differential timing?
-
-\end{frame}
-
-\begin{frame}{dCdH Theorem}
-
-\begin{block}{Theorem -- dCdH decomposition}
-Assuming SUTVA, no anticipation and the strong PT, then let $\delta$ be the TWFE estimand associated with $$Y_{i,t} = \alpha_i + \alpha_t + \delta D_{i,t} + \varepsilon_{i,t}$$Then it follows that $$\delta = E \bigg [ \sum_{i,t:D_{i,t}=1} \frac{1}{N^T} w_{i,t} \cdot \Delta_{i,t}^g \bigg ] $$ where $\sum_{i,t:D_{i,t}=1} \frac{w_{i,t}}{N^T} = 1$ but $w_{i,t}$ can be negative
-\end{block}
-
-\end{frame}
-
-\begin{frame}{Origins}
-
-\begin{itemize}
-\item So once you run that specification, $\widehat{\delta}$ is going to recover a ``non-convex average'' over all unit level treatment effects (weights can be negative, more on this). 
-\item Not sure who came first, because there were working papers before publications, but my understanding is dCdH was the first to prove this
-\item Very important theorem -- established the ``no sign flip property'' for OLS with differential timing in the canonical static specification
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{Negative weights}
-
-\begin{itemize}
-\item Very common now to hear about negative weights, and furthermore, that negative weights wipe out any causal interpretation, but why?
-\item Thought experiment: imagine every unit gained from the treatment, but their treatment effect when estimated was multiplied by a negative number
-\item It's possible it could flip the sign, but it would definitely at least pull the estimate away from the true effect
-\item This is dangerous -- and it's caused by the forbidden contrasts (comparing treated to already treated) which is what the canonical TWFE static specification is doing (for many of us unknowingly)
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}{Negative weights}
-
-\begin{itemize}
-\item Doesn't always pose a problem, but no proofs for this intuition known yet
-\item A large number of never-treated seems to make this less an issue
-\item Shrinking the spacing between treatment dates also can drive it down
-\item But does that mean that TWFE works, and what does it mean to work?
-\item TWFE still even when all the weights are positive the weighted average may not aggregate to what we think it does
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Weighting}
-
-\begin{itemize}
-\item The weights in OLS all come out of the model itself, \emph{not the economic question}
-\item The economic question is ``what parameter do you want? What does it look like? Who is in it?''
-\item And when you define the parameter up front, you've more or less defined the economic question you're asking
-\item But OLS sort of ignores your question and just gives you what it wants
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Weighting}
-
-\begin{itemize}
-\item What makes something a good vs a bad weight?
-\item Not being negative is the absolute minimal requirement
-\item But it's also not a good sign if you can't really explain the weights
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{dCdH Solution}
-
-\begin{itemize}
-\item dCdH propose an alternative that doesn't have the problems of TWFE -- both avoiding negative weights and improving interpretability
-\item Recall, their model can handle reversible treatments
+\item Good question, good data, and you can publish well with DiD
+\item Hardly definitive, but the staggered design is a solution to our inability to run the RCT
+\item Remember -- many questions can be randomized in theory but not practice (e.g., smoking)
+\item Learn as much as you can and don't stop learning
 
 \end{itemize}
 

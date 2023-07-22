@@ -97,7 +97,7 @@ replace te = te4 if group == 4
 
 gen y0 = firms + n + e // parallel trends (unit level) in y0. Everyone's Y0 grows at n+e where e is tiny shocks with mean of 0.
 
-* Constant treatment effects.  Notice, the treatment effect is constant. 
+* Non-dynamic treatment effects.  Notice, the treatment effect is constant over time.
 gen y2 = firms + n + te*treat + e // UNIT LEVEL parallel trends IN EVERY PERIOD and NO ANTICIPATION
 
 * Data generating process with dynamic treatment effects over time
@@ -232,7 +232,7 @@ egen att_01 =  mean(w0*ypost)
 egen att_00 = mean(w0*ypre)
 
 * Get the ATT(1986,1986)
-gen att1986_1986 = (att_11-att_10) -(att_01 -att_00)
+gen att1986_1986 = (att_11 - att_10) - (att_01 - att_00)
 * ATT(1986,1986)=10.00096
 
 * Drop variable so I can copy paste this code!

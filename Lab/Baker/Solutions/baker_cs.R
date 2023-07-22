@@ -12,7 +12,6 @@ library(haven)
 library(ggplot2)
 library(did) # Callaway & Sant'Anna
 
-
 baker <- read_dta("https://github.com/scunning1975/mixtape/raw/master/baker.dta")
 # untreated units have effective year of 0
 baker$treat_date[is.na(baker$treat_date)] <- 0 
@@ -40,7 +39,7 @@ atts <- att_gt(
 # ------------------------------------------------------------------------------
 
 # Calculate group-time ("group") ATTs and overall ("simple") ATT
-agg_effects <- aggte(atts, type = "group", balance_e=TRUE)
+agg_effects <- aggte(atts, type = "simple", balance_e=TRUE)
 summary(agg_effects)
 
 # Group-time ATTs
