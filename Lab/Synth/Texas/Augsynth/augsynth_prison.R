@@ -1,10 +1,17 @@
+## Install devtools if noy already installed
+install.packages("devtools", repos='http://cran.us.r-project.org')
+## Install augsynth from github
+devtools::install_github("ebenmichael/augsynth")
+library(magrittr)
+library(dplyr)
+library(augsynth)
+
 library(tidyverse)
 library(haven)
 library(Synth)
 library(devtools)
 if(!require(SCtools)) devtools::install_github("bcastanho/SCtools")
 library(SCtools)
-library(augsynth)
 
 read_data <- function(df)
 {
@@ -20,6 +27,17 @@ texas <- read_data("texas.dta") %>%
 # create a treated variable
 texas <- texas %>% 
   mutate(treated =  ifelse(state == 'Texas' & year >= 1993, 1, 0))
+
+# Synthetic control (Abadie, et al. 2010)
+syn <- augsynth(bmprison ~ treated, 
+                statefip, # unit variable
+                year, # time variable
+                texas, # data
+                progfunc = "None", scm = T)
+
+summary(syn)
+plot(syn)
+plot(syn, inf_type = "jackknife+")
 
 # Augmented Synthetic Controls - No covariate
 syn_tx <- augsynth(bmprison ~ treated, 

@@ -1,3 +1,7 @@
+install.packages('Synth')
+install.packages('SCtools')
+# https://bcastanho.github.io/install_sctools
+
 library(tidyverse)
 library(haven)
 library(Synth)
