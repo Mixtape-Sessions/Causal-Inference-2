@@ -151,12 +151,12 @@ areg y2 i.year dd1 - dd22 dd25-dd48, a(id) robust
 
 * Bacon decomposition shows the problem -- notice all those late to early 2x2s!
 net install ddtiming, from(https://tgoldring.com/code/)
-areg y i.year treat, a(id) robust
+areg y i.year treat, a(id) robust replace
 ddtiming y treat, i(id) t(year)
 
 * Bacon decomposition on the constant treatment effects 
 net install ddtiming, from(https://tgoldring.com/code/)
-areg y2 i.year treat, a(id) robust
+areg y2 i.year treat, a(id) robust replace
 ddtiming y2 treat, i(id) t(year)
 
 * Bacon decomposition shows the problem -- notice all those late to early 2x2s!
