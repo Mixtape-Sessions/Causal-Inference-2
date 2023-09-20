@@ -157,7 +157,6 @@ ddtiming y treat, i(id) t(year)
 * Bacon decomposition on the constant treatment effects 
 net install ddtiming, from(https://tgoldring.com/code/)
 areg y2 i.year treat, a(id) robust replace
->>>>>>> 1721e7ed9a8334e164a3ab97bfeeb55d3f50ea8f
 ddtiming y2 treat, i(id) t(year)
 
 * Bacon decomposition shows the problem -- notice all those late to early 2x2s!
