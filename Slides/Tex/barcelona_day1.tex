@@ -507,6 +507,183 @@ Before we move into regression, let's go through a simple exercise to really pin
 \end{frame}
 
 
+\subsection{Event studies}
+\begin{frame}{Event studies have become mandatory in DiD}
+
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/currie_eventstudy.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Intuition behind event studies}
+
+\begin{itemize}
+	\item Princeton Industrial Relations Section seems to be behind this -- this intense focus on research design but also verifying assumptions
+	\item The identifying assumption for all DD designs is parallel trends , but since we cannot verify parallel trends, we often look at pre-trends
+	\item It's a type of check for selection bias, but you must understand what it is and what it isn't to see its value but not be naive about it (it is not a silver bullet)
+	\item Even if pre-trends are the same one still has to worry about other policies changing at the same time (omitted variable bias is a parallel trends violation)
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Ashenfelter's dip}
+
+Orley: \url{https://youtu.be/MOtbuRX4eyQ?t=960}
+
+Card: \url{https://youtu.be/1soLdywFb_Q?t=3333}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Plot the raw data when there's only two groups}
+
+	\begin{figure}
+	\includegraphics[scale=2.5]{./lecture_includes/waldinger_dd_6.pdf}
+	\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Beware of naive reasoning}
+
+\begin{itemize}
+\item Parallel pre-trends $\neq$ parallel trends -- these are often thought to be the same thing, and they aren't
+\item Equating them is a kind of \emph{post hoc ergo propter hoc} fallacy
+\item Parallel pre-trends is more like a smoking gun based on things ``looking the same'' before
+\item Similar to checking for covariate balance in RCTs
+\item But \textbf{cannot} substitute for domain knowledge!
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Event study regression}
+	
+	\begin{itemize}
+	\item Event studies have a simple OLS specification with only one treatment group and one never-treated group $$Y_{its} = \alpha +  \sum_{\tau=-2}^{-q}\mu_{\tau}D_{s\tau} + \sum_{\tau=0}^m\delta_{\tau}D_{s\tau}+\varepsilon_{ist}$$
+		\begin{itemize}
+		\item where $D$ is an interaction of the treatment group $s$ with the calendar year $\tau$
+		\item Treatment occurs in year 0, no anticipation, drop baseline $t-1$
+		\item Includes $q$ leads or anticipatory effects and $m$ lags or post treatment effects
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Event study regression}
+
+
+$$Y_{its} = \alpha + \sum_{\tau=-2}^{-q}\mu_{\tau}D_{s\tau} + \sum_{\tau=0}^m\delta_{\tau}D_{s\tau}+\varepsilon_{ist}$$
+
+\bigskip
+
+Typically you'll plot the coefficients and 95\% CI on all leads and lags (binned or not, trimmed or not) 
+
+\bigskip
+
+Under no anticipation, then you expect $\widehat{\mu}$ coefficients to be zero, which gives you confidence that parallel trends holds (but is not a guarantee, and there are still specification issues -- see Jon Roth's work)
+
+\bigskip
+
+Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in time
+
+\end{frame}
+
+
+
+\begin{frame}{Medicaid and Affordable Care Act example}
+
+\begin{figure}
+\includegraphics[scale=0.25]{./lecture_includes/medicaid_qje}
+\end{figure}
+
+\end{frame}
+\begin{frame}{Types of evidence}
+
+\begin{itemize}
+\item \textbf{Bite} -- show that the expansion shifted people into Medicaid and out of uninsured status
+\item \textbf{Main Results} -- Show your main results (the point of the paper)
+\item \textcolor{red}{\textbf{Placebos}} -- Show that there's no effect on mortality for groups it shouldn't be affecting (people 65+)
+\item \textcolor{blue}{\textbf{Mechanisms}} -- Find some reason explaining why the treatment affects the outcome via some ``mechanism''
+\item \textbf{Event study} -- Show leads and lags on mortality
+\end{itemize}
+
+\end{frame}
+
+
+\imageframe{./lecture_includes/Miller_Medicaid1.png}
+
+\imageframe{./lecture_includes/Miller_Medicaid2.png}
+
+\imageframe{./lecture_includes/Miller_Medicaid3.png}
+
+
+\begin{frame}{Falsifications on elderly}
+
+	\begin{figure}
+\includegraphics[scale=0.425]{./lecture_includes/placebo_medicaid}
+	\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}[plain]
+
+	\begin{figure}
+	\includegraphics[scale=0.3]{./lecture_includes/Miller_Medicaid4.png}
+	\caption{Miller, et al. (2019) estimates of Medicaid expansion's effects on on annual mortality}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Mechanism}
+
+\begin{itemize}
+\item Bite: Increases in enrollment and reductions in uninsured support that there is adoption of the treatment
+\item Main Results: 9.2\% reduction in mortality among the near-elderly
+\item Falsifications: no effect on a similar group who isn't eligible
+\item Mechanism: ``The effect is driven by a reduction in disease-related deaths and grows over time.''
+\item Event studies: Compelling once the others are established
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Making event study}
+
+\begin{itemize}
+\item All the simple event study is is an interaction between the treatment group dummy and the calendar year dummies
+\item You must drop a $t-\tau$ as the baseline (e.g., $t-1$) must be $Y^0$ untreated comparisons recall
+\item I have included in a do file that will do it for you either manually or using coefplot in \texttt{simple\_eventstudy.do} at github labs
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Manually creating the event study}
+
+	\begin{figure}
+	\includegraphics[scale=0.20]{./lecture_includes/simple_eventstudy_manual}
+	\end{figure}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Creating the event study with Ben Jann's \texttt{coefplot}}
+
+	\begin{figure}
+	\includegraphics[scale=0.20]{./lecture_includes/simple_eventstudy.png}
+	\end{figure}
+
+\end{frame}
+
+
+
 
 
 
