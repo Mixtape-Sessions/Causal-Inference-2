@@ -17,6 +17,10 @@ replace post = 1 if year>=2006
 gen 	treat=0
 replace treat=1 if effyear==2006
 
+* OLS regression model first
+reg l_homicide post##treat, cluster(state)
+
+
 * Manual
 egen y11 = mean(l_homicide) if post==1 & treat==1
 egen y10 = mean(l_homicide) if post==0 & treat==1
@@ -31,7 +35,6 @@ egen ey00 = max(y00)
 gen did = (ey11 - ey10) - (ey01 - ey00)
 sum did
 
-reg l_homicide post##treat, cluster(state)
 
 * Compare the variable did mean with the coefficient on the interaction
 
