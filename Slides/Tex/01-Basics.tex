@@ -671,14 +671,46 @@ Notice how OLS is ``imputing'' $E[Y^0|D=1,Post]$ for the treatment group in the 
 
 \subsection{Inference}
 
-\begin{frame}{Inference}
-	
-	\begin{itemize}
-	\item  Bertrand, Duflo and Mullainathan (2004) show that conventional standard errors will often severely understate the standard deviation of the estimators
-	\item Standard errors are biased downward (i.e., too small, over reject)
-	\item They proposed three solutions, but most only use one of them (clustering)
-	\end{itemize}
+\begin{frame}{Introduction to Inference in DID}
+  When dealing with clustered data, a crucial concept is the difference between correlated observations and correlated errors. While they may seem similar, they are distinct, and it's essential to focus on the errors when clustering standard errors.
 \end{frame}
+
+\begin{frame}{Correlated Observations}
+  \begin{itemize}
+    \item Correlated observations occur when the observed variables themselves are correlated within a cluster.
+    \item For instance, incomes within a specific region might be positively correlated.
+    \item Correlated observations do not necessarily violate OLS assumptions.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Correlated Errors}
+  \begin{itemize}
+    \item Correlated errors occur when the unobserved errors are correlated within a cluster.
+    \item This violates the classical OLS assumption of independent errors, leading to inefficient and possibly biased standard errors.
+    \item Clustering standard errors accounts for this within-cluster correlation.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Why Focus on Correlated Errors?}
+  \begin{itemize}
+    \item OLS assumptions are about errors, not the observed variables.
+    \item Failing to account for correlated errors can lead to misleading inference.
+    \item Clustering standard errors at the appropriate level corrects for this, giving more reliable hypothesis tests and confidence intervals.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Serial correlation creates problems}
+  \begin{itemize}
+    \item So errors within a cluster (e.g., same treatment group) might be correlated.
+    \item Even if between clusters, they are assumed to be independent, the within correlation in errors biases standard errors downward
+	\item  Bertrand, Duflo and Mullainathan (2004) show that conventional standard errors will often severely understate the standard deviation of the estimators
+	\item They proposed three solutions, but most only use one of them (clustering)
+
+  \end{itemize}
+\end{frame}
+
+
 
 
 \begin{frame}{Inference}
@@ -693,6 +725,29 @@ Notice how OLS is ``imputing'' $E[Y^0|D=1,Post]$ for the treatment group in the 
 Most people will simply cluster, but there are issues if you have too few clusters. They mention a third way but it's only a curiosity.
 		
 \end{frame}
+
+
+\begin{frame}{Computing Cluster-Robust Standard Errors}
+  \begin{enumerate}
+    \item Run your regression to get \( u \) and \( \hat{Y} \).
+    \item Calculate cluster-level residuals \( \hat{u}_c \).
+    \item Calculate the "meat" (as in bread-meat-bread sandwich) \( M \) as \( \sum_c X_c^\prime \hat{u}_c \hat{u}_c^\prime X_c \).
+    \item Your standard error covariance matrix is \( \hat{V} = (X^\prime X)^{-1} M (X^\prime X)^{-1} \).
+  \end{enumerate}
+  
+  \bigskip
+  
+  Mixtape reference (chapter 2): \url{https://mixtape.scunning.com/02-probability\_and\_regression\#cluster-robust-standard-errors}
+\end{frame}
+
+\begin{frame}{Compressing Into a Single Number}
+  \begin{itemize}
+    \item Diagonal elements of \( \hat{V} \) contain variances for each coefficient.
+    \item Standard errors are the square root of these diagonal elements.
+    \item Non-diagonal elements are used for hypothesis tests and confidence intervals for combinations of coefficients.
+  \end{itemize}
+\end{frame}
+
 
 
 

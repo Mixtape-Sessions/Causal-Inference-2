@@ -19,7 +19,9 @@ replace post = 1 if year>=2006
 gen 	treat=0
 replace treat=1 if effyear==2006
 
-* Event study
+* Event study: interacts the treat dummy with calendar year but drops a single pre-treatment year. I will choose 2005 as my baseline. Every regression coefficient, both the post-treatment estimates of the ATT by year and the pre-treatment coefficients also by year will be calculated as DID coefficients using 2005 as the "pre" period. 
+
+
 tabulate year, gen(pre)
 tabulate year, gen(post)
 

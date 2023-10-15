@@ -20,6 +20,9 @@ replace treat=1 if effyear==2006
 * OLS regression model first
 reg l_homicide post##treat, cluster(state)
 
+* Same thing as above
+reg l_homicide post treat i.post*i.treat, cluster(state)
+
 
 * Manual
 egen y11 = mean(l_homicide) if post==1 & treat==1
