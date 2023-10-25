@@ -101,7 +101,7 @@ gen y0 = firms + n + e // parallel trends (unit level) in y0. Everyone's Y0 grow
 gen y2 = firms + n + te*treat + e // UNIT LEVEL parallel trends IN EVERY PERIOD and NO ANTICIPATION
 
 * Data generating process with dynamic treatment effects over time
-gen y = firms + n + treat*te*(year - treat_date + 1) + e 
+gen y = firms + n + te*treat*(year - treat_date + 1) + e 
 
 * For group 1, the ATT in 1986 is 10
 * For group 1, the ATT in 1987 is 20
