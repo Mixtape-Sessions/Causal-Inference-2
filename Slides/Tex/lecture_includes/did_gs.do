@@ -31,7 +31,7 @@ xtset pt year
 
 * List of variables for which you want to create indices
 local vars did pt ct
-
+      
 * Loop over each variable
 foreach var of local vars {
     * Find the value of the variable in 1990
