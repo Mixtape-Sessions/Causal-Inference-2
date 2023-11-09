@@ -8,10 +8,10 @@ clear
 capture log close
 
 * Home laptop
-cd "/Users/scunning/Causal-Inference-2/Slides/Tex/lecture_includes"
+* cd "/Users/scunning/Causal-Inference-2/Slides/Tex/lecture_includes"
 
 * Work iMac
-* cd "/Users/scott_cunningham/Documents/Causal-Inference-2/Slides/Tex/lecture_includes"
+cd "/Users/scott_cunningham/Documents/Causal-Inference-2/Slides/Tex/lecture_includes"
 
 import excel "./google_scholar_did.xlsx", sheet("PT DID") firstrow case(preserve) allstring
 
@@ -24,13 +24,17 @@ destring DID_ES, gen(did_es) force
 destring CT, gen(ct) force
 destring DID_CT, gen(did_ct) force
 
-* I don't end up collecting these
-drop CT_ES CT_ES_DID
+* Third wave
+destring DID_ATT, gen(did_att) force
+destring DID_HET, gen(did_het) force
+destring DID_TWFE, gen(did_twfe) force
+destring TWFE, gen(twfe) force
 
+* Time set the time series
 xtset pt year
 
 * List of variables for which you want to create indices
-local vars did pt ct
+local vars did pt ct twfe
       
 * Loop over each variable
 foreach var of local vars {
@@ -49,6 +53,18 @@ foreach var of local vars {
 twoway (tsline pt_index, lcolor(black) lwidth(medthick) lpattern(solid)) (tsline ct_index, lcolor(blue) lwidth(medthick) lpattern(dash)), ytitle(`"Total counts relative to 1990 counts"') ytitle(, size(medsmall) margin(medium)) ttitle(`"Year"') title(`"Parallel Trends vs Common Trends"') subtitle(`"Google Scholar Counts"') note(`"Each series normalized relative to its own count in 1990: PT was 182 and CT was 286."') legend(order(1 "Parallel trends" 2 "Common trends"))
 
 graph export "./trends_graph.jpg", as(jpg) name("Graph") quality(90) replace
+
+
+* Main figure: Plot DID and TWFE together. 
+
+twoway (tsline did_index, lcolor(black) lwidth(medthick) lpattern(solid)) (tsline twfe_index, lcolor(blue) lwidth(medthick) lpattern(dash)), ytitle(`"Total counts relative to 1990 counts"') ytitle(, size(medsmall) margin(medium)) ttitle(`"Year"') title(`"Diff-in-diff vs TWFE"') subtitle(`"Google Scholar Counts"') note(`"Each series normalized relative to its own count in 1990: DID was 10 and TWFE was 19."') legend(order(1 "Diff-in-Diff" 2 "Twoway Fixed Effects"))
+
+graph export "./twfe_did_graph.jpg", as(jpg) name("Graph") quality(90) replace
+
+gen ln_did=ln(did_index)
+gen ln_twfe=ln(twfe_index)
+
+twoway (tsline ln_did, lcolor(black) lwidth(medthick) lpattern(solid)) (tsline ln_twfe, lcolor(blue) lwidth(medthick) lpattern(dash)), ytitle(`"Total counts relative to 1990 counts"') ytitle(, size(medsmall) margin(medium)) ttitle(`"Year"') title(`"Diff-in-diff vs TWFE"') subtitle(`"Google Scholar Counts"') note(`"Each series normalized relative to its own count in 1990: DID was 10 and TWFE was 19."') legend(order(1 "Diff-in-Diff" 2 "Twoway Fixed Effects"))
 
 
 * Second figure: DiD + CT/PT/ES together (early and late periods)
@@ -156,11 +172,63 @@ restore
 
 
 
+* Third wave
+
+* List of variables for which you want to create indices
+local vars did_att did_het did_twfe
+
+* Loop over each variable
+foreach var of local vars {
+    * Find the value of the variable in 1990
+    su `var' if year==2000
+    
+    * Generate a base value using the mean for the year 1990
+    gen `var'_base = `r(mean)'
+    
+    * Generate the normalized series for the variable
+    gen `var'_index = `var' / `var'_base
+}
+
+
+preserve
+drop if year<2010
+
+twoway (tsline pt_did, lcolor(black) lwidth(medthick) lpattern(solid)) (tsline es_pt, lcolor(blue) lwidth(medthick) lpattern(dash)) (tsline did_es, lcolor(blue) lwidth(medthick) lpattern(dot)), ytitle(`"Counts in Google Scholar"') ytitle(, size(medsmall) margin(medium)) xtitle(`"Year"') xscale(range(2010 2022)) xlabel(2010(4)2022) title(`"Trends in Diff-in-Diff Terms"') subtitle(`"Combinations of Popular DiD Methods"') note(`"Early parallel trends is NOT difference-in-differences reference"') legend(order(1 "PT AND DID" 2 "PT AND Event Study" 3 "DID AND Event Study"))
+
+
+graph export "./did_graph_later.jpg", as(jpg) name("Graph") quality(90) replace
+graph save "./did_graph_later.gph", replace
+
+restore
+
 
 
 
 capture log close
 exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 twoway (tsline pt_did, lcolor(black) lwidth(medthick) lpattern(solid)), ytitle(`"PT AND DID Counts in Google Scholar"') ttitle(`"Year"') title(`"Mentions of Parallel Trends AND DiD in Google Scholar"') 
