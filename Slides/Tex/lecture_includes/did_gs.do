@@ -8,10 +8,10 @@ clear
 capture log close
 
 * Home laptop
-cd "/Users/scunning/Causal-Inference-2/Slides/Tex/lecture_includes"
+* cd "/Users/scunning/Causal-Inference-2/Slides/Tex/lecture_includes"
 
 * Work iMac
-* cd "/Users/scott_cunningham/Documents/Causal-Inference-2/Slides/Tex/lecture_includes"
+cd "/Users/scott_cunningham/Documents/Causal-Inference-2/Slides/Tex/lecture_includes"
 
 import excel "./google_scholar_did.xlsx", sheet("PT DID") firstrow case(preserve) allstring
 
@@ -70,7 +70,7 @@ foreach var of local vars {
 
 preserve
 drop if year < 2007 | year > 2022
-
+gen ln_es_pt=ln(es_pt)
 
 // Create the dual-axis plot
 twoway (tsline es_pt, lcolor(blue) lwidth(medthick) yaxis(1)) ///
