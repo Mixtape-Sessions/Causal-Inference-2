@@ -276,14 +276,14 @@ Introduction to DiD basics
 		\multicolumn{1}{c}{\textbf{Cholera mortality}}\\
 		\midrule
 		Lambeth & 1849 & $Y=L$ \\
-		& 1854 & $Y=L + (T + D)$ \\
+		& 1854 & $Y=L + (L_t + D)$ \\
 		\bottomrule
 		\end{tabular}
 		\end{center}
 	\end{table}
 
 \begin{eqnarray*}
-\widehat{\delta}_{its} = D + T
+\widehat{\delta}_{its} = D + L_t
 \end{eqnarray*}What is required for this estimator to be unbiased?
 
 
@@ -292,6 +292,7 @@ Introduction to DiD basics
 \begin{frame}{3) Difference-in-differences}
 
 \begin{table}\centering
+\scriptsize
 		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
 		\begin{center}
 		\begin{tabular}{lll|lc}
@@ -303,20 +304,20 @@ Introduction to DiD basics
 		\multicolumn{1}{c}{$D_2$}\\
 		\midrule
 		Lambeth & Before & $Y=L$ \\
-		& After & $Y=L + T_L + D$ & $T_L+D$\\
+		& After & $Y=L + L_t + D$ & $\textcolor{red}{L_t}+D$\\
 		\midrule
-		& & & & $D$ \\
+		& & & & $D + (\textcolor{red}{L_t}- SV_t)$ \\
 		\midrule
 		Southwark and Vauxhall & Before & $Y=SV$ \\
-		& After & $Y=SV + T_{SV}$ & $T_{SV}$\\
+		& After & $Y=SV + SV_t$ & $SV_t$\\
 		\bottomrule
 		\end{tabular}
 		\end{center}
 	\end{table}
 
 \begin{eqnarray*}
-\widehat{\delta}_{did} = D + (T_L - T_{SV})
-\end{eqnarray*}This method yields an unbiased estimate of D if $T_{SV} = \textcolor{red}{T_L}$
+\widehat{\delta}_{did} = D + (\textcolor{red}{L_t}- SV_t)
+\end{eqnarray*}This method yields an unbiased estimate of D if $\textcolor{red}{L_t} = SV_t$
 
 \end{frame}
 
@@ -1046,6 +1047,92 @@ Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in 
 	\end{itemize}
 \end{frame}
 
+
+
+
+
+\begin{frame}{Biased diff-in-diff \#1}
+
+\begin{table}\centering
+\scriptsize
+		\caption{Biased diff-in-diff \#1: comparing states}
+		\begin{center}
+		\begin{tabular}{lll|lc}
+		\toprule
+		\multicolumn{1}{l}{\textbf{States}}&
+		\multicolumn{1}{c}{\textbf{Period}}&
+		\multicolumn{1}{c}{\textbf{Outcomes}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}\\
+		\midrule
+		Experimental states & Before & $Y=NJ$ \\
+		& After & $Y=NJ + NJ_t + D$ & $\textcolor{red}{NJ_t}+D$\\
+		\midrule
+		& & & & $D + (\textcolor{red}{NJ_t}- PA_t)$ \\
+		\midrule
+		Non-experimental  & Before & $Y=PA$ \\
+		states& After & $Y=PA + PA_t$ & $PA_t$\\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{eqnarray*}
+\widehat{\delta}_{did} = D + (\textcolor{red}{NJ_t}- PA_t)
+\end{eqnarray*}The ATT is D. Diff-in-diff is an unbiased estimate of D if $\textcolor{red}{NJ_t} = PA_t$. Call parallel trends.
+
+\end{frame}
+
+
+\begin{frame}{Biased diff-in-diff \#2}
+
+\begin{table}\centering
+\scriptsize
+		\caption{Biased diff-in-diff \#2: comparing groups}
+		\begin{center}
+		\begin{tabular}{lll|lc}
+		\toprule
+		\multicolumn{1}{l}{\textbf{Groups}}&
+		\multicolumn{1}{c}{\textbf{Period}}&
+		\multicolumn{1}{c}{\textbf{Outcomes}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}\\
+		\midrule
+		Married women & Before & $Y=MW$ \\
+		& After & $Y=MW + MW_t + D$ & $\textcolor{red}{MW_t}+D$\\
+		\midrule
+		& & & & $D + (\textcolor{red}{MW_t}- SO_t)$ \\
+		\midrule
+		Single men  & Before & $Y=SO$ \\
+		and older women& After & $Y=SO + SO_t$ & $SO_t$\\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{eqnarray*}
+\widehat{\delta}_{did} = D + (\textcolor{red}{MW_t}- SO_t)
+\end{eqnarray*}Also unbiased estimate of D if $\textcolor{red}{MW_t} = SO_t$. A different parallel trends assumption.
+
+\end{frame}
+
+
+\begin{frame}{Two biased diff-in-diffs}
+
+\begin{itemize}
+
+\item If parallel trends of one doesn't hold, use the other, because both identify the ATT under their respective parallel trends
+\item But what if both of them are biased -- then you can't use diff-in-diff because diff-in-diff requires at least one parallel trends
+\item Okay, but what if both biases are the same?
+	\begin{eqnarray*}
+	(\textcolor{red}{NJ_t} -PA_t) = (\textcolor{red}{MW_t} - SO_t)
+	\end{eqnarray*}
+\item Then you can use triple differences, first developed by Gruber (1994)
+
+\end{itemize}
+
+\end{frame}
+
 \begin{frame}{Triple differences by Gruber (1995)}
 	
 	\begin{figure}
@@ -1054,60 +1141,89 @@ Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in 
 	
 \end{frame}
 
+\begin{frame}{Triple differences commentary}
+
+\begin{itemize}
+
+\item In Gruber's 1994 article, it isn't clear why he needed triple differences in the first place -- his triple differences yielded -0.054 which is almost the same as what he found with his first diff-in-diff (-0.062)
+\item The main value of triple differences is that you use it when you believe the parallel trends assumption doesn't hold
+
+\end{itemize}
+
+\end{frame}
 
 
 \begin{frame}[shrink=20]
 
 \begin{table}\centering
-		\caption{Difference-in-Difference-in-Differences numerical example}
+		\caption{Difference-in-Difference-in-Differences (Gruber version)}
 		\tiny
 		\begin{center}
 		\begin{tabular}{lll|l|lll}
-		\hline \hline
-		\multicolumn{1}{l}{\textbf{States}}&
-		\multicolumn{1}{c}{\textbf{Group}}&
+		\toprule
+		\multicolumn{1}{l}{\textbf{Groups}}&
+		\multicolumn{1}{c}{\textbf{States}}&
 		\multicolumn{1}{c}{\textbf{Period}}&
 		\multicolumn{1}{c}{\textbf{Outcomes}}&
 		\multicolumn{1}{c}{$D_1$}&
 		\multicolumn{1}{c}{$D_2$}&
 		\multicolumn{1}{c}{$D_3$}\\
-		\hline
-		&&After	&$NJ+T+NJ_t+l_t+D$					\\
-	&Married women, 20-40yo			&&&$T+NJ_t+l_t+D$			\\
-		&&Before	&$NJ$					\\
-Experimental states					&&&&&$D+\textcolor{red}{l_t-s_t}$			\\
-		&&After	&$NJ+T+NJ_t+s_t$					\\
-	&Older 40, Single men 20-40yo		&&	&$T+NJ_t+s_t$				\\
-		&&Before	&$NJ$					\\
+		\midrule
+		&&After	&$NJ+MW+\textcolor{blue}{NJ_t}+\textcolor{red}{MW_t}+D$					\\
+	&Experimental			&&&$\textcolor{blue}{NJ_t}+\textcolor{red}{MW_t}+D$			\\
+		&states&Before	&$NJ+MW$					\\
+Married women 					&&&&&$D+\textcolor{blue}{NJ_t} + \textcolor{red}{MW}_t$			\\
+20-40							&&&&&$-(PA_t + MW_t)$\\
+    		&&After	&$PA+MW+PA_t+MW_t$					\\
+	&Non-experimental		&&	&$PA_t+MW_t$				\\
+		&states&Before	&$PA+MW$					\\
 								\\
 &&&&&&$\textcolor{black}{D}$
 \\
-		&&After	&$PA+T+PA_t+l_t$				\\
-	&Married women, 20-40yo			&&&$T+PA_t+l_t$ \\				
-		&&Before	&$PA$					\\
-Non-experimental states					&&&&&$l_t-s_t$		\\
-		&&After	&$PA+T+PA_t+s_t$					\\
-	&Older 40, Single men 20-40yo		&&&	$T+PA_t+s_t$				\\
-		&&Before	&$PA$					\\
-		\hline \hline
+		&&After	&$NJ+SO+NJ_t+SO_t$				\\
+	&Experimental 			&&&$NJ_t+SO_t$ \\				
+		&states&Before	&$NJ+SO$					\\
+Single men 					&&&&&$NJ_t + SO_t$		\\
+Older women					&&&&&$-(PA_t + SO_t) $		\\
+	     	&&After	&$PA+SO+PA_t+SO_t$					\\
+	&Non-experimental		&&&	$PA_t+SO_t$				\\
+		&states&Before	&$PA+SO$					\\
+		\bottomrule
 		\end{tabular}
 		\end{center}
 	\end{table}
-	
+
 \begin{center}
-\textbf{Triple diff identification assumption:} 
+\textbf{Triple diff assumption}
 \end{center}
 
-\bigskip
-\textbf{Answer}: $\textcolor{red}{l_t-s_t}$ for experimental states equals $\textcolor{black}{l_t-s_t}$ for non-experimental states
+$\widehat{\delta}_{DDD}= D + \bigg ((\textcolor{blue}{NJ_t} + \textcolor{red}{MW_t}) - (PA_t + MW_t) \bigg )- \bigg ( (NJ_t + SO_t) - (PA_t + SO_t) \bigg) $
 
-\bigskip
-
-\textbf{Intuition}: Parallel trends in changes in gaps: change in inequality between two groups hourly wages from pre to post is the same
-
-
+Recall that our first DiD was biased by $NJ_t - PA_t$ and \\
+our second DiD was biased by $MW_t - SO_t$. 
 
 \end{frame}
+
+\begin{frame}{Two biased diff-in-diff}
+
+\scriptsize
+\begin{eqnarray*}
+&=& [(\textcolor{blue}{NJ^{MW}_t} + \textcolor{red}{MW^{NJ}_t}) - (PA^{MW}_t + MW^{PA}_t) ]- [ (NJ^{SO}_t + SO^{NJ}_t) - (PA^{SO}_t + SO^{PA}_t) ]  \\
+&=& (\textcolor{blue}{NJ^{MW}_t} + \textcolor{red}{MW^{NJ}_t} - PA^{MW}_t - MW^{PA}_t )- (NJ^{SO}_t + SO^{NJ}_t - PA^{SO}_t - SO^{PA}_t ) \\
+&=& \textcolor{blue}{NJ^{MW}_t} + \textcolor{red}{MW^{NJ}_t} - PA^{MW}_t - MW^{PA}_t - NJ^{SO}_t - SO^{NJ}_t + PA^{SO}_t + SO^{PA}_t  \\
+&=& \textcolor{blue}{NJ^{MW}_t} - PA^{MW}_t - NJ^{SO}_t + PA^{SO}_t + \textcolor{red}{MW^{NJ}_t} - MW^{PA}_t - SO^{NJ}_t + SO^{PA}_t  \\
+&=& (\textcolor{blue}{NJ^{MW}_t} - PA^{MW}_t - NJ^{SO}_t + PA^{SO}_t )+ (\textcolor{red}{MW^{NJ}_t} - SO^{NJ}_t- MW^{PA}_t  + SO^{PA}_t ) \\
+&=& [(\textcolor{blue}{NJ^{MW}_t} - PA^{MW}_t) -( NJ^{SO}_t - PA^{SO}_t )]- [(SO^{NJ}_t-\textcolor{red}{MW^{NJ}_t}) - ( SO^{PA}_t  -  MW^{PA}_t )] \\
+&=& \underbrace{[(\textcolor{blue}{NJ^{MW}_t} - PA^{MW}_t) -( NJ^{SO}_t - PA^{SO}_t )]}_{\mathclap{\text{Equally biased  DiD \#1}}} - \underbrace{[(SO^{NJ}_t-\textcolor{red}{MW^{NJ}_t}) - ( SO^{PA}_t  -  MW^{PA}_t )]}_{\mathclap{\text{Equally biased DiD \#2}}} \\
+\end{eqnarray*}
+
+Triple differences requires two diff-in-diff, each with the same bias. Parallel bias
+
+\end{frame}
+
+
+
+
 
 
 \begin{frame}{DDD in Regression}
@@ -1180,3 +1296,5 @@ Sometimes, an empirical literature may be criticized using nothing more than pla
 
 
 \end{document}
+
+
