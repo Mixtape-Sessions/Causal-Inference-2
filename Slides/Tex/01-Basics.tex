@@ -1170,10 +1170,10 @@ Under parallel trends, $\widehat{\delta}$ are estimates of the ATT at points in 
 		\multicolumn{1}{c}{$D_3$}\\
 		\midrule
 		&&After	&$NJ+MW+\textcolor{blue}{NJ_t}+\textcolor{red}{MW_t}+D$					\\
-	&Experimental			&&&$\textcolor{blue}{NJ_t}+\textcolor{red}{MW_t}+D$			\\
+	&Experimental			&&&$\textcolor{blue}{NJ_t}+MW_t + D$			\\
 		&states&Before	&$NJ+MW$					\\
-Married women 					&&&&&$D+\textcolor{blue}{NJ_t} + \textcolor{red}{MW}_t$			\\
-20-40							&&&&&$-(PA_t + MW_t)$\\
+Married women 					&&&&&$D+\textcolor{blue}{NJ_t} -PA_t 	$	\\
+20-40							&&&&&$$\\
     		&&After	&$PA+MW+PA_t+MW_t$					\\
 	&Non-experimental		&&	&$PA_t+MW_t$				\\
 		&states&Before	&$PA+MW$					\\
@@ -1183,8 +1183,8 @@ Married women 					&&&&&$D+\textcolor{blue}{NJ_t} + \textcolor{red}{MW}_t$			\\
 		&&After	&$NJ+SO+NJ_t+SO_t$				\\
 	&Experimental 			&&&$NJ_t+SO_t$ \\				
 		&states&Before	&$NJ+SO$					\\
-Single men 					&&&&&$NJ_t + SO_t$		\\
-Older women					&&&&&$-(PA_t + SO_t) $		\\
+Single men 					&&&&&$NJ_t  - PA_t$		\\
+Older women					&&&&&$$		\\
 	     	&&After	&$PA+SO+PA_t+SO_t$					\\
 	&Non-experimental		&&&	$PA_t+SO_t$				\\
 		&states&Before	&$PA+SO$					\\
@@ -1197,29 +1197,14 @@ Older women					&&&&&$-(PA_t + SO_t) $		\\
 \textbf{Triple diff assumption}
 \end{center}
 
-$\widehat{\delta}_{DDD}= D + \bigg ((\textcolor{blue}{NJ_t} + \textcolor{red}{MW_t}) - (PA_t + MW_t) \bigg )- \bigg ( (NJ_t + SO_t) - (PA_t + SO_t) \bigg) $
+$\widehat{\delta}_{DDD}= D + \underbrace{[(\textcolor{blue}{NJ^{MW}_t} - PA^{MW}_t) -( NJ^{SO}_t - PA^{SO}_t )]}_{\mathclap{\text{Equally biased  DiD \#1 and \# 2}}}$
 
-Recall that our first DiD was biased by $NJ_t - PA_t$ and \\
-our second DiD was biased by $MW_t - SO_t$. 
+\bigskip
+Triple differences requires two diff-in-diff, from different groups, with the same bias. Parallel bias
 
-\end{frame}
-
-\begin{frame}{Two biased diff-in-diff}
-
-\scriptsize
-\begin{eqnarray*}
-&=& [(\textcolor{blue}{NJ^{MW}_t} + \textcolor{red}{MW^{NJ}_t}) - (PA^{MW}_t + MW^{PA}_t) ]- [ (NJ^{SO}_t + SO^{NJ}_t) - (PA^{SO}_t + SO^{PA}_t) ]  \\
-&=& (\textcolor{blue}{NJ^{MW}_t} + \textcolor{red}{MW^{NJ}_t} - PA^{MW}_t - MW^{PA}_t )- (NJ^{SO}_t + SO^{NJ}_t - PA^{SO}_t - SO^{PA}_t ) \\
-&=& \textcolor{blue}{NJ^{MW}_t} + \textcolor{red}{MW^{NJ}_t} - PA^{MW}_t - MW^{PA}_t - NJ^{SO}_t - SO^{NJ}_t + PA^{SO}_t + SO^{PA}_t  \\
-&=& \textcolor{blue}{NJ^{MW}_t} - PA^{MW}_t - NJ^{SO}_t + PA^{SO}_t + \textcolor{red}{MW^{NJ}_t} - MW^{PA}_t - SO^{NJ}_t + SO^{PA}_t  \\
-&=& (\textcolor{blue}{NJ^{MW}_t} - PA^{MW}_t - NJ^{SO}_t + PA^{SO}_t )+ (\textcolor{red}{MW^{NJ}_t} - SO^{NJ}_t- MW^{PA}_t  + SO^{PA}_t ) \\
-&=& [(\textcolor{blue}{NJ^{MW}_t} - PA^{MW}_t) -( NJ^{SO}_t - PA^{SO}_t )]- [(SO^{NJ}_t-\textcolor{red}{MW^{NJ}_t}) - ( SO^{PA}_t  -  MW^{PA}_t )] \\
-&=& \underbrace{[(\textcolor{blue}{NJ^{MW}_t} - PA^{MW}_t) -( NJ^{SO}_t - PA^{SO}_t )]}_{\mathclap{\text{Equally biased  DiD \#1}}} - \underbrace{[(SO^{NJ}_t-\textcolor{red}{MW^{NJ}_t}) - ( SO^{PA}_t  -  MW^{PA}_t )]}_{\mathclap{\text{Equally biased DiD \#2}}} \\
-\end{eqnarray*}
-
-Triple differences requires two diff-in-diff, each with the same bias. Parallel bias
 
 \end{frame}
+
 
 
 
