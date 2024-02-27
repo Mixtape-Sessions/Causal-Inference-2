@@ -61,7 +61,7 @@ We will cover some of the properties of twoway fixed effects (TWFE), some soluti
 \bigskip
 
 \begin{enumerate}
-	\item Brief review of potential outcomes and the ATT
+	\item Brief review of DiD history, potential outcomes and the ATT
 	\item Difference-in-differences equation (``four averages and three differences'') and the parallel trends assumption
 	\item TWFE Pathologies in static specification
 		\begin{itemize}
@@ -76,69 +76,6 @@ We will cover some of the properties of twoway fixed effects (TWFE), some soluti
 \end{enumerate}
 
 \end{frame}	
-
-
-\begin{frame}{Beaver dam and diff-in-diff credibility crisis}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Differential timing literature is like a stick that struck a beaver's dam
-\item Stick made a hole causing a leak
-\item Gradually that hole got larger and the leak got bigger
-\item Eventually the dam collapsed 
-\item That's now
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/beaverdam}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-
-
-
-
-\begin{frame}{Difference-in-differences credibility crisis}
-
-\begin{itemize}
-\item I'll start with circa 2016 onward -- several grad students and assistant professors found critical pathologies with TWFE and developed solutions  
-\item Many simultaneous discoveries, some redundancies, and \textbf{sudden} awareness of the issues started happening around 2017, eventually became a massive thing
-\item Extreme meteoric rise, unusual for econometrics
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Compare with LATE paper}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Compare with Imbens and Angrist 1995 LATE in \emph{Econometrica}
-\item 61 annual cites the year Imbens is denied tenure at Harvard for what would later win him a Nobel Prize
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/guido_late}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-
-\begin{frame}{Compare with synth paper}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Athey and Imbens called synth the most important innovation in causal inference of the last two decades
-\item Most econometrics papers, even influential ones, show slow growth
-\item Something was different about diff-in-diff even before the econometricians recently shifted their attention to it
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/basque_synth}
-    \end{column}
-  \end{columns}
-\end{frame}
-
 
 \begin{frame}{Diff-in-diff had belonged to the empiricists}
 
@@ -155,103 +92,268 @@ With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertran
 
 \end{frame}
 
-
-
-
-
-\begin{frame}{Borusyak et al}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Starts it all; written as grad students at Harvard
-\item Goes through many revisions, posted as working paper
-\item Returned to a few years ago with a third coauthor, Jahn Spiess, now R\&R at Restud
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/kirill_cites}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-
-\begin{frame}{``dCdH''}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item First major hit (in AER), may have been in working paper in 2017 (at least 2018)
-\item Very thorough decomposition of the TWFE pathology, very general solution, included Stata code
-\item Very active and talented young team (assistant profs when this was done)
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/dcdh_cites}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Goodman-Bacon}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Arguably the most influential in terms of bringing attention to the problem (but no solution)
-\item Begun while grad student at Michigan, published last of the crop
-\item Probably Twitter network had a role as he was very active, also not an econometrician
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/andrew_cites}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-
-\begin{frame}{``CS''}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Second published solution to the problem, written while assistant professors at Vanderbilt and Ole Miss, 
-\item Pedro is a UC3M alum (2015 grad) and Brantly is a Vanderbilt grad
-\item Both are now coauthors with Andrew Goodman-Bacon
-\item Introduced new terms like group-time ATT, released very tight R code (``did'')
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/pedro_cites}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-
-
-\begin{frame}{``SA''}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Third published solution to the problem, very similar to CS
-\item Focus was on decomposing the event study
-\item Written while grad students at MIT but Sophie Sun is now an assistant professor at CEMFI!
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/sun_cites}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{There's even more and more coming}
+\begin{frame}{First Wave of Diff-in-Diff}
 
 \begin{itemize}
-\item Gardner, Wooldridge, John Roth, and on and on
-\item Too many people to name at this point
-\item Given the large cites, we are likely to keep seeing more on this
-\item Probably shifting applied practice for the better but there are some growing pains
+\item Difference-in-differences has evolved in three waves from 1983 to present in economics
+\item First wave lasts from 1983 to 2011; second wave from 2011 to 2018; third wave from 2018 to present
+\item Initially, the pick up was slow, mostly used by labor economists throughout the 1990s in the ``program evaluation'' area
+\item No potential outcomes notation, no mention of parallel trends, no event studies -- only Ashenfelter's Dip, evidence of time varying selection bias
+
 \end{itemize}
 
 \end{frame}
 
 
+\begin{frame}{Ashenfelter and Card coin the phrase difference-in-differences}
 
+	\begin{figure}
+	\caption{Ashenfelter and Card (1983)}
+	\includegraphics[scale=0.2]{./lecture_includes/orley1983.png}
+	\end{figure}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{Card on Dips and Parallel Trends}
+
+\begin{quote}
+Scott: “This diff-in-diff thing. … I had the impression from stuff you’d written with Orley that you were a little lukewarm about the method a little bit. That it wasn’t always something that you’d found credible. Is that accurate?”
+
+Dave: “Well in the original [job training program evaluation] case, you didn’t have parallel trends. … [Diff-in-diff] wasn’t something you could just count on to use out of the box.”
+
+Scott: “So you were thinking about parallel trends from the very start?”
+
+Dave: “Oh no, it’s right there in that 1985 paper with Orley that introduces the term difference-in-differences. Unfortunately we didn’t have a graph. When I teach the paper now I show the graph. It has a very large dip for the treatment group. And that’s the thing everyone nowadays calls the Ashenfelter Dip.” (my emphasis)
+
+
+\end{quote}
+
+\end{frame}
+
+
+\begin{frame}{But parallel trends does not yet appear}
+
+	\begin{figure}
+	\caption{No mention of parallel trends in Ashenfelter and Card (1985)}
+	\includegraphics[scale=0.2]{./lecture_includes/nomention.png}
+	\end{figure}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Second wave grows faster than first}
+
+\begin{itemize}
+\item From 2011 to 2018, the share of NBER working papers that used diff-in-diff went from 11-12\% to 23\% in 2018, a little over 11 percentage points in only 7 years. 
+\item It had taken 24 years to reach 11\% the first time, but only 7 years the second time. 
+\item The second wave had a very fast growth rate. 
+\item The second wave’s energy was stronger than the first.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Second wave of DiD: event study and parallel trends}
+
+	\begin{figure}
+	\caption{Currie, et al. (2020)}
+	\includegraphics[scale=0.25]{./lecture_includes/secondwave.png}
+	\end{figure}
+
+
+\end{frame}
+
+\begin{frame}{Second wave incorporates parallel trends and event studies}
+
+\begin{itemize}
+
+\item Prior to 2011, parallel trends was not a phrase used in combination with diff-in-diff
+\item Event studies were used in finance to study abnormal stock market returns, not difference-in-differences
+\item From 2011 to 2018, the share of NBER working papers that used diff-in-diff went from 11-12\% to 23\% and event study grows from 2\% to 7\%. 
+\item It's more than just correlation -- papers that say  both``event study'' and ``parallel trends'' suddenly start appearing early to mid teens with exponential growth of 66\% a year
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Event study and parallel trends}
+
+	\begin{figure}
+	\caption{Exponential growth in both event study and parallel trends}
+	\includegraphics[scale=0.2]{./lecture_includes/event_pt.png}
+	\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Second wave captures event studies}
+
+\begin{itemize}
+\item Second wave DiD brings in parallel trends and event studies to DiD designs, perhaps riding on the long tradition of Ashenfelter's Dip
+\item But the explicit notation and identifying assumption is worked out gradually by different authors before being broadly adopted by practitioners 
+\item Plotting of the words "parallel trends", "event study" and "common trends" in combination with papers with phrase "difference-in-differences"
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Incorporating PT and event study into diff-in-diff}
+
+	\begin{figure}
+	\caption{Growth in both event study and parallel trends}
+	\includegraphics[scale=0.2]{./lecture_includes/espt_2}
+	\end{figure}
+
+
+\end{frame}
+
+\begin{frame}{Incorporating PT and event study into diff-in-diff}
+
+	\begin{figure}
+	\caption{Growth in both event study and parallel trends}
+	\includegraphics[scale=0.2]{./lecture_includes/espt_3}
+	\end{figure}
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Parallel trends is introduced late}
+
+\begin{itemize}
+
+\item Early focus had tended to emphasize the year fixed effects, but authors did not typically mean ``parallel trends'' 
+	\begin{quote}
+	“Moreover, given the increasing dispersion of incomes and wages among all groups during that period, the common time effects (common trends) assumption among the unobservable components across the two groups may not be satisfied.” (Blundell and Dias 1999)
+	\end{quote}
+\item Early identification was an independent assumption by Blundell, but this was viewed as too strong by Athey and Imbens (2006)
+
+\begin{quote}
+“Note that the full independence assumption $\varepsilon_i \independent(G_i,T_i)$ (e.g., Blundell and MaCurdy (2000)) is stronger than necessary for [DiD] to give the average treatment effect.”
+\end{quote}
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Heckman, et al. (1997) introduce potenial outcomes}
+
+
+\begin{itemize}
+\item First time we see parallel trends expressed (without name) using potential outcomes, though, is a conditional parallel trends assumption by Heckman, Ichimura and Todd (1997)
+
+\bigskip
+
+	\begin{figure}
+	\includegraphics[scale=0.2]{./lecture_includes/heckman_cpt}
+	\end{figure}
+
+
+\item Angrist and Pischke (2009) chapter 5 is entitled "Parallel Worlds: Fixed Effects, Difference-in-Differences and Panel Data''
+\item But phrase ``parallel trends'' does not appear (actually unclear when it starts getting used) -- but we do see this diagram
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{Mostly Harmless and Parallel Trends}
+
+
+	\begin{figure}
+	\includegraphics[scale=0.45]{./lecture_includes/mhe_pt}
+	\end{figure}
+
+
+
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}{Introducing Event Studies to Diff-in-Diff}
+
+	\begin{figure}
+	\includegraphics[scale=0.35]{./lecture_includes/autor2003}
+	\caption{David Autor (2003) ``unjust dismissals'' paper}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Constant effects model}
+
+	\begin{figure}
+	\includegraphics[scale=0.25]{./lecture_includes/autor_quote}
+	\caption{David Autor clues us into the problems of TWFE}
+	\end{figure}
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}{Third wave of diff-in-diff}
+
+\begin{itemize}
+
+\item Starts with Kirill Borusyak and Xavier Jaravel (2016) working paper posted to SSRN (later published with Jan Speiss 2023)
+\item Key elements: explicit mention of the average treatment effect on the treated (ATT), heterogenous treatment effects and the pathologies of twoway fixed effects (TWFE)
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{First Wave}
+
+	\begin{figure}
+	\includegraphics[scale=0.15]{./lecture_includes/wave1}
+	\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Second Wave}
+
+	\begin{figure}
+	\includegraphics[scale=0.15]{./lecture_includes/wave2}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Third Wave}
+
+	\begin{figure}
+	\includegraphics[scale=0.15]{./lecture_includes/wave3}
+	\end{figure}
+
+\end{frame}
+\begin{frame}{TWFE relative to DID}
+
+	\begin{figure}
+	\includegraphics[scale=0.15]{./lecture_includes/wave4}
+	\end{figure}
+
+\end{frame}
 
 
 
@@ -270,8 +372,9 @@ With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertran
 
 \begin{itemize}
 \item When working with panel data, the so-called ``twoway fixed effects'' (TWFE) estimator was the workhorse estimator
-\item And from the start, it was used with diff-in-diff
-\item But at the start, it wasn't staggered adoption -- it was a much simpler design in which a group was treated in one year, and a comparison group wasn't
+\item And from the start, regression was used with diff-in-diff, and as more complex designs began studied, panel fixed effects were a natural choice
+\item But DiD is not regression, nor is it TWFE -- it is four averages and three subtractions as we saw earlier
+\item Under differential timing, interpreting the TWFE coefficient became challenging given there weren't just two groups
 \end{itemize}
 
 \end{frame}
@@ -289,22 +392,10 @@ First equation is used for simple designs when everyone is treated at once; seco
 
 \bigskip
 
-First equation works; second one only sometimes works
+The coefficient on the interaction is the DiD equation of ``four averages and three subtractions'' but the coefficient on equation 2 delta under heterogenous treatment effects -- what was it?
 
 \end{frame}
 
-\begin{frame}{Orley goes to Washington}
-
-\begin{itemize}
-\item Orley Ashenfelter graduated from Princeton in the 1970s, takes a job in Washington DC and begins studying ``job trainings programs''
-\item Empirical crisis in empirical macro and empirical labor back in the 1970s -- Orley, David Card, Bob Lalonde, Alan Krueger at Princeton all helped bring attention to it and began pushing for solutions, one of which was RCTs in labor but also diff-in-diff as well as better instruments
-\item Listen to Orley explain the connection he made between twoway fixed effects and difference-in-differences; it was born out of a need to explain OLS to an American bureaucrat
-
-\end{itemize}
-
-\url{https://youtu.be/WnB3EJ8K7lg?t=126}
-
-\end{frame}
 
 \subsection{Potential outcomes}
 
@@ -316,8 +407,7 @@ $$Y_{ist} = \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \textcolor{blue
 $$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overline{y}_k^{pre(k)} \bigg ) - \bigg ( \overline{y}_U^{post(k)} - \overline{y}_U^{pre(k)} \bigg ) $$
 
 \begin{itemize}
-\item Orley claims that the TWFE estimator of $\delta$ and the ``four averages and three subtractions'' are the same thing numerically
-\item And they are -- they are numerically \emph{identical}
+\item The $\delta$ in the regression is numerically identical to ``four averages and three subtractions'' 
 \item And under a particular assumption, they are also unbiased estimates of an aggregate causal parameter
 \item But to see this we need new notation -- potential outcomes
 \end{itemize}
@@ -467,7 +557,8 @@ $$Y_{ist} = \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}$$
 \item So that's the simple case; what about the differential timing case?  
 
 \item If you estimate with OLS with differential timing, what does $\widehat{\delta}$ correspond to?
-\item It also corresponds to the previous ``four averages and three subtractions'' -- but it's numerous of them, not just one
+\item It relates to the previous ``four averages and three subtractions'' -- but it's numerous of them, not just one
+\item In differential timing, the coefficient, $\widehat{\delta}^{TWFE}$, is a weighted average of \emph{all} possible DiD calculations -- including some we should not be calculating
 
 \end{itemize}
 
@@ -475,16 +566,6 @@ $$Y_{ist} = \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}$$
 
 
 
-\begin{frame}{Decomposition Preview}
-
-
-\begin{itemize}
-\item Andrew Goodman-Bacon decomposed $\widehat{\delta}$ and showed it is numerically identical to a weighted average of all ``four averages and three subtractions''
-\item But, even before we get to causality there are unusual features
-\item TWFE model assigns its own weights which are a function of the size of a ``group'' and the variance of group treatment dummies
-\end{itemize}
-
-\end{frame}
 
 
 
@@ -827,21 +908,36 @@ While large weight on the ``late to early 2x2'' is \emph{suggestive} of an issue
 
 
 
-\begin{frame}{Callaway and Sant'Anna 2020}
+\begin{frame}{Robust DiD}
 
-CS is a DiD estimator used for estimating and then summarizing smaller ATT parameters under differential timing and conditional parallel trends into more policy relevant ATT parameters (either dynamic or static)
+\begin{itemize}
+
+\item There are probably about 6-8 possible robust DiD methods that can be used now
+\item All of them have certain things in common -- don't use already treated units as controls
+\item To review all of them is impossible in a short class so I will focus on two
+\item Callaway and Sant'Anna (CS) and Sun and Abraham (SA), but I will point you to more
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Callaway and Sant'Anna}
 
 
-\begin{figure}
-\includegraphics[scale=0.25]{./lecture_includes/pedro_cites}
-\end{figure}
+
+CS is a DiD estimator used for estimating and then summarizing specific ATT parameters for each treatment group for each period (``group-time ATT'') under differential timing assuming SUTVA, no anticipation, common support and conditional parallel trends
+
+\bigskip
+
+CS is a straightforward estimator -- identify smaller causal effects per group and time (``building blocks'') and then aggregate them into whatever parameter you're interested in using non-negative weights while avoiding ``bad controls''
+
+
 
 \end{frame}
 
 
-\begin{frame}{When is CS used}
+\begin{frame}{Examples of when you'd use it}
 
-Just some examples of when you'd want to consider it:
 \begin{enumerate}
 \item When treatment effects differ depending on when it was adopted
 \item When treatment effects change over time
@@ -851,7 +947,6 @@ Just some examples of when you'd want to consider it:
 
 \bigskip
 
-CS estimates the ATT by identifying smaller causal effects and aggregating them using non-negative weights
 
 \end{frame}
 
@@ -1444,98 +1539,71 @@ Question: why is TWFE \emph{falling} pre-treatment?  Why is SA rising, but jagge
 
 \end{frame}
 
-\section{Some opinions and an application}
+\section{Interesting Applications using staggered adoption: Facebook and Mental Health}
 
-\begin{frame}{Advice}
+
+
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/facebook_quote}
+\end{center}
+\end{frame}
+
+
+
+\begin{frame}{Mental health and Social Media}
 
 \begin{itemize}
-\item DiD will remain popular for a while, and if anything all this new DiD has brought even more attention to it
-\item But now things are changing -- how do we write the papers?  Not just how do we estimate parameters
-\item Papers are a combination of science and rhetoric -- let's look at a new one
+\item Unclear what he means; he may mean there is no experimental evidence
+\item Very difficult to imagine a convincing randomized experiment passing IRB now at this point
+\item Quasi-experimental evidence can step in to answer important questions like this
 \item Braghieri, Levy and Makarin (2022), ``Social Media and Mental Health'', \emph{American Economic Review}, 112(11): 3660-3693
+
+
 \end{itemize}
 
 \end{frame}
 
-
-\begin{frame}{Big picture}
+\begin{frame}{Overview of design and data}
 
 \begin{itemize}
-\item Widely cited that social media causes mental health problems in youth
-\item Anecdotal, documentaries, but no causal evidence (``slim to none'')
-\item Study will use staggered rollout of Facebook platform to college campuses from 2004 to 2006 to estimate the effect on aggregate mental health scores from a survey
-\item You be the judge, but they present what in most cases would be strong evidence that Facebook harmed college students mental health
-
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Many things to like}
-
-\begin{itemize}
-\item Important question: mental health, suicide, review descriptive stats together
-\item Strong design: staggered rollout
-\item Event study is eye popping
-\item Mechanism and main results
-\item Very interesting dataset
+\item Authors take advantage of a clever quirk in Facebook (then ``theFacebook'') targeted different universities from 2004 to 2006
+\item They found an online data source that allowed them to pin point precisely when a university was ``treated'' with theFacebook
+\item They then linked that data with a longrunning health survey of college students (both before and after) in a very clever way
+\item Estimated the effect of a new social media platform's presence at a university on student revealed mental health problems
 
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}{Fives parts of a strong DiD}
+\begin{frame}{Evidence I like to see}
 
 \begin{enumerate}
 
-\item \textbf{Bite}: They cannot really show much here.  No data on Facebook usage.  More an ITT
-\item \textbf{Main Results}: Estimated effect on mental health measures
-\item \textcolor{red}{Mechanism}: Speculative
-\item \textbf{Falsifications}: I can't really see very strong falsifications either.
-\item \textbf{Event studies}: POW.  Just wait
+\item \textbf{Bite}: \textcolor{red}{Nothing}. They cannot really show much here.  No data on Facebook usage.  They had to rely on anecdote and Facebook as a ``first mover'', but there had been Friendster and MySpace so this does weaken the paper maybe
+\item \textbf{Main Results}: Very strong evidence, mostly expressed using rich survey data and questions transformed into z-scores (standard deviations)
+\item \textbf{Falsifications}: \textcolor{red}{None}. Authors do not perform falsifications. Remember Miller, Johnson and Wherry looking at Medicaid's effect on Medicare eligible population?  There isn't anything like that here.
+\item \textbf{Event studies}: Extremely compelling evidence and robustness across a half dozen different models
+\item \textbf{Mechanism}: \textcolor{red}{Very weak in my opinion}
 
 \end{enumerate}
 
 \end{frame}
 
-\begin{frame}{Mechanism}
-
-\begin{tikzpicture}[
-  ->,>=stealth, % defines the style of the edge/arrow
-  shorten >=1pt, % shortens the arrow at the target node
-  auto,
-  node distance=3cm, % defines the space between the nodes
-  thick,
-  main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, % style of the main nodes
-  dashed node/.style={circle,fill=blue!20,draw,dashed,font=\sffamily\Large\bfseries} % style of the dashed node
-  ]
-
-  \node[main node] (D) {D}; 
-  \node[main node] (M) [above right of=D] {M}; 
-  \node[main node] (X) [below right of=D] {X};
-  \node[main node] (Y) [right of=M, below of=M] {Y};
-  \node[dashed node] (U) [above of=M] {U};
-  
-  \path[every node/.style={font=\sffamily\small}]
-    (D) edge node {} (M)
-    (D) edge node {} (X)
-    (M) edge node {} (Y)
-    (X) edge node {} (Y)
-    (U) edge[dashed] node {} (D)
-    (U) edge[dashed] node {} (M)
-    (U) edge[dashed] node {} (X)
-    (U) edge[dashed] node {} (Y);
-\end{tikzpicture}
-
-\end{frame}
-
-\begin{frame}{Mechanism}
+\begin{frame}{DiD in Court}
 
 \begin{itemize}
-\item $D$ is the treatment variable, and the ATT is over all possible channels, but what if you want to think $M$ is the mechanism
-\item When you can't rule out competing theories with falsifications, you have to try and build the case that the effect is coming through a channel
-\item Rule out $X$ and provide evidence for $M$
-\item Goal here is to try and present evidence (not proof) that it's probably the story you're saying
+
+\item So in many ways the strength of the project lies in a few areas:
+	\begin{enumerate}
+	\item Important question -- social media and youth mental health problems is a major policy question (see Zuckerberg testifying before Congress about it)
+	\item Excellent research design -- difference-in-differences
+	\item Meticulous data collection
+	\item Data visualization is compelling
+	\end{enumerate}
+\item And it publishes in the premiere journal in economics, which I think shows that the research question and high quality data combined with research design can lift a paper
 
 \end{itemize}
 
@@ -1543,99 +1611,11 @@ Question: why is TWFE \emph{falling} pre-treatment?  Why is SA rising, but jagge
 
 
 
-\begin{frame}{Ruling out alternative mechanism}
-
-\begin{tikzpicture}[
-  ->,>=stealth, % defines the style of the edge/arrow
-  shorten >=1pt, % shortens the arrow at the target node
-  auto,
-  node distance=3cm, % defines the space between the nodes
-  thick,
-  main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}, % style of the main nodes
-  dashed node/.style={circle,fill=blue!20,draw,dashed,font=\sffamily\Large\bfseries} % style of the dashed node
-  ]
-
-  \node[main node] (D) {D}; 
-  \node[main node] (M) [right of=D] {M}; 
-  \node[main node] (Y) [right of=M] {Y};
-  \node[dashed node] (U) [above of=M] {U};
-  
-  \path[every node/.style={font=\sffamily\small}]
-    (D) edge node {} (M)
-    (M) edge node {} (Y)
-    (U) edge[dashed] node {} (D)
-    (U) edge[dashed] node {} (M)
-    (U) edge[dashed] node {} (Y);
-\end{tikzpicture}
-
-
-\end{frame}
 
 
 
 
-
-\begin{frame}{Mechanism}
-
-\begin{itemize}
-
-\item Story is interpersonal comparisons which they try to show 
-\item We can discuss how plausible we found it, but ask yourself at the end -- did the event study help you believe it?  Why/why not?
-
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Data on Facebook}
-
-\begin{itemize}
-
-\item Ingenious use of the Wayback Time Machine
-\item Looked at over 700 schools using Facebook screen shots
-\item When Facebook first mentions a school on its front page, that school is marked as having gotten Facebook
-
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{New schools being adopted}
-\begin{center}
-\includegraphics[scale=0.35]{./lecture_includes/timemachine_1}
-\end{center}
-\end{frame}
-
-\begin{frame}{New schools being adopted}
-\begin{center}
-\includegraphics[scale=0.35]{./lecture_includes/timemachine_2}
-\end{center}
-\end{frame}
-
-
-\begin{frame}{Data on college students}
-
-\begin{itemize}
-\item NCHA Data is survey administered to college students on a semi-annual basis by American College Health Assoc
-\item Inquires about demographics, physical health, mental health, alcohol and drug use, sexual behaviors, and perception of these behaviors by peers
-\item ACHA merged a treatment indicator to each respondent based on Facebook dataset provided to them so that privacy could be maintained
-
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Mental health}
-
-\begin{itemize}
-
-\item Self-reported symptoms are standard medical practice in mental health -- DSM-5 relies on self-reports such as difficulty sleeping, fatigue, feelings of guilt, suicidal ideation
-\item No data on Facebook or social media usage so this is ITT version of the ATT
-\item Respondent answers to the questions are aggregated into indices such as \emph{poor mental health} where larger numbers are worse
-
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Main TWFE Model}
+\begin{frame}{TWFE}
 
 \begin{equation}
 Y_{icgt} = \alpha_g + \delta_t + \beta \times Facebook_{gt} + X_i \times \gamma + X_c \times \psi + \varepsilon_{icgt}
@@ -1643,27 +1623,115 @@ Y_{icgt} = \alpha_g + \delta_t + \beta \times Facebook_{gt} + X_i \times \gamma 
 
 \bigskip
 
-$Y_{icgt}$ is an outcome for person $i$ in wave $t$ attending college $c$ in expansion group $g$; $\alpha_g$ is expansion-group or college fixed effects; $\delta_t$ are survey-wave fixed effects; $Facebook_{gt}$ indicates the respondents' campus has Facebook by time $t$ at expansion group $g$; $X_i$ and $X_c$ are individual and college-level controls; and standard errors are clustered at college level.
-
-\bigskip
-
-$\widehat{\beta}$ identifies the ATT under parallel trends in the robust models
-
+Authors make the decision to lead with TWFE, most likely because the new methods have not yet fully been adopted and there is delayed "literacy" around the biases of TWFE
 
 \end{frame}
 
-\begin{frame}{Robustness}
+
+\begin{frame}{Data on Facebook}
 
 \begin{itemize}
 
-\item Main static results will all be in TWFE, but appendix shows other methods like CS and SA 
-\item Event studies will show all models including some we haven't reviewed
-\item Growing popularity to show ``all the robust DiD'' models so that readers can see you aren't cherry picking
+\item When does Facebook appear at a school?  
+	\begin{itemize}
+	\item Facebook only publishes a fraction of that information
+	\item They came up with a workaround
+	\end{itemize}
+\item The Wayback Machine has been taking almost daily photographs of every website since the Internet's beginning -- including the frontpage of ``TheFacebook'', which held some surprises
+
 
 \end{itemize}
 
 \end{frame}
 
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.25]{./lecture_includes/wayback1}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/wayback2}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.25]{./lecture_includes/wayback3}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.25]{./lecture_includes/wayback4}
+\end{center}
+\end{frame}
+
+\begin{frame}{Timing Dates}
+
+\begin{itemize}
+\item They went through three years of daily screenshots on Wayback machine to find when a school appeared on the front page
+\item The first time Penn State appears on the front page, the authors mark that as the date when the school got Facebook
+\item But now they need information on mental health outcomes
+\item They find it with an old long running repeated cross section survey of college students
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{NCHA survey by ACHA}
+
+\begin{quote}
+Our second main data source consists of more than 430,000 responses to the NCHA survey, a survey administered to college students on a semi-annual basis by the American College Health Association (ACHA). The NCHA survey was developed in 1998 by a team of college health professionals with the purpose of obtaining information from college students about their mental and physical health. Specifically, the NCHA survey inquires about demographics, physical health, \textbf{mental health}, alcohol and drug use, sexual behaviors, and perceptions of these behaviors among one’s peers.
+\end{quote}
+
+\end{frame}
+
+\begin{frame}{No evidence of bite}
+
+\begin{quote}
+The NCHA survey does not include any questions on social media use; therefore, it is not possible for us to determine whether a particular survey respondent had a Facebook account.
+\end{quote}
+
+\bigskip
+
+This is probably the problem in any study in which your treatment is more or less the first of its kind -- most likely the standard surveys have not yet incorporated the questions into their surveys
+
+\end{frame}
+
+\begin{frame}{Linking Facebook data with NCHA data}
+
+\begin{quote}
+In order to protect the privacy of the institutions that participate in the NCHA survey while still allowing us to carry out the analysis, the ACHA kindly agreed to provide us with a customized dataset that includes a variable indicating the semester in which Facebook was rolled out at each college. Specifically, the ACHA adopted the following procedure: (i) merge our dataset containing the Facebook introduction dates to the NCHA dataset; (ii) add a variable listing the semester in which Facebook was rolled out at each college;15 (iii) strip away any information that could allow us to identify colleges (including the specific date in which Facebook was introduced at each college).
+\end{quote}
+
+\end{frame}
+
+\begin{frame}{Basic facts about early and late adopters}
+
+\begin{itemize}
+\item Colleges in earlier Facebook expansion groups are more selective in terms of test scores, larger, more likely to be on the East Coast, and have more residential undergraduate programs than colleges in later Facebook expansion groups. 
+
+\item Colleges in earlier Facebook expansion groups enroll students from relatively more advantaged economic backgrounds. 
+
+\item Students in colleges that received Facebook relatively earlier have worse baseline mental health outcomes than students attending colleges in later Facebook expansion groups. 
+
+%The baseline differences across Facebook expansion groups may lead one to wonder about the plausibility of the parallel trends assumption in this setting; we address concerns related to parallel trends in Section III.
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Measurement}
+
+\begin{itemize}
+\item The survey data is very rich with a lot of questions about mental health with different scales
+\item They create their own combinations of these questions into aggregate indices -- ``index of poor mental health'' where higher numbers mean worse mental health
+\item Each outcome survey question is normalized into what is called a ``z-score'' which is interpreted as a fraction of a standard deviation
+\item Estimates are ATT parameters -- average effect of Facebook on students at schools that got Facebook
+\end{itemize}
+
+\end{frame}
 
 
 \begin{frame}
@@ -1708,26 +1776,41 @@ $\widehat{\beta}$ identifies the ATT under parallel trends in the robust models
 \end{center}
 \end{frame}
 
-
-\begin{frame}{Comments}
+\begin{frame}{Questions and Comments}
 
 \begin{itemize}
+\item Had this study been done five years ago, the conclusion of the event study would've been much different, and the paper may not have been as easily published let alone in the AER
+\item No doubt more work is needed, but you can see here the power of the well designed DID and its acceptance at answering causal questions for major policy problems 
+\item While the RCT would definitively answer nearly anything we can imagine, it is oftentimes not practical or even sometimes ethical raising the marginal value of the quasi-experimental design
+\item But these are not straightforward either and can be easily done badly even in good faith
 
-\item Can't lose sight of the big picture -- you still have to write a great paper, not just pass your exams, and going from estimation to publishing is a different but related skill
-\item Some of the old exhibits may not carry forward (TWFE with many columns)
-\item Increasingly, people are presenting a single event study graph with ``all the DiD'' against TWFE so as to avoid cherry picking estimators
-\item You should use the tool for the job, but these differences are subtle (``which parallel trends?'', ``which comparison group?'')
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Conclusion}
+
+
+
+
+\begin{frame}{My Preferred Ladder of Evidence}
+
+\begin{enumerate}
+\item Main results are your claim, not your evidence
+\item Show bite -- first order effects are essential evidence
+\item Event study graphs are one of your strongest pieces of evidence
+\item Falsifications -- If you can find falsifications, use them
+\item Mechanisms -- can you find any explanation?
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Synthetic control}
 
 \begin{itemize}
-\item Good question, good data, and you can publish well with DiD
-\item Hardly definitive, but the staggered design is a solution to our inability to run the RCT
-\item Remember -- many questions can be randomized in theory but not practice (e.g., smoking)
-\item Learn as much as you can and don't stop learning
+
+\item But what if parallel trends really isn't realistic -- what then?
+\item Then you may need to create your own control group that follows the same approximately trajectory as your treatment group pre-treatment
+\item A method by Abadie and Gardazebal (2003) and follow up papers worked out a method for this called synthetic control
 
 \end{itemize}
 
@@ -1739,4 +1822,5 @@ $\widehat{\beta}$ identifies the ATT under parallel trends in the robust models
 
 
 \end{document}
+
 
