@@ -7,3 +7,6 @@ ssc install drdid, replace
 csdid y, ivar(id) time(year) gvar(treat_date) ipw  
 csdid_estat simple 
 csdid_estat group
+
+estat event
+csdid_plot

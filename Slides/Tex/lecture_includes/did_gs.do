@@ -86,7 +86,7 @@ foreach var of local vars {
 
 preserve
 drop if year < 2007 | year > 2022
-
+gen ln_es_pt=ln(es_pt)
 
 // Create the dual-axis plot
 twoway (tsline es_pt, lcolor(blue) lwidth(medthick) yaxis(1)) ///
