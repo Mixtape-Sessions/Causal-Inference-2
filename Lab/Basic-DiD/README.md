@@ -110,6 +110,9 @@ The above table is a table of potential outcomes for 10 people where the treatme
 3.  Assume that the "perfect doctor" gives the app only to people whose $\delta$ is negative (i.e., $\delta < 0$). Fill out D with who gets the app and who gets nothing
 4.  Calculate the ATT and compare it with the ATE. Why is it different?
 
+<br/>
+<br/>
+
 ---
 <table>
 	<colgroup>
@@ -368,17 +371,26 @@ The above table is a table of potential outcomes for 10 people where the treatme
 
 The above table has two groups: group 1 and group 2. Group 1 is a firm that adopts a work from home program and group 2 does not. Outcomes are measures of worker productivity (outputs per hour).
 
-1.  Group 1 is treated in 1986, but group 2 is never treated. Fill in the D column and mark which periods are pre and post in the last column.
-2.  Use the switching equation to fill in column Y based on D and the potential outcomes.
-3.  Calculate the ATT for group 1 for periods 1986 to 1990.
-  a. Bonus: If we wanted the ATE, what information would we need?
-4.  Calculate the difference-in-differences equation using group 2 as the comparison group to group 1. Compare your DiD equation answer to the ATT answer from question 3.
-  a. If they are the same, what does that imply?
-  b. If they are not the same, what does that imply?
-5.  Calculate the non-parallel trends bias term.
+1. Group 1 is treated in 1986, but group 2 is never treated. Fill in the D column and mark which periods are pre and post in the last column.
+
+2. Use the switching equation to fill in column Y based on D and the potential outcomes.
+
+3. Calculate the ATT for group 1 for periods 1986 to 1990.
+   
+   a. Bonus: If we wanted the ATE, what information would we need?
+
+4. Calculate the difference-in-differences equation using group 2 as the comparison group to group 1. Compare your DiD equation answer to the ATT answer from question 3.
+   
+   a. If they are the same, what does that imply?
+   
+   b. If they are not the same, what does that imply?
+
+5. Calculate the non-parallel trends bias term.
+
+<br/>
+<br/>
 
 ---
-
 <table>
 	<colgroup>
 		<col style="width: 11%" />
@@ -636,15 +648,25 @@ The above table has two groups: group 1 and group 2. Group 1 is a firm that adop
 
 _Version 2 of the same problem:_ The above table has two groups: group 1 and group 2. Group 1 is a firm that adopts a work from home program and group 2 does not. Outcomes are measures of worker productivity (outputs per hour).
 
-1.  Group 1 is treated in 1986, but group 2 is never treated. Fill in the D column and mark which periods are pre and post in the last column.
-2.  Use the switching equation to fill in column Y based on D and the potential outcomes.
-3.  Calculate the ATT for group 1 for periods 1986 to 1990.
-  a. Bonus: If we wanted the ATE, what information would we need?
-4.  Calculate the difference-in-differences equation using group 2 as the comparison group to group 1. Compare your DiD equation answer to the ATT answer from question 3.
-  a. If they are the same, what does that imply?
-  b. If they are not the same, what does that imply?
-5.  Calculate the non-parallel trends bias term.
+1. Group 1 is treated in 1986, but group 2 is never treated. Fill in the D column and mark which periods are pre and post in the last column.
 
+2. Use the switching equation to fill in column Y based on D and the potential outcomes.
+
+3. Calculate the ATT for group 1 for periods 1986 to 1990.
+  
+   a. Bonus: If we wanted the ATE, what information would we need?
+
+4. Calculate the difference-in-differences equation using group 2 as the comparison group to group 1. Compare your DiD equation answer to the ATT answer from question 3.
+  
+   a. If they are the same, what does that imply?
+  
+   b. If they are not the same, what does that imply?
+
+5. Calculate the non-parallel trends bias term.
+
+
+---
+*Takeaway:*
 In the first example, the parallel trends were zero and the DiD = ATT.
 
 In the second example, the parallel trends term was non-zero, and the DID did not equal ATT.
