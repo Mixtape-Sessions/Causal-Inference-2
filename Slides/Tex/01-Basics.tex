@@ -1518,6 +1518,7 @@ Look at how things change when you start looking at the pre-period -- the form i
 
 
 
+
 \begin{frame}{Biased diff-in-diff \#1}
 
 \begin{table}\centering
@@ -1545,41 +1546,41 @@ Look at how things change when you start looking at the pre-period -- the form i
 	\end{table}
 
 \begin{eqnarray*}
-\widehat{\delta}_{did} = D + (\textcolor{red}{NJ_t}- PA_t)
-\end{eqnarray*}The ATT is D. Diff-in-diff is an unbiased estimate of D if $\textcolor{red}{NJ_t} = PA_t$. Call parallel trends.
+\widehat{\delta}^{true}_{did} = D + (\textcolor{red}{NJ_t}- PA_t)
+\end{eqnarray*}The ATT is D. Assume, though, that parallel trends does not hold, $(\textcolor{red}{NJ_t} \neq PA_t)$
 
 \end{frame}
 
 
-\begin{frame}{Biased diff-in-diff \#2}
+\begin{frame}{Biased Placebo diff-in-diff}
 
 \begin{table}\centering
 \scriptsize
-		\caption{Biased diff-in-diff \#2: comparing groups}
+		\caption{Biased placebo diff-in-diff: comparing states but single men and older women}
 		\begin{center}
 		\begin{tabular}{lll|lc}
 		\toprule
-		\multicolumn{1}{l}{\textbf{Groups}}&
+		\multicolumn{1}{l}{\textbf{States}}&
 		\multicolumn{1}{c}{\textbf{Period}}&
 		\multicolumn{1}{c}{\textbf{Outcomes}}&
 		\multicolumn{1}{c}{$D_1$}&
 		\multicolumn{1}{c}{$D_2$}\\
 		\midrule
-		Married women & Before & $Y=MW$ \\
-		& After & $Y=MW + MW_t + D$ & $\textcolor{red}{MW_t}+D$\\
+		Experimental states & Before & $Y=NJ$ \\
+		& After & $Y=NJ + NJ_t $ & $\textcolor{red}{NJ_t}$\\
 		\midrule
-		& & & & $D + (\textcolor{red}{MW_t}- SO_t)$ \\
+		& & & & $ (\textcolor{red}{NJ_t}- PA_t)$ \\
 		\midrule
-		Single men  & Before & $Y=SO$ \\
-		and older women& After & $Y=SO + SO_t$ & $SO_t$\\
+		Non-experimental  & Before & $Y=PA$ \\
+		states& After & $Y=PA + PA_t$ & $PA_t$\\
 		\bottomrule
 		\end{tabular}
 		\end{center}
 	\end{table}
 
 \begin{eqnarray*}
-\widehat{\delta}_{did} = D + (\textcolor{red}{MW_t}- SO_t)
-\end{eqnarray*}Also unbiased estimate of D if $\textcolor{red}{MW_t} = SO_t$. A different parallel trends assumption.
+\widehat{\delta}^{placebo}_{did} = (\textcolor{red}{NJ_t}- PA_t)
+\end{eqnarray*}Assume that parallel trends does not hold, $(\textcolor{red}{NJ_t} \neq PA_t)$
 
 \end{frame}
 
@@ -1588,13 +1589,10 @@ Look at how things change when you start looking at the pre-period -- the form i
 
 \begin{itemize}
 
-\item If parallel trends of one doesn't hold, use the other, because both identify the ATT under their respective parallel trends
-\item But what if both of them are biased -- then you can't use diff-in-diff because diff-in-diff requires at least one parallel trends
-\item Okay, but what if both biases are the same?
-	\begin{eqnarray*}
-	(\textcolor{red}{NJ_t} -PA_t) = (\textcolor{red}{MW_t} - SO_t)
-	\end{eqnarray*}
-\item Then you can use triple differences, first developed by Gruber (1995)
+
+\item Parallel trends does not hold, $(\textcolor{red}{NJ_t} \neq PA_t)$, but what if that's the same bias in our placebo DiD?
+\item Then we can subtract the second from the first: $$ \widehat{\delta}_{ddd} = \widehat{\delta}^{true}_{did} - \widehat{\delta}^{placebo}_{did}$$
+\item Triple differences is a ``real design'' with one parallel trends assumption: $$(\textcolor{red}{NJ_t}^{true}- PA_t^{true}) = (\textcolor{red}{NJ_t}^{placebo}- PA_t^{placebo})$$
 
 \end{itemize}
 
@@ -1611,6 +1609,7 @@ Look at how things change when you start looking at the pre-period -- the form i
 \begin{frame}{Triple differences commentary}
 
 \begin{itemize}
+\item Some people think that it requires that the placebo DiD be zero, but that's incorrect
 
 \item In Gruber's 1995 article, it isn't clear why he needed triple differences in the first place -- his triple differences yielded -0.054 which is almost the same as what he found with his first diff-in-diff (-0.062)
 \item The main value of triple differences is that you use it when you believe the parallel trends assumption doesn't hold
@@ -1693,11 +1692,42 @@ Triple differences requires two diff-in-diff, from different groups, with the sa
 	
 \end{frame}
 
+
+
+\begin{frame}{Simulation}
+
+In /Labs/DDD I have a simulation to illustrate this for us called ddd2.do.  The ATT is -\$5,000 but the biased DiD is -\$7487.  The non-parallel trends bias is -\$2,487.  So I replicate Gruber (with simulated data) where the placebo DiD is close (-\$2,507).  I then present a triple differences which gives us -\$4,972. Let's look at the final product.
+
+\end{frame}
+
+\begin{frame}{Triple differences event study}
+
+\begin{figure}
+\includegraphics[scale=0.25]{./lecture_includes/ddd_simulation}
+\end{figure}
+
+
+
+\end{frame}  
+
 \begin{frame}{Great new paper to learn more}
 
 \begin{figure}
 \includegraphics[scale=0.25]{./lecture_includes/olden_moen_2022_ddd.png}
 \end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Summarizing DDD}
+
+\begin{itemize}
+\item Used to be people thought DDD required two parallel trends assumptions but it does not -- it is a real design and requires one parallel trends assumption
+\item Parallel trends assumption is ``parallel bias'' -- that the bias of the true DiD is the same as the bias of the placebo DiD
+\item The ladder of evidence still holds -- you'll want to present the event study plot, and my code provides it for you, because you need to evaluate the parallel bias assumption
+\item Given the lack of triple diff literacy, you may have to write this anticipating reader and maybe editor confusion and so "educate" as you go -- overlaying all three plots could be help
+
+\end{itemize}
 
 \end{frame}
 
