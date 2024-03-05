@@ -31,13 +31,7 @@ egen id = group(worker city state)
 * Time, 10 years
 expand 10
 sort state
-bysort state city worker: gen year = _n
-
-* Setting years
-foreach y of numlist 1/10 {
-    local year 2010 + `y' - 1
-    replace year = `year' if year == `y'
-}
+bysort state city worker: gen year = _n + 2010 - 1
 
 * Define the after period (post-2015)
 gen after = year >= 2015
