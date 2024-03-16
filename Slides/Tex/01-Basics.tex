@@ -46,10 +46,10 @@
 \begin{frame}{Introduction}
 
 \begin{itemize}
-\item Thank you for having me!  
+\item Thank you coming to Mixtape Sessions' Causal Inference 2 workshop on difference-in-differences!  
 \item Scott Cunningham, Ben H. Williams Professor of Economics at Baylor University in Texas USA
 \item Kyle Butts, UC-Boulder (PhD), University of Arkansas (Assistant Professor) in USA
-\item 10:00am to 17:00pm, 15 min breaks every hour, 1 hour lunch at 12:00
+\item 9:00am to 5:00pm CST, 15 min breaks every hour, 1 hour lunch at 12:00
 \item Lecture, discussion, exercises, application with "live coding" exercises
 \end{itemize}
 
@@ -83,12 +83,15 @@ Pedagogical goal is to break down the procedures into plain English, rebuilding 
 
 \begin{frame}{Day 1 outline}
 
-Basics of difference-in-differences 
+Basics of difference-in-differences (Beginners but also my own personal take on this)
 	\begin{itemize}
 	\item Potential outcomes review and the ATT parameter
 	\item DiD equation (``four averages and three differences''), parallel trends and estimation with OLS specification and inference
-	\item Five step evidence of difference-in-differences
 	\item Simple exercises illustrating potential outcomes, parameters, diff-in-diff and parallel trends
+	\item Five step evidence of difference-in-differences
+	\item Event study
+	\item Triple differences (design) vs Falsifications (not a design)
+	\item \textbf{Homework!}
 	\end{itemize}
 
 \end{frame}
@@ -98,8 +101,8 @@ Basics of difference-in-differences
 
 Violations of parallel trends
 	\begin{itemize}
+	\item \textbf{Review Homework!}
 	\item Repeated cross sections and compositional change
-	\item Triple differences
 	\item Incorporating covariates
 		\begin{itemize}
 		\item Heckman, Ichimura and Todd (1997)
@@ -108,20 +111,21 @@ Violations of parallel trends
 		\item Twoway fixed effects with time varying controls	
 		\end{itemize}
 	\item Lalonde coding exercise
-	\item Kyle hands-on examples
+	\item Hands-on example
 	\end{itemize}
 
 \end{frame}
 
 \begin{frame}{Day 3 outline}
 
-Problems and Solutions in Differential Timing
+Pathologies of and Solutions to Twoway Fixed Effects with Differential Timing
 	\begin{itemize}
-	\item Panel fixed effects and strict exogeneity (Cunningham 2021) and Cheng and Hoekstra (2013) “Castle Doctrine” paper
+	\item Panel fixed effects and strict exogeneity (Cunningham 2021) 
+	\item ``Old school'' example using Cheng and Hoekstra (2013) “Castle Doctrine” paper
 	\item Bacon decomposition (Goodman-Bacon 2021)
-	\item First robust diff-in-diff method (Callaway and Sant’Anna 2021)
+	\item Aggregate ATT(g,t) method (Callaway and Sant’Anna 2021)
 	\item Simple illustrations in simulations
-	\item Kyle walk through R shiny app
+	\item Walk through R shiny app
 	\end{itemize}
 
 \end{frame}
@@ -138,25 +142,14 @@ Event studies and staggered, Imputation estimators
 		\item Borusyak, et al. (2023) “robust efficient imputation estimator”
 		\item Gardner, et al. (2023) two stage difference in differences
 		\end{itemize}
+\item Discussion of two contemporary papers using these methods and the presentation of results
 \item Simple simulation with Cunningham
-\item Hands-on examples with Kyle coding exercise
+\item Continuous treatment difference-in-differences (Callaway, Goodman-Bacon and Sant'Anna 2024)
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}{Day 5 outline}
-
-Synthetic control
-\begin{itemize}
-\item Canonical synth (Abadie papers), factors models and bias (Ferman and Pinto)
-\item Augmented synth (Ben-Michael, et al)
-\item Matrix completion with nuclear norm regularization (Athey, et al.)
-\item Synthetic diff-in-diff (Arkhangelsky, et al. 2021)
-\item Exercises and estimation 
-\end{itemize}
-
-\end{frame}
 
 
 \subsection{Origins of diff-in-diff in public health}
@@ -164,9 +157,15 @@ Synthetic control
 
 
 \begin{frame}{Common view of diff-in-diff}
+
+\begin{figure}
+\includegraphics[scale=1.5]{./lecture_includes/mcfadden.jpg}
+\end{figure}
+
 \begin{quote}
-``A good way to do econometrics is to look for good natural experiments and use statistical methods that can tidy up the confounding factors that nature has not controlled for us.'' -- Daniel McFadden (Nobel Laureate recipient with Heckman 2002)
+``A good way to do econometrics is to look for good natural experiments and use statistical methods that can tidy up the confounding factors that nature has not controlled for us.'' -- Daniel McFadden (Nobel Laureate 2002)
 \end{quote}
+
 
 \end{frame}
 
@@ -175,37 +174,25 @@ Synthetic control
 \begin{frame}{What is difference-in-differences (DiD)}
 
 \begin{itemize}
-\item DiD is a very old, relatively straightforward, intuitive research design
-\item Predates the randomized experiment by 80 years, but uses basic experimental ideas about treatment and control groups (just not randomized)
+\item DiD is when a group of units are assigned some treatment and then compared to a group of units that weren't before and after
 \item One of the most widely used quasi-experimental methods in economics and increasingly in industry
-\item A group of units are assigned some treatment and then compared to a group of units that weren't
+\item Predates the randomized experiment by 80 years, but uses basic experimental ideas about treatment and control groups (just not randomized)
 \item Uses panel or repeated cross section datasets, binary treatments usually, and often covariates
-\end{itemize}
-\end{frame}
-
-
-
-
-
-
-\begin{frame}{Semmelweis and Snow as Early Adopters of DiD}
-
-\begin{itemize}
-
-\item Ignaz Semmelweis in 1840s Vienna and John Snow in 1850s London fought highly controversial public policy debates 
-\item Both men used DiD for evidence (among other evidence) but failed to convince policymakers and their peers at the time (both times only after their deaths)
-\item This theme of diff-in-diff as strong evidence and forcing controversial takes does not end with them -- it defines the economics era too
 \item We'll do a quick run through the social history of diff-in-diff to set the stage for our workshop this week
-
 \end{itemize}
-
 \end{frame}
+
+
+
+
+
+
 
 
 \begin{frame}{Ignaz Semmelweis and washing hands}
 
 \begin{itemize}
-\item Early 1820s, Vienna passed legislation requiring that if a pregnant women giving birth went to a public hospital (free care), then depending on the day of week and time of day, she would be routed to either the midwife wing or the physician sing
+\item Early 1820s, Vienna passed legislation requiring that if a pregnant women giving birth went to a public hospital (free care), then depending on the day of week and time of day, she would be routed to either the midwife wing or the physician wing (most likely resulting in random assignment)
 \item But by the 1840s, Ignaz Semmelweis noticed that pregnant women died after delivery in the (male) wing at a rate of 13-18\%, but only 3\% in the (female) midwife wing -- cause was puerperal or “childbed” fever
 \item Somehow this was also we known -- women would give birth in the street rather than go to the physician if they were unlucky enough to have their water break on the wrong day and time
 \end{itemize}
@@ -236,8 +223,9 @@ Synthetic control
 \begin{itemize}
 
 \item Diff-in-diff evidence was rejected by Semmelweis' superiors claiming it was the hospital's new ventilation system
-\item Dominant theory of disease spread was caused by "odors" or miasma
+\item Dominant theory of disease spread was caused by "odors" or miasma or "humors"
 \item Semmelweis began showing signs of irritability, perhaps onset of dementia, became publicly abusive, was committed to a mental hospital and within two weeks died from wounds he received while in residence
+\item Despite the strength of evidence, difference-in-differences was rejected -- a theme we will see continue
 
 \end{itemize}
 
@@ -326,17 +314,6 @@ With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertran
 
 \end{frame}
 
-\begin{frame}{Difference-in-differences is born out of an empirical crisis in labor economics}
-
-\begin{itemize}
-\item Empirical crisis in empirical labor back in the 1970s (26:31 to 32:00)  \\ \url{https://youtu.be/1soLdywFb_Q?t=1579}
-\item Orley Ashenfelter graduated from Princeton in the 1970s, takes a job in Washington DC and begins studying ``job trainings programs'' where he develops the difference-in-differences design
-
-\end{itemize}
-
-
-\end{frame}
-
 
 
 \begin{frame}{First Wave of Diff-in-Diff}
@@ -396,7 +373,7 @@ With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertran
 \item Share of NBER working papers that used diff-in-diff went from 11-12\% in 2011 to 23\% in 2018, or 11 percentage points
 \item It had taken 24 years to reach 11\% the first time, but only 7 years the second time. 
 \item 2011 marks the start of the second wave and it has very clear patterns, including the growing speed of adoption
-\item But it also introduces parallel trends and event studies for the first time
+\item Wave 2 links parallel trends and event studies to difference-in-differences for the first time
 \end{itemize}
 
 \end{frame}
@@ -476,7 +453,7 @@ With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertran
 \begin{frame}{Identification shifts away from strict exogeneity}
 
 
- Early identification by Blundell was a form of strict exogeneity, but this was viewed as too strong by Athey and Imbens (2006) 
+ Early identification by Blundell was a form of strict exogeneity based panel data (twoway fixed effects), but this was viewed as too strong by Athey and Imbens (2006) 
  
  \bigskip
 
@@ -571,8 +548,9 @@ With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertran
 
 \begin{itemize}
 
+\item Autor (2003) quote echoes down the years as researchers begin to investigate what happens when constant treatment effects is relaxed
 \item Starts with Kirill Borusyak and Xavier Jaravel (2016) working paper posted to SSRN (later published with Jan Speiss 2023)
-\item Key elements: explicit mention of the average treatment effect on the treated (ATT), heterogenous treatment effects and the pathologies of twoway fixed effects (TWFE)
+\item Wave 3 links difference-in-differences with heterogenous treatment effects, the pathologies of twoway fixed effects (TWFE) and begins to shift away from TWFE
 \end{itemize}
 
 \end{frame}
@@ -1259,13 +1237,6 @@ Notice how OLS is ``imputing'' $E[Y^0|D=1,Post]$ for the treatment group in the 
 
 \end{frame}
 
-\begin{frame}{Ashenfelter's dip}
-
-Orley: \url{https://youtu.be/MOtbuRX4eyQ?t=960}
-
-Card: \url{https://youtu.be/1soLdywFb_Q?t=3333}
-
-\end{frame}
 
 
 \begin{frame}{Creating event studies}
