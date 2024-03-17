@@ -171,7 +171,7 @@ where $w_1$ and $w_0$ are sets of weights and $\widetilde{\Delta Y}$ is either $
 
 ### Case 1: DID
 
-For the simplest DID, we have $w_1 = \frac{D}{\mathbb{P}_n(D = 1)}$ and $w_0 = \frac{1 - D}{\mathbb{E}_n(1 - D)}$ and $\widetilde{\Delta Y} = \Delta Y$. These weights are equivalent to taking averages for the treated and untreated groups respectively.
+For the simplest DID, we have $w_1 = \frac{D}{\mathbb{P}_n(D = 1)}$ and $w_0 = \frac{1 - D}{\mathbb{P}_n(D = 0)}$ and $\widetilde{\Delta Y} = \Delta Y$. These weights are equivalent to taking averages for the treated and untreated groups respectively.
 
 This produces: 
 
