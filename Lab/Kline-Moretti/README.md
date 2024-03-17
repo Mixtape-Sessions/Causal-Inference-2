@@ -198,7 +198,7 @@ We are comparing change in outcomes for treated group to the *predicted* change 
 
 Estimate $p(x) = \mathbb{P}(D = 1 | X = x)$ by a logistic regression of $D$ on $X$ for the full sample. Form $\hat{p}(X)$ for each unit. Set $\widetilde{\Delta Y} = \Delta Y$. 
 
-The weights take the form $w_1 = \frac{D}{\mathbb{P}_n(D = 1)}$ and $w_0 = \frac{1 - D}{\mathbb{P}_n(D = 1)} \frac{\hat{p}(X)}{1 - \hat{p}(X)}$. 
+The weights take the form $w_1 = \frac{D}{\mathbb{P}_n(D = 1)}$ and $w_0 = \frac{1}{\mathbb{P}_n(D = 1)} \frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)}$. 
 
 This produces:
 
@@ -210,10 +210,18 @@ $$
 
 We are comparing change in outcomes for treated group to a *weighted* average of the control group's counterfactual trend. The inverse probability of treatment weights are to make the control group look more like the treated group.
 
+> [!WARNING]  
+> The weights are the ones proposed originally in Abadie (2005). They are based on Horvitz-Thompson weights (1952, JASA). These are sensitive when there is problems with the overlap conditions. Sant'Anna and Zhao (2020) (amongst others) suggest using Hajek weights, normalizing the Horvitz-Thompson weights by the sample mean of $w$. This is the default with `drdid::ipwdid`.
+>
+> For $w_0$, the Hajek weights are $\frac{1}{\mathbb{P}_n(D = 1)} \frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)} / \mathbb{E}_n(\frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)})$. The Hajek weights are unchanged for $w_1$ since $w_1 = \frac{D}{\mathbb{P}_n(D = 1)} / \mathbb{E}(\frac{D}{\mathbb{P}_n(D = 1)}) = w_1$. 
+> 
+> (h/t to Pedro Sant'Anna for bringing this up)
+
+
 
 ### Case 4: Doubly-Robust DID (Sant'Anna and Zhao)
 
-Set $\widetilde{\Delta Y} = \Delta Y - \hat{\mu}(X)$. The weights take the form $w_1 = \frac{D}{\mathbb{P}_n(D = 1)}$ and $w_0 = \mathbb{E}_n(\frac{1-\hat{p}(X)}{\hat{p}(X)}) \frac{\hat{p}(X)}{1 - \hat{p}(X)}$.
+Set $\widetilde{\Delta Y} = \Delta Y - \hat{\mu}(X)$. The weights take the form $w_1 = \frac{D}{\mathbb{P}_n(D = 1)}$ and $w_0 =  \frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)} / \mathbb{E}_n(\frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)})$ (Hajek-weights).
 
 This produces:
 
@@ -263,7 +271,7 @@ In this form, it looks like we are taking the IPW estimate and then subtracting 
 
 ## Note: Equivalence of Sant'Anna and Zhao's IPW Definition
 
-The IPW weights given above are equivalent to what Sant'Anna and Zhao write. It's just algebraic simplification:
+The IPW weights given above are equivalent to what Sant'Anna and Zhao write. From case 3, we use algebra to simplify:
 
 $$
 \begin{align*}
@@ -275,4 +283,5 @@ $$
   &= \frac{1}{\mathbb{P}_n(D = 1)} * \frac{D - \hat{p}(X)}{1 - \hat{p}(X)} \\
 \end{align*}
 $$
+
 

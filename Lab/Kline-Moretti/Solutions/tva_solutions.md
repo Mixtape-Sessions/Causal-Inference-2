@@ -16,6 +16,9 @@ manufacturing. Electrification brought in a lot industry, moving the
 economy away from agriculture. We are going to test for this in the data
 using census data (recorded every 10 years).
 
+![Tennessee Valley Authority Dam](img/tva_map.jpeg)
+
+![Tennessee Valley Authority Map](img/tva_dam.jpeg)
 
 ``` r
 library(tidyverse)
@@ -240,17 +243,17 @@ Subset the data using `county_has_no_missing == TRUE` (for later).
 
 ``` r
 # Drop counties with missing covariates
-df = filter(df, county_has_no_missing == TRUE)
+df <- filter(df, county_has_no_missing == TRUE)
 
 # First-differenced data
-first_diff = df |>
+first_diff <- df |>
   arrange(county_code, year) |>
   filter(year == 1940 | year == 1960) |>
   mutate(
     D_ln_manufacturing = ln_manufacturing - lag(ln_manufacturing, 1),
     D_ln_agriculture = ln_agriculture - lag(ln_agriculture, 1),
   ) |>
-  filter(year == 1960) 
+  filter(year == 1960)
 ```
 
 ### Part 1: Difference-in-Differences
@@ -267,7 +270,7 @@ Additionally, run a second model that linearly controls for
 
 ``` r
 feols(
-  D_ln_manufacturing ~ i(tva), 
+  D_ln_manufacturing ~ i(tva),
   data = first_diff
 )
 ```
@@ -287,7 +290,7 @@ setFixest_fml(
   ..X = ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
 )
 feols(
-  D_ln_manufacturing ~ i(tva) + ..X, 
+  D_ln_manufacturing ~ i(tva) + ..X,
   data = first_diff
 )
 ```
@@ -328,28 +331,30 @@ the predicted `D_ln_y0_hat` and average this for the treated group
 
 ``` r
 # Estimate E[Y_{i1} - Y_{i0} | D = 0, X] as a linear function of X
-dy_est_0 = feols(
-  D_ln_manufacturing ~ ..X, 
+dy_est_0 <- feols(
+  D_ln_manufacturing ~ ..X,
   data = first_diff |> filter(tva == 0)
 )
 
 # Use our estimate of E[Y_{i1} - Y_{i0} | D = 0, X] to predict for each observation given their value of x
-Dy0_hat = predict(dy_est_0, newdata = first_diff)
+Dy0_hat <- predict(dy_est_0, newdata = first_diff)
 
 # Outcome regression estimate
-Dy = first_diff$D_ln_manufacturing
-D = first_diff$tva
-w1 = D / mean(D)
+Dy <- first_diff$D_ln_manufacturing
+D <- first_diff$tva
+N <- nrow(first_diff)
+
+w1 <- 1 / mean(D) * D
 mean(w1 * Dy) - mean(w1 * Dy0_hat)
 ```
 
     [1] 0.2374156
 
-Or more simply,we can use `reg_did_panel` from the `DRDID` package:
+With correct standard errors:
 
 ``` r
 X <- with(
-  df[df$year == 1940, ], 
+  df[df$year == 1940, ],
   cbind(agriculture_share_1920, agriculture_share_1930, manufacturing_share_1920, manufacturing_share_1930)
 )
 DRDID::reg_did_panel(
@@ -392,11 +397,11 @@ ps <- predict(feglm(
   data = first_diff, family = binomial()
 ))
 # Avoid dividing by 0
-ps = pmin(ps, 1 - 1e-16)
+ps <- pmin(ps, 1 - 1e-16)
 
 # Generate propensity score weights for units
-w1 = D / mean(D)
-w0 = (1 - D) / mean(D) * ps / (1 - ps) 
+w1 <- 1 / mean(D) * D
+w0 <- 1 / mean(D) * (1 - D) * ps / (1 - ps)
 
 # This is our IPW estimate
 mean(w1 * Dy) - mean(w0 * Dy)
@@ -404,7 +409,7 @@ mean(w1 * Dy) - mean(w0 * Dy)
 
     [1] 0.2371175
 
-Or more simply, we can use `ipw_did_panel` from the `DRDID` package:
+With correct standard errors:
 
 ``` r
 DRDID::ipw_did_panel(
@@ -432,18 +437,65 @@ DRDID::ipw_did_panel(
     ------------------------------------------------------------------
      See Sant'Anna and Zhao (2020) for details.
 
+> \[!WARNING\]  
+> The weights are the ones proposed originally in Abadie (2005). They
+> are based on Horvitz-Thompson weights (1952, JASA). These are
+> sensitive when there is problems with the overlap conditions.
+> Sant’Anna and Zhao (2020) (amongst others) suggest using Hajek
+> weights, normalizing the Horvitz-Thompson weights by the sample mean
+> of $w$. This is the default with `drdid::ipwdid`.
+>
+> For $w_0$, the Hajek weights are
+> $\frac{1}{\mathbb{P}_n(D = 1)} \frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)} / \mathbb{E}_n(\frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)})$.
+> The Hajek weights are unchanged for $w_1$ since
+> $w_1 = \frac{D}{\mathbb{P}_n(D = 1)} / \mathbb{E}(\frac{D}{\mathbb{P}_n(D = 1)}) = w_1$.
+>
+> (h/t to Pedro Sant’Anna for bringing this up)
+
+``` r
+mean(w1 * Dy) - mean(w0 / mean(w0) * Dy)
+```
+
+    [1] 0.2337241
+
+``` r
+DRDID::std_ipw_did_panel(
+  y1 = df$ln_manufacturing[df$year == 1960],
+  y0 = df$ln_manufacturing[df$year == 1940],
+  D = df$tva[df$year == 1960],
+  covariates = X
+)
+```
+
+     Call:
+    DRDID::std_ipw_did_panel(y1 = df$ln_manufacturing[df$year == 
+        1960], y0 = df$ln_manufacturing[df$year == 1940], D = df$tva[df$year == 
+        1960], covariates = X)
+    ------------------------------------------------------------------
+     IPW DID estimator for the ATT:
+     
+       ATT     Std. Error  t value    Pr(>|t|)  [95% Conf. Interval] 
+      0.2337     0.0433     5.4026       0        0.1489     0.3185  
+    ------------------------------------------------------------------
+     Estimator based on panel data.
+     Hajek-type IPW estimator (weights sum up to 1).
+     Propensity score est. method: maximum likelihood.
+     Analytical standard error.
+    ------------------------------------------------------------------
+     See Sant'Anna and Zhao (2020) for details.
+
 ### Part 4: Doubly-Robust DID Estimator
 
 From the previous questions, you have all the parts to estimate the
 doubly-robust DID estimator. Do this.
 
 ``` r
-mean(w1 * (Dy - Dy0_hat)) - mean(w0 * (Dy - Dy0_hat))
+mean(w1 * (Dy - Dy0_hat)) - mean(w0 / mean(w0) * (Dy - Dy0_hat))
 ```
 
-    [1] 0.2336306
+    [1] 0.2336144
 
-Or more simply, we can use `drdid_panel` from the `DRDID` package:
+With correct standard errors:
 
 ``` r
 DRDID::drdid_panel(
@@ -471,26 +523,17 @@ DRDID::drdid_panel(
     ------------------------------------------------------------------
      See Sant'Anna and Zhao (2020) for details.
 
-## Question 6
-
-Now, let’s try using the `DRDID` package to do this more simply.
-
-Note: DRDID requires the `idname` to be a numeric, so you need to create
-a new variable for this.
-
 ``` r
-# DRDID requires a numeric id
 df$county_code_numeric <- to_integer(df$county_code)
-X_fml = ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
-
+X_fml <- ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
 DRDID::drdid(
   yname = "ln_manufacturing",
   tname = "year",
   idname = "county_code_numeric",
   dname = "tva",
   xformla = X_fml,
-  estMethod = "trad",
-  data = df |> filter(year == 1940 | year == 1960)
+  data = df |> filter(year == 1940 | year == 1960),
+  estMethod = "trad"
 )
 ```
 
@@ -507,6 +550,80 @@ DRDID::drdid(
      Estimator based on panel data.
      Outcome regression est. method: OLS.
      Propensity score est. method: maximum likelihood.
+     Analytical standard error.
+    ------------------------------------------------------------------
+     See Sant'Anna and Zhao (2020) for details.
+
+## Question 6
+
+Now, let’s try using the `DRDID` package to do this more simply.
+
+Note: DRDID requires the `idname` to be a numeric, so you need to create
+a new variable for this.
+
+``` r
+# DRDID requires a numeric id
+df$county_code_numeric <- to_integer(df$county_code)
+X_fml <- ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
+
+DRDID::drdid(
+  yname = "ln_manufacturing",
+  tname = "year",
+  idname = "county_code_numeric",
+  dname = "tva",
+  xformla = X_fml,
+  data = df |> filter(year == 1940 | year == 1960),
+  estMethod = "trad"
+)
+```
+
+     Call:
+    DRDID::drdid(yname = "ln_manufacturing", tname = "year", idname = "county_code_numeric", 
+        dname = "tva", xformla = X_fml, data = filter(df, year == 
+            1940 | year == 1960), estMethod = "trad")
+    ------------------------------------------------------------------
+     Locally efficient DR DID estimator for the ATT:
+     
+       ATT     Std. Error  t value    Pr(>|t|)  [95% Conf. Interval] 
+      0.2336     0.0433     5.3948       0        0.1487     0.3185  
+    ------------------------------------------------------------------
+     Estimator based on panel data.
+     Outcome regression est. method: OLS.
+     Propensity score est. method: maximum likelihood.
+     Analytical standard error.
+    ------------------------------------------------------------------
+     See Sant'Anna and Zhao (2020) for details.
+
+Note: I passed `estMethod = "trad"` to use the standard weights from
+Abadie (2005). Sant’Anna and Zhao propose an improved estimator that can
+be called `estMethod = "imp"`. This improvement is especially important
+when overlap is not perfect.
+
+``` r
+DRDID::drdid(
+  yname = "ln_manufacturing",
+  tname = "year",
+  idname = "county_code_numeric",
+  dname = "tva",
+  xformla = X_fml,
+  data = df |> filter(year == 1940 | year == 1960),
+  estMethod = "imp"
+)
+```
+
+     Call:
+    DRDID::drdid(yname = "ln_manufacturing", tname = "year", idname = "county_code_numeric", 
+        dname = "tva", xformla = X_fml, data = filter(df, year == 
+            1940 | year == 1960), estMethod = "imp")
+    ------------------------------------------------------------------
+     Further improved locally efficient DR DID estimator for the ATT:
+     
+       ATT     Std. Error  t value    Pr(>|t|)  [95% Conf. Interval] 
+      0.2334     0.0433     5.3894       0        0.1485     0.3183  
+    ------------------------------------------------------------------
+     Estimator based on panel data.
+     Outcome regression est. method: weighted least squares.
+     Propensity score est. method: inverse prob. tilting.
      Analytical standard error.
     ------------------------------------------------------------------
      See Sant'Anna and Zhao (2020) for details.
@@ -541,10 +658,10 @@ df$g <- df$tva * 1945
 
     Group-Time Average Treatment Effects:
      Group Time ATT(g,t) Std. Error [95% Simult.  Conf. Band]  
-      1945 1930  -0.1740     0.1799       -0.6107      0.2627  
-      1945 1940   0.1909     0.1320       -0.1296      0.5113  
-      1945 1950   0.0514     0.0301       -0.0218      0.1246  
-      1945 1960   0.2336     0.0435        0.1280      0.3392 *
+      1945 1930  -0.1740     0.1696       -0.5863      0.2383  
+      1945 1940   0.1909     0.1345       -0.1361      0.5178  
+      1945 1950   0.0514     0.0331       -0.0291      0.1320  
+      1945 1960   0.2336     0.0434        0.1280      0.3392 *
     ---
     Signif. codes: `*' confidence band does not cover 0
 
@@ -556,4 +673,4 @@ df$g <- df$tva * 1945
 did::ggdid(attgt_man)
 ```
 
-![](tva_solutions_files/figure-commonmark/unnamed-chunk-20-1.png)
+![](tva_solutions_files/figure-commonmark/unnamed-chunk-22-1.png)

@@ -1,7 +1,6 @@
 #' ---
 #' title: "Tennessee Valley Authority Empirical Application"
 #' format: gfm
-#' author: Kyle Butts
 #' ---
 #'
 #' ## Intro
@@ -164,32 +163,32 @@ feols(
 #' $$
 #'   E(Y_{i1}(0) - Y_{i1}(0) | D = 1, X = x) = E(Y_{i1}(0) - Y_{i1}(0) | D = 0, X = x).
 #' $$
-#' 
-#' In words, this assumption says "take treated and control units with the same value of $X$. These units on average have the same counterfactual trend". Full details to help with this question are given below in the appendix notes. This question will walk you through three different covariates-based estimators of ATTs: outcome regression, inverse propensity of treatment weighting, and a doubly-robust combination of the two. 
-#' 
+#'
+#' In words, this assumption says "take treated and control units with the same value of $X$. These units on average have the same counterfactual trend". Full details to help with this question are given below in the appendix notes. This question will walk you through three different covariates-based estimators of ATTs: outcome regression, inverse propensity of treatment weighting, and a doubly-robust combination of the two.
+#'
 #' Note: Some of the data contains missing values for the covariates. Subset the data using `county_has_no_missing == TRUE` (for later).
 
 # Drop counties with missing covariates
-df = filter(df, county_has_no_missing == TRUE)
+df <- filter(df, county_has_no_missing == TRUE)
 
 # First-differenced data
-first_diff = df |>
+first_diff <- df |>
   arrange(county_code, year) |>
   filter(year == 1940 | year == 1960) |>
   mutate(
     D_ln_manufacturing = ln_manufacturing - lag(ln_manufacturing, 1),
     D_ln_agriculture = ln_agriculture - lag(ln_agriculture, 1),
   ) |>
-  filter(year == 1960) 
+  filter(year == 1960)
 
 
 #' ### Part 1: Difference-in-Differences
-#' Take first-differences of the outcome variable to form $\Delta Y$. Create a new dataset that collapses the dataset using first-differences for the outcome variables (each county should be a single row in the dataset). 
-#' 
+#' Take first-differences of the outcome variable to form $\Delta Y$. Create a new dataset that collapses the dataset using first-differences for the outcome variables (each county should be a single row in the dataset).
+#'
 #' In part a, estimate the normal difference-in-differences estimate. Additionally, run a second model that linearly controls for `agriculture_share_1920`, `agriculture_share_1930`, `manufacturing_share_1920`, and `manufacturing_share_1930`.
 # %%
 feols(
-  D_ln_manufacturing ~ i(tva), 
+  D_ln_manufacturing ~ i(tva),
   data = first_diff
 )
 
@@ -197,36 +196,39 @@ setFixest_fml(
   ..X = ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
 )
 feols(
-  D_ln_manufacturing ~ i(tva) + ..X, 
+  D_ln_manufacturing ~ i(tva) + ..X,
   data = first_diff
 )
 
 #' ### Part 2: Outcome Regression
-#' 
-#' Including covariates linearly is very simple and intuitively it allows for $X_i$-specific trends. However, this assumes that treatment effects can not vary by the value of $X$. For example, say $X$ is a dummy variable for age. Then you are allowing for gender-specific trends, but you are not allowing for treatment effects to vary by age. Note, this problem is only with continuous covariates in X_i, we won't estimate the ATT (see Angrist 1998 or Słoczyński 2022). 
-#' 
-#' Instead, we want to use outcome regression when doing covariate adjustment in the outcome model. First, regress `D_ln_y` on the four covariates *using just the untreated observations* (`tva == 0`). This estimates $E(\Delta y | X, D = 0)$. 
-#' 
+#'
+#' Including covariates linearly is very simple and intuitively it allows for $X_i$-specific trends. However, this assumes that treatment effects can not vary by the value of $X$. For example, say $X$ is a dummy variable for age. Then you are allowing for gender-specific trends, but you are not allowing for treatment effects to vary by age. Note, this problem is only with continuous covariates in X_i, we won't estimate the ATT (see Angrist 1998 or Słoczyński 2022).
+#'
+#' Instead, we want to use outcome regression when doing covariate adjustment in the outcome model. First, regress `D_ln_y` on the four covariates *using just the untreated observations* (`tva == 0`). This estimates $E(\Delta y | X, D = 0)$.
+#'
 #' Second, predict out of sample this model for the full dataset. Let's call this `D_ln_y0_hat`. Last, take the difference between `D_ln_y` and the predicted `D_ln_y0_hat` and average this for the treated group (`tva == 1`). This is our outcome regression estimate.
 # %%
 # Estimate E[Y_{i1} - Y_{i0} | D = 0, X] as a linear function of X
-dy_est_0 = feols(
-  D_ln_manufacturing ~ ..X, 
+dy_est_0 <- feols(
+  D_ln_manufacturing ~ ..X,
   data = first_diff |> filter(tva == 0)
 )
 
 # Use our estimate of E[Y_{i1} - Y_{i0} | D = 0, X] to predict for each observation given their value of x
-Dy0_hat = predict(dy_est_0, newdata = first_diff)
+Dy0_hat <- predict(dy_est_0, newdata = first_diff)
 
 # Outcome regression estimate
-Dy = first_diff$D_ln_manufacturing
-D = first_diff$tva
-w1 = D / mean(D)
+Dy <- first_diff$D_ln_manufacturing
+D <- first_diff$tva
+N <- nrow(first_diff)
+
+w1 <- 1 / mean(D) * D
 mean(w1 * Dy) - mean(w1 * Dy0_hat)
 
-#' Or more simply,we can use `reg_did_panel` from the `DRDID` package:
+
+#' With correct standard errors:
 X <- with(
-  df[df$year == 1940, ], 
+  df[df$year == 1940, ],
   cbind(agriculture_share_1920, agriculture_share_1930, manufacturing_share_1920, manufacturing_share_1930)
 )
 DRDID::reg_did_panel(
@@ -237,9 +239,9 @@ DRDID::reg_did_panel(
 )
 
 #' ### Part 3: Inverse Probability of Treatment Weighting
-#' 
-#' Now, lets use a propensity score method. Estimate a logistic regression of $D$ on the covariates $X$ using the full sample. Predict fitted propensity scores of this model. 
-#' 
+#'
+#' Now, lets use a propensity score method. Estimate a logistic regression of $D$ on the covariates $X$ using the full sample. Predict fitted propensity scores of this model.
+#'
 #' Form the weights $w_1$ and $w_0$ as written in the appendix and form the IPTW estimate.
 # %%
 # Fit propensity scores for treatment
@@ -248,16 +250,16 @@ ps <- predict(feglm(
   data = first_diff, family = binomial()
 ))
 # Avoid dividing by 0
-ps = pmin(ps, 1 - 1e-16)
+ps <- pmin(ps, 1 - 1e-16)
 
 # Generate propensity score weights for units
-w1 = D / mean(D)
-w0 = (1 - D) / mean(D) * ps / (1 - ps) 
+w1 <- 1 / mean(D) * D
+w0 <- 1 / mean(D) * (1 - D) * ps / (1 - ps)
 
 # This is our IPW estimate
 mean(w1 * Dy) - mean(w0 * Dy)
 
-#' Or more simply, we can use `ipw_did_panel` from the `DRDID` package:
+#' With correct standard errors:
 DRDID::ipw_did_panel(
   y1 = df$ln_manufacturing[df$year == 1960],
   y0 = df$ln_manufacturing[df$year == 1940],
@@ -265,13 +267,31 @@ DRDID::ipw_did_panel(
   covariates = X
 )
 
+#' > [!WARNING]  
+#' > The weights are the ones proposed originally in Abadie (2005). They are based on Horvitz-Thompson weights (1952, JASA). These are sensitive when there is problems with the overlap conditions. Sant'Anna and Zhao (2020) (amongst others) suggest using Hajek weights, normalizing the Horvitz-Thompson weights by the sample mean of $w$. This is the default with `drdid::ipwdid`.
+#' >
+#' > For $w_0$, the Hajek weights are $\frac{1}{\mathbb{P}_n(D = 1)} \frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)} / \mathbb{E}_n(\frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)})$. The Hajek weights are unchanged for $w_1$ since $w_1 = \frac{D}{\mathbb{P}_n(D = 1)} / \mathbb{E}(\frac{D}{\mathbb{P}_n(D = 1)}) = w_1$. 
+#' > 
+#' > (h/t to Pedro Sant'Anna for bringing this up)
+# %%
+mean(w1 * Dy) - mean(w0 / mean(w0) * Dy)
+DRDID::std_ipw_did_panel(
+  y1 = df$ln_manufacturing[df$year == 1960],
+  y0 = df$ln_manufacturing[df$year == 1940],
+  D = df$tva[df$year == 1960],
+  covariates = X
+)
+
+
 #' ### Part 4: Doubly-Robust DID Estimator
-#' 
+#'
 #' From the previous questions, you have all the parts to estimate the doubly-robust DID estimator. Do this.
 # %%
-mean(w1 * (Dy - Dy0_hat)) - mean(w0 * (Dy - Dy0_hat))
+mean(w1 * (Dy - Dy0_hat)) - mean(w0 / mean(w0) * (Dy - Dy0_hat))
 
-#' Or more simply, we can use `drdid_panel` from the `DRDID` package:
+
+#' With correct standard errors:
+# %%
 DRDID::drdid_panel(
   y1 = df$ln_manufacturing[df$year == 1960],
   y0 = df$ln_manufacturing[df$year == 1940],
@@ -279,15 +299,27 @@ DRDID::drdid_panel(
   covariates = X
 )
 
+df$county_code_numeric <- to_integer(df$county_code)
+X_fml <- ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
+DRDID::drdid(
+  yname = "ln_manufacturing",
+  tname = "year",
+  idname = "county_code_numeric",
+  dname = "tva",
+  xformla = X_fml,
+  data = df |> filter(year == 1940 | year == 1960),
+  estMethod = "trad"
+)
+
 #' ## Question 6
-#' 
+#'
 #' Now, let’s try using the `DRDID` package to do this more simply.
-#' 
+#'
 #' Note: DRDID requires the `idname` to be a numeric, so you need to create a new variable for this.
 # %%
 # DRDID requires a numeric id
 df$county_code_numeric <- to_integer(df$county_code)
-X_fml = ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
+X_fml <- ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
 
 DRDID::drdid(
   yname = "ln_manufacturing",
@@ -295,12 +327,25 @@ DRDID::drdid(
   idname = "county_code_numeric",
   dname = "tva",
   xformla = X_fml,
-  estMethod = "trad",
-  data = df |> filter(year == 1940 | year == 1960)
+  data = df |> filter(year == 1940 | year == 1960),
+  estMethod = "trad"
 )
 
+#' Note: I passed `estMethod = "trad"` to use the standard weights from Abadie (2005). Sant'Anna and Zhao propose an improved estimator that can be called `estMethod = "imp"`. This improvement is especially important when overlap is not perfect.
+# %%
+DRDID::drdid(
+  yname = "ln_manufacturing",
+  tname = "year",
+  idname = "county_code_numeric",
+  dname = "tva",
+  xformla = X_fml,
+  data = df |> filter(year == 1940 | year == 1960),
+  estMethod = "imp"
+)
+
+
 #' ## Question 7
-#' 
+#'
 #' We are going to now use `did` to estimate an event study.
 #' As a default, `did` calls `DRDID` under the hood. Let's see this using
 #' `did::att_gt`. We need to create a variable for "treatment timing groups",
@@ -319,4 +364,3 @@ df$g <- df$tva * 1945
   data = df
 ))
 did::ggdid(attgt_man)
-
