@@ -46,3 +46,4 @@
 *.synctex.gz(busy)
 *.pdfsync
 
+renv/

@@ -89,8 +89,49 @@ ui <- page(
 )
 
 server <- function(input, output, session) {
+  # options
+  observeEvent(input$panel, {
+    updateSliderInput(inputId = "g1", min = input$panel[1] + 2, max = input$panel[2] - 2)
+    updateSliderInput(inputId = "g2", min = input$panel[1] + 2, max = input$panel[2] - 2)
+  })
+  observeEvent(input$g1 | input$g2, {
+    updateSliderInput(inputId = "g1", min = input$panel[1] + 2, max = input$g2 - 2)
+    updateSliderInput(inputId = "g2", min = input$g1 + 2, max = input$panel[2] - 2)
+  })
 
-  # Gen Data
+  # Presets
+  observeEvent(input$preset_hom_effects, {
+    updateSliderInput(inputId = "te1", value = input$te1)
+    updateSliderInput(inputId = "te2", value = input$te1)
+    updateSliderInput(inputId = "te_m1", value = 0)
+    updateSliderInput(inputId = "te_m2", value = 0)
+  })
+  observeEvent(input$preset_het_levels, {
+    updateSliderInput(inputId = "te1", value = 2)
+    updateSliderInput(inputId = "te2", value = input$te1 * 2)
+    updateSliderInput(inputId = "te_m1", value = 0)
+    updateSliderInput(inputId = "te_m2", value = 0)
+  })
+  observeEvent(input$preset_het_levels_w_slopes, {
+    updateSliderInput(inputId = "te1", value = 2)
+    updateSliderInput(inputId = "te2", value = input$te1 * 2)
+    updateSliderInput(inputId = "te_m1", value = 0.1)
+    updateSliderInput(inputId = "te_m2", value = 0.1)
+  })
+  observeEvent(input$preset_het_slopes, {
+    updateSliderInput(inputId = "te1", value = input$te1)
+    updateSliderInput(inputId = "te2", value = input$te1)
+    updateSliderInput(inputId = "te_m1", value = 0.05)
+    updateSliderInput(inputId = "te_m2", value = 0.2)
+  })
+  observeEvent(input$preset_het_levels_slopes, {
+    updateSliderInput(inputId = "te1", value = 2)
+    updateSliderInput(inputId = "te2", value = input$te1 * 2)
+    updateSliderInput(inputId = "te_m1", value = 0.05)
+    updateSliderInput(inputId = "te_m2", value = 0.2)
+  })
+
+  # Generate data and plot the DGP
   df <- reactive({
     g3 <- 0L
     te3 <- 0
@@ -143,7 +184,46 @@ server <- function(input, output, session) {
         dep_var = unit_fe + year_fe + te + te_dynamic + error
       )
   })
+  output$dgp <- renderPlot(
+    {
+      df <- df()
 
+      df_avg <- df %>%
+        group_by(group, year) %>%
+        summarize(dep_var = mean(dep_var), .groups = "drop")
+
+      max_y <- max(df_avg$dep_var)
+
+      ggplot() +
+        geom_line(data = df_avg, mapping = aes(y = dep_var, x = year, color = group), linewidth = 1.5) +
+        geom_vline(xintercept = input$g1 - 0.5, linetype = "dashed") +
+        geom_vline(xintercept = input$g2 - 0.5, linetype = "dashed") +
+        theme_kyle(base_size = 13) +
+        theme(
+          legend.location = "plot",
+          legend.position = "top",
+          legend.margin = margin(0, 0, 4, 0),
+          legend.justification = c(0, 1),
+        ) +
+        labs(y = NULL, x = NULL, title = "Data-Generating Process", color = NULL) +
+        scale_y_continuous(expand = expansion(add = 1)) +
+        scale_color_manual(values = c("Group 1" = "#d2382c", "Group 2" = "#497eb3", "Group 3" = "#8e549f")) +
+        # guides(color = guide_legend(nrow = 2)) +
+        geom_label(
+          data = data.frame(x = input$g1 - 0.4, y = max_y + 0.75, label = "Group 1 Starts Treatment"), label.size = NA,
+          mapping = aes(x = x, y = y, label = label), 
+          size = 3.5, hjust = 0L, fontface = 2, inherit.aes = FALSE
+        ) +
+        geom_label(
+          data = data.frame(x = input$g2 - 0.4, y = max_y + 0.75, label = "Group 2 Starts Treatment"), label.size = NA,
+          mapping = aes(x = x, y = y, label = label), 
+          size = 3.5, hjust = 0L, fontface = 2, inherit.aes = FALSE
+        )
+    },
+    res = 96
+  )
+
+  # Bacon Decomposition and display the OLS estimate
   subset_data <- function(df, treat_g, control_g) {
     # Treated vs. Untreated
     if (control_g == 0) {
@@ -171,8 +251,6 @@ server <- function(input, output, session) {
 
     return(df_subset)
   }
-
-  # Two by Twos
   two_by_twos <- reactive({
     df <- df()
 
@@ -237,84 +315,31 @@ server <- function(input, output, session) {
 
     two_by_twos
   })
+  output$estimate <- renderUI({
+    true_te <- df() %>%
+      filter(treat == TRUE) %>%
+      summarize(te = mean(te + te_dynamic)) %>%
+      .[[1, 1]]
 
-  # Panel length changed
-  observeEvent(input$panel, {
-    updateSliderInput(inputId = "g1", min = input$panel[1] + 2, max = input$panel[2] - 2)
-    updateSliderInput(inputId = "g2", min = input$panel[1] + 2, max = input$panel[2] - 2)
+    two_by_twos <- two_by_twos()
+
+    # Create decomposition string
+    est <- round(two_by_twos$est, 2)
+    weight <- round(two_by_twos$weight, 2)
+    temp <- c()
+    for (i in 1:length(est)) {
+      temp[i] <- glue::glue("{est[i]}*{weight[i]}")
+    }
+    str <- glue::glue("$$\\hat\\tau = {paste0(temp, collapse=' + ')} = {round(sum(est * weight), 2)} $$")
+
+    div(
+      class = "flex flex-col items-center gap-y-2",
+      withMathJax(glue::glue("$$\\tau = {round(true_te,2)}$$")),
+      withMathJax(str)
+    )
   })
 
-  # Change treatment year
-  observeEvent(input$g1 | input$g2, {
-    updateSliderInput(inputId = "g1", min = input$panel[1] + 2, max = input$g2 - 2)
-    updateSliderInput(inputId = "g2", min = input$g1 + 2, max = input$panel[2] - 2)
-  })
-
-  # Presets
-  observeEvent(input$preset_hom_effects, {
-    updateSliderInput(inputId = "te1", value = input$te1)
-    updateSliderInput(inputId = "te2", value = input$te1)
-    updateSliderInput(inputId = "te_m1", value = 0)
-    updateSliderInput(inputId = "te_m2", value = 0)
-  })
-  observeEvent(input$preset_het_levels, {
-    updateSliderInput(inputId = "te1", value = 2)
-    updateSliderInput(inputId = "te2", value = input$te1 * 2)
-    updateSliderInput(inputId = "te_m1", value = 0)
-    updateSliderInput(inputId = "te_m2", value = 0)
-  })
-  observeEvent(input$preset_het_levels_w_slopes, {
-    updateSliderInput(inputId = "te1", value = 2)
-    updateSliderInput(inputId = "te2", value = input$te1 * 2)
-    updateSliderInput(inputId = "te_m1", value = 0.1)
-    updateSliderInput(inputId = "te_m2", value = 0.1)
-  })
-  observeEvent(input$preset_het_slopes, {
-    updateSliderInput(inputId = "te1", value = input$te1)
-    updateSliderInput(inputId = "te2", value = input$te1)
-    updateSliderInput(inputId = "te_m1", value = 0.05)
-    updateSliderInput(inputId = "te_m2", value = 0.2)
-  })
-  observeEvent(input$preset_het_levels_slopes, {
-    updateSliderInput(inputId = "te1", value = 2)
-    updateSliderInput(inputId = "te2", value = input$te1 * 2)
-    updateSliderInput(inputId = "te_m1", value = 0.05)
-    updateSliderInput(inputId = "te_m2", value = 0.2)
-  })
-
-  output$dgp <- renderPlot(
-    {
-      df <- df()
-
-      df_avg <- df %>%
-        group_by(group, year) %>%
-        summarize(dep_var = mean(dep_var), .groups = "drop")
-
-      max_y <- max(df_avg$dep_var)
-
-      ggplot() +
-        geom_line(data = df_avg, mapping = aes(y = dep_var, x = year, color = group), size = 1.5) +
-        geom_vline(xintercept = input$g1 - 0.5, linetype = "dashed") +
-        geom_vline(xintercept = input$g2 - 0.5, linetype = "dashed") +
-        theme_kyle(base_size = 16, title_pos = "left") +
-        theme(legend.position = "bottom") +
-        labs(y = "Outcome", x = "Year", title = "Data-Generating Process", color = NULL) +
-        scale_y_continuous(expand = expansion(add = .5)) +
-        scale_color_manual(values = c("Group 1" = "#d2382c", "Group 2" = "#497eb3", "Group 3" = "#8e549f")) +
-        # guides(color = guide_legend(nrow = 2)) +
-        geom_label(
-          data = data.frame(x = input$g1 - 0.4, y = max_y + 0.5, label = "◀ Treatment Starts"), label.size = NA,
-          mapping = aes(x = x, y = y, label = label), size = 4.23, hjust = 0L, fontface = 2, inherit.aes = FALSE
-        ) +
-        geom_label(
-          data = data.frame(x = input$g2 - 0.4, y = max_y + 0.75, label = "◀ Treatment Starts"), label.size = NA,
-          mapping = aes(x = x, y = y, label = label), size = 4.23, hjust = 0L, fontface = 2, inherit.aes = FALSE
-        )
-    },
-    res = 96
-  )
-
-
+  # Plot 2x2s
   plot_bacon <- function(df, two_by_twos, treat_g, control_g) {
     df_subset <- subset_data(df, treat_g, control_g)
 
@@ -334,77 +359,60 @@ server <- function(input, output, session) {
     max_y <- max(df_avg$dep_var)
 
     # Assemble text
-    subtitle <- glue::glue("<i style='color: #D55E00;'>Estimate:</i> {round(est,2)} and <i style='color: #D55E00;'>Weight:</i> {round(weight,3)}")
+    subtitle <- glue::glue("<strong>Estimate:</strong> {round(est,2)} and <strong>Weight:</strong> {round(weight,3)}")
 
     # Treated vs. Untreated
     if (control_g == 0) {
-      title <- glue::glue("**Treated:** {treat_g} <br/> **Control:** Never Treated")
+      title <- glue::glue("<strong style='color: #d2382c'>Treated</strong>: {treat_g} <br/> <strong style='color: #497eb3'>Control</strong>: Never Treated")
 
-      # Early vs. Late (before late is treated)
+    # Early vs. Late (before late is treated)
     } else if (treat_g < control_g) {
-      title <- glue::glue("**Treated:** {treat_g} <br/> **Control:** {control_g} (before treated)")
+      title <- glue::glue("<strong style='color: #d2382c'>Treated</strong>: {treat_g} <br/> <strong style='color: #497eb3'>Control</strong>: {control_g} (before treated)")
 
-      # Late vs. Early (after early is treated)
+    # Late vs. Early (after early is treated)
     } else if (control_g < treat_g) {
-      title <- glue::glue("**Treated:** {treat_g} <br/> **Control:** {control_g} (after treated)")
+      title <- glue::glue("<strong style='color: #d2382c'>Treated</strong>: {treat_g} <br/> <strong style='color: #497eb3'>Control</strong>: {control_g} (after treated)")
     }
-
-
 
     ggplot() +
       # DGP
       geom_line(
         data = df_avg,
-        mapping = aes(y = dep_var, x = year, group = group), color = "grey40", alpha = 0.6, size = 1
+        mapping = aes(y = dep_var, x = year, group = group), color = "grey40", alpha = 0.6, linewidth = 1
       ) +
       # 2x2
-      geom_line(data = df_subset_avg, mapping = aes(y = dep_var, x = year, group = treated, color = treated), size = 1.5) +
-      geom_line(data = df_subset_avg, mapping = aes(y = counterfactual, x = year, group = treated, color = treated), linetype = "dashed", size = 1.5, alpha = 0.6) +
+      geom_line(
+        data = df_subset_avg, 
+        mapping = aes(y = dep_var, x = year, group = treated, color = treated), linewidth = 1.5
+      ) +
+      geom_line(
+        data = df_subset_avg, 
+        mapping = aes(y = counterfactual, x = year, group = treated, color = treated), 
+        linetype = "dashed", linewidth = 1.5, alpha = 0.6
+      ) +
       geom_vline(xintercept = treat_g - 0.5, linetype = "dashed") +
       geom_label(
-        data = data.frame(x = treat_g - 0.4, y = max_y + 0.75, label = "◀ Treatment Starts"), label.size = NA,
-        mapping = aes(x = x, y = y, label = label), size = 4.23, hjust = 0L, fontface = 2, inherit.aes = FALSE
+        data = data.frame(x = treat_g - 0.4, y = max_y + 0.75, label = "Treatment Starts"), label.size = NA,
+        mapping = aes(x = x, y = y, label = label), 
+        size = 4.23, hjust = 0L, fontface = 2, inherit.aes = FALSE
       ) +
-      labs(y = "Outcome", x = "Year", color = NULL, linetype = NULL, title = title, subtitle = subtitle) +
-      scale_y_continuous(expand = expansion(add = .5)) +
-      scale_color_manual(values = c("Treat Group" = "#d2382c", "Control Group" = "#497eb3")) +
-      theme_kyle(base_size = 16, title_pos = "left") +
+      labs(
+        y = NULL, x = NULL, 
+        color = NULL, linetype = NULL, title = title, subtitle = subtitle
+      ) +
+      scale_y_continuous(expand = expansion(add = 1)) +
+      scale_color_manual(
+        values = c("Treat Group" = "#d2382c", "Control Group" = "#497eb3"),
+        guide = guide_none()
+      ) +
+      theme_kyle(base_size = 16) +
       theme(
         legend.position = "bottom",
+        axis.title.y = element_text(angle = 90, hjust = 0.5),
         plot.title = ggtext::element_markdown(face = "plain", lineheight = 1.2),
         plot.subtitle = ggtext::element_markdown(size = 18)
       )
   }
-
-  output$estimate <- renderUI({
-    true_te <- df() %>%
-      filter(treat == TRUE) %>%
-      summarize(te = mean(te + te_dynamic)) %>%
-      .[[1, 1]]
-
-    two_by_twos <- two_by_twos()
-
-    est <- round(two_by_twos$est, 2)
-    weight <- round(two_by_twos$weight, 2)
-
-
-    temp <- c()
-    for (i in 1:length(est)) {
-      temp[i] <- glue::glue("{est[i]}*{weight[i]}")
-    }
-
-    str <- glue::glue("$$\\hat\\tau = {paste0(temp, collapse=' + ')} = {round(sum(est * weight), 2)} $$")
-    true <- glue::glue()
-
-
-    div(
-      class = "flex flex-col items-center gap-y-2",
-        withMathJax(glue::glue("$$\\tau = {round(true_te,2)}$$")),
-        withMathJax(str)
-    )
-  })
-
-
   output$did_one <- renderPlot(
     {
       df <- df()
@@ -414,7 +422,6 @@ server <- function(input, output, session) {
     },
     height = 500
   )
-
   output$did_two <- renderPlot(
     {
       df <- df()
@@ -424,7 +431,6 @@ server <- function(input, output, session) {
     },
     height = 500
   )
-
   output$did_three <- renderPlot(
     {
       df <- df()
@@ -434,7 +440,6 @@ server <- function(input, output, session) {
     },
     height = 500
   )
-
   output$did_four <- renderPlot(
     {
       df <- df()
@@ -447,10 +452,4 @@ server <- function(input, output, session) {
 }
 
 # Run the application
-# For Testing
-# input <- list(g1 = 2004L, g2 = 2012L, te1 = 2.0, te2 = 2.0, te_m1=1, te_m2=0.5, panel = c(2000, 2020))
-# treat_g <- 2004
-# control_g <- 0
-# bacondecomp::bacon(dep_var ~ treat, data = df, id_var = "unit", time_var = "year")
-
 shinyApp(ui = ui, server = server)
