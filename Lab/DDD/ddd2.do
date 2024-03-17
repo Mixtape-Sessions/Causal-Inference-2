@@ -37,8 +37,8 @@ bysort state city worker: gen year = _n + 2010 - 1
 gen after = year >= 2015
 
 * Baseline earnings in 2010 with different values for experimental and non-experimental states
-gen 	baseline = 40000 if worker == 3  // Married women
-replace baseline = 45000 if worker == 2  // Older women
+gen 	baseline = 40000 if worker == 3  // Older women
+replace baseline = 45000 if worker == 2  // Married women
 replace baseline = 50000 if worker == 1  // Men
 
 * Adjust baseline for experimental states.  Experimental states will be on a different trend.

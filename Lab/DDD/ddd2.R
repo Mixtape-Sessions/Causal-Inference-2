@@ -266,7 +266,7 @@ ggplot(pts) +
   theme_bw(base_size = 16) + 
   theme(
     legend.position = "bottom",
-    legend.key.spacing.x = unit(16, "pt"),
+    legend.spacing.x = unit(16, "pt"), 
     legend.box.background = element_rect()
   )
 

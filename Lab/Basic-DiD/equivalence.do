@@ -10,18 +10,18 @@ xtset sid year
 
 drop if effyear==2005 | effyear==2007 | effyear==2008 | effyear==2009
 
-drop post
+drop 	post
 gen 	post = 0
 replace post = 1 if year>=2006
 
-gen 	treat=0
-replace treat=1 if effyear==2006
+gen 	treat = 0
+replace treat = 1 if effyear==2006
 
 * OLS regression model first
 reg l_homicide post##treat, cluster(state)
 
 * Same thing as above
-reg l_homicide post treat i.post*i.treat, cluster(state)
+xi: reg l_homicide post treat i.post*i.treat, cluster(state)
 
 
 * Manual

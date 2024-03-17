@@ -1304,13 +1304,12 @@ But this was \emph{post}-treatment.  Still, put that aside -- diff-in-diff equat
 \begin{frame}{Pre-treatment DiD coefficient}
 
 \begin{eqnarray*}
-\widehat{\delta}_{t-2} &=& \underbrace{\textcolor{red}{E[Y^1_k | t-2]} - \textcolor{black}{E[Y^0_k | t-2]}}_{\mathclap{\text{ATT is zero under NA}}} \\
-&& + \bigg [  \underbrace{\textcolor{black}{E[Y^0_k | t-2]} - E[Y^0_k | t-1] \bigg ] - \bigg [ E[Y^0_U | t-2] - E[Y_U^0 | t-1] }_{\mathclap{\text{Non-parallel trends bias in 2x2 case}}} \bigg ]
+\widehat{\delta}_{t-2} &=& \bigg [  \underbrace{\textcolor{black}{E[Y^0_k | t-2]} - E[Y^0_k | t-1] \bigg ] - \bigg [ E[Y^0_U | t-2] - E[Y_U^0 | t-1] }_{\mathclap{\text{Non-parallel trends bias in 2x2 case}}} \bigg ]
 \end{eqnarray*}
 
 \bigskip
 
-Look at how things change when you start looking at the pre-period -- the form is the same, because DiD \emph{always} identifies the sum of those two terms with NA and SUTVA -- but you're not missing the same terms as before.  And under NA, the first term \emph{is zero} and the second \emph{is the only thing the coefficient can be}!
+Under NA, then the $t-1$ period is untreated.  But then so are the other pre-periods so the ATT is implicitly zero and the \emph{only} thing that you can be measuring with pre-trend DiD coefficients is differential trends.  
 
 
 \end{frame}
