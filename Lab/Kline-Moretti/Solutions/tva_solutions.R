@@ -1,0 +1,322 @@
+#' ---
+#' title: "Tennessee Valley Authority Empirical Application"
+#' format: gfm
+#' author: Kyle Butts
+#' ---
+#'
+#' ## Intro
+#'
+#' This exercise is going to work with data from Kline and Moretti (2014). This
+#' paper aims to analyze the impacts of the "Tennessee Valley Authority" (TVA)
+#' on local agriculture and manufacturing employment. The TVA was a huge federal
+#' spending program in the 1940s that aimed at electrification of the region,
+#' building hundreds of large dams (in Scott's terms, a ton of 'bite').
+#'
+#' The region was centered in Tennessee and surrounding other southern states.
+#' The region had a large agriculture industry, but very little manufacturing.
+#' Electrification brought in a lot industry, moving the economy away from
+#' agriculture. We are going to test for this in the data using census data
+#' (recorded every 10 years).
+#'
+#' ![Tennessee Valley Authority Dam](img/tva_map.jpeg)
+#'
+#' ![Tennessee Valley Authority Map](img/tva_dam.jpeg)
+#'
+
+# %%
+#| warning: false
+library(tidyverse)
+library(fixest)
+library(DRDID)
+library(did)
+
+options(readr.show_progress = FALSE, readr.show_col_types = FALSE)
+setFixest_etable(markdown = TRUE)
+
+#' First, we will load our dataset:
+# %%
+df <- read_csv("data/tva.csv")
+head(df)
+
+#' ## Question 1
+#'
+#' We will perform the basic 2x2 DID using just the years 1940 and 1960.
+#' We will use as outcomes `ln_agriculture` and `ln_manufacturing`.
+#'
+#' First, run the "classic" version using an indicator for treatment, `tva`,
+#' and indicator for being the post-period, `post`, and the product of the two.
+#' I recommend the package `fixest` for regression analysis. I'll be using it
+#' in the solutions.
+#'
+# %%
+est_40_60 <- feols(
+  c(ln_agriculture, ln_manufacturing) ~ i(tva) + i(post) + i(tva * post),
+  df |> filter(year == 1940 | year == 1960),
+  cluster = ~county_code
+)
+
+# %%
+#| results: asis
+etable(est_40_60)
+
+#' Second, we will see in the 2x2 DID case, using county and time fixed effects is equivalent:
+#'
+# %%
+est_40_60_full <- feols(
+  c(ln_agriculture, ln_manufacturing) ~ i(tva * post) | county_code + year,
+  df |> filter(year == 1940 | year == 1960),
+  cluster = ~county_code
+)
+
+# %%
+#| results: asis
+etable(est_40_60, est_40_60_full)
+
+
+#' ## Question 2
+#'
+#' Moretti and Kline were nervous that the parallel trends assumption is
+#' a bit of a strong assumption in the context. Why might that be in the
+#' context of the Tennessee Valley Authority?
+#'
+#' Answer: The TVA was built in the Tenneessee area precisely because the area
+#' was not developing a strong manufacturing base. It is unlikely in the
+#' absence of treatment that counties in the TVA area were going to grow in
+#' manufacturing the same as outside counties
+#'
+#' Let's run a placebo analysis to test for this using 1920 as the pre-treatment
+#' period and 1930 as the post-treatment period. What does this tell us about
+#' the plausability of a parallel trends type assumption?
+#'
+# %%
+df$is_1930 <- (df$year == 1930)
+est_20_30 <- feols(
+  c(ln_agriculture, ln_manufacturing) ~
+    i(tva * is_1930) | county_code + year,
+  df |> filter(year == 1920 | year == 1930),
+  cluster = ~county_code
+)
+
+# %%
+#| results: asis
+etable(est_20_30)
+
+#' ## Question 3
+#'
+#' Let's put this analysis together and run an event-study regression using
+#' the full dataset
+#'
+#' To do this, create a set of dummy variables that interact year with
+#' treatment status. Estimate the TWFE model with these dummy variables.
+#'
+# %%
+df$rel_year <- ifelse(df$tva == TRUE, df$year, 1940)
+
+est_event_study <- feols(
+  c(ln_agriculture, ln_manufacturing) ~
+    i(rel_year, ref = 1940) | county_code + year,
+  df,
+  cluster = ~county_code
+)
+
+iplot(est_event_study[[1]])
+iplot(est_event_study[[2]])
+
+#' ## Question 4
+#'
+#' Let's use some controls to weaken the assumption to conditional
+#' parallel trends. In particular, we are going to use a few covariates:
+#' `agriculture_share_1920`, `agriculture_share_1930`,
+#' `manufacturing_share_1920`, and `manufacturing_share_1930`.
+#'
+#' What happens if we add those controls in linearly to our original estimate?
+# %%
+feols(
+  c(ln_agriculture, ln_manufacturing) ~
+    i(rel_year, ref = 1940) +
+      agriculture_share_1920 + agriculture_share_1930 +
+      manufacturing_share_1920 + manufacturing_share_1930 |
+      county_code + year,
+  df,
+  cluster = ~county_code
+)
+
+#' *Answer:* The covariates are dropped because they are collinear with the
+#' county fixed effects.
+#'
+#' The term $X_i \beta$ just causes a level shift in outcomes. This is not what
+#' we want. We really want to allow for the *trends* in outcomes to vary by
+#' covariate values. The simplest way to do this is to change our model to
+#' interact covariates with indicators for each year $X_i * 1(t = s) \beta$ for
+#' each year $s$. This is often written more simply as $X_i \beta_t$ which lets
+#' $beta$ vary by year.
+#'
+#' If you take first-differences, you end up with
+#' $$
+#'  X_i \beta_t - X_i \beta_{t-1} = X_i (\beta_t - \beta_{t-1}),
+#' $$
+#' which says changes in outcome over time depend on your value of $X_i$.
+
+
+#' ## Question 5
+#'
+#' This question shows different weighs to incorporate covariates in a 2x2 difference-in-differences estimator. The goal is to relax our parallel trends assumption to be conditional on X:
+#' $$
+#'   E(Y_{i1}(0) - Y_{i1}(0) | D = 1, X = x) = E(Y_{i1}(0) - Y_{i1}(0) | D = 0, X = x).
+#' $$
+#' 
+#' In words, this assumption says "take treated and control units with the same value of $X$. These units on average have the same counterfactual trend". Full details to help with this question are given below in the appendix notes. This question will walk you through three different covariates-based estimators of ATTs: outcome regression, inverse propensity of treatment weighting, and a doubly-robust combination of the two. 
+#' 
+#' Note: Some of the data contains missing values for the covariates. Subset the data using `county_has_no_missing == TRUE` (for later).
+
+# Drop counties with missing covariates
+df = filter(df, county_has_no_missing == TRUE)
+
+# First-differenced data
+first_diff = df |>
+  arrange(county_code, year) |>
+  filter(year == 1940 | year == 1960) |>
+  mutate(
+    D_ln_manufacturing = ln_manufacturing - lag(ln_manufacturing, 1),
+    D_ln_agriculture = ln_agriculture - lag(ln_agriculture, 1),
+  ) |>
+  filter(year == 1960) 
+
+
+#' ### Part 1: Difference-in-Differences
+#' Take first-differences of the outcome variable to form $\Delta Y$. Create a new dataset that collapses the dataset using first-differences for the outcome variables (each county should be a single row in the dataset). 
+#' 
+#' In part a, estimate the normal difference-in-differences estimate. Additionally, run a second model that linearly controls for `agriculture_share_1920`, `agriculture_share_1930`, `manufacturing_share_1920`, and `manufacturing_share_1930`.
+# %%
+feols(
+  D_ln_manufacturing ~ i(tva), 
+  data = first_diff
+)
+
+setFixest_fml(
+  ..X = ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
+)
+feols(
+  D_ln_manufacturing ~ i(tva) + ..X, 
+  data = first_diff
+)
+
+#' ### Part 2: Outcome Regression
+#' 
+#' Including covariates linearly is very simple and intuitively it allows for $X_i$-specific trends. However, this assumes that treatment effects can not vary by the value of $X$. For example, say $X$ is a dummy variable for age. Then you are allowing for gender-specific trends, but you are not allowing for treatment effects to vary by age. Note, this problem is only with continuous covariates in X_i, we won't estimate the ATT (see Angrist 1998 or Słoczyński 2022). 
+#' 
+#' Instead, we want to use outcome regression when doing covariate adjustment in the outcome model. First, regress `D_ln_y` on the four covariates *using just the untreated observations* (`tva == 0`). This estimates $E(\Delta y | X, D = 0)$. 
+#' 
+#' Second, predict out of sample this model for the full dataset. Let's call this `D_ln_y0_hat`. Last, take the difference between `D_ln_y` and the predicted `D_ln_y0_hat` and average this for the treated group (`tva == 1`). This is our outcome regression estimate.
+# %%
+# Estimate E[Y_{i1} - Y_{i0} | D = 0, X] as a linear function of X
+dy_est_0 = feols(
+  D_ln_manufacturing ~ ..X, 
+  data = first_diff |> filter(tva == 0)
+)
+
+# Use our estimate of E[Y_{i1} - Y_{i0} | D = 0, X] to predict for each observation given their value of x
+Dy0_hat = predict(dy_est_0, newdata = first_diff)
+
+# Outcome regression estimate
+Dy = first_diff$D_ln_manufacturing
+D = first_diff$tva
+w1 = D / mean(D)
+mean(w1 * Dy) - mean(w1 * Dy0_hat)
+
+#' Or more simply,we can use `reg_did_panel` from the `DRDID` package:
+X <- with(
+  df[df$year == 1940, ], 
+  cbind(agriculture_share_1920, agriculture_share_1930, manufacturing_share_1920, manufacturing_share_1930)
+)
+DRDID::reg_did_panel(
+  y1 = df$ln_manufacturing[df$year == 1960],
+  y0 = df$ln_manufacturing[df$year == 1940],
+  D = df$tva[df$year == 1960],
+  covariates = X
+)
+
+#' ### Part 3: Inverse Probability of Treatment Weighting
+#' 
+#' Now, lets use a propensity score method. Estimate a logistic regression of $D$ on the covariates $X$ using the full sample. Predict fitted propensity scores of this model. 
+#' 
+#' Form the weights $w_1$ and $w_0$ as written in the appendix and form the IPTW estimate.
+# %%
+# Fit propensity scores for treatment
+ps <- predict(feglm(
+  tva ~ ..X,
+  data = first_diff, family = binomial()
+))
+# Avoid dividing by 0
+ps = pmin(ps, 1 - 1e-16)
+
+# Generate propensity score weights for units
+w1 = D / mean(D)
+w0 = (1 - D) / mean(D) * ps / (1 - ps) 
+
+# This is our IPW estimate
+mean(w1 * Dy) - mean(w0 * Dy)
+
+#' Or more simply, we can use `ipw_did_panel` from the `DRDID` package:
+DRDID::ipw_did_panel(
+  y1 = df$ln_manufacturing[df$year == 1960],
+  y0 = df$ln_manufacturing[df$year == 1940],
+  D = df$tva[df$year == 1960],
+  covariates = X
+)
+
+#' ### Part 4: Doubly-Robust DID Estimator
+#' 
+#' From the previous questions, you have all the parts to estimate the doubly-robust DID estimator. Do this.
+# %%
+mean(w1 * (Dy - Dy0_hat)) - mean(w0 * (Dy - Dy0_hat))
+
+#' Or more simply, we can use `drdid_panel` from the `DRDID` package:
+DRDID::drdid_panel(
+  y1 = df$ln_manufacturing[df$year == 1960],
+  y0 = df$ln_manufacturing[df$year == 1940],
+  D = df$tva[df$year == 1960],
+  covariates = X
+)
+
+#' ## Question 6
+#' 
+#' Now, let’s try using the `DRDID` package to do this more simply.
+#' 
+#' Note: DRDID requires the `idname` to be a numeric, so you need to create a new variable for this.
+# %%
+# DRDID requires a numeric id
+df$county_code_numeric <- to_integer(df$county_code)
+X_fml = ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
+
+DRDID::drdid(
+  yname = "ln_manufacturing",
+  tname = "year",
+  idname = "county_code_numeric",
+  dname = "tva",
+  xformla = X_fml,
+  estMethod = "trad",
+  data = df |> filter(year == 1940 | year == 1960)
+)
+
+#' ## Question 7
+#' 
+#' We are going to now use `did` to estimate an event study.
+#' As a default, `did` calls `DRDID` under the hood. Let's see this using
+#' `did::att_gt`. We need to create a variable for "treatment timing groups",
+#' i.e. what year a county starts treatment. The package takes the convention
+#' that group = 0 for never-treated group.
+#'
+# %%
+# = 0 for never-treated, = 1950 for TVA counties
+df$g <- df$tva * 1945
+(attgt_man <- did::att_gt(
+  yname = "ln_manufacturing",
+  tname = "year",
+  idname = "county_code_numeric",
+  gname = "g",
+  xformla = X_fml,
+  data = df
+))
+did::ggdid(attgt_man)
+
