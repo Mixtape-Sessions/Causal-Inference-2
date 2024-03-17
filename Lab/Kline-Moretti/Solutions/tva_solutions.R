@@ -299,18 +299,6 @@ DRDID::drdid_panel(
   covariates = X
 )
 
-df$county_code_numeric <- to_integer(df$county_code)
-X_fml <- ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
-DRDID::drdid(
-  yname = "ln_manufacturing",
-  tname = "year",
-  idname = "county_code_numeric",
-  dname = "tva",
-  xformla = X_fml,
-  data = df |> filter(year == 1940 | year == 1960),
-  estMethod = "trad"
-)
-
 #' ## Question 6
 #'
 #' Now, let’s try using the `DRDID` package to do this more simply.
@@ -331,7 +319,7 @@ DRDID::drdid(
   estMethod = "trad"
 )
 
-#' Note: I passed `estMethod = "trad"` to use the standard weights from Abadie (2005). Sant'Anna and Zhao propose an improved estimator that can be called `estMethod = "imp"`. This improvement is especially important when overlap is not perfect.
+#' Note: I passed `estMethod = "trad"` to use the standard weights from Abadie (2005). Sant'Anna and Zhao propose an improved estimator that can be called `estMethod = "imp"`.
 # %%
 DRDID::drdid(
   yname = "ln_manufacturing",
