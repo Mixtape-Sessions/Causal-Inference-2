@@ -102,6 +102,7 @@ estimate?
 ## Question 5
 
 This question shows different weighs to incorporate covariates in a 2x2 difference-in-differences estimator. The goal is to relax our parallel trends assumption to be conditional on X:
+
 $$
   E(Y_{i1}(0) - Y_{i1}(0) | D = 1, X = x) = E(Y_{i1}(0) - Y_{i1}(0) | D = 0, X = x).
 $$
@@ -163,9 +164,10 @@ df$g = df$tva * 1945
 In the 2x2 case for panel data, we will always form a difference-in-differences style estimand:
 
 $$
-  \mathbb{E}_n\left[ (w_1 - w_0) \widetilde{\Delta Y} \right]
+  \mathbb{E}_n \left[ (w_1 - w_0) \widetilde{\Delta Y} \right]
 $$
-where $w_1$ and $w_0$ are sets of weights and $\widetilde{\Delta Y}$ is either $\Delta Y$ or deviations from estimates from an outcome regression $\Delta Y - \hat{\mu}_{\Delta Y(0)}(X)$.
+
+where $w_1$ and $w_0$ are sets of weights and $\widetilde{\Delta Y}$ is either $\Delta Y$ or deviations from estimates from an outcome regression $\Delta Y - \hat{\mu}_{\Delta Y(0)}(X)$. Since github won't render properly, we are going to write it as $\hat{\mu}(X)$ 
 
 ### Case 1: DID
 
@@ -174,21 +176,20 @@ For the simplest DID, we have $w_1 = \frac{D}{\mathbb{P}_n(D = 1)}$ and $w_0 = \
 This produces: 
 
 $$
-  \mathbb{E}_n\left[ (w_1 - w_0) \widetilde{\Delta Y} \right] = 
-  \mathbb{E}_n\left[ \Delta Y \ \vert \ D = 1 \right] - \mathbb{E}_n\left[ \Delta Y \ \vert \ D = 0 \right]
+  \mathbb{E}_n \left[ (w_1 - w_0) \widetilde{\Delta Y} \right] = 
+  \mathbb{E}_n \left[ \Delta Y \ \vert \ D = 1 \right] - \mathbb{E}_n\left[ \Delta Y \ \vert \ D = 0 \right]
 $$
 
 We are comparing change in outcomes for treated group to the change in outcomes of the control group.
 
 ### Case 2: Outcome regression
 
-Estimate $\mu_{\Delta Y(0)}(X)$ by regressing $\Delta Y$ on $X$ using the $D = 0$ untreated sample. Form $\widetilde{\Delta Y} = \Delta Y - \hat{\mu}_{\Delta Y(0)}(X)$. Set $w_1 = \frac{D}{\mathbb{P}_n(D = 1)}$ and $w_0 = 0$. 
+Estimate $\mu_{\Delta Y(0)}(X)$ by regressing $\Delta Y$ on $X$ using the $D = 0$ untreated sample. Form $\widetilde{\Delta Y} = \Delta Y - \hat{\mu}(X)$. Set $w_1 = \frac{D}{\mathbb{P}_n(D = 1)}$ and $w_0 = 0$. 
 
 This produces: 
+
 $$
-  \mathbb{E}_n\left[ (w_1 - w_0) \widetilde{\Delta Y} \right] = 
-  \mathbb{E}_n\left[ \Delta Y \ \vert \ D = 1 \right] - 
-    \mathbb{E}_n\left[ \hat{\mu}_{\Delta Y(0)}(X) \ \vert \ D = 1 \right]
+  \mathbb{E}_n\left[ (w_1 - w_0) \widetilde{\Delta Y} \right] = \mathbb{E}_n\left[ \Delta Y \ \vert \ D = 1 \right] - \mathbb{E}_n\left[ \hat{\mu}(X) \ \vert \ D = 1 \right]
 $$
 
 We are comparing change in outcomes for treated group to the *predicted* change in outcomes for the treated group given the values of their covariates $X$.
@@ -199,7 +200,8 @@ Estimate $p(x) = \mathbb{P}(D = 1 | X = x)$ by a logistic regression of $D$ on $
 
 The weights take the form $w_1 = \frac{D}{\mathbb{P}_n(D = 1)}$ and $w_0 = \frac{1 - D}{\mathbb{P}_n(D = 1)} \frac{\hat{p}(X)}{1 - \hat{p}(X)}$. 
 
-This produces
+This produces:
+
 $$
   \mathbb{E}_n\left[ (w_1 - w_0) \widetilde{\Delta Y} \right] = 
   \mathbb{E}_n\left[ \Delta Y \ \vert \ D = 1 \right] - 
@@ -211,27 +213,29 @@ We are comparing change in outcomes for treated group to a *weighted* average of
 
 ### Case 4: Doubly-Robust DID (Sant'Anna and Zhao)
 
-Set $\widetilde{\Delta Y} = \Delta Y - \hat{\mu}_{\Delta Y(0)}(X)$. The weights take the form $w_1 = \frac{D}{\mathbb{P}_n(D = 1)}$ and $w_0 = \mathbb{E}_n(\frac{1-\hat{p}(X)}{\hat{p}(X)}) \frac{\hat{p}(X)}{1 - \hat{p}(X)}$.
+Set $\widetilde{\Delta Y} = \Delta Y - \hat{\mu}(X)$. The weights take the form $w_1 = \frac{D}{\mathbb{P}_n(D = 1)}$ and $w_0 = \mathbb{E}_n(\frac{1-\hat{p}(X)}{\hat{p}(X)}) \frac{\hat{p}(X)}{1 - \hat{p}(X)}$.
 
-This produces
+This produces:
+
 $$
   \mathbb{E}_n\left[ (w_1 - w_0) \widetilde{\Delta Y} \right] =
-  \mathbb{E}_n\left[ \Delta Y - \hat{\mu}_{\Delta Y(0)}(X) \ \vert \ D = 1 \right] - 
-  \mathbb{E}_n\left[ \frac{\mathbb{P}_n(D = 0)}{\mathbb{P}_n(D = 1)} \frac{\hat{p}(X)}{1 - \hat{p}(X)} \left( \Delta Y - \hat{\mu}_{\Delta Y(0)}(X) \right) \ \vert \ D = 0\right]
+  \mathbb{E}_n\left[ \Delta Y - \hat{\mu}(X) \ \vert \ D = 1 \right] - 
+  \mathbb{E}_n\left[ \frac{\mathbb{P}_n(D = 0)}{\mathbb{P}_n(D = 1)} \frac{\hat{p}(X)}{1 - \hat{p}(X)} \left( \Delta Y - \hat{\mu}(X) \right) \ \vert \ D = 0\right]
 $$
 
 
 To help build intuition, I'll rewrite this in two ways. First,
+
 $$
 \begin{align*}
   \mathbb{E}_n\left[ (w_1 - w_0) \widetilde{\Delta Y} \right] &= 
   \left( 
     \mathbb{E}_n\left[ \Delta Y \ \vert \ D = 1 \right] - 
-    \mathbb{E}_n\left[ \hat{\mu}_{\Delta Y(0)}(X) \ \vert \ D = 1 \right] 
+    \mathbb{E}_n\left[ \hat{\mu}(X) \ \vert \ D = 1 \right] 
   \right) \\
   &\quad - \left(
     \mathbb{E}_n\left[ \frac{\mathbb{P}_n(D = 0)}{\mathbb{P}_n(D = 1)} \frac{\hat{p}(X)}{1 - \hat{p}(X)} \Delta Y \ \vert \ D = 0\right] - 
-    \mathbb{E}_n\left[ \frac{\mathbb{P}_n(D = 0)}{\mathbb{P}_n(D = 1)} \frac{\hat{p}(X)}{1 - \hat{p}(X)} \hat{\mu}_{\Delta Y(0)}(X) \ \vert \ D = 0\right]
+    \mathbb{E}_n\left[ \frac{\mathbb{P}_n(D = 0)}{\mathbb{P}_n(D = 1)} \frac{\hat{p}(X)}{1 - \hat{p}(X)} \hat{\mu}(X) \ \vert \ D = 0\right]
   \right)
 \end{align*}
 $$
@@ -239,6 +243,7 @@ $$
 In this form, it looks like we are taking out outcome regression estimate and then subtrating off something like a bias-correction term generated from the control group
 
 Alternatively, we could regroup terms like
+
 $$
 \begin{align*}
   \mathbb{E}_n\left[ (w_1 - w_0) \widetilde{\Delta Y} \right] &= 
@@ -247,8 +252,8 @@ $$
     \mathbb{E}_n\left[ \frac{\mathbb{P}_n(D = 0)}{\mathbb{P}_n(D = 1)} \frac{\hat{p}(X)}{1 - \hat{p}(X)} \Delta Y \ \vert \ D = 0\right]
   \right) \\
   &\quad - \left(
-    \mathbb{E}_n\left[ \hat{\mu}_{\Delta Y(0)}(X) \ \vert \ D = 1 \right]  - 
-    \mathbb{E}_n\left[ \frac{\mathbb{P}_n(D = 0)}{\mathbb{P}_n(D = 1)} \frac{\hat{p}(X)}{1 - \hat{p}(X)} \hat{\mu}_{\Delta Y(0)}(X) \ \vert \ D = 0\right]
+    \mathbb{E}_n\left[ \hat{\mu}(X) \ \vert \ D = 1 \right]  - 
+    \mathbb{E}_n\left[ \frac{\mathbb{P}_n(D = 0)}{\mathbb{P}_n(D = 1)} \frac{\hat{p}(X)}{1 - \hat{p}(X)} \hat{\mu}(X) \ \vert \ D = 0\right]
   \right)
 \end{align*}
 $$
