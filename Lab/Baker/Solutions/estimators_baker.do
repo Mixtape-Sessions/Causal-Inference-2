@@ -91,7 +91,7 @@ event_plot est_twfe est_bjs est_gardner est_cs sa_b#sa_v w_b#w_v, ///
   together perturb(-0.325(0.13)0.325) noautolegend /// 
 	graph_opt( ///
 		xtitle("Periods since the event") ytitle("Average causal effect") ///
-    xline(-0.5, lcolor(gs8) lpattern(dash)) yline(0, lcolor(gs8)) graphregion(color(white)) bgcolor(white) ylabel(, angle(horizontal)) ///
+    yline(0, lcolor(gs8)) graphregion(color(white)) bgcolor(white) ylabel(, angle(horizontal)) ///
     legend( ///
       order(1 "OLS" 3 "Borusyak et al." 5 "Gardner" 7 "Callaway-Sant'Anna" 9 "Sun and Abraham" 11 "Wooldridge") ///
     ) ///

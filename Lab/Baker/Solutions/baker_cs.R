@@ -3,7 +3,6 @@
 # author: scott cunningham (baylor), pedro sant'anna (microsoft, vandy)
 # description: implement cs on the baker simulated dataset
 # last updated: february 19, 2022
-
 # ------------------------------------------------------------------------------
 # load packages
 # install.packages("haven", dependencies = TRUE)

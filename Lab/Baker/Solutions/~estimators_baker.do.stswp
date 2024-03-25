@@ -10,86 +10,84 @@
   * ssc install xtevent, replace
 
 *-> Load data 
-  use "https://github.com/scunning1975/mixtape/raw/master/castle.dta", clear
+  use "https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Baker/baker.dta", clear
+  
 
   cap drop treated
   gen treated = 0
-  replace treated = 1 if year > effyear & effyear ~= .
+  replace treated = 1 if year > treat_date & treat_date ~= .
 
   * First year is year 1
   cap drop rel_year
-  gen rel_year = year - effyear + 1
-  qui sum rel_year
+  gen rel_year = year - treat_date + 1
 
   * Stata requires you to not have negative numbers in factor variable for regressions, so you have to shift
   cap drop rel_year_shifted
+  qui sum rel_year
   local min_rel_year = `r(min)'
   gen rel_year_shifted = rel_year + -1 * `min_rel_year'
 
   * leads/lags of treatment, excluding -1
-  forvalues k = 8(-1)0 {
+  forvalues k = 24(-1)0 {
     gen pre_`k' = rel_year == -`k'
   }
-  forvalues k = 1/6 {
+  forvalues k = 1/17 {
     gen post_`k' = rel_year == `k'
   }
 
-  * Dummy for never-treated group
-  cap drop control_group
-  gen control_group = (effyear == .)
-
-  * csdid and jwdid require group = 0 for never treated
-  cap drop gvar
-  gen gvar = cond(effyear == ., 0, effyear)
-
 *-> TWFE
   * pre_0 is omitted
-  reghdfe l_homicide pre_8-pre_1 post_1-post_6, absorb(sid year) vce(cluster sid)
+  reghdfe y pre_24-pre_1 post_1-post_17, absorb(id year) vce(cluster id)
   est store est_twfe
   event_plot est_twfe, default_look stub_lead(pre_#) stub_lag(post_#)
 
 *-> Sun and Abraham
-  eventstudyinteract l_homicide pre_8-pre_1 post_1-post_6, ///
-    absorb(sid year) vce(cluster sid) ///
-    cohort(effyear) control_cohort(control_group)
+  preserve 
+  cap drop last_cohort
+  gen last_cohort = (treat_date == 2004)
+  keep if year < 2004
+  eventstudyinteract y pre_24-pre_1 post_1-post_17, ///
+    absorb(id year) vce(cluster id) ///
+    cohort(treat_date) control_cohort(last_cohort)
   event_plot e(b_iw)#e(V_iw), default_look stub_lead(pre_#) stub_lag(post_#)
+  restore
 
   * Store for later
   matrix sa_b = e(b_iw)
   matrix sa_v = e(V_iw)
 
 *-> Callaway and Sant'anna
-  csdid l_homicide, ivar(sid) time(year) gvar(gvar)
+  
+  csdid y, ivar(id) time(year) gvar(treat_date) notyet
   estat event, estore(est_cs)
   event_plot est_cs, default_look stub_lead(Tm#) stub_lag(Tp#) 
 
 *-> BJS
-  did_imputation l_homicide sid year effyear, allhorizons pretrends(8) minn(0)
+  preserve
+  keep if year < 2004
+  did_imputation y id year treat_date, allhorizons pretrends(24) minn(0) autosample
   est store est_bjs
   event_plot est_bjs, default_look stub_lead(pre#) stub_lag(tau#) 
+  restore
 
 *-> Gardner 
-  did2s l_homicide, first_stage(i.year i.sid) second_stage(pre_8-pre_0 post_1-post_6) treatment(treated) cluster(sid)
+  did2s y, first_stage(i.year i.id) second_stage(pre_24-pre_0 post_1-post_17) treatment(treated) cluster(id)
   est store est_gardner
   event_plot est_gardner, default_look stub_lead(pre_#) stub_lag(post_#) 
 
 *-> Wooldridge
-  jwdid l_homicide, ivar(sid) tvar(year) gvar(gvar) never
+  jwdid y, ivar(id) tvar(year) gvar(treat_date)
   estat event, post
   matrix w_b = e(b)
   matrix w_v = e(V)
-  * clean-up names for event_plot
-  matrix colnames w_b = pre_8 pre_7 pre_6 pre_5 pre_4 pre_3 pre_2 pre_1 pre_0  post_1 post_2 post_3 post_4 post_5 post_6
-  matrix colnames w_v = pre_8 pre_7 pre_6 pre_5 pre_4 pre_3 pre_2 pre_1 pre_0  post_1 post_2 post_3 post_4 post_5 post_6
-  matrix rownames w_v = pre_8 pre_7 pre_6 pre_5 pre_4 pre_3 pre_2 pre_1 pre_0  post_1 post_2 post_3 post_4 post_5 post_6
-
-  event_plot w_b#w_v, default_look stub_lead(pre_#) stub_lag(post_#)
+  matrix list e(b)
+  event_plot w_b#w_v, default_look stub_lag(r2vs1._at@#.__event__)
 
 *-> All together
 
 event_plot est_twfe est_bjs est_gardner est_cs sa_b#sa_v w_b#w_v, ///
-  stub_lead(pre_# pre# pre_# Tm# pre_# pre_#) ///
-	stub_lag(post_# tau# post_# Tp# post_# post_#) /// 
+  stub_lead(pre_# pre# pre_# Tm# pre_# r2vs1._at@#.__event__) ///
+	stub_lag(post_# tau# post_# Tp# post_# _#) /// 
   default_look plottype(scatter) ciplottype(rcap) ///
   together perturb(-0.325(0.13)0.325) noautolegend /// 
 	graph_opt( ///
