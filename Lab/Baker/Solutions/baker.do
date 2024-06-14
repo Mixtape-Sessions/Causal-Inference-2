@@ -113,7 +113,7 @@ gen y = firms + n + te*treat*(year - treat_date + 1) + e
 areg y2 i.year treat, a(id) robust 
 
 * Estimation using TWFE - dynamic treatment effects over time
-areg y i.year treat, a(id) robust 
+areg y  i.year treat, a(id) robust 
 
 
 ** Sun and Abraham event study commentary
@@ -158,6 +158,10 @@ ddtiming y treat, i(id) t(year)
 net install ddtiming, from(https://raw.githubusercontent.com/tgoldring/ddtiming/master)
 areg y2 i.year treat, a(id) robust 
 ddtiming y2 treat, i(id) t(year)
+
+* Or use the new command in Stata 17 on as a post-estimation 
+xtdidregress (y) (treat), group(id) time(year)
+estat bdecomp, graph
 
 * Bacon decomposition shows the problem -- notice all those late to early 2x2s!
 preserve

@@ -1,5 +1,3 @@
-* NOT WORKING
-
 use https://github.com/scunning1975/mixtape/raw/master/baker.dta, clear
 ssc install csdid, replace
 ssc install drdid, replace
