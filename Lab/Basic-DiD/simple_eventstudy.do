@@ -12,7 +12,7 @@ xtset sid year
 
 drop if effyear==2005 | effyear==2007 | effyear==2008 | effyear==2009
 
-drop post
+drop 	post
 gen 	post = 0
 replace post = 1 if year>=2006
 
