@@ -46,7 +46,10 @@
 \begin{frame}{Continuous DiD}
 
 \begin{itemize}
-\item A very common panel model will use a treatment variable which is continuous, not binary
+\item It is very common for people to estimate difference-in-differences panel models where the treatment, $D$, is multi-valued or continuous, not binary:
+
+$$Y_{it} = \alpha + \delta D_{it}  + \tau_t + \sigma_s + \varepsilon_{it}$$
+
 \item Examples include minimum wage papers, my JHR on abortion clinic closures causing increased travel distance, vaccinations, price elasticity of demand etc.
 \item Variation is in ``treatment intensity'' and researchers typically use TWFE for estimation, or perhaps count models like Poisson
 
@@ -517,7 +520,8 @@ Notice that you are comparing any dose $d$ to no treatment at all -- sort of an 
 
 
 
-
+
+
 
 \subsection{Identification}
 

@@ -894,8 +894,8 @@ Castle reforms $\rightarrow$ homicides: decrease through deterrence
 \begin{frame}{Cheng and Hoekstra's estimation model}
 	
 	\begin{itemize}
-	\item TWFE model$$Y_{it} = \beta_1 D_i + \beta_2 T_t + \beta_3 (CDL_{it}) + \alpha_1X_{it} + c_i + u_t + \varepsilon_{it}$$
-	\item $CDL$ is a fraction between 0 and 1 depending on the percent of the year the state has a castle doctrine law 
+	\item TWFE model$$Y_{it} =  \beta_0 + \beta (CDL_{it}) + \alpha_1X_{it} + c_i + u_t + \varepsilon_{it}$$
+	\item In original paper, $CDL$ is a fraction between 0 and 1 depending on the percent of the year the state has a castle doctrine law 
 	\item Preferred specifications includes ``region-by-year fixed effects'' (see next slide)
 	\item Estimation with TWFE and Poisson with and without population weights
 	\item Models will include covariates (e.g., police, imprisonment, race shares, state spending on public assistance)
@@ -918,8 +918,7 @@ Main data: FBI Uniform Crime Reports Part 1 Offenses (2000-2010)
 \begin{frame}{Region-by-year fixed effects}
 	
 	\begin{itemize}
-	\item \textbf{Parallel trends assumption}: imposed structurally with region-by-year dummies
-	\item \textbf{Argument}: unobserved changes in crime are running ``parallel'' to the treatment states within region over time
+	\item \textbf{Parallel trends assumption}: imposed structurally with region-by-year dummies, means conditional on covariates, untreated potential outcomes on averaged evolved similar to comparison group
 	\item \textbf{SUTVA} and \textbf{No Anticipation}: No spillovers, no hidden variation in treatment, no behavioral change today in response to tomorrow's law
 	\end{itemize}
 \end{frame}
