@@ -71,7 +71,7 @@ atts <- att_gt(
   # with covariates
   # xformla = ~ X_Iyear_2010, 
   # set the comparison group which is either "nevertreated" or "notyettreated" 
-  control_group = "nevertreated"
+  control_group = "notyettreated"
 )
 
 simple_att <- aggte(atts, type = "simple")
