@@ -65,70 +65,7 @@ We will cover some of the properties of twoway fixed effects (TWFE), some soluti
 
 \end{frame}	
 
-
-\begin{frame}{Beaver dam and diff-in-diff credibility crisis}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Differential timing literature is like a stick that struck a beaver's dam
-\item Stick made a hole causing a leak
-\item Gradually that hole got larger and the leak got bigger
-\item Eventually the dam collapsed 
-\item That's now
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/beaverdam}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-
-
-
-
-\begin{frame}{Difference-in-differences credibility crisis}
-
-\begin{itemize}
-\item I'll start with circa 2016 onward -- several grad students and assistant professors found critical pathologies with TWFE and developed solutions  
-\item Many simultaneous discoveries, some redundancies, and \textbf{sudden} awareness of the issues started happening around 2017, eventually became a massive thing
-\item Extreme meteoric rise, unusual for econometrics
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Compare with LATE paper}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Compare with Imbens and Angrist 1995 LATE in \emph{Econometrica}
-\item 61 annual cites the year Imbens is denied tenure at Harvard for what would later win him a Nobel Prize
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/guido_late}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-
-\begin{frame}{Compare with synth paper}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Athey and Imbens called synth the most important innovation in causal inference of the last two decades
-\item Most econometrics papers, even influential ones, show slow growth
-\item Something was different about diff-in-diff even before the econometricians recently shifted their attention to it
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/basque_synth}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-
-\begin{frame}{Diff-in-diff had belonged to the empiricists}
+\begin{frame}{Diff-in-diff is a dominant design}
 
 	\begin{figure}
 	\caption{Currie, et al. (2020)}
@@ -147,93 +84,28 @@ With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertran
 
 
 
-\begin{frame}{Borusyak et al}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Starts it all; written as grad students at Harvard
-\item Goes through many revisions, posted as working paper
-\item Returned to a few years ago with a third coauthor, Jahn Spiess, now R\&R at Restud
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/kirill_cites}
-    \end{column}
-  \end{columns}
-\end{frame}
 
 
-\begin{frame}{``dCdH''}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item First major hit (in AER), may have been in working paper in 2017 (at least 2018)
-\item Very thorough decomposition of the TWFE pathology, very general solution, included Stata code
-\item Very active and talented young team (assistant profs when this was done)
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/dcdh_cites}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Goodman-Bacon}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Arguably the most influential in terms of bringing attention to the problem (but no solution)
-\item Begun while grad student at Michigan, published last of the crop
-\item Probably Twitter network had a role as he was very active, also not an econometrician
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/andrew_cites}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-
-\begin{frame}{``CS''}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Second published solution to the problem, written while assistant professors at Vanderbilt and Ole Miss, 
-\item Pedro is a UC3M alum (2015 grad) and Brantly is a Vanderbilt grad
-\item Both are now coauthors with Andrew Goodman-Bacon
-\item Introduced new terms like group-time ATT, released very tight R code (``did'')
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/pedro_cites}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-
-
-\begin{frame}{``SA''}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-\item Third published solution to the problem, very similar to CS
-\item Focus was on decomposing the event study
-\item Written while grad students at MIT but Sophie Sun is now an assistant professor at CEMFI!
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[scale=0.25]{./lecture_includes/sun_cites}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{There's even more and more coming}
+\begin{frame}{Difference-in-differences credibility crisis}
 
 \begin{itemize}
-\item Gardner, Wooldridge, John Roth, and on and on
-\item Too many people to name at this point
-\item Given the large cites, we are likely to keep seeing more on this
-\item Probably shifting applied practice for the better but there are some growing pains
+\item Many simultaneous discoveries, some redundancies, and \textbf{sudden} awareness of the issues started happening around 2017
+\item Extreme meteoric rise, unusual for econometrics, has become very influential and expectations have changed
+\item Important to learn this material given the popularity of diff-in-diff (at minimum for your readings)
+\item Many survey articles out there, so this has to be selective
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Differential Timing}
+
+\begin{itemize}
+\item Differential timing refers to when groups of panel units (e.g., states, countries) receive the same treatment at different calendar dates
+\item Ordinarily, we are interested in knowing something about its effect, but what if there is not single one effect?
+\item What if the effects of the intervention differ for the earlier groups treated than the late ones, or if if the effects change over time?
+\item Then the standard twoway fixed effects estimator may be biased
+\item But first we learn what I mean by the "standard twoway fixed effects estimator"
 \end{itemize}
 
 \end{frame}
@@ -241,26 +113,13 @@ With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertran
 
 
 
-
-\section{Twoway fixed effects}
-
-
-\subsection{Estimator }
+\subsection{TWFE Estimator }
 
 
 
 
-\begin{frame}{Twoway fixed effects}
 
-\begin{itemize}
-\item When working with panel data, the so-called ``twoway fixed effects'' (TWFE) estimator was the workhorse estimator
-\item And from the start, it was used with diff-in-diff
-\item But at the start, it wasn't staggered adoption -- it was a much simpler design in which a group was treated in one year, and a comparison group wasn't
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Two OLS Models}
+\begin{frame}{Two Regression Models}
 
 \begin{eqnarray}
 Y_{ist} &=& \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \delta (Treat_{is} \times Post_t) + \varepsilon_{ist} \\
@@ -287,10 +146,10 @@ $$Y_{ist} = \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \textcolor{blue
 $$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overline{y}_k^{pre(k)} \bigg ) - \bigg ( \overline{y}_U^{post(k)} - \overline{y}_U^{pre(k)} \bigg ) $$
 
 \begin{itemize}
-\item Orley claims that the TWFE estimator of $\delta$ and the ``four averages and three subtractions'' are the same thing numerically
-\item And they are -- they are numerically \emph{identical}
+\item Regression estimates of $\delta$ and the ``four averages and three subtractions'' are the same thing numerically (show code)
 \item And under a particular assumption, they are also unbiased estimates of an aggregate causal parameter
-\item But what if we aren't in the typical 2x2 case? Researchers used the twoway fixed effects method traditionally
+\item But this is in the case of a 2x2 -- one group treated in time period $t$, and another group that isn't. 
+\item What would people do when it wasn't a 2x2?  They'd use a different specification of TWFE.
 \end{itemize}
 
 \end{frame}
@@ -306,10 +165,9 @@ $$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overl
 \begin{frame}{Twoway fixed effects}
 
 \begin{itemize}
-\item When working with panel data, the so-called ``twoway fixed effects'' (TWFE) estimator is the workhorse estimator
-\item It was at some point adopted for difference-in-differences designs when treatments are adopted at different points in time 
-\item It's easy to implement, handles time-varying treatments, and has a relatively straightforward interpretation under constant treatment effects
-\item Turns out it's interpretation is more complicated with heterogenous treatment effects
+\item When working with panel data, the so-called TWFE estimator is the workhorse estimator
+\item It's easy to implement, handles time-varying treatments, has a relatively straightforward interpretation under constant treatment effects, standard errors are easy to calculate and understand
+\item Interpretation is more complicated with heterogenous treatment effects
 \end{itemize}
 
 \end{frame}
@@ -380,31 +238,20 @@ Directed acyclic graph showing when to use TWFE
 \end{frame}
 
 
-\begin{frame}{When to use TWFE}
-
-\begin{itemize}
-\item Traditionally, this was used for estimating constant treatment effects with unobserved time-invariant heterogeneity -- recall the $c_i$ was constant across all time periods
-\item It's a linear model, so you'll be estimating conditional mean treatment effects -- if you want the median, you can't use this
-\item Once you enter into a world with dynamic treatment effects and differential timing, standard specifications became perverse
-\end{itemize}
-
-\end{frame}
 
 \begin{frame}{When not to use it}
 
 	\begin{itemize}
-		\item Reverse causality: Becker predicted police reduce crime, but when you regress crime onto police, it's usually positive 
+		\item Reverse causality: Becker predicted police reduce crime, but when you regress crime onto police, it's usually positive
 			\begin{itemize}
-			\item $\widehat{\beta}_{FE}$ inconsistent unless strict exogeneity conditional on $c_i$ holds
-				\begin{itemize}
-				\item $E[\varepsilon_{it} | x_{i1},x_{i2},\dots,x_{iT},c_i]=0; t=1,2,\dots,T$
-				\item implies $\varepsilon_{it}$ uncorrelated with past, current and future regressors
-				\end{itemize}
+			\item TWFE requires an assumption that rules out reverse causality
+			\item For those, you typically need an instrument
 			\end{itemize}
-		\item Time-varying unobserved heterogeneity
+
+		\item Time-varying unobserved variables that are correlated with the treatment and the outcome
 			\begin{itemize}
 			\item It's the time-varying unobservables you have to worry about in fixed effects
-			\item Can include time-varying controls, but as always, don't condition on a collider
+			\item Can include time-varying controls, but as always, don't condition on an outcome (i.e., collider)
 			\end{itemize}
 	\end{itemize}
 \end{frame}
