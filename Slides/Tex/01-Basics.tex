@@ -48,7 +48,6 @@
 \begin{itemize}
 \item Thank you coming to Mixtape Sessions' Causal Inference 2 workshop on difference-in-differences!  
 \item Scott Cunningham, Ben H. Williams Professor of Economics at Baylor University in Texas USA
-\item Kyle Butts, UC-Boulder (PhD), University of Arkansas (Assistant Professor) in USA
 \item 9:00am to 5:00pm CST, 15 min breaks every hour, 1 hour lunch at 12:00
 \item Lecture, discussion, exercises, application with "live coding" exercises
 \end{itemize}
@@ -154,20 +153,26 @@ Event studies and staggered, Imputation estimators
 
 \subsection{Origins of diff-in-diff in public health}
 
+\begin{frame}{Growing popularity in economics}
 
+	\begin{figure}
+	\caption{Currie, et al. (2020)}
+	\includegraphics[scale=0.25]{./lecture_includes/currie_did.png}
+	\end{figure}
 
-\begin{frame}{Common view of diff-in-diff}
+\bigskip
 
-\begin{figure}
-\includegraphics[scale=1.5]{./lecture_includes/mcfadden.jpg}
-\end{figure}
+\footnotesize
 
-\begin{quote}
-``A good way to do econometrics is to look for good natural experiments and use statistical methods that can tidy up the confounding factors that nature has not controlled for us.'' -- Daniel McFadden (Nobel Laureate 2002)
-\end{quote}
-
+With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertrand, Duflo and Mullainthan 2004), econometricians had not given it much notice
 
 \end{frame}
+
+
+
+
+
+
 
 
 
@@ -292,339 +297,37 @@ Event studies and staggered, Imputation estimators
 
 \end{frame}
 
-
-
-
-
-
-\subsection{Three waves of Difference-in-Differences in Economics}
-
-\begin{frame}{Growing popularity in economics}
-
-	\begin{figure}
-	\caption{Currie, et al. (2020)}
-	\includegraphics[scale=0.25]{./lecture_includes/currie_did.png}
-	\end{figure}
-
-\bigskip
-
-\footnotesize
-
-With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertrand, Duflo and Mullainthan 2004), econometricians had not given it much notice
-
-\end{frame}
-
-
-
-\begin{frame}{First Wave of Diff-in-Diff}
+\begin{frame}{Orley Ashenfelter}
 
 \begin{itemize}
-\item Difference-in-differences evolved in three waves from 1983 to present in economics
-\item First wave lasts from 1983 to 2011; second wave from 2011 to 2018; third wave from 2018 to present
-\item Initially, mostly used by labor economists throughout the 1990s in the ``program evaluation'' area but spreads with the spread of causal inference 
-\item No potential outcomes notation, no mention of parallel trends, no event studies -- only Ashenfelter's Dip, evidence of time varying selection bias
+
+\item Diff-in-diff gets rediscovered by Orley Ashenfelter from Princeton 
+\item Leaves academia to work in Washington DC to study job training programs for low skill workers
+\item Coins the phrase "difference-in-differences" so as to avoid having to explain regressions to bureaucrats (3:53)  \url{https://youtu.be/WnB3EJ8K7lg?si=uE4clqUIPzvbxm0r&t=2}
 
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}{Ashenfelter and Card coin the phrase difference-in-differences}
-
-	\begin{figure}
-	\caption{Ashenfelter and Card (1983)}
-	\includegraphics[scale=0.2]{./lecture_includes/orley1983.png}
-	\end{figure}
-
-
-\end{frame}
-
-
-
-
-\begin{frame}{Card on Dips and Parallel Trends}
-
-\begin{itemize}
-
-\item Ashenfelter's Dip is closely linked to difference-in-differences methodology
-\item Signs of selection bias visible in time series data between two groups when sudden break from common trend for treatment group just prior to treatment
-\item Usually sign of economic distress -- Heckman calls it the Ashenfelter dip
-\item Card links it to parallel trends and modern event studies \\ \url{https://youtu.be/1soLdywFb_Q?si=PV16tqFJpKgT_S_W&t=3334}
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{But ``parallel trends'' is nowhere in the paper}
-
-	\begin{figure}
-	\caption{No mention of parallel trends in Ashenfelter and Card (1985)}
-	\includegraphics[scale=0.2]{./lecture_includes/nomention.png}
-	\end{figure}
-
-\end{frame}
-
-
-
-
-\begin{frame}{Second wave grows faster than first}
-
-\begin{itemize}
-\item Share of NBER working papers that used diff-in-diff went from 11-12\% in 2011 to 23\% in 2018, or 11 percentage points
-\item It had taken 24 years to reach 11\% the first time, but only 7 years the second time. 
-\item 2011 marks the start of the second wave and it has very clear patterns, including the growing speed of adoption
-\item Wave 2 links parallel trends and event studies to difference-in-differences for the first time
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Diff-in-diff versus event study}
-
-	\begin{figure}
-	\caption{Currie, et al. (2020)}
-	\includegraphics[scale=0.25]{./lecture_includes/secondwave.png}
-	\end{figure}
-
-
-\end{frame}
-
-\begin{frame}{Second wave incorporates parallel trends and event studies}
-
-\begin{itemize}
-
-\item Prior to 2011, authors did not mention "parallel trends" when writing papers using "difference-in-differences"
-\item Nor did they use event studies -- those were solely the domain of finance used to study abnormal stock market returns, not in difference-in-differences papers
-\item But starting in 2011, diff-in-diff papers appear mentioning the ``event study'' and/or ``parallel trends''
-\item Those papers grow exponentially at a rate of 66\% a year
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Event study and parallel trends}
-
-	\begin{figure}
-	\caption{Exponential growth in both event study and parallel trends}
-	\includegraphics[scale=0.2]{./lecture_includes/event_pt.png}
-	\end{figure}
-
-\end{frame}
-
-
-
-
-\begin{frame}{Incorporating PT and event study into diff-in-diff}
-
-	\begin{figure}
-	\caption{Growth in both event study and parallel trends}
-	\includegraphics[scale=0.2]{./lecture_includes/espt_2}
-	\end{figure}
-
-
-\end{frame}
-
-\begin{frame}{Incorporating PT and event study into diff-in-diff}
-
-	\begin{figure}
-	\caption{Growth in both event study and parallel trends}
-	\includegraphics[scale=0.2]{./lecture_includes/espt_3}
-	\end{figure}
-
-
-\end{frame}
-
-
-
-
-
-\begin{frame}{Parallel trends concept originally meant something else}
-
-
- Originally, parallel trends and common trends were synonyms for year fixed effects 
- 
- \bigskip
- 
-	\begin{quote}
-	“Moreover, given the increasing dispersion of incomes and wages among all groups during that period, the common time effects (common trends) assumption among the unobservable components across the two groups may not be satisfied.” (Blundell and Dias 1999)
-	\end{quote}
-
-
-\end{frame}
-
-\begin{frame}{Identification shifts away from strict exogeneity}
-
-
- Early identification by Blundell was a form of strict exogeneity based panel data (twoway fixed effects), but this was viewed as too strong by Athey and Imbens (2006) 
- 
- \bigskip
-
-\begin{quote}
-“Note that the full independence assumption $\varepsilon_i \independent(G_i,T_i)$ (e.g., Blundell and MaCurdy (2000)) is stronger than necessary for [DiD] to give the average treatment effect.”
-\end{quote}
-
-
-\end{frame}
-
-
-
-\begin{frame}{Heckman, et al. (1997) introduce potenial outcomes}
-
-
-\begin{itemize}
-\item Heckman, Ichimura and Todd (1997) introduce both \emph{conditional} parallel trends and potential outcomes for identification in difference-in-differences (but not the phrase)
-
-\bigskip
-
-	\begin{figure}
-	\includegraphics[scale=0.2]{./lecture_includes/heckman_cpt}
-	\end{figure}
-
-
-\item Angrist and Pischke (2009) chapter 5 is entitled "Parallel Worlds: Fixed Effects, Difference-in-Differences and Panel Data''
-\item Though the phrase ``parallel trends'' does not appear in the book, our earlier time series showed PT and DID trends begin rising along with event study and DID by the mid to late 00s
-\end{itemize}
-
-
-\end{frame}
-
-
-
-
-\begin{frame}{Mostly Harmless and Parallel Trends}
-
-
-	\begin{figure}
-	\includegraphics[scale=0.45]{./lecture_includes/mhe_pt}
-	\end{figure}
-
-
-
-\end{frame}
-
-
-
-
-\begin{frame}{Third wave: heterogeneity and TWFE}
-
-\begin{itemize}
-
-\item Third (and current) wave has been characterized by scrutiny of the twoway fixed effects (TWFE) model starting around 2018
-\item Economists were using TWFE because it's a panel estimator and diff-in-diff could be used with panel data (or repeated cross-sections)
-\item But subtle assumptions are buried in the details, or not made explicit at all, related to heterogeneous vs constant treatment effects
-
-
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}{Event Studies and Differential Timing}
-
-	\begin{figure}
-	\includegraphics[scale=0.35]{./lecture_includes/autor2003}
-	\caption{David Autor (2003) ``unjust dismissals'' paper}
-	\end{figure}
-
-\end{frame}
-
-\begin{frame}{Constant effects model}
-
-	\begin{figure}
-	\includegraphics[scale=0.25]{./lecture_includes/autor_quote}
-	\caption{David Autor clues us into the problems of TWFE}
-	\end{figure}
-
-\end{frame}
-
-
-
-
-
-
-
-
-
-\begin{frame}{Third wave of diff-in-diff}
-
-\begin{itemize}
-
-\item Autor (2003) quote echoes down the years as researchers begin to investigate what happens when constant treatment effects is relaxed
-\item Starts with Kirill Borusyak and Xavier Jaravel (2016) working paper posted to SSRN (later published with Jan Speiss 2023)
-\item Wave 3 links difference-in-differences with heterogenous treatment effects, the pathologies of twoway fixed effects (TWFE) and begins to shift away from TWFE
-\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{First Wave}
-
-	\begin{figure}
-	\includegraphics[scale=0.15]{./lecture_includes/wave1}
-	\end{figure}
-
-\end{frame}
-
-
-\begin{frame}{Second Wave}
-
-	\begin{figure}
-	\includegraphics[scale=0.15]{./lecture_includes/wave2}
-	\end{figure}
-
-\end{frame}
-
-\begin{frame}{Third Wave}
-
-	\begin{figure}
-	\includegraphics[scale=0.15]{./lecture_includes/wave3}
-	\end{figure}
-
-\end{frame}
-
-\begin{frame}{TWFE relative to DID}
-
-	\begin{figure}
-	\includegraphics[scale=0.15]{./lecture_includes/wave4}
-	\end{figure}
-
-\end{frame}
-
-
-\begin{frame}{Summarizing the history}
-
-\begin{itemize}
-
-\item Diff-in-diff moves in distinct waves from its simplest forms but does not technically incorporate more contemporary concepts until late in the waves
-\item These moves help explain the entire workshop which is largely going to follow those waves
-\item And we will be seeing that once the method wraps around potential outcomes, the problems with some models but not others became clear
-\item Our focus will be on the parameter of interest, the minimum assumptions needed to identify it, the estimators at our disposal, and what constitutes a convincing case
-
-\end{itemize}
-
-\end{frame}
-
-\section{Difference-in-Differences}
 
 
 \subsection{Potential outcomes}
 
 
-\begin{frame}{Traditional econometric steps to any research project}
+\begin{frame}{Identification vs Estimation}
 
-\begin{enumerate}
-\item Convert research question into causal parameter
-\item Deduce beliefs needed to estimate that causal parameter with data
-\item Create a calculator that will use data and estimate the causal parameter
-\end{enumerate}
+\begin{itemize}
+\item We must start by making a distinction between the parameter we are attempting to identify and the manner in which we will estimate it
+\item Identification requires first stating explicitly our goal expressed using potential outcomes
+\item But often people skip this step and go directly to the numerical calculation like Orley was doing so let's do that
 
-\bigskip
-
-But many skip (1) and maybe even (2) and instead simply ``run regressions'' and cross our fingers that that coefficient is causal, but is it? And why is it?  And what is it? 
+\end{itemize}
 
 \end{frame}
 
 
-\begin{frame}{OLS Measures Four Averages and Three Subtractions}
+\begin{frame}{Four Averages and Three Subtractions}
 $$Y_{ist} = \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \textcolor{blue}{\delta} (Treat_{is} \times Post_t) + \varepsilon_{ist} $$
 
 \bigskip
@@ -633,7 +336,7 @@ $$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overl
 
 \begin{itemize}
 \item Orley claims that the OLS estimator of $\delta$ and the ``four averages and three subtractions'' calculation are numerically identical \\ \url{https://youtu.be/WnB3EJ8K7lg?t=126}
-\item Review these two calculations using \texttt{equivalence.do} in Stata to illustrate the point
+\item They are and I want you to see that with a numerical example in \texttt{equivalence.do} and \texttt{equivalence.R}
 \end{itemize}
 
 \end{frame}
@@ -641,9 +344,10 @@ $$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overl
 \begin{frame}{Introducing Potential Outcomes to DiD}
 
 \begin{itemize}
-\item We want to know when does the DiD equation identify a causal parameter and which one (there are several)?
-\item We need causality concepts that can be linked to DiD if we are to answer this question
-\item Potential outcomes notation is the main language of modern causal inference and is rooted in the early experimental design writers like Ronald Fisher and Jerzey Neyman, as well as modern statisticians like Don Rubin
+\item Research question versus causal question -- not the same thing
+\item Research question would be you are wanting to know effect of job training programs on earnings
+\item Causal question is expressed using potential outcomes
+\item Causal questions are usually averages of individual treatment effects for a specific population of units
 \end{itemize}
 
 \end{frame}
@@ -663,7 +367,7 @@ $$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overl
 	
 	\begin{itemize}
 
-	\item Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{: wages at time $t$ if trained} \\ 0 \text{: wages at time $t$ if not trained} \end{cases}$$where $j$ indexes a counterfactual state of the world
+	\item Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{: wages at time $t$ if trained} \\ 0 \text{: wages at time $t$ if not trained} \end{cases}$$where $j$ indexes a state of the world where the treatment happened or did not happen
 
 	\end{itemize}
 \end{frame}
@@ -677,12 +381,12 @@ $$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overl
 	    The individual treatment effect,  $\delta_i$, equals $Y_i^1-Y_i^0$
 	\end{block}
 
-Missing data problem:  No ones the counterfactual (no matter how confident they are)
+Missing data problem:  No data on the counterfactual 
 	
 \end{frame}
 
 
-\begin{frame}{Conditional Average Treatment Effects}	
+\begin{frame}{Average Treatment Effects for the Treated Subpopulation}	
 	\begin{block}{Average Treatment Effect on the Treated (ATT)}
 	The average treatment effect on the treatment group is equal to the average treatment effect conditional on being a treatment group member:
 		\begin{eqnarray*}
@@ -698,11 +402,26 @@ It's the average causal effect but only for the people exposed to some intervent
 	
 \end{frame}
 
-\begin{frame}{Potential outcomes vs realized data}
+\begin{frame}{ATT vs ATE}
 
 \begin{itemize}
-\item Potential outcomes are \emph{a priori} real but unknown descriptions of states of the world under different treatment exposures
-\item Realized data are selected from the potential outcomes based on one's treatment assignment which we can show using the switching equation
+\item Imagine there are 100 cities -- 25 of them raise the minimum wage, 75 do not
+	\begin{itemize}
+	\item ATE is the average treatment effect across all 100 cities
+	\item ATT is the average treatment effect for the 25 cities that raised the minimum wage
+	\end{itemize}
+\item If you want to know the ATE, diff-in-diff is not appropriate as it only identifies the ATT
+\item Just keep in mind the \emph{population} -- you can average the treatment effects for everyone or just some people, but whichever affects the interpretation
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Potential outcomes differ from realized data}
+
+\begin{itemize}
+\item Potential outcomes are \emph{a priori} real but as they have not yet happened, they are not known
+\item When treatment does occur, then only one of the potential outcomes happens ("realized outcome") but the other one becomes "counterfactual" or missing
+\item We represent this with the switching equation
  $$Y_{it}=D_{it}Y_{it}^1 + (1-D_{it})Y_{it}^0$$
 \item How those treatment get assigned is called the treatment assignment mechanism
 
@@ -784,7 +503,7 @@ It's in \textcolor{red}{red} because parallel trends is untestable and criticall
 
 
 
-\begin{frame}{Homework \#1}
+\begin{frame}{Do not use already treated controls}
 
 
 \begin{eqnarray*}
@@ -793,7 +512,7 @@ It's in \textcolor{red}{red} because parallel trends is untestable and criticall
 
 \bigskip
 
-Replace realized outcomes with potential outcomes and rewrite using the ``add zero'' trick we did.  I'll review the answer tomorrow.
+Let's do this together now. It'll help to see it with your own eyes.
 
 
 \end{frame}
@@ -851,7 +570,7 @@ Before we move into regression, let's go through a simple exercise to really pin
 \end{frame}
 
 
-\begin{frame}{Second homework assignment}
+\begin{frame}{No Anticipation Violation}
 
 
 \begin{eqnarray*}
@@ -860,7 +579,7 @@ Before we move into regression, let's go through a simple exercise to really pin
 
 \bigskip
 
-Replace realized outcomes with potential outcomes and rewrite using the ``add zero'' trick we did.  I'll review the answer tomorrow, but let's skip to the result here
+Let's do this one together.
 
 \end{frame}
 
