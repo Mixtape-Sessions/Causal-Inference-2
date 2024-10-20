@@ -1207,8 +1207,8 @@ Notice how OLS is ``imputing'' $E[Y^0|D=1,Post]$ for the treatment group in the 
 
 \begin{itemize}
 
-	\item We cannot directly verify parallel trends, so for a long time researchers have focused on the pre-trends (Ashenfelter's Dip)
-	\item Parallel pre-trends not required for parallel trends and vice versa, but this is the smoking gun we typically look for nonetheless
+	\item We cannot directly verify parallel trends, so for a long time researchers have focused on the pre-trends (e.g., Ashenfelter's Dip)
+	\item \textcolor{blue}{Parallel pre-trends} are not the same as \textcolor{red}{parallel counterfactual post-trends}, but this is the smoking gun we typically look for nonetheless
 	\item Think of it as a type of check for selection bias, but imperfect with false positives and false negatives
 	\item Even if pre-trends are the same one still has to worry about other policies changing at the same time (omitted variable bias is a parallel trends violation)
 
@@ -1222,9 +1222,8 @@ Notice how OLS is ``imputing'' $E[Y^0|D=1,Post]$ for the treatment group in the 
 
 \begin{itemize}
 
-\item Originally, there were no event studies (as we saw in the First Wave)
-\item Economists pulled from finance and took the event study concept and changed it to suit Ashenfelter Dip reasoning
-\item Always presented graphically, but there were different ways people went about it so we will review them and make suggestions
+\item You want to visualize a particularly set of regression coefficients which we will show
+\item But if you can show the raw data, do that too as that will show difference in levels as well which will matter for the next section on covariates
 
 \end{itemize}
 
@@ -1232,7 +1231,7 @@ Notice how OLS is ``imputing'' $E[Y^0|D=1,Post]$ for the treatment group in the 
 
 
 
-\begin{frame}{Plot the raw data when there's only two groups}
+\begin{frame}
 
 	\begin{figure}
 	\includegraphics[scale=2.5]{./lecture_includes/waldinger_dd_6.pdf}
@@ -1248,20 +1247,24 @@ Notice how OLS is ``imputing'' $E[Y^0|D=1,Post]$ for the treatment group in the 
  $$Y_{its} = \alpha + \sum_{\tau=-2}^{-q}\mu_{\tau} (D_s \times \tau_t) + \sum_{\tau=0}^m\delta_{\tau} (D_s \times \tau_t) + \tau_t + D_s + \varepsilon_{ist}$$
 		\begin{itemize}
 		\item With a simple 2x2, you are interacting treatment indicator with calendar year dummies
-		\item Includes $q$ leads or anticipatory effects and $m$ lags or post treatment effects
+		\item Includes $q$ leads (dropping the $t-1$ as baseline) and $m$ lags 
+		\item Since treatment did not happen until $\tau=0$, then pre-treatment coefficients only capture differential trends
 		\end{itemize}
-	\item Estimated $\widehat{\delta}$ coefficients are estimated ATT parameters assuming parallel trends and $\widehat{\mu}$ is part of your evidence for that
+	\item Estimated $\widehat{\delta}_\tau$ coefficients are estimated ATT for each year under parallel trends but $\widehat{\mu}_\tau$ is your smoking gun evidence 
+	\item Just remember that $\mu=0$ is not the same as parallel trends as parallel trends is \textcolor{red}{untestable}.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Event study regression}
+\begin{frame}{Reviewing previous slide for emphasis}
 
 
 \begin{itemize}
-\item  Typically you'll plot the coefficients and 95\% CI on all leads and lags (binned or not, trimmed or not) 
-\item Under No Anticipation, SUTVA and parallel pre-trends, then mechanically $\widehat{\mu_{\tau}}$ will be zero (does not guarantee the same about post-trends)
+\item Under NA, SUTVA and parallel pre-trends, then mechanically $\widehat{\mu_{\tau}}$ will be zero as everything cancels out
+	\begin{itemize}
 \item There are still specification and power issues that Jon Roth has written about, but I will skip that
+	\end{itemize}
 \item But also under NA, SUTVA and parallel trends (post trends), then $\widehat{\delta}$ are estimates of the ATT at points in time
+\item  Typically you'll plot the coefficients and 95\% CI on all leads and lags
 \end{itemize}
 
 \end{frame}

@@ -40,17 +40,58 @@
 
 
 
-\section{Including Covariates}
+\section{Conditional Parallel Trends}
 
-\subsection{Inverse probability weighting}
+\subsection{Introducing Covariates}
 
-\begin{frame}{Covariates and violations}
+\begin{frame}{Review}
 
 \begin{itemize}
-\item There is an assumption called ``unconfoundedness'' $$( Y^0, Y^1 ) \perp\!\!\!\perp D | X $$
-\item It means that within the dimensions of X (e.g., Asian males aged 45), D is assigned to units independent of their potential outcomes or any combination of them (e.g., treatment effects)
-\item It's the basis for running regressions with covariates in order to recover aggregate causal parameters outside of the experiment but it claims that with the inclusion of the covariates, you have isolated a randomized experiment
-\item We usually motivate this assumption in diff-in-diff, too, but it is technically not what is going on
+\item Diff in Diff is a quasi-experimental method that identifies the aggregate causal parameter, ATT, if:
+
+	\begin{enumerate}
+	\item Parallel trends holds
+	\item And also no anticipation and if we use comparisons that aren't treated
+	\end{enumerate}
+	
+\item But we worked with "unconditional parallel trends" which means this:
+
+	$$ \bigg ( \textcolor{red}{E[Y^0_k|Post]} - E[Y^0_k|Pre] \bigg ) - \bigg ( E[Y^0|U|Post] - E[Y^0_U | Pre] \bigg )$$
+	
+\item This means that the \emph{average} treatment group potential outcome trends for our treatment group is the same as our control group
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Is Unconditional Parallel Trends Plausible?}
+
+\begin{itemize}
+
+\item But what if these two groups are different in ways that predict $Y^0$?
+
+\item Let's say for instance that your study looks at an intervention that primarily effects cities, but your only control group are rural counties
+
+\item These groups differ in a ways that might, depending on your study, not be plausibly suggesting they would've been on the same trends
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Conditional parallel trends}
+
+\begin{itemize}
+
+\item While it isn't required that two groups -- group $k$ and group $U$ -- be similar on observables for parallel trends to hold:
+
+	\begin{enumerate}
+	\item Remember, if treatment had been random, then they would have the average covariates
+	\item And if they aren't, then you may need to provide more evidence that these differences are irrelevant
+	\item So you should still check and see and if they aren't, you either adjust or have a good justification for why they're the same on trends in $E[Y^0]$ 
+	\end{enumerate}
+	
+\item Including covariates weakens the unconditional parallel trends assumption by only requiring that units with similar covariate values, as opposed to everyone, follow similar counterfactual trends in $Y^0$
+\item This is means switching out the \emph{unconditional parallel trends} assumption for the \emph{conditional parallel trends} assumption
 
 \end{itemize}
 
@@ -110,6 +151,68 @@ The inclusion of covariates has particular regression specifications, plus there
 
 \end{frame}
 
+\subsection{Check for Imbalance}
+
+\begin{frame}
+    \frametitle{Covariate Balance and Parallel Trends}
+    \begin{itemize}
+        \item The parallel trends assumption is untestable but can be evaluated using observed covariates.
+        \item Balance in key covariates helps assess whether treated and control groups would follow similar trends.
+        \item Differences in demographics or economic conditions between groups can indicate violations of parallel trends.
+        \item Use covariates that are unlikely to be affected by treatment to check balance.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Baseline Covariates and Normalized Difference}
+    \begin{itemize}
+        \item Baseline covariates are measured before treatment ($t-1$). Check for balance between treatment and control groups.
+        \item Report the averages of covariates for both groups in a table.
+        \item The normalized difference is calculated as:
+        $$ \text{Norm. Diff}_\omega = \frac{\overline{X}_{\omega,T} - \overline{X}_{\omega,C}}{\sqrt{(S_{\omega,T}^2 + S_{\omega,C}^2)/2}} $$
+        \item The normalized difference measures imbalance; it should be less than 0.25 to avoid problematic imbalance Imbens and Rubin (2015).
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Normalized Difference vs. Z-Score}
+    \begin{itemize}
+        \item \textbf{Normalized Difference:}
+        \begin{itemize}
+            \item Measures difference in group means (e.g., treatment vs. control)
+            \item Interprets difference relative to pooled variance
+            \item Used for comparing balance between groups
+        \end{itemize}
+        \vspace{0.5em}
+        \item \textbf{Z-Score:}
+        \begin{itemize}
+            \item Measures distance of a single observation from the mean
+            \item Expresses this distance in standard deviation units
+            \item Used for assessing how unusual a single observation is
+        \end{itemize}
+        \vspace{0.5em}
+        \item Both metrics standardize differences using standard deviation, making them unit-free and comparable across variables, but in our case we need to focus on differences between two groups, so we use the normalized difference and focus on a threshold of 0.25.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+    \centering
+    \includegraphics[width=0.9\textwidth]{./lecture_includes/table_jel_covariates.jpg}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Intuition for Checking Covariate Balance}
+    \begin{itemize}
+        \item You want to compare apples to apples on observables that are highly predictive of $Y^0$.
+        \item This is theoretically driven but also common sense: ask yourself if the two groups would have similar trends.
+        \item For example, rural vs. urban counties may have different trends due to different demographics and economics.
+    \end{itemize}
+\end{frame}
+
+
+
 
 
 
@@ -127,6 +230,12 @@ Three papers (though sometimes you see others) about covariate adjustment in DiD
 We will discuss both of them and then compare their performance with the more straightforward fixed effects model
 
 \end{frame}
+
+
+\section{Estimators}
+
+\subsection{Inverse probability weighting}
+
 
 
 
@@ -750,7 +859,6 @@ DR & -3.1878 & 3.4544 & 1.2946 & 0.3076 & 5.0749 \\
 
 \end{frame}
 
-\subsection{Lalonde lab}
 
 \begin{frame}{R and Stata Code}
 
@@ -769,6 +877,33 @@ There is code in R and Stata (all DiD estimators are now beautifully arranged at
 Remember -- it's for 2x2 with covariates (i.e., one treatment group). 
 
 \end{frame}
+
+\section{Applications}
+
+\subsection{Simulations}
+
+\begin{frame}{Fake Data}
+
+\begin{itemize}
+
+\item First we will look at the use of these estimators using a simulation named \texttt{covariates.do} and \texttt{covariates.R}
+
+\item We will do it both with a single run, as that's faster, and then run a simulation of 1,000 simulated regenerated data (i.e., Monte Carlo simulation) to get a distribution
+
+\item We will examine all four estimators: (1) OLS, (2) IPW, (3) OR and (4) DR
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Simulation}
+    \centering
+    \includegraphics[width=0.6\textwidth]{./lecture_includes/covariates.jpg}
+\end{frame}
+
+
+
+\subsection{LaLonde dataset}
 
 \begin{frame}{Application using real data}
 
@@ -935,15 +1070,43 @@ Together let's do questions 1 and 2a-c
 \end{frame}
 
 
-
+\section{Concluding Remarks}
 
 
 \begin{frame}{Concluding remarks}
 
 \begin{itemize}
 \item Including covariates in a DiD design is done for reasons that are different than in regressions more generally -- we are trying to address a parallel trends violation
-\item TWFE can only incorporate \emph{time varying} covariates, and that places restrictions on the model, whereas other methods will not
+\item Typical regression modeling can only incorporate covariates, but that places restrictions on the model, whereas other methods will not
+\item We use baseline covariates because we cannot include covariates that are outcomes otherwise it introduces its own biases
 \item Doubly robust and IPW incorporate covariates through propensity scores and outcome regressions (or both) using baseline covariate means only
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Suggestions}
+
+\begin{itemize}
+
+\item Remember that the threat to validity comes from comparing aggregate groups of units for whom differences in observables, with different associations with $Y^0$, violate parallel trends
+\item Conditional parallel trends simply requires that groups which are comparable on covariates are more likely to have comparable $Y^0$ trends
+\item Check for imbalance at baseline using normalized differences
+\item Choose covariates that are highly predictive of the missing potential outcome, $Y^0$
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Design stage}
+
+\begin{itemize}
+
+\item Keep in your mind that you are attempting to reassemble the dataset with the RCT metaphor in mind
+\item Randomization distributes mean potential outcomes the same for treatment and control
+\item We only need similar trends in $Y^0$ to be the same, and we think that's more likely within covariate strata
+\item So, in the design stage, think carefully about this -- this is still prior to looking at the outcome data as this can inadvertently cause p-hacking
+\item Remember -- you're the expert so use your knowledge of the phenomena to choose judiciously the covariates and be careful about causing the curse of dimensionality
+
 \end{itemize}
 
 \end{frame}
