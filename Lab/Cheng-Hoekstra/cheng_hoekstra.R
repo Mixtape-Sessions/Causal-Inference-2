@@ -64,6 +64,7 @@ atts <- att_gt(
   idname = "sid",
   gname = "effyear",
   clustervars = "sid",
+  base_period="universal", # long differences
   # They require g to be equal to 0
   data = castle,
   # no covariates
