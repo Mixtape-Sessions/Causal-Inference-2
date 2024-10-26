@@ -2012,7 +2012,7 @@ Assuming SUTVA, no anticipation and the strong PT, then let $\delta$ be the TWFE
 
 
 
-\subsection{Warning About Interpreting Event Study Coefficients}
+\section{Short-gap vs Long-Difference Calculations in Event Studies}
 
 
 
@@ -2083,6 +2083,7 @@ csdid_plot
 \begin{itemize}
 \item Unfortunately the \textcolor{red}{default} syntax for \texttt{csdid} and \texttt{did} in R uses short-gap
 \item So you \emph{must} use \texttt{long2} or \texttt{base_period = universal} to get the event study coefficient that will correctly illustrate the pre-treatment coefficients
+\item In addition to Roth (2024), Brantly Callaway has a note on his website about it \url{https://bcallaway11.github.io/posts/event-study-universal-v-varying-base-period}
 \end{itemize}
 
 \end{frame}
