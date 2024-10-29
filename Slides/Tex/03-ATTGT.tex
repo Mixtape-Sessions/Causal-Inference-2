@@ -2020,13 +2020,30 @@ Assuming SUTVA, no anticipation and the strong PT, then let $\delta$ be the TWFE
 
 \begin{itemize}
 
-\item In CS and dCDH, there are two ways you can calculate the pre-treatment coefficients once you have obtained the ATT(g,t) parameter estimates
+\item In CS and dCDH, there are two ways to calculate the pre-treatment coefficients once you have obtained the ATT(g,t) parameter estimates:
 	\begin{enumerate}
-	\item \textbf{Short gap}.  Uses a "rolling" method in which a new baseline is used for each 2x2 $$E[Y|D=1,t-3] - E[Y|D=1,t-2] - E[Y|D=0, t-3, t-2]$$
-	\item \textbf{Long difference}.  Uses a "universal baseline" in which the baseline is fixed at $t-1$. $$E[Y|D=1,t-3] - E[Y|D=1,t-1] - E[Y|D=0, t-3, t-1]$$
+	\item \textbf{Short gap}. Uses a "rolling" method in which a new baseline is used for each 2x2 comparison.
+	
+	\begin{eqnarray*}
+	 \widehat{\delta}_{t-3} = \left( E[Y|D=1, t-3] - E[Y|D=1, t-2] \right) \\
+	 - \left( E[Y|D=0, t-3] - E[Y|D=0, t-2] \right)
+	 \end{eqnarray*}
+	 
+	\item \textbf{Long difference}. Uses a "universal baseline" with a fixed baseline at \( t-1 \).
+	
+	\begin{eqnarray*}
+	 \widehat{\delta}_{t-3} = \left( E[Y|D=1, t-3] - E[Y|D=1, t-1] \right) \\
+	 - \left( E[Y|D=0, t-3] - E[Y|D=0, t-1] \right)
+	 \end{eqnarray*}
+
 	\end{enumerate}
-\item TWFE and imputation methods that we will discuss next always use a fixed universal baseline, so if you were to use CS or dCDH and want it to be comparable, be sure to use the universal base syntax in Stata, R or python
 \end{itemize}
+
+\end{frame}
+
+\begin{frame}{TWFE, Imputation, and CS}
+
+TWFE and imputation methods (discussed next) always use a fixed universal baseline. To ensure comparability with CS or dCDH, be sure to use the universal baseline syntax in Stata, R, or Python.
 
 \end{frame}
 
