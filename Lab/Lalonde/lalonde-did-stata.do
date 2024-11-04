@@ -1,10 +1,8 @@
 ********************************************************************************
 * name: lalonde-did-stata.do
-* description: simple estimation of ATT using Lalonde 1986 data with DW 2002 sample
 ********************************************************************************
 * ssc install drdid, replace
 clear
-
 
 * 1. Experimental data
 use "https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalonde/lalonde_exp_panel.dta", clear 
@@ -118,9 +116,7 @@ use "https://raw.github.com/Mixtape-Sessions/Causal-Inference-2/master/Lab/Lalon
 
   * Difference-in-differeces - OLS with covariates (age, agesq, agecube, educ, educsq, marr, nodegree, black, hisp)
   
-    reg re ever_treated##post age agesq agecube educ educsq marr nodegree black hisp, robust
-
-
+  reg re ever_treated##post age agesq agecube educ educsq marr nodegree black hisp, robust
 
   * Doubly-robust DID
   drdid re age agesq agecube educ educsq marr nodegree black hisp re74 u74 if year == 75 | year == 78, time(year) ivar(id) tr(ever_treated) all

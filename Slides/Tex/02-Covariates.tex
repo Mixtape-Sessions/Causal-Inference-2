@@ -580,13 +580,70 @@ where $\widehat{p}(X)$ is an estimator for the true propensity score. Reduces th
 \item Outcome regression needs $\widehat{\mu}(X)$ to be correctly specified, whereas
 \item Inverse probability weighting needs $\widehat{p}(X)$ to be correctly specified
 \item It's hard to ``rank'' these two in practice with regards to model misspecification because each is inconsistent when their own models are misspecified
+\item But what if you could do both of them at the same time and not pay for it?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Double Robust DR}
+
+\begin{itemize}
+\item Doubly robust combines them to give us insurance; we now get two chances to be wrong, as opposed to just one
+\item Two papers:
+	\begin{enumerate}
+	\item Chang (2020) incorporates DR with double/debiased ML
+	\item Sant'Anna and Zhau (2020) is based on the IPW (Abadie 2005) and OR (Heckman, Ichimura and Todd 1997)
+	\end{enumerate}
+\item For now, I've prepped the latter, but will soon get Chang (2020) incorporated -- I just have been relying on Brigham Frandsen to teach the DML material
 \end{itemize}
 
 \end{frame}
 
 
+\subsection{Double Robust}
 
-\begin{frame}{TWFE}
+\begin{frame}{Double Robust DiD}
+\begin{eqnarray*}
+\delta^{dr} = E \bigg [ \bigg ( \frac{D}{E[D]} -\frac{ \frac{p(X)(1-D)}{(1-p(X))} }{E \bigg [\frac{p(X)(1-D)}{(1-p(X))} \bigg ]} \bigg  )( \Delta Y - \mu_{0,\Delta}(X)) \bigg ]
+\end{eqnarray*}
+
+\begin{eqnarray*}
+&&p(x): \text{propensity score model} \\
+&& \Delta Y = Y_1 - Y_0 = Y_{post} - Y_{pre} \\
+&& \mu_{d,\Delta} = \mu_{d,1}(X) - \mu_{d,0}(X), \text{ where } \mu(X) \text{ is a model for} \\
+&& m_{d,t} = E[Y_t|D=d,X=x]
+\end{eqnarray*}So that means $\mu_{0,\Delta}$ is just the control group's change in average $Y$ for each $X=x$
+
+\end{frame}
+
+\begin{frame}{Double Robust DiD}
+
+\begin{eqnarray*}
+\delta^{dr} = E \bigg [ \bigg ( \frac{D}{E[D]} -\frac{ \frac{p(X)(1-D)}{(1-p(X))} }{E \bigg [\frac{p(X)(1-D)}{(1-p(X))} \bigg ]} \bigg  )( \Delta Y - \mu_{0,\Delta}(X)) \bigg ]
+\end{eqnarray*}
+
+Notice how the model controls for $X$: you're weighting the adjusted outcomes using the propensity score
+
+\bigskip
+
+The reason you control for $X$ twice is because you don't know which model is right.  DR DiD frees you from making a choice without making you pay too much for it
+
+
+\end{frame}
+
+\begin{frame}{Efficiency}
+
+\begin{itemize}
+\item Authors exploit all the restrictions implied by the assumptions to construct semiparametric bounds
+\item This is where the influence function comes in, which those who have studied the DID code closely may have noticed
+\item One of the main results of the paper is that the DR DiD estimator is also DR for inference
+\end{itemize}
+
+\end{frame}
+
+\subsection{Canonical TWFE with Additive Covariates}
+
+\begin{frame}{Standard TWFE Model}
 
 Consider our earlier TWFE specification:
 
@@ -755,53 +812,13 @@ Without these six, in general TWFE will not identify ATT.
 	\item TWFE (everybody everywhere all the time) -- needs Assumptions 1-6
 	\end{enumerate}
 \item Problem is 1 and 2 need the models to be correctly specified
-\item Doubly robust combines them to give us insurance; we now get two chances to be wrong, as opposed to just one
+\item Let's look at a couple of Monte Carlos -- one by Pedro Sant'Anna, and then one by me
 \end{itemize}
 
 \end{frame}
 
 
-\subsection{Double Robust}
 
-\begin{frame}{Double Robust DiD}
-\begin{eqnarray*}
-\delta^{dr} = E \bigg [ \bigg ( \frac{D}{E[D]} -\frac{ \frac{p(X)(1-D)}{(1-p(X))} }{E \bigg [\frac{p(X)(1-D)}{(1-p(X))} \bigg ]} \bigg  )( \Delta Y - \mu_{0,\Delta}(X)) \bigg ]
-\end{eqnarray*}
-
-\begin{eqnarray*}
-&&p(x): \text{propensity score model} \\
-&& \Delta Y = Y_1 - Y_0 = Y_{post} - Y_{pre} \\
-&& \mu_{d,\Delta} = \mu_{d,1}(X) - \mu_{d,0}(X), \text{ where } \mu(X) \text{ is a model for} \\
-&& m_{d,t} = E[Y_t|D=d,X=x]
-\end{eqnarray*}So that means $\mu_{0,\Delta}$ is just the control group's change in average $Y$ for each $X=x$
-
-\end{frame}
-
-\begin{frame}{Double Robust DiD}
-
-\begin{eqnarray*}
-\delta^{dr} = E \bigg [ \bigg ( \frac{D}{E[D]} -\frac{ \frac{p(X)(1-D)}{(1-p(X))} }{E \bigg [\frac{p(X)(1-D)}{(1-p(X))} \bigg ]} \bigg  )( \Delta Y - \mu_{0,\Delta}(X)) \bigg ]
-\end{eqnarray*}
-
-Notice how the model controls for $X$: you're weighting the adjusted outcomes using the propensity score
-
-\bigskip
-
-The reason you control for $X$ twice is because you don't know which model is right.  DR DiD frees you from making a choice without making you pay too much for it
-
-
-\end{frame}
-
-\begin{frame}{Efficiency}
-
-\begin{itemize}
-\item Authors exploit all the restrictions implied by the assumptions to construct semiparametric bounds
-\item This is where the influence function comes in, which those who have studied the DID code closely may have noticed
-\item One of the main results of the paper is that the DR DiD estimator is also DR for inference
-\item Let's skip to Monte Carlos
-\end{itemize}
-
-\end{frame}
 
 \begin{frame}{Monte Carlo details}
 
