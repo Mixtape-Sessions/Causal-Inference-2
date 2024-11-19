@@ -43,6 +43,19 @@
 
 \subsection{Introduction}
 
+\begin{frame}{Outline}
+
+\begin{itemize}
+
+\item Go over TWFE pathologies with differential timing
+\item Discuss two alternative methods -- CS and SA
+\item Explain the R implementation of each
+\item 9 step checklist for diff-in-diff
+
+\end{itemize}
+
+\end{frame}
+
 
 
 \begin{frame}{Differential Timing}
@@ -1171,6 +1184,7 @@ csdid_plot
 \begin{frame}{Step 2: Were they treated at once?}
 
 \begin{table}[htbp]\centering
+\footnotesize
 \caption{Number of counties by year Craigslist personals appeared}\label{tab:countybycohort}
 \begin{tabular}{lc}
 \toprule
@@ -1302,7 +1316,10 @@ Total counties &     2,656 \\
 
 \begin{itemize}
 
-\item Thank you for letting me share with you this material
+\item Last step was "Don't Do Diff-in-Diff" (DDDiD) 
+\item If you really do feel that in the end parallel trends is not believable, there are other options (synthetic control)
+\item Ultimately, the credibility of conditional PT requires thinking about the variables that drive $E[Y^0]$ and their imbalance
+\item Checklist is a good way to be systematic and honest without peeking at results
 \item Thank you for having me!
 
 \end{itemize}
