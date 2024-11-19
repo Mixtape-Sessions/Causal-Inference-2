@@ -2003,11 +2003,122 @@ Assuming SUTVA, no anticipation and the strong PT, then let $\delta$ be the TWFE
 
 \begin{itemize}
 \item dCdH propose an alternative that doesn't have the problems of TWFE -- both avoiding negative weights and improving interpretability
-\item Recall, their model can handle reversible treatments
+\item Their model can handle reversible treatments, but in the context of differential timing is equivalent to CS and SA with a particular choice of weights
+\item For diagnostic purposes, they recommend reporting the number/fraction of group-time ATTs that receive negative weights, as well as the degree of heterogeneity in treatment eﬀects that would be necessary for the estimated treatment eﬀect to have the “wrong sign"
 
 \end{itemize}
 
 \end{frame}
+
+
+
+\section{Short-gap vs Long-Difference Calculations in Event Studies}
+
+
+
+\begin{frame}{Different ways}
+
+\begin{itemize}
+
+\item In CS and dCDH, there are two ways to calculate the pre-treatment coefficients once you have obtained the ATT(g,t) parameter estimates:
+	\begin{enumerate}
+	\item \textbf{Short gap}. Uses a "rolling" method in which a new baseline is used for each 2x2 comparison.
+	
+	\begin{eqnarray*}
+	 \widehat{\delta}_{t-3} = \left( E[Y|D=1, t-3] - E[Y|D=1, t-2] \right) \\
+	 - \left( E[Y|D=0, t-3] - E[Y|D=0, t-2] \right)
+	 \end{eqnarray*}
+	 
+	\item \textbf{Long difference}. Uses a "universal baseline" with a fixed baseline at \( t-1 \).
+	
+	\begin{eqnarray*}
+	 \widehat{\delta}_{t-3} = \left( E[Y|D=1, t-3] - E[Y|D=1, t-1] \right) \\
+	 - \left( E[Y|D=0, t-3] - E[Y|D=0, t-1] \right)
+	 \end{eqnarray*}
+
+	\end{enumerate}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{TWFE, Imputation, and CS}
+
+TWFE and imputation methods (discussed next) always use a fixed universal baseline. To ensure comparability with CS or dCDH, be sure to use the universal baseline syntax in Stata, R, or Python.
+
+\end{frame}
+
+
+\begin{frame}{Short Gaps and Long Differences}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth, height=0.8\textheight, keepaspectratio]{./lecture_includes/shortgap}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Recommendations}
+
+\begin{quote}
+"A natural follow-up question is to what extent the event-study plots for these alternative methods can be modified to be more comparable to conventional event-study plots. For CS/dCDH, there is a straightforward solution, which is to use “long-diﬀerences” for the pre-treatment coeﬃcients as well as the post-treatment coeﬃcients (i.e. always use the period before treatment as the baseline). This can be implemented, for example, in the \texttt{did} R and Stata packages using the options $\texttt{base_period = “universal”}$ and \texttt{long2}, respectively.  Using the default options in the \texttt{did_multiplegt} Stata package also yields comparisons using “long diﬀerences”, in contrast to the results for the R package shown above. Using these settings, the event-study estimates are numerically equivalent to the dynamic TWFE specification in the non-staggered setting considered here." - Roth (2024)
+\end{quote}
+
+\end{frame}
+
+\begin{frame}[fragile]{Short vs long2 syntax in \texttt{csdid}}
+\tiny
+
+\textbf{Short-gap method}
+\begin{lstlisting}[basicstyle=\ttfamily]
+csdid lemp lpop, ivar(countyreal) time(year) gvar(first_treat) method(dripw)
+estat event
+csdid_plot
+\end{lstlisting}
+
+
+\textbf{Long differences method}
+\begin{lstlisting}[basicstyle=\ttfamily]
+csdid lemp lpop, ivar(countyreal) time(year) gvar(first_treat) method(dripw) long2
+estat event
+csdid_plot
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}{Short Gaps and Long Differences}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth, height=0.8\textheight, keepaspectratio]{./lecture_includes/short_long}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Warning}
+
+\begin{itemize}
+\item Unfortunately the \textcolor{red}{default} syntax for \texttt{csdid} and \texttt{did} in R uses short-gap
+\item So you \emph{must} use \texttt{long2} or \texttt{base_period = universal} to get the event study coefficient that will correctly illustrate the pre-treatment coefficients
+\item In addition to Roth (2024), Brantly Callaway has a note on his website about it \url{https://bcallaway11.github.io/posts/event-study-universal-v-varying-base-period}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Conclusion}
+
+\begin{itemize}
+
+\item The previous methods are fairly comparable, but note, these models all assume parallel trends or conditional parallel trends
+\item Question is which \emph{comparison group} is more sensible to use -- the never-treated or the not-yet-treated?
+\item There is no single answer to that -- the more the treatment was quasi-random, the more the never-treated is appealing
+\item But maybe the not-yet-treated is better as why didn't the never-treated adopt the treatment?  
+\item Don't get lost in the decisions and forget the importance of \emph{designing}, focus on treatment assignment mechanism, checking imbalance
+
+\end{itemize}
+
+\end{frame}
+
 
 
 

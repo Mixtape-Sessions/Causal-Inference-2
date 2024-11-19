@@ -101,7 +101,7 @@ gen y0 = firms + n + e // parallel trends (unit level) in y0. Everyone's Y0 grow
 gen y2 = firms + n + te*treat + e // UNIT LEVEL parallel trends IN EVERY PERIOD and NO ANTICIPATION
 
 * Data generating process with dynamic treatment effects over time
-gen y = firms + n + te*treat*(year - treat_date + 1) + e 
+gen y  = firms + n + te*treat*(year - treat_date + 1) + e 
 
 * For group 1, the ATT in 1986 is 10
 * For group 1, the ATT in 1987 is 20
@@ -118,8 +118,8 @@ areg y  i.year treat, a(id) robust
 
 ** Sun and Abraham event study commentary
 * Leads and lags
-gen     time_til=year-treat_date
-ta 		time_til, gen(dd)
+gen     time_til=year-treat_date // recentering the data from calendar time to "relative event time"
+ta 		time_til, gen(dd) // dummy out every "time til" value
 
 
 * Event study with heterogeneity, dropping two leads
@@ -237,7 +237,7 @@ egen att_00 = mean(w0*ypre)
 
 * Get the ATT(1986,1986)
 gen att1986_1986 = (att_11 - att_10) - (att_01 - att_00)
-* ATT(1986,1986)=10.00096
+* ATT(1986,1986)=10.0258 
 
 * Drop variable so I can copy paste this code!
 capture drop ypost ypre g1_mean g1_cont_1991mean w1 w0 att_*
@@ -273,7 +273,7 @@ egen att_00 = mean(w0*ypre)
 * Get the ATT(1986,1987)
 **************************************************************************************************************************************
 gen att1986_1987 = (att_11-att_10) -(att_01 -att_00)
-* ATT(1986,1987)=19.96895
+* ATT(1986,1987)=20.04393
 * Drop variable so I can copy paste this code!
 **************************************************************************************************************************************
 capture drop ypost ypre g1_mean g1_cont_1991mean w1 w0 att_*

@@ -29,6 +29,7 @@ atts <- att_gt(
   bstrap = TRUE, # if TRUE compute bootstrapped SE
   biters = 1000, # number of bootstrap iterations
   print_details = FALSE, # if TRUE, print detailed results
+  base_period="universal", # long-differences
   clustervars = "state", # cluster level
   panel = TRUE # whether the data is panel or repeated cross-sectional
 ) 

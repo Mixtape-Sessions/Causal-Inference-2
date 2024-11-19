@@ -40,17 +40,58 @@
 
 
 
-\section{Including Covariates}
+\section{Conditional Parallel Trends}
 
-\subsection{Inverse probability weighting}
+\subsection{Introducing Covariates}
 
-\begin{frame}{Covariates and violations}
+\begin{frame}{Review}
 
 \begin{itemize}
-\item There is an assumption called ``unconfoundedness'' $$( Y^0, Y^1 ) \perp\!\!\!\perp D | X $$
-\item It means that within the dimensions of X (e.g., Asian males aged 45), D is assigned to units independent of their potential outcomes or any combination of them (e.g., treatment effects)
-\item It's the basis for running regressions with covariates in order to recover aggregate causal parameters outside of the experiment but it claims that with the inclusion of the covariates, you have isolated a randomized experiment
-\item We usually motivate this assumption in diff-in-diff, too, but it is technically not what is going on
+\item Diff in Diff is a quasi-experimental method that identifies the aggregate causal parameter, ATT, if:
+
+	\begin{enumerate}
+	\item Parallel trends holds
+	\item And also no anticipation and if we use comparisons that aren't treated
+	\end{enumerate}
+	
+\item But we worked with "unconditional parallel trends" which means this:
+
+	$$ \bigg ( \textcolor{red}{E[Y^0_k|Post]} - E[Y^0_k|Pre] \bigg ) - \bigg ( E[Y^0_U|Post] - E[Y^0_U | Pre] \bigg )$$
+	
+\item This means that the \emph{average} treatment group potential outcome trends for our treatment group is the same as our control group
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Is Unconditional Parallel Trends Plausible?}
+
+\begin{itemize}
+
+\item But what if these two groups are different in ways that predict $Y^0$?
+
+\item Let's say for instance that your study looks at an intervention that primarily effects cities, but your only control group are rural counties
+
+\item These groups differ in a ways that might, depending on your study, not be plausibly suggesting they would've been on the same trends
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Conditional parallel trends}
+
+\begin{itemize}
+
+\item While it isn't required that two groups -- group $k$ and group $U$ -- be similar on observables for parallel trends to hold:
+
+	\begin{enumerate}
+	\item Remember, if treatment had been random, then they would have the average covariates
+	\item And if they aren't, then you may need to provide more evidence that these differences are irrelevant
+	\item So you should still check and see and if they aren't, you either adjust or have a good justification for why they're the same on trends in $E[Y^0]$ 
+	\end{enumerate}
+	
+\item Including covariates weakens the unconditional parallel trends assumption by only requiring that units with similar covariate values, as opposed to everyone, follow similar counterfactual trends in $Y^0$
+\item This is means switching out the \emph{unconditional parallel trends} assumption for the \emph{conditional parallel trends} assumption
 
 \end{itemize}
 
@@ -110,6 +151,112 @@ The inclusion of covariates has particular regression specifications, plus there
 
 \end{frame}
 
+\subsection{Choosing Covariates}
+
+\begin{frame}{Picking covariates}
+
+\begin{itemize}
+\item You want to select confounders, which are baseline untreated covariates that predict both the treatment (and thus cause imbalance) but also the potential outcome, $Y^0$
+\item You can use your common sense, logic, graphical models (i.e., DAGs) and familiarity of the subject 
+	\begin{itemize}
+	\item Our focus is on the covariates that are determinants of the outcome, and less so the treatment itself, because note our concern is the untreated potential outcome $Y^0$
+	\end{itemize}
+\item But you can also use some simple approaches that I'll suggest now
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Three ideas}
+
+\begin{itemize}
+\item Note that we are missing $\textcolor{red}{E[Y^0|D=1]}$, and so we want covariates that are highly predictive of that missing potential outcome -- problem is, it's missing
+\item But what if we did this:
+	\begin{enumerate}
+	\item Drop all treated (post treatment treatment group) so that all outcomes are now $Y^0$ and regress that against candidate covariates, and select from there
+	\item Drop post treatment treatment group units and drop the control units and regress $Y^0$ for the treated unit against baseline covariates and select from there
+	\item Use $t-2$ and $t-1$ period, calculate $\Delta E[Y^0|D=1]$ and regress that against $t-1$ covariates and select from there
+	\end{enumerate}
+\item This is a more data driven procedure and is helping you figure out which covariates might be candidate confounders -- but note this still is not checking for imbalance
+\end{itemize}
+
+\end{frame}
+
+
+\subsection{Checking for Imbalance}
+
+\begin{frame}
+    \frametitle{Covariate Balance and Parallel Trends}
+    \begin{itemize}
+        \item The parallel trends assumption is untestable but can be evaluated using observed covariates.
+        \item Balance in key covariates helps assess whether treated and control groups would follow similar trends.
+        \item Differences in demographics or economic conditions between groups can indicate violations of parallel trends.
+        \item Use covariates that are unlikely to be affected by treatment to check balance.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Baseline Covariates and Normalized Difference}
+    \begin{itemize}
+        \item Baseline covariates are measured before treatment ($t-1$). Check for balance between treatment and control groups.
+        \item Report the averages of covariates for both groups in a table.
+        \item The normalized difference is calculated as:
+        $$ \text{Norm. Diff}_\omega = \frac{\overline{X}_{\omega,T} - \overline{X}_{\omega,C}}{\sqrt{(S_{\omega,T}^2 + S_{\omega,C}^2)/2}} $$
+        \item The normalized difference measures imbalance; it should be less than 0.25 to avoid problematic imbalance Imbens and Rubin (2015).
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Normalized Difference vs. Z-Score}
+    \begin{itemize}
+        \item \textbf{Normalized Difference:}
+        \begin{itemize}
+            \item Measures difference in group means (e.g., treatment vs. control)
+            \item Interprets difference relative to pooled variance
+            \item Used for comparing balance between groups
+        \end{itemize}
+        \vspace{0.5em}
+        \item \textbf{Z-Score:}
+        \begin{itemize}
+            \item Measures distance of a single observation from the mean
+            \item Expresses this distance in standard deviation units
+            \item Used for assessing how unusual a single observation is
+        \end{itemize}
+        \vspace{0.5em}
+        \item Both metrics standardize differences using standard deviation, making them unit-free and comparable across variables, but in our case we need to focus on differences between two groups, so we use the normalized difference and focus on a threshold of 0.25.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+    \centering
+    \includegraphics[width=0.9\textwidth]{./lecture_includes/table_jel_covariates.jpg}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Intuition for Checking Covariate Balance}
+    \begin{itemize}
+    \item Remember that confounders are variables that do two things
+    	\begin{enumerate}
+	\item $X \rightarrow D$. Confounders have different distributions in treatment than control and these balance checks are about seeing if that's true
+	\item $X \rightarrow \Delta E[Y^0]$. But it's only a problem if the imbalance is on variables that also predict potential outcome trends, and we choose covariates based on things we think that's true
+	\end{enumerate}
+\item So you select covariates that you think are theoretically predictive of $Y^0$ trends, but then you check imbalance to see if they are differentially distributed 
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Example: Murder}
+
+\begin{itemize}
+\item Say that there a set of cities pass gun law ordinances but smaller towns don't and you want to know its effect on homicides
+\item Maybe as much as 80\% of homicides are in cities -- the homicides in small towns are rare, and the trends are probably pretty noisy and different
+\item So you might think population size, could be a very important covariate to include or urbanization
+\end{itemize}
+
+\end{frame}
+
+
 
 
 
@@ -127,6 +274,12 @@ Three papers (though sometimes you see others) about covariate adjustment in DiD
 We will discuss both of them and then compare their performance with the more straightforward fixed effects model
 
 \end{frame}
+
+
+\section{Estimators}
+
+\subsection{Inverse probability weighting}
+
 
 
 
@@ -303,26 +456,7 @@ The reweighting with the propensity only happens to the comparison group's first
 
 
 
-\subsection{Outcome Regression and Double Robust}
-
-\begin{frame}{Outcome Regression Paper}
-
-	\begin{figure}
-	\includegraphics[scale=0.25]{./lecture_includes/or_cites}
-	\end{figure}Heckman, Ichimura and Todd (1997) is Petra and Hide's most cited paper and Heckman's second most cited!
-
-\end{frame}
-
-
-
-\begin{frame}{Doubly Robust Paper}
-
-	\begin{figure}
-	\includegraphics[scale=0.25]{./lecture_includes/pedro_dr_cites}
-	\end{figure}Sant'Anna and Zhao (2020) is Pedro's second most cited paper
-
-\end{frame}
-
+\subsection{Outcome Regression and Canonical OLS with Additive Controls}
 
 
 
@@ -446,12 +580,70 @@ where $\widehat{p}(X)$ is an estimator for the true propensity score. Reduces th
 \item Outcome regression needs $\widehat{\mu}(X)$ to be correctly specified, whereas
 \item Inverse probability weighting needs $\widehat{p}(X)$ to be correctly specified
 \item It's hard to ``rank'' these two in practice with regards to model misspecification because each is inconsistent when their own models are misspecified
+\item But what if you could do both of them at the same time and not pay for it?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Double Robust DR}
+
+\begin{itemize}
+\item Doubly robust combines them to give us insurance; we now get two chances to be wrong, as opposed to just one
+\item Two papers:
+	\begin{enumerate}
+	\item Chang (2020) incorporates DR with double/debiased ML
+	\item Sant'Anna and Zhau (2020) is based on the IPW (Abadie 2005) and OR (Heckman, Ichimura and Todd 1997)
+	\end{enumerate}
+\item For now, I've prepped the latter, but will soon get Chang (2020) incorporated -- I just have been relying on Brigham Frandsen to teach the DML material
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}{TWFE}
+\subsection{Double Robust}
+
+\begin{frame}{Double Robust DiD}
+\begin{eqnarray*}
+\delta^{dr} = E \bigg [ \bigg ( \frac{D}{E[D]} -\frac{ \frac{p(X)(1-D)}{(1-p(X))} }{E \bigg [\frac{p(X)(1-D)}{(1-p(X))} \bigg ]} \bigg  )( \Delta Y - \mu_{0,\Delta}(X)) \bigg ]
+\end{eqnarray*}
+
+\begin{eqnarray*}
+&&p(x): \text{propensity score model} \\
+&& \Delta Y = Y_1 - Y_0 = Y_{post} - Y_{pre} \\
+&& \mu_{d,\Delta} = \mu_{d,1}(X) - \mu_{d,0}(X), \text{ where } \mu(X) \text{ is a model for} \\
+&& m_{d,t} = E[Y_t|D=d,X=x]
+\end{eqnarray*}So that means $\mu_{0,\Delta}$ is just the control group's change in average $Y$ for each $X=x$
+
+\end{frame}
+
+\begin{frame}{Double Robust DiD}
+
+\begin{eqnarray*}
+\delta^{dr} = E \bigg [ \bigg ( \frac{D}{E[D]} -\frac{ \frac{p(X)(1-D)}{(1-p(X))} }{E \bigg [\frac{p(X)(1-D)}{(1-p(X))} \bigg ]} \bigg  )( \Delta Y - \mu_{0,\Delta}(X)) \bigg ]
+\end{eqnarray*}
+
+Notice how the model controls for $X$: you're weighting the adjusted outcomes using the propensity score
+
+\bigskip
+
+The reason you control for $X$ twice is because you don't know which model is right.  DR DiD frees you from making a choice without making you pay too much for it
+
+
+\end{frame}
+
+\begin{frame}{Efficiency}
+
+\begin{itemize}
+\item Authors exploit all the restrictions implied by the assumptions to construct semiparametric bounds
+\item This is where the influence function comes in, which those who have studied the DID code closely may have noticed
+\item One of the main results of the paper is that the DR DiD estimator is also DR for inference
+\end{itemize}
+
+\end{frame}
+
+\subsection{Canonical TWFE with Additive Covariates}
+
+\begin{frame}{Standard TWFE Model}
 
 Consider our earlier TWFE specification:
 
@@ -620,51 +812,13 @@ Without these six, in general TWFE will not identify ATT.
 	\item TWFE (everybody everywhere all the time) -- needs Assumptions 1-6
 	\end{enumerate}
 \item Problem is 1 and 2 need the models to be correctly specified
-\item Doubly robust combines them to give us insurance; we now get two chances to be wrong, as opposed to just one
+\item Let's look at a couple of Monte Carlos -- one by Pedro Sant'Anna, and then one by me
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}{Double Robust DiD}
-\begin{eqnarray*}
-\delta^{dr} = E \bigg [ \bigg ( \frac{D}{E[D]} -\frac{ \frac{p(X)(1-D)}{(1-p(X))} }{E \bigg [\frac{p(X)(1-D)}{(1-p(X))} \bigg ]} \bigg  )( \Delta Y - \mu_{0,\Delta}(X)) \bigg ]
-\end{eqnarray*}
 
-\begin{eqnarray*}
-&&p(x): \text{propensity score model} \\
-&& \Delta Y = Y_1 - Y_0 = Y_{post} - Y_{pre} \\
-&& \mu_{d,\Delta} = \mu_{d,1}(X) - \mu_{d,0}(X), \text{ where } \mu(X) \text{ is a model for} \\
-&& m_{d,t} = E[Y_t|D=d,X=x]
-\end{eqnarray*}So that means $\mu_{0,\Delta}$ is just the control group's change in average $Y$ for each $X=x$
-
-\end{frame}
-
-\begin{frame}{Double Robust DiD}
-
-\begin{eqnarray*}
-\delta^{dr} = E \bigg [ \bigg ( \frac{D}{E[D]} -\frac{ \frac{p(X)(1-D)}{(1-p(X))} }{E \bigg [\frac{p(X)(1-D)}{(1-p(X))} \bigg ]} \bigg  )( \Delta Y - \mu_{0,\Delta}(X)) \bigg ]
-\end{eqnarray*}
-
-Notice how the model controls for $X$: you're weighting the adjusted outcomes using the propensity score
-
-\bigskip
-
-The reason you control for $X$ twice is because you don't know which model is right.  DR DiD frees you from making a choice without making you pay too much for it
-
-
-\end{frame}
-
-\begin{frame}{Efficiency}
-
-\begin{itemize}
-\item Authors exploit all the restrictions implied by the assumptions to construct semiparametric bounds
-\item This is where the influence function comes in, which those who have studied the DID code closely may have noticed
-\item One of the main results of the paper is that the DR DiD estimator is also DR for inference
-\item Let's skip to Monte Carlos
-\end{itemize}
-
-\end{frame}
 
 \begin{frame}{Monte Carlo details}
 
@@ -750,7 +904,6 @@ DR & -3.1878 & 3.4544 & 1.2946 & 0.3076 & 5.0749 \\
 
 \end{frame}
 
-\subsection{Lalonde lab}
 
 \begin{frame}{R and Stata Code}
 
@@ -769,6 +922,33 @@ There is code in R and Stata (all DiD estimators are now beautifully arranged at
 Remember -- it's for 2x2 with covariates (i.e., one treatment group). 
 
 \end{frame}
+
+\section{Applications}
+
+\subsection{Simulations}
+
+\begin{frame}{Fake Data}
+
+\begin{itemize}
+
+\item First we will look at the use of these estimators using a simulation named \texttt{covariates.do} and \texttt{covariates.R}
+
+\item We will do it both with a single run, as that's faster, and then run a simulation of 1,000 simulated regenerated data (i.e., Monte Carlo simulation) to get a distribution
+
+\item We will examine all four estimators: (1) OLS, (2) IPW, (3) OR and (4) DR
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Simulation}
+    \centering
+    \includegraphics[width=0.6\textwidth]{./lecture_includes/covariates.jpg}
+\end{frame}
+
+
+
+\subsection{LaLonde dataset}
 
 \begin{frame}{Application using real data}
 
@@ -935,15 +1115,43 @@ Together let's do questions 1 and 2a-c
 \end{frame}
 
 
-
+\section{Concluding Remarks}
 
 
 \begin{frame}{Concluding remarks}
 
 \begin{itemize}
 \item Including covariates in a DiD design is done for reasons that are different than in regressions more generally -- we are trying to address a parallel trends violation
-\item TWFE can only incorporate \emph{time varying} covariates, and that places restrictions on the model, whereas other methods will not
+\item Typical regression modeling can only incorporate covariates, but that places restrictions on the model, whereas other methods will not
+\item We use baseline covariates because we cannot include covariates that are outcomes otherwise it introduces its own biases
 \item Doubly robust and IPW incorporate covariates through propensity scores and outcome regressions (or both) using baseline covariate means only
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Suggestions}
+
+\begin{itemize}
+
+\item Remember that the threat to validity comes from comparing aggregate groups of units for whom differences in observables, with different associations with $Y^0$, violate parallel trends
+\item Conditional parallel trends simply requires that groups which are comparable on covariates are more likely to have comparable $Y^0$ trends
+\item Check for imbalance at baseline using normalized differences
+\item Choose covariates that are highly predictive of the missing potential outcome, $Y^0$
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Design stage}
+
+\begin{itemize}
+
+\item Keep in your mind that you are attempting to reassemble the dataset with the RCT metaphor in mind
+\item Randomization distributes mean potential outcomes the same for treatment and control
+\item We only need similar trends in $Y^0$ to be the same, and we think that's more likely within covariate strata
+\item So, in the design stage, think carefully about this -- this is still prior to looking at the outcome data as this can inadvertently cause p-hacking
+\item Remember -- you're the expert so use your knowledge of the phenomena to choose judiciously the covariates and be careful about causing the curse of dimensionality
+
 \end{itemize}
 
 \end{frame}
