@@ -1,0 +1,605 @@
+\documentclass{beamer}
+
+\input{preamble.tex}
+\usepackage{breqn} % Breaks lines
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\usepackage{pdfpages} % \includepdf
+
+\usepackage{listings} % R code
+\usepackage{verbatim} % verbatim
+
+% Video stuff
+\usepackage{media9}
+
+% packages for bibs and cites
+\usepackage{natbib}
+\usepackage{har2nat}
+\newcommand{\possessivecite}[1]{\citeauthor{#1}'s \citeyearpar{#1}}
+\usepackage{breakcites}
+\usepackage{alltt}
+
+% Setup math operators
+\DeclareMathOperator{\E}{E} \DeclareMathOperator{\tr}{tr} \DeclareMathOperator{\se}{se} \DeclareMathOperator{\I}{I} \DeclareMathOperator{\sign}{sign} \DeclareMathOperator{\supp}{supp} \DeclareMathOperator{\plim}{plim}
+\DeclareMathOperator*{\dlim}{\mathnormal{d}\mkern2mu-lim}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+   \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand*\colvec[1]{\begin{pmatrix}#1\end{pmatrix}}
+
+\newcommand{\myurlshort}[2]{\href{#1}{\textcolor{gray}{\textsf{#2}}}}
+
+
+\begin{document}
+
+\imageframe{./lecture_includes/mixtape_did_cover.png}
+
+
+% ---- Content ----
+
+\section{Differential timing}
+
+\subsection{Introduction}
+
+
+
+\subsection{TWFE Estimator }
+
+
+
+
+
+\begin{frame}{Two Regression Models}
+
+\begin{eqnarray}
+Y_{ist} &=& \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \delta (Treat_{is} \times Post_t) + \varepsilon_{ist} \\
+Y_{ist} &=& \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}
+\end{eqnarray}
+
+\bigskip
+
+First equation is used for simple designs when everyone is treated at once; second equation was used when different groups were treated at different times (``differential timing'')
+
+\bigskip
+
+First equation works; second one only sometimes works
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Twoway fixed effects}
+
+\begin{itemize}
+\item When working with panel data, the so-called TWFE estimator is the workhorse estimator
+\item It's easy to implement, handles time-varying treatments, has a relatively straightforward interpretation under constant treatment effects, standard errors are easy to calculate and understand
+\item Interpretation is more complicated with heterogenous treatment effects
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Difference-in-differences}
+
+\begin{itemize}
+\item This is the TWFE specification for diff-in-diff
+
+$$ Y_{ist} = \alpha + \delta D_{st} + \sigma_s + \tau_t + \varepsilon_{ist}$$
+
+\item The hope was that $\widehat{\delta}$ equaled a ``reasonably weighted average'' over all underlying treatment effects and therefore was the ATT
+\item But let's find out what it actually is doing
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}{$K^2$ distinct DDs}
+
+Let's look at 3 timing groups (a, b and c) and one untreated group (U).  With 3 timing groups, there are 9 2x2 DDs.  Here they are:
+
+
+\begin{center}
+\begin{tabular}{c|c|c}
+\multicolumn{1}{l}{} &
+\multicolumn{1}{l}{} &
+\multicolumn{1}{l}{} \\
+\midrule
+a to b & b to a & c to a \\
+a to c & b to c & c to b \\
+a to U & b to U & c to U \\
+\midrule
+\end{tabular}
+\end{center}
+
+\bigskip
+
+Let's return to a simpler example with only two groups -- a $k$ group treated at $t_k^*$ and an $l$ treated at $t_l^*$ plus an never-treated group called the $U$ untreated group
+\end{frame} 
+
+
+\begin{frame}{Terms and notation}
+
+\begin{itemize}
+\item Let there be two treatment groups (k,l) and one untreated group (U)
+\item k,l define the groups based on when they receive treatment (differently in time) with k receiving it earlier than l
+\item Denote $\overline{D}_k$ as the share of time each group spends in treatment status
+\item Denote $\widehat{\delta}_{jb}^{2x2}$ as the canonical $2\times 2$ DD estimator for groups $j$ and b where $j$ is the treatment group and $b$ is the comparison group
+\end{itemize}
+
+\end{frame}
+
+
+\imageframe{./lecture_includes/bacon_goodman_2.png}
+
+
+
+\begin{frame}[plain]
+$$\widehat{\delta}^{2x2}_{kU} = \bigg ( \overline{y}_k^{post(k)} - \overline{y}_k^{pre(k)} \bigg ) - \bigg ( \overline{y}_U^{post(k)} - \overline{y}_U^{pre(k)} \bigg ) $$
+	\begin{figure}
+	\includegraphics[scale=0.45]{./lecture_includes/bacon_goodman_3.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}[plain]
+$$\widehat{\delta}^{2x2}_{lU} = \bigg ( \overline{y}_l^{post(l)} - \overline{y}_l^{pre(l)} \bigg ) - \bigg ( \overline{y}_U^{post(l)} - \overline{y}_U^{pre(l)} \bigg ) $$
+	\begin{figure}
+	\includegraphics[scale=0.45]{./lecture_includes/bacon_goodman_4.png}
+	\end{figure}
+
+\end{frame}
+
+
+\begin{frame}[plain]
+
+$$\delta_{kl}^{2x2,k} = \bigg ( \overline{y}_k^{MID(k,l)} - \overline{y}_k^{Pre(k,l)} \bigg ) - \bigg ( \overline{y}_l^{MID(k,l)} - \overline{y}_l^{PRE(k,l)} \bigg ) $$
+
+	\begin{figure}
+	\includegraphics[scale=0.45]{./lecture_includes/bacon_goodman_6.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}[plain]
+$$\delta_{lk}^{2x2,l} = \bigg ( \overline{y}_l^{POST(k,l)} - \overline{y}_l^{MID(k,l)} \bigg ) - \bigg ( \overline{y}_k^{POST(k,l)} - \overline{y}_k^{MID(k,l)} \bigg ) $$
+
+	\begin{figure}
+	\includegraphics[scale=0.4]{./lecture_includes/bacon_goodman_7.png}
+	\end{figure}
+
+\end{frame}
+
+
+	
+
+\begin{frame}{Bacon decomposition}
+
+$$Y_{ist} = \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}$$
+
+
+TWFE estimate of $\widehat{\delta}$ is equal to a weighted average over all group 2x2 (of which there are 4 in this example)
+\begin{eqnarray*}	
+\widehat{\delta}^{TWFE} = \sum_{k \neq U} s_{kU}\widehat{\delta}_{kU}^{2x2} + \sum_{k \neq U} \sum_{l>k} s_{kl}  \bigg [ \mu_{kl}\widehat{\delta}_{kl}^{2x2,k} + (1-\mu_{kl}) \widehat{\delta}_{lk}^{2x2,l} \bigg]
+\end{eqnarray*}where that first 2x2 combines the k compared to U and the l to U (combined to make the equation shorter)
+
+\end{frame}
+	
+
+
+\begin{frame}{Third, the Weights}
+
+ \begin{eqnarray*} s_{ku} &=& \frac{ n_k n_u \overline{D}_k (1- \overline{D}_k ) }{ \widehat{Var} ( \tilde{D}_{it} )} \\
+s_{kl} &=& \frac{ n_k n_l (\overline{D}_k - \overline{D}_{l} ) ( 1- ( \overline{D}_k - \overline{D}_{l} )) }{\widehat{Var}(\tilde{D}_{it})} \\
+\mu_{kl} &=& \frac{1 - \overline{D}_k }{1 - ( \overline{D}_k - \overline{D}_{l} )}
+\end{eqnarray*}where $n$ refer to the panel group shares, $\overline{D}_k (1- \overline{D}_k )$, as well as $(\overline{D}_k - \overline{D}_{l} ) ( 1- ( \overline{D}_k - \overline{D}_{l} ))$ expressions refer to variance of treatment, and the final equation is the same for two timing groups.
+
+\end{frame}
+
+\begin{frame}{Weights discussion}
+
+\begin{itemize}
+\item Two things to note:
+	\begin{itemize}
+	\item More units in a group, the bigger its 2x2 weight is
+	\item Group treatment variance weights up or down a group's 2x2
+	\end{itemize}
+\item Think about what causes the treatment variance to be as big as possible. Let's think about the $s_{ku}$ weights.
+	\begin{itemize}
+	\item $\overline{D}=0.1$. Then $0.1 \times 0.9 = 0.09$
+	\item $\overline{D}=0.4$. Then $0.4 \times 0.6 =0.24$
+	\item $\overline{D}=0.5$. Then $0.5 \times 0.5 = 0.25$
+	\item $\overline{D}=0.6$. Then $0.6 \times 0.4 = 0.24$
+	\end{itemize}
+\item This means the weight on treatment variance is maximized for \emph{groups treated in middle of the panel}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{More weights discussion}
+
+\begin{itemize}
+\item But what about the ``treated on treated'' weights (i.e., $\overline{D}_k - \overline{D}_{l} $)  
+\item Same principle as before - when the difference between treatment variance is close to 0.5, those 2x2s are given the greatest weight
+\item For instance, say $t^*_k=0.15$ and $t^*_l=0.67$. Then $\overline{D}_k - \overline{D}_{l} = 0.52$.  And thus $0.52 \times 0.48 = 0.2496$.
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Summarizing TWFE centralities}
+
+\begin{itemize}
+\item Groups in the middle of the panel weight up their respective 2x2s via the variance weighting
+\item Decomposition highlights the strange role of panel length when using TWFE
+\item Different choices about panel length change both the 2x2 and the weights based on variance of treatment
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Back to TWFE}
+
+
+$$Y_{ist} = \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}$$
+
+
+\begin{itemize}
+
+\item So we know that the estimate is a weighted average over all ``four averages and three subtractions'' but is that good or bad?
+\item It's good if it's unbiased; it's bad if it isn't, and the decomposition doesn't tell us which unless we replace realized outcomes with potential outcomes
+\item Bacon shows that TWFE estimate of $\delta$ needs two assumptions for unbiasedness:
+	\begin{enumerate}
+	\item variance weighted parallel trends are zero and 
+	\item no dynamic treatment effects (not the case with 2x2)
+	\end{enumerate}
+\item Under those assumptions, TWFE estimator estimates the variance weighted ATT as a weighted average of all possible ATTs (not just weighted average of DiDs)
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Moving from 2x2s to causal effects and bias terms}
+
+Let's start breaking down these estimators into their corresponding estimation objects expressed in causal effects and biases
+
+
+\begin{eqnarray*}
+\widehat{\delta}^{2x2}_{kU} &=& ATT_k{Post} + \Delta Y^0_k(Post(k),Pre(k)) - \Delta Y^0_U(Post(k),Pre) \\
+\widehat{\delta}^{2x2}_{kl} &=& ATT_k(MID) + \Delta Y^0_k(MID,Pre) - \Delta Y^0_l(MID, Pre)
+\end{eqnarray*}These look the same because you're always comparing the treated unit with an untreated unit (though in the second case it's just that they haven't been treated \emph{yet}). 
+
+\end{frame}
+
+\begin{frame}{The dangerous 2x2}
+
+But what about the 2x2 that compared the late groups to the already-treated earlier groups? With a lot of substitutions we get:
+
+\begin{eqnarray*}
+\widehat{\delta}^{2x2}_{lk} &=& ATT_{l,Post(l)} + \underbrace{\Delta Y^0_l(Post(l),MID) - \Delta Y^0_k ( Post(l), MID)}_{\mathclap{\text{Parallel trends bias}}} \\
+&& - \underbrace{(ATT_k(Post) - ATT_k(Mid))}_{\mathclap{\text{Heterogeneity bias!}}}
+\end{eqnarray*}
+
+
+\end{frame}
+
+\begin{frame}{Substitute all this stuff into the decomposition formula}
+
+\begin{eqnarray*}	
+\widehat{\delta}^{TWFE} = \sum_{k \neq U} s_{kU}\widehat{\delta}_{kU}^{2x2} + \sum_{k \neq U} \sum_{l>k} s_{kl}  \bigg [ \mu_{kl}\widehat{\delta}_{kl}^{2x2,k} + (1-\mu_{kl}) \widehat{\delta}_{kl}^{2x2,l} \bigg]
+\end{eqnarray*}where we will make these substitutions\begin{eqnarray*}
+\widehat{\delta}_{kU}^{2x2} &=& ATT_k(Post) + \Delta Y_k^0(Post,Pre) - \Delta Y_U^0(Post, Pre) \\
+\widehat{\delta}_{kl}^{2x2,k} &=& ATT_k(Mid) + \Delta Y_k^0(Mid,Pre) - \Delta Y_l^0(Mid, Pre) \\
+\widehat{\delta}^{2x2,l}_{lk} &=& ATT_{l}Post(l) + \Delta Y^0_l(Post(l),MID) - \Delta Y^0_k ( Post(l), MID) \\
+&&- (ATT_k(Post) - ATT_k(Mid))
+\end{eqnarray*}Notice all those potential sources of biases! 
+
+\end{frame}
+
+
+\begin{frame}{Potential Outcome Notation}
+
+\begin{eqnarray*}
+p\text{ }lim\text{ } \widehat{\delta}^{TWFE}_{n\to\infty} &=& VWATT + VWPT - \Delta ATT
+\end{eqnarray*}
+
+\begin{itemize}
+\item Notice the number of assumptions needed \emph{even} to estimate this very strange weighted ATT (which is a function of how you drew the panel in the first place). 
+\item With dynamics, it attenuates the estimate (bias) and can even reverse sign depending on the magnitudes of what is otherwise effects in the sign in a reinforcing direction! 
+\item Model can flip signs (does not satisfy a ``no sign flip property'')
+\end{itemize}
+
+\end{frame}
+
+
+
+\subsection{Simulation}
+
+
+
+\begin{frame}{Simulated data}
+
+\begin{itemize}
+\item 1000 firms, 40 states, 25 firms per states, 1980 to 2009 or 30 years, 30,000 observations, four groups
+
+\item I'll impose ``unit level parallel trends'', which is much stronger than we need (we only need average parallel trends)
+
+\item Also no anticipation of treatment effects until treatment occurs but does \emph{not} guarantee homogenous treatment effects
+
+\item Two types of situations: constant versus dynamic treatment effects
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Constant vs Dynamic Treatment Effects}
+    \begin{columns}
+        \column{0.5\linewidth}
+        \centering
+        \includegraphics[height=6.5cm, width=5.5cm]{./lecture_includes/constant_te}
+
+        \column{0.5\linewidth}
+        \centering
+        \includegraphics[height=6.5cm, width=5.5cm]{./lecture_includes/dynamic_te}
+    \end{columns} 
+\end{frame}
+
+
+
+
+\begin{frame}{Group-time ATT}
+       \begin{columns}
+          \column{0.38\linewidth}
+             \centering
+             \includegraphics[height=6.5cm, width=5.5cm]{./lecture_includes/baker_attgt}
+           \column{0.48\linewidth}
+		\begin{itemize}
+\item Heterogenous treatment effects across time and across groups
+\item Cells are called ``group-time ATT'' (Callaway and Sant'anna 2020) or ``cohort ATT'' (Sun and Abraham 2020)
+\item ATT is weighted average of all cells and $+82$ with uniform weights $1/60$
+		\end{itemize}
+         \end{columns} 
+    \end{frame}
+
+\begin{frame}{Estimation}
+
+\bigskip
+
+Estimate the following equation using OLS:
+
+$$Y_{ist} = \alpha_i + \gamma_t +\delta D_{it} + \varepsilon_{ist}$$
+
+
+\begin{table}[htbp]\centering
+\small
+\caption{Estimating ATT with different models}
+\begin{center}
+\begin{tabular}{l*{5}{c}}
+\hline
+\multicolumn{1}{l}{\textbf{}}&
+\multicolumn{1}{c}{\textbf{Truth}}&
+\multicolumn{1}{c}{\textbf{(TWFE)}}&
+\multicolumn{1}{c}{\textbf{(CS)}}&
+\multicolumn{1}{c}{\textbf{(SA)}}&
+\multicolumn{1}{c}{\textbf{(BJS)}}\\
+\hline
+$\widehat{ATT}$  & 82    & -6.69*** &&&\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+The sign flipped.  Why?  Because of \emph{extreme} dynamics (i.e., $- \Delta ATT$)
+
+\end{frame}
+
+\begin{frame}{Bacon decomposition}
+\begin{table}[htbp]\centering
+\small
+\caption{Bacon Decomposition (TWFE $= -6.69$)}
+\begin{center}
+\begin{tabular}{l*{5}{c}}
+\hline
+\multicolumn{1}{l}{\textbf{DD Comparison}}&
+\multicolumn{1}{l}{\textbf{Weight}}&
+\multicolumn{1}{l}{\textbf{Avg DD Est}}\\
+\hline
+Earlier T vs. Later C  &     0.500   &       51.800 \\
+Later T vs. Earlier C   &    0.500    &     -65.180 \\
+\midrule
+T $=$ Treatment; C$ =$ Comparison \\
+$(0.5*51.8) + (0.5*-65.180) = -6.69$ \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\bigskip
+
+While large weight on the ``late to early 2x2'' is \emph{suggestive} of an issue, these would appear even if we had constant treatment effects
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+\section{Aggregating building blocks}
+
+\subsection{CS}
+
+
+
+\begin{frame}{Callaway and Sant'Anna 2020}
+
+CS is a DiD estimator used for estimating and then summarizing smaller ATT parameters under differential timing and conditional parallel trends into more policy relevant ATT parameters (either dynamic or static)
+
+
+\begin{figure}
+\includegraphics[scale=0.25]{./lecture_includes/pedro_cites}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{When is CS used}
+
+Just some examples of when you'd want to consider it:
+\begin{enumerate}
+\item When treatment effects differ depending on when it was adopted
+\item When treatment effects change over time
+\item When shortrun treatment effects are different than longrun effects
+\item When treatment effect dynamics differ if people are first treated in a recession relative to expansion years
+\end{enumerate}
+
+\bigskip
+
+CS estimates the ATT by identifying smaller causal effects and aggregating them using non-negative weights
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Group-time ATT}
+       \begin{columns}
+          \column{0.38\linewidth}
+             \centering
+             \includegraphics[height=6.5cm, width=5.5cm]{./lecture_includes/baker_attgt}
+           \column{0.38\linewidth}
+            Each cell contains that group's ATT(g,t)
+\begin{eqnarray*}
+ATT(g,t) = E[Y_t^1 - Y_t^0 | G_g=1]
+\end{eqnarray*}CS identifies all feasible ATT(g,t)
+         \end{columns} 
+    \end{frame}
+
+
+
+
+\begin{frame}{Group-time ATT}
+
+Group-time ATT is the ATT for a specific group and time
+\begin{itemize}
+\item Groups are basically cohorts of units treated at the same time
+\item Group-time ATT estimates are simple (weighted) differences in means
+\item Does not directly restrict heterogeneity with respect to observed covariates, timing or the evolution of treatment effects over time
+\item Allows us ways to choose our aggregations
+\item Inference is the bootstrap
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Notation}
+
+\begin{itemize}
+\item $T$ periods going from $t=1, \dots, T$
+\item Units are either treated ($D_t=1$) or untreated ($D_t=0$) but once treated cannot revert to untreated state
+\item $G_g$ signifies a group and is binary.  Equals one if individual units are treated at time period $t$.
+\item $C$ is also binary and indicates a control group unit equalling one if ``never treated'' (can be relaxed though to ``not yet treated'')
+	\begin{itemize}
+	\item Recall the problem with TWFE on using treatment units as controls
+	\end{itemize}
+\item Generalized propensity score enters into the estimator as a weight: $$\widehat{p(X)} = Pr(G_g=1 | X,G_g+C=1)$$
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{CS Estimator (the IPW version)}
+
+\begin{eqnarray*}
+ATT(g,t) = E \bigg [ \bigg ( \frac{G_g}{E[G_g]} - \frac{ \frac{\hat{p}(X)C}{1-\hat{p}(X)}}{E \bigg [ \frac{\hat{p}(X)C}{1-\hat{p}(X)} \bigg ]} \bigg ) (Y_t - Y_{g-1} ) \bigg ) \bigg ]
+\end{eqnarray*}
+
+This is the inverse probability weighting estimator.  Alternatively, there is an outcome regression approach and a doubly robust. Sant'Anna recommends DR.  CS uses the never-treated or the not-yet-treated as controls but never the already-treated 
+\end{frame}
+
+
+
+
+\begin{frame}{Aggregated vs single year/group ATT}
+
+\begin{itemize}
+\item The method they propose is really just identifying very narrow ATT per group time.
+\item But we are often interested in  more aggregate parameters, like the ATT across all groups and all times
+\item They present two alternative methods for building ``interesting parameters'' 
+\item Inference from a bootstrap
+\end{itemize}
+
+
+\end{frame}
+
+
+
+\begin{frame}{Group-time ATT }
+             \includegraphics[scale=0.45]{./lecture_includes/baker_attgt_cs}
+
+Question: Why didn't CS estimate all ATT(g,t)? What is ``feasible ATT''?
+
+\end{frame}
+
+\begin{frame}{Reporting results}
+\begin{table}[htbp]\centering
+\small
+\caption{Estimating ATT using only pre-2004 data}
+\begin{center}
+\begin{tabular}{l*{5}{c}}
+\hline
+\multicolumn{1}{l}{\textbf{}}&
+\multicolumn{1}{c}{\textbf{(Truth)}}&
+\multicolumn{1}{c}{\textbf{(TWFE)}}&
+\multicolumn{1}{c}{\textbf{(CS)}}&
+\multicolumn{1}{c}{\textbf{(SA)}}&
+\multicolumn{1}{c}{\textbf{(BJS)}}\\
+\hline
+$\widehat{Feasible\ ATT}$  & 68.33    & 26.81 *** & 68.34*** &&\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+TWFE is no longer negative, interestingly, once we eliminate the last group (giving us a never-treated group), but is still suffering from attenuation bias. 
+
+\end{frame}
+
+
+\begin{frame}{Conclusion}
+
+\begin{itemize}
+
+\item The previous methods are fairly comparable, but note, these models all assume parallel trends or conditional parallel trends
+\item Question is which \emph{comparison group} is more sensible to use -- the never-treated or the not-yet-treated?
+\item There is no single answer to that -- the more the treatment was quasi-random, the more the never-treated is appealing
+\item But maybe the not-yet-treated is better as why didn't the never-treated adopt the treatment?  
+\item Don't get lost in the decisions and forget the importance of \emph{designing}, focus on treatment assignment mechanism, checking imbalance
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\end{document}
