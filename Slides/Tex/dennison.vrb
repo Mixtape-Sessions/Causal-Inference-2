@@ -1,0 +1,17 @@
+\frametitle{Short vs long2 syntax in \texttt {csdid}}
+\tiny
+
+\textbf{Short-gap method}
+\begin{lstlisting}[basicstyle=\ttfamily]
+csdid lemp lpop, ivar(countyreal) time(year) gvar(first_treat) method(dripw)
+estat event
+csdid_plot
+\end{lstlisting}
+
+
+\textbf{Long differences method}
+\begin{lstlisting}[basicstyle=\ttfamily]
+csdid lemp lpop, ivar(countyreal) time(year) gvar(first_treat) method(dripw) long2
+estat event
+csdid_plot
+\end{lstlisting}
