@@ -38,9 +38,9 @@
 
 % ---- Content ----
 
-\section{Introduction}
+\section{Difference-in-Differences}
 
-\subsection{Managing expectations}
+\subsection{Origins}
 
 
 \begin{frame}{Introduction}
@@ -54,9 +54,36 @@
 
 \end{frame}
 
+\begin{frame}{Causal Inference vs Prediction}
+  \centering
+  \includegraphics[scale=0.5,height=6.5cm, width=10cm]{./lecture_includes/prediction_causality.png}
+\end{frame}
+
+\begin{frame}{Causal Inference vs Prediction}
+
+  \begin{columns}
+    \column{0.48\linewidth}
+    \centering
+    \textbf{Traditional prediction}
+    \begin{itemize}
+      \item Traditional prediction seeks to detect patterns in data and fit functional relationships between variables with a high degree of accuracy
+      \item ``Does this person have heart disease?'', ``How many books will I sell?''
+      \item It is not predictions of what effect a choice will have, though
+    \end{itemize}
+    \column{0.48\linewidth}
+    \centering
+    \textbf{Causal inference}
+    \begin{itemize}
+      \item Causal inference is also a type of prediction, but it's a prediction of a \emph{counterfactual} associated with a particular \emph{choice taken}
+      \item Causal inference takes that predicted (or imputed) counterfactual and constructs a causal effect that we hope tells us about a future in the event of a similar choice taken
+    \end{itemize}
+  \end{columns}
+\end{frame}
 
 
-\subsection{Origins of diff-in-diff in public health}
+
+
+
 
 
 
