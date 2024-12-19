@@ -10,7 +10,7 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 #### Slides
            
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/01-Basics.pdf">Introducing the fundamentals of DiD</a>
+[Introducing the fundamentals of DiD](https://nbviewer.org/github/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/01-Basics.pdf)
 
 #### Code
 
@@ -18,9 +18,7 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 #### Readings
 
-<a href="https://mixtape.scunning.com">Causal Inference: the Mixtape (ch. 9)</a>
-
-
+[Causal Inference: the Mixtape (ch. 9)](https://mixtape.scunning.com)
 
 
 
@@ -28,7 +26,7 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 #### Slides
            
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/02-Covariates.pdf">Introducing OLS and various estmators with covariate adjustments</a>
+[Introducing OLS and various estmators with covariate adjustments](https://nbviewer.org/github/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/02-Covariates.pdf)
 
 #### Code
 
@@ -38,38 +36,38 @@ Causal inference Part II is a 4-day workshop in design based causal inference se
 
 #### Readings
 
-[Cunningham (2021 ch. 9)](https://mixtape.scunning.com/09-difference_in_differences), 
+[Cunningham (2021 ch. 9)](https://mixtape.scunning.com/09-difference_in_differences)
 
-Outcome regression [(Heckman, Ichimura and Todd 1997)](http://jenni.uchicago.edu/papers/Heckman_Ichimura-Todd_REStud_v64-4_1997.pdf), 
+Outcome regression [(Heckman, Ichimura and Todd 1997)](http://jenni.uchicago.edu/papers/Heckman_Ichimura-Todd_REStud_v64-4_1997.pdf)
 
-Inverse probability weight estimator [(Abadie 2005)](https://academic.oup.com/restud/article-abstract/72/1/1/1581053?redirectedFrom=fulltext), 
+Inverse probability weight estimator [(Abadie 2005)](https://academic.oup.com/restud/article-abstract/72/1/1/1581053?redirectedFrom=fulltext)
 
 Doubly robust [(Sant'Anna and Zhao 2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620301901)           
 
 
 
 
-### Twoway Fixed Effects and Bacon-Decomposition
+### Two-way Fixed Effects and Bacon Decomposition
 
 #### Slides
            
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Bacon decomposition</a>
+[Bacon decomposition](https://nbviewer.org/github/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf)
 
 #### Code
 
-[Fixed effects and Pooled OLS example](https://mixtape.scunning.com/08-panel_data#data-exercise-survey-of-adult-service-providers), 
+[Fixed effects and Pooled OLS example](https://mixtape.scunning.com/08-panel_data#data-exercise-survey-of-adult-service-providers)
 
-[bacondecomp in Stata](https://asjadnaqvi.github.io/DiD/docs/01_stata/), 
+[bacondecomp in Stata](https://asjadnaqvi.github.io/DiD/docs/01_stata/)
 
-[bacondecomp in R](https://github.com/evanjflack/bacondecomp), 
+[bacondecomp in R](https://github.com/evanjflack/bacondecomp)
 
-[ddtiming in Stata](https://tgoldring.github.io/projects/ddtiming.html), 
+[ddtiming in Stata](https://tgoldring.github.io/projects/ddtiming.html)
 
 [Shiny App for Bacon Decomposition](https://mixtape.shinyapps.io/Bacon-Decomposition/)
 
 #### Readings
 
-<a href="https://mixtape.scunning.com/08-panel_data">Causal Inference: the Mixtape (chapter 8 and 9)</a>, 
+[Causal Inference: the Mixtape (chapter 8 and 9)](https://mixtape.scunning.com/08-panel_data)
 
 [Goodman-Bacon (2021)](https://www.sciencedirect.com/science/article/abs/pii/S0304407621001445)
 
@@ -81,7 +79,7 @@ Doubly robust [(Sant'Anna and Zhao 2020)](https://www.sciencedirect.com/science/
 
 #### Slides
            
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Callaway and Sant'Anna (2021)</a>
+[Callaway and Sant'Anna (2021)](https://nbviewer.org/github/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf)
 
 #### Code
 
@@ -101,19 +99,19 @@ Doubly robust [(Sant'Anna and Zhao 2020)](https://www.sciencedirect.com/science/
 
 #### Slides
            
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf">Sun and Abraham (2021)</a>
+[Sun and Abraham (2021)](https://nbviewer.org/github/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/03-ATTGT.pdf)
 
 #### Code
 
-[eventstudyinteract in Stata](https://github.com/lsun20/EventStudyInteract), 
+[eventstudyinteract in Stata](https://github.com/lsun20/EventStudyInteract)
 
-[fixest in R](https://lrberge.github.io/fixest/), 
+[fixest in R](https://lrberge.github.io/fixest/)
 
 [Shiny App for Event Study](https://mixtape.shinyapps.io/Event-Study/)
 
 #### Readings
 
-[Sun and Abraham (2021)](https://www.sciencedirect.com/science/article/abs/pii/S030440762030378X)
+[Sun and Abraham (2021)](https://nbviewer.org/github/Mixtape-Sessions/Causal-Inference-2/blob/main/Readings/Sun%20and%20Abraham%202020.pdf)
 
 
 
@@ -123,7 +121,7 @@ Doubly robust [(Sant'Anna and Zhao 2020)](https://www.sciencedirect.com/science/
 
 #### Slides
            
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/05-Imputation.pdf">Various imputation estimators</a>
+[Various imputation estimators](https://nbviewer.org/github/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/05-Imputation.pdf)
 
 #### Code
 
@@ -142,9 +140,9 @@ Robust efficient imputation estimator
 
 #### Readings
 
-[Borusyak, et al. (2022)](https://arxiv.org/abs/2108.12419)
+[Borusyak, et al. (2022)](https://nbviewer.org/github/Mixtape-Sessions/Causal-Inference-2/blob/main/Readings/Borusyak_Jaravel_Spiess_2024.pdf)
 
-[Gardner (2021)](https://jrgcmu.github.io/2sdd_current.pdf)
+[Gardner (2021)](https://nbviewer.org/github/Mixtape-Sessions/Causal-Inference-2/blob/main/Readings/Gardner%202021.pdf)
 
 
 
@@ -153,7 +151,7 @@ Robust efficient imputation estimator
 
 #### Slides
            
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/04-Stacking.pdf">Cengiz, et al. (2019)</a>
+[Cengiz, et al. (2019)](https://nbviewer.org/github/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/04-Stacking.pdf)
 
 #### Code
 
@@ -170,34 +168,13 @@ Robust efficient imputation estimator
 
 #### Slides
            
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/07-Non-binary.pdf">Callaway, Goodman-Bacon and Sant'Anna (2021)</a>
-
-#### Code
-           
+[Callaway, Goodman-Bacon and Sant'Anna (2021)](https://nbviewer.org/github/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/07-Non-binary.pdf)
 
 #### Readings
 
-[Callaway, Goodman-Bacon and Sant'Anna (2021)](https://arxiv.org/abs/2107.02637)
+[Callaway, Goodman-Bacon and Sant'Anna (2021)](https://arxiv.org/pdf/2107.02637)
 
 
-
-### Synthetic Control
-
-#### Slides
-           
-<a href="https://github.com/Mixtape-Sessions/Causal-Inference-2/blob/main/Slides/06-Synthetic.pdf">Abadie, Diamond and Hainmueller (2010)</a>
-
-#### Code
-
-[synth in Stata](https://ideas.repec.org/c/boc/bocode/s457334.html)  
-
-[synth in R](https://cran.r-project.org/web/packages/Synth/Synth.pdf)      
-
-#### Readings
-
-[Abadie and Gardeazabal (2003)](https://www.aeaweb.org/articles?id=10.1257/000282803321455188)
-
-[Abadie, Diamond and Hainmueller (2010)](https://web.stanford.edu/~jhain/Paper/JASA2010.pdf)
 
 
 
