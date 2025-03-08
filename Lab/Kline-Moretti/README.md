@@ -211,9 +211,12 @@ $$
 We are comparing change in outcomes for treated group to a *weighted* average of the control group's counterfactual trend. The inverse probability of treatment weights are to make the control group look more like the treated group.
 
 > [!WARNING]  
-> The weights are the ones proposed originally in Abadie (2005). They are based on Horvitz-Thompson weights (1952, JASA). These are sensitive when there is problems with the overlap conditions. Sant'Anna and Zhao (2020) (amongst others) suggest using Hajek weights, normalizing the Horvitz-Thompson weights by the sample mean of $w$. This is the default with `drdid::ipwdid`.
+> The weights are the ones proposed originally in [Abadie (2005)](https://academic.oup.com/restud/article-abstract/72/1/1/1581053). They are based on Horvitz-Thompson weights (1952, JASA). These are sensitive when there is problems with the overlap conditions (e.g. [Busso et. al. (2016)](https://direct.mit.edu/rest/article-abstract/96/5/885/58201/New-Evidence-on-the-Finite-Sample-Properties-of)). 
+> 
+> [Sant'Anna and Zhao (2020)](https://www.sciencedirect.com/science/article/abs/pii/S0304407620301901) (amongst others) suggest using Hajek weights, normalizing the Horvitz-Thompson weights. This is the default with `drdid::ipwdid`.
 >
-> For $w_0$, the Hajek weights are $\frac{1}{\mathbb{P}_n(D = 1)} \frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)} / \mathbb{E}_n(\frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)})$. The Hajek weights are unchanged for $w_1$ since $w_1 = \frac{D}{\mathbb{P}_n(D = 1)} / \mathbb{E}(\frac{D}{\mathbb{P}_n(D = 1)}) = w_1$. 
+> For $w_0$, the Hajek weights are $\frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)} / \mathbb{E}_n(\frac{(1-D) \hat{p}(X)}{1 - \hat{p}(X)})$. The Hajek weights are unchanged for $w_1$ since $w_1 = \frac{D}{\mathbb{P}_n(D = 1)} / \mathbb{E}(\frac{D}{\mathbb{P}_n(D = 1)}) = w_1$. 
+> 
 > 
 > (h/t to Pedro Sant'Anna for bringing this up)
 
