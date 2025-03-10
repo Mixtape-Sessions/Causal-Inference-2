@@ -939,6 +939,14 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 \end{frame}
 
 
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
+
+\end{frame}
 
 \begin{frame}{Step 2: Is Everyone Treated at the Same Time?}
 
@@ -963,12 +971,28 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 
 
 
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
+
+\end{frame}
 
 \begin{frame}{Step 3: Plot Treatment Rollout}
 
 \begin{figure}
     \centering
     \includegraphics[height=0.95\textheight]{./lecture_includes/step3_panelview}
+\end{figure}
+
+\end{frame}
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
 \end{figure}
 
 \end{frame}
@@ -1104,6 +1128,14 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 \end{frame}
 
 
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
+
+\end{frame}
 
 \begin{frame}{Step 5: Is Unconditional Parallel Trends Plausible?}
 
@@ -2036,6 +2068,14 @@ The inclusion of covariates has particular regression specifications, plus there
 
 
 
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
+
+\end{frame}
 
 
 
@@ -3009,6 +3049,16 @@ Together let's do questions 1 and 2a-c
 \end{frame}
 
 
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
+
+\end{frame}
+
+
 
 
 
@@ -3032,6 +3082,38 @@ Together let's do questions 1 and 2a-c
 
 \end{frame}
 
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Step 8: Estimator Selection and Assumptions}
+
+\begin{itemize}
+\item Some options with simple diff-in-diff
+	\begin{enumerate}
+	\item TWFE with or without covariates (you'll need additional assumptions for TWFE with controls)
+	\item Regression adjustment (Heckman, Ichimura and Todd 1997), inverse probability weighting (Abadie 2005) or double robust (Sant'Anna and Zhou 2020)
+	\item Double debiased machine learning (Chang 2020)
+	\end{enumerate}
+\item Think of there being two options with differential timing 
+	\begin{enumerate}
+	\item Aggregating ATT(g,t) using Callaway and Sant'Anna or Sun and Abraham
+	\item Imputation using Borusyak, Jaravel and Speiss, Gardner or Wooldridge
+	\end{enumerate}
+\item Which one do you want? Let's review now the differential timing
+\end{itemize}
+
+\end{frame}
 
 \begin{frame}{Five approaches we will study}
 
@@ -3132,25 +3214,6 @@ $$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overl
 
 
 
-\begin{frame}{Step 8: Estimator Selection and Assumptions}
-
-\begin{itemize}
-\item Some options with simple diff-in-diff
-	\begin{enumerate}
-	\item TWFE with or without covariates (you'll need additional assumptions for TWFE with controls)
-	\item Regression adjustment (Heckman, Ichimura and Todd 1997), inverse probability weighting (Abadie 2005) or double robust (Sant'Anna and Zhou 2020)
-	\item Double debiased machine learning (Chang 2020)
-	\end{enumerate}
-\item Think of there being two options with differential timing 
-	\begin{enumerate}
-	\item Aggregating ATT(g,t) using Callaway and Sant'Anna or Sun and Abraham
-	\item Imputation using Borusyak, Jaravel and Speiss, Gardner or Wooldridge
-	\end{enumerate}
-\item Which one do you want? Let's review now the differential timing
-\end{itemize}
-
-\end{frame}
-
 
 \begin{frame}{Discussion of estimate}
 
@@ -3159,8 +3222,6 @@ $$Y_{ist} = \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}$$
 
 
 \begin{itemize}
-\item So that's the simple case; what about the differential timing case?  
-
 \item If you estimate with OLS with differential timing, what does $\widehat{\delta}$ correspond to?
 \item It also corresponds to the previous ``four averages and three subtractions'' -- but it's numerous of them, not just one
 
@@ -4354,7 +4415,7 @@ csdid_plot
 \end{frame}
 
 
-\begin{frame}{Background}
+\begin{frame}{Borusyak, Jaravel and Speiss (2024)}
 
 \begin{itemize}
 
@@ -4937,6 +4998,13 @@ In order to protect the privacy of the institutions that participate in the NCHA
 \end{itemize}
 \end{frame}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
+
+\end{frame}
+
 
 \begin{frame}{Step 9: Falsification, Event Studies and Sensitivity Analysis}
 
@@ -4966,7 +5034,7 @@ In order to protect the privacy of the institutions that participate in the NCHA
 \end{frame}
 
 
-]\begin{frame}{Sensitivity Analysis}
+\begin{frame}{Sensitivity Analysis}
 
 \begin{itemize}
 \item Assume the worst -- use the absolute worst gap in pre-trends and imagine PT broke by that much post-treatment
@@ -4993,6 +5061,14 @@ In order to protect the privacy of the institutions that participate in the NCHA
 
 
 \section{Final Step: Don't Do Diff-in-Diff, or DDDiD}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
+
+\end{frame}
+
 
 \begin{frame}{Step 10: "Don't Do Diff-in-Diff}
 
