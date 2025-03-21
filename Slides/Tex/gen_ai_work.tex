@@ -1,0 +1,253 @@
+\documentclass{beamer}
+
+\input{preamble.tex}
+\usepackage{breqn} % Breaks lines
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\usepackage{pdfpages} % \includepdf
+
+\usepackage{listings} % R code
+\usepackage{verbatim} % verbatim
+
+% Video stuff
+\usepackage{media9}
+
+% packages for bibs and cites
+\usepackage{natbib}
+\usepackage{har2nat}
+\newcommand{\possessivecite}[1]{\citeauthor{#1}'s \citeyearpar{#1}}
+\usepackage{breakcites}
+\usepackage{alltt}
+
+% Setup math operators
+\DeclareMathOperator{\E}{E} \DeclareMathOperator{\tr}{tr} \DeclareMathOperator{\se}{se} \DeclareMathOperator{\I}{I} \DeclareMathOperator{\sign}{sign} \DeclareMathOperator{\supp}{supp} \DeclareMathOperator{\plim}{plim}
+\DeclareMathOperator*{\dlim}{\mathnormal{d}\mkern2mu-lim}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+   \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand*\colvec[1]{\begin{pmatrix}#1\end{pmatrix}}
+
+\newcommand{\myurlshort}[2]{\href{#1}{\textcolor{gray}{\textsf{#2}}}}
+
+
+\begin{document}
+
+\imageframe{./lecture_includes/mixtape_did_cover.png}
+
+
+% ---- Content ----
+
+\section{Jagged Frontier Paper}
+
+\begin{frame}{Overview}
+
+\begin{itemize}
+\item Discuss the "jagged frontier" paper and the "gen AI at work" paper
+\item Goals
+	\begin{enumerate}
+	\item What is the methodologies of each paper
+	\item What is the data of each paper
+	\item What is the population of each paper
+	\item What is the AI intervention in each paper
+	\item What is the core "headline" findings of each paper
+	\item What tasks can be automated and what tasks could not at the time of the study not be
+	\end{enumerate}
+\item We will discuss, not just lecture
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Dell'Aqua et al 2023}
+
+\begin{itemize}
+\item Dell'Aqua et al 2023, or "jagged frontier" is a randomized experiment involving Boston Consulting Group
+	\begin{enumerate}
+	\item Describe the experiment -- what exactly was the experiment?
+	\item Who is Boston Consulting Group?
+	\end{enumerate}
+\item Randomized experiments are considered the gold standard in causal inference because they eliminate something called selection bias
+\item Comparing two groups with one another is the sum of two factors
+	\begin{itemize}
+	\item Average effect of some intervention or choice like "using ChatGPT for work"
+	\item Fundamental differences that were always different between the two groups of people (those who did and didn't use it)
+	\end{itemize}
+\item Randomization, though, "deletes" the selection bias -- let me illustrate using ChatGPT and python
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Jagged Frontier experiment}
+
+\begin{itemize}
+\item Boston Consulting Group is a major consulting firm -- a McKenzie equivalent with billions in annual revenue employing around 30,000 people globally
+\item Their experiment recruited 758 consultants which was 7\% of the consultants employed out of around 11,000 workers
+\item Consultants performed around 18 tasks carefully chosen in order to represent things they thought AI could do well and things thought to not do well
+	\begin{enumerate}
+	\item "Inside the frontier" are things thought to be within AI's reach  back in March 2023
+	\item "Outside the frontier" are things thought be "outside" AI's reach back then
+	\end{enumerate}
+\item Important to remember the dates and language models when you read these papers -- March 2023 was literally when ChatGPT-4 came out; not 4o, not o1, not o3
+\item We have no idea if these results still hold up
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Jagged Frontier experiment}
+
+\begin{itemize}
+\item They note the limitations and strengths of AI in an interesting, compact way:
+	\begin{enumerate}
+	\item Large language models have surprising abilities, but do not come with an instruction manual, largely because even the creators don't know what it can do
+	\item But it can clearly perform "real work" by humans possessing less skill than what has been traditionally required to perform those tasks
+	\item But it's opaque, as a technology, and has unclear failure points
+	\end{enumerate}
+\item Given a lack of an instructional manual, they note that it likely will require trial and error by users -- consider Andrew's and Hayes' questions as to whether we can expect AI to have much impact. What do you think if it's opaque, and unclear where its failures are?
+\end{itemize}
+
+\end{frame}
+
+
+\section{Generative AI At Work}
+
+
+\begin{frame}{Working Paper on ChatBot}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/brynn}
+\end{center}
+\end{frame}
+
+
+
+\begin{frame}{Chatbots and Workers}
+
+\begin{itemize}
+
+\item An Fortune 500 firm released gradually a generative AI-based conversational assistant (GPT-3) chatbot to its  5,179 customer support agents 
+\item These chatbots provided assistance in handling complaints
+\item Very stressful job as the only time customers reached out was when they were very upset
+\item It isn't a randomized experiment so they're going to estimate the effect of the adoption of the chatbot using a method called difference-in-differences
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Outcomes and Pictures}
+
+\begin{itemize}
+
+\item Main focus is on various measures of customer support agents handling of calls, which is the proxy for their productivity -- similar to the "jagged frontier" paper
+\item But they also focus on high and low skill workers (heterogeneity like before)
+\item Authors are going to present evidence almost entirely using event study graphs
+\item They also present regression tables, but the event study graphs are very powerful
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Example of ChatBot}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/brynn1}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Rollout}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/brynn2}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Resolutions of Customer Problems}
+\begin{center}
+\includegraphics[scale=0.25]{./lecture_includes/brynn3}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Additional Outcomes}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/brynn4}
+\end{center}
+\end{frame}
+
+\begin{frame}{Heterogeneity by Skill}
+\begin{center}
+\includegraphics[scale=0.25]{./lecture_includes/brynn5}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Heterogeneity by Skill}
+\begin{center}
+\includegraphics[scale=0.25]{./lecture_includes/brynn6}
+\end{center}
+\end{frame}
+
+\begin{frame}{Heterogeneity by Worker Tenure}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/brynn7}
+\end{center}
+\end{frame}
+
+
+
+\begin{frame}{Sentiment}
+\begin{center}
+\includegraphics[scale=0.35]{./lecture_includes/brynn8}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Sentiment}
+\begin{center}
+\includegraphics[scale=0.3]{./lecture_includes/brynn11}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Manager Assistance}
+\begin{center}
+\includegraphics[scale=0.25]{./lecture_includes/brynn9}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Outcomes}
+
+\begin{itemize}
+
+\item Across many dimensions, worker productivity rose
+\item And the productivity increases were higher for the least skilled workers -- just like we had seen in the experiment
+\item They suggest that generative AI ``reallocated experience'' to the least experienced workers making them essentially appear as though they had been their awhile
+\item Findings suggest that it improves customer sentiment, reduces requests for managerial intervention, and improves employee retention
+\item Still unclear how generalizeable this is, and what impact we should see on overall aggregate employment as this was AI assisted, not AI alone
+
+\end{itemize}
+
+\end{frame}
+
+
+\section{Concluding remarks}
+
+
+\begin{frame}{Discussion questions}
+
+\begin{itemize}
+
+\item What do you think "redistributing experience" might mean?
+\item What do you think this might mean for "the returns to experience and skill?"  Is experience and skill as rewarded?
+\end{itemize}
+
+\end{frame}
+
+
+\end{document}
+
