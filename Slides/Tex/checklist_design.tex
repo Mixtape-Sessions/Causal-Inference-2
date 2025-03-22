@@ -938,6 +938,309 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 
 \end{frame}
 
+\subsection{Data Requirements}
+
+\begin{frame}{Longitudinal Data}
+
+\begin{itemize}
+
+\item Diff-in-diff requires four means -- pre and post for two groups
+\item Traditionally, the "pre" is a baseline mean at year just prior to treatment, $t-1$ or $b$ depending on author
+	\begin{itemize}
+	\item Though sometimes you will see people present any interaction as diff-in-diff I will stick to time
+	\item Just remember the interaction regression we presented is calculating four means and three subtractions
+	\item Interpreting parallel trends is a bit stranger otherwise
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Longitudinal Data}
+
+\begin{itemize}
+
+\item Two types of longitudinal data:
+    \begin{itemize}
+      \item Panel Data: same units tracked over time (e.g., National Longitudinal Survey of Youth 1997)
+      \item Repeated Cross-Sections: different units sampled at each time (e.g., Census, Current Population Survey)
+    \end{itemize}
+    \item Violations of parallel trends can arise differently across data types.
+\end{itemize}
+
+\end{frame}
+
+
+% Slide 2
+\begin{frame}{What is an Imbalanced Panel?}
+  \begin{itemize}
+    \item Balanced panel is when all units observed in every period.
+    \item Imbalanced panel is when units missing in some periods.
+		\begin{itemize}
+		\item Anthony is in waves 1-3, 
+		\item Bob is in waves 1-3, 
+		\item Inez is in waves 1 and 3 only, 
+		\item Dignan is in waves 1 and 2 only
+		\end{itemize}
+    \item Missingness alone does not violate parallel trends, though it does change the parameter.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Example of Balanced ATE}
+  \centering
+  \includegraphics[height=0.85\textheight,keepaspectratio]{./lecture_includes/balanced.png}
+\end{frame}
+
+
+\begin{frame}{How does it change the parameter?}
+
+\begin{itemize}
+\item Remember -- in the potential outcomes framework, a treatment effect is defined at the individual level, $\delta_{it}$
+\item So if you are missing a person, $i$,  in a period, $t$, then it does not contribute
+\item The more heterogeneity in the treatment effects, the more the broken panel will shift away from what you think you're after
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Imbalanced ATE}
+  \centering
+  \includegraphics[height=0.85\textheight,keepaspectratio]{./lecture_includes/imbalanced.png}
+\end{frame}
+
+% Slide 3
+\begin{frame}{Missing at Random (MAR)}
+  \begin{itemize}
+    \item \textbf{Wooldridge (2010):} MAR does not bias estimation under constant treatment effects.
+    \item If missingness is independent of $E[\Delta Y^0]$, then parallel trends will still hold in the large sample.
+    \item Wooldridge calls this \emph{Missing At Random (MAR)}
+  \end{itemize}
+\end{frame}
+
+% Slide 4
+\begin{frame}{Non-Random Missingness and Bias}
+  \begin{itemize}
+    \item But, if the missingness is related to unobservables, then parallel trends may fail.
+    \item Example: Small counties with falling murder rates disappear from dataset 
+    \item Such selection could bias treatment effects.
+  \end{itemize}
+\end{frame}
+
+% Slide 5
+\begin{frame}{Conditional Missing at Random}
+  \begin{itemize}
+	\item Might still be salvageable, though there is no prior theory on this and so this is a suggestion for the enterprising student
+	\item What if the missing is conditionally random $$Y^0 \perp M \mid X$$
+    \item This implies:
+    \[ \Pr(M_i = 1 | X_i, Y_i^0, Y_i^1) = \Pr(M_i = 1 | X_i) \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Conditional Missing at Random}
+
+\begin{itemize}
+    \item Missingness depends only on observables
+    \item Use methods like Heckman correction or propensity scores
+    \item You might explore whether there is something here for you, as it was an idea I had but I haven't worked it out
+\end{itemize}
+
+\end{frame}
+
+% Slide 6
+\begin{frame}{Introducing Chained Diff-in-Diff}
+  \begin{itemize}
+    \item \textbf{Bellego (2024):} Chained DiD for imbalanced panels.
+    \item Uses overlapping observations to chain short-term DiDs.
+    \item Recovers long-term treatment effects despite dropout.
+  \end{itemize}
+\end{frame}
+
+% Slide 7
+\begin{frame}{Illustration: NLSY97 Panel}
+  \begin{itemize}
+    \item Youth panel tracked over time with attrition.
+    \item College attendance as treatment.
+    \item Dropout may be correlated with unobservables (e.g., incarceration risk).
+    \item Standard DiD may fail.
+  \end{itemize}
+\end{frame}
+
+% Slide 8
+\begin{frame}{Chaining the Estimates}
+  \begin{itemize}
+    \item Leverages overlap: e.g., 2000--01, 2001--02, 2002--03.
+    \item Estimate short-term DiDs and link them.
+    \item Avoids discarding data to force balance.
+  \end{itemize}
+\end{frame}
+
+% Slide 9
+\begin{frame}{Assumptions and Limitations}
+  \begin{itemize}
+    \item Assumes conditional parallel trends.
+    \item Requires unobservable types to trend similarly within treatment status.
+    \item Assumes observables capture drivers of missingness.
+  \end{itemize}
+\end{frame}
+
+% Slide 10
+\begin{frame}{Summary}
+  \begin{itemize}
+    \item Imbalance isn't inherently a threat—but must be examined.
+    \item MAR and conditional MAR offer partial safeguards.
+    \item Chained DiD is a flexible, efficient alternative for panels with attrition.
+    \item Beware assumptions on unobservables and sampling.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Repeated cross-sections and compositional change}
+	
+	\begin{itemize}
+	\item One of the risks of a repeated cross-section is that the composition of the sample may have changed between the pre and post period in ways that are correlated with treatment
+	\item Hong (2013) uses repeated cross-sectional data from the Consumer Expenditure Survey (CEX) containing music expenditure and internet use for a random sample of households
+	\item Study exploits the emergence of Napster (first file sharing software widely used by Internet users) in June 1999 as a natural experiment
+	\item Study compares internet users and internet non-users before and after emergence of Napster
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Introduction of Napster and spending on music}
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/hong_napster}
+	\end{figure}
+	
+\end{frame}
+
+
+\begin{frame}[plain]
+	\begin{figure}
+	\includegraphics{./lecture_includes/Hong_1.pdf}
+	\end{figure}
+	
+\end{frame}
+
+
+
+\begin{frame}{Repeated Cross Section Risks}
+
+\begin{itemize}
+\item Repeated cross sections have their own challenges that panels don't in that the group could be shifting compositionally
+\item Detect using a balance table with covariates highly predictive of the missing $E[Y^0|D=1]$ for this exercise 
+	\begin{itemize}
+	\item Percent of cat owners is probably irrelevant to trends in potential outcomes
+	\item But age and income is probably relevant for spending habits
+	\item We'll discuss covariates more later, but for now just consider what characteristics are relevant to your outcome
+	\end{itemize}
+\item Documenting covariates that are cannot be affected by the treatment like this table is a way to check for \emph{compositional changes} in the sample
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Changes Between Internet and Non-Internet Users Over Time}
+  \tiny
+  \centering
+  \begin{table}[htb]
+    \caption{Changes Between Internet and Non-Internet Users Over Time}
+    \begin{tabular}{lcccccc}
+      \toprule
+      \textbf{Characteristic} &
+         \multicolumn{2}{c}{\textbf{1997}} &
+         \multicolumn{2}{c}{\textbf{1998}} &
+         \multicolumn{2}{c}{\textbf{1999}} \\
+         & \textbf{User} & \textbf{Non-user} &
+           \textbf{User} & \textbf{Non-user} &
+           \textbf{User} & \textbf{Non-user} \\
+      \midrule
+      \emph{Demographics} \\
+      Age & 40.2 & 49.0 & 42.3 & 49.0 & 44.1 & 49.4 \\
+      Income & \$52,887 & \$30,459 & \$51,995 & \$26,189 & \$49,970 & \$26,649 \\
+      High school graduate & 0.18 & 0.31 & 0.17 & 0.32 & 0.21 & 0.32 \\
+      Some college & 0.37 & 0.28 & 0.35 & 0.27 & 0.34 & 0.27 \\
+      College grad & 0.43 & 0.21 & 0.45 & 0.21 & 0.42 & 0.20 \\
+      Manager & 0.16 & 0.08 & 0.16 & 0.08 & 0.14 & 0.08 \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  
+
+\end{frame}
+
+
+
+\begin{frame}{What was this table about?}
+
+\begin{itemize}
+\item  Notice that users are getting older and poorer -- both of which predict spending less money on music
+\item If these covariates are themselves predictive of trends, then it is suggestive parallel trends could be \emph{mechanically} breaking, so check $$X_{it} = \alpha + \beta_1 D_i + \beta_t Post_t + \delta ( D_i + Post_t ) + \varepsilon_{it}$$ 
+\item Or consider the normalized difference in means table we discuss later
+\item If violated, then consider the following fix by Hong (2013) which adjusts for propensity scores in both periods
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Step 1. Estimate Propensity Scores}
+\begin{itemize}
+  \item Estimate two separate propensity scores for the treatment group based on observed characteristics:
+  \item Pre-treatment period ($T = 0$):
+  \begin{equation*}
+    P_b = \Pr(D=1 \mid T=0, X)
+  \end{equation*}
+  \item Post-treatment period ($T = 1$):
+  \begin{equation*}
+    P_a = \Pr(D=1 \mid T=1, X)
+  \end{equation*}
+  \item Time-specific scores allow for balancing in each period.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Step 2. Weight Observations Using Propensity Scores}
+\begin{itemize}
+  \item Use inverse probability weighting (IPW) to balance samples:
+  \item Pre-treatment ($T = 0$):
+  \begin{equation*}
+    E_w[Y \mid D = 1, T = 0] = \frac{\sum_{i} w_{i} Y_{i}}{\sum_{i} w_{i}}, \quad w_{i} = \frac{1}{P_b}
+  \end{equation*}
+  \begin{equation*}
+    E_w[Y \mid D = 0, T = 0] = \frac{\sum_{i} (1 - w_{i}) Y_{i}}{\sum_{i} (1 - w_{i})}, \quad w_{i} = \frac{1}{1 - P_b}
+  \end{equation*}
+  \item Post-treatment ($T = 1$):
+  \begin{equation*}
+    E_w[Y \mid D = 1, T = 1] = \frac{\sum_{i} w_{i} Y_{i}}{\sum_{i} w_{i}}, \quad w_{i} = \frac{1}{P_a}
+  \end{equation*}
+  \begin{equation*}
+    E_w[Y \mid D = 0, T = 1] = \frac{\sum_{i} (1 - w_{i}) Y_{i}}{\sum_{i} (1 - w_{i})}, \quad w_{i} = \frac{1}{1 - P_a}
+  \end{equation*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Step 3. Calculate the Adjusted Difference-in-Differences}
+\begin{itemize}
+  \item Use the weighted averages to compute the adjusted DiD estimator:
+  \begin{align*}
+    \text{Adjusted DiD} &= \left( E_w[Y \mid D = 1, T = 1] - E_w[Y \mid D = 0, T = 1] \right) \\
+    &\quad - \left( E_w[Y \mid D = 1, T = 0] - E_w[Y \mid D = 0, T = 0] \right)
+  \end{align*}
+  \item This accounts for compositional change and enhances credibility of ATT estimation in repeated cross-sections.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Repeated cross-sections}
+
+\begin{itemize}
+\item Surprisingly underappreciated problem with almost no literature around it
+\item ``Difference-in-differences with Compositional Changes'' by Pedro Sant'Anna and Qi Xu (2023) is an update to Hong (2013) (in our readings)
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
 
 \begin{frame}
  
@@ -963,7 +1266,7 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 
 \begin{figure}
     \centering
-    \includegraphics[height=0.9\textheight]{./lecture_includes/treated_at_same_time}
+    \includegraphics[height=0.8\textheight]{./lecture_includes/treated_at_same_time}
 \end{figure}
 
 \end{frame}
