@@ -611,7 +611,12 @@ It's in \textcolor{red}{red} because parallel trends is untestable and criticall
 
 \bigskip
 
-Let's do this one together.
+Add in \textbf{two zeroes} instead of one, substitute and rearrange.
+
+\begin{eqnarray*}
+&+& \textcolor{red}{E[Y^0_k|Post] - E[Y^0_k|Post]} \\
+&+& \textcolor{blue}{E[Y^0_k|Pre] - E[Y^0_k|Pre]} 
+\end{eqnarray*}
 
 \end{frame}
 
@@ -636,17 +641,22 @@ First row is the ATT in the post period; middle row is parallel trends; third ro
 
 \bigskip
 
-Similar to SUTVA but this time it isn't caused by a spillover -- it's just an already treated group.  Let's do this together now. It'll help to see it with your own eyes.
+Add in \textbf{three zeroes} instead of one, substitute and rearrange.
 
+\begin{eqnarray*}
+&+& \textcolor{red}{E[Y^0_k|Post] - E[Y^0_k|Post]} \\
+&+& \textcolor{blue}{E[Y^0_U|Post] - E[Y^0_U|Post]}  \\
+&+& \textcolor{blue}{E[Y^0_U|Pre] - E[Y^0_U|Pre]} 
+\end{eqnarray*}
 
 \end{frame}
 
 \begin{frame}{Already Treated Control Group}
 
-If the baseline period is treated, then the simple 2x2 identifies the following three terms:
+If the baseline period is treated, then the simple 2x2 identifies the sum of the following three terms:
 
 \begin{eqnarray*}
-\delta &=& ATT(Post) \\&&+ \text{Non PT bias} \\&&- \textcolor{red}{\Delta ATT_k}
+\delta &=& ATT_k(Post) \\&&+ \text{Non PT bias} \\&&- \textcolor{red}{\Delta ATT_U}
 \end{eqnarray*}
 
 Again, first row is the target parameter, plus parallel trends term, \textcolor{red}{minus} the changing ATT in our control group
