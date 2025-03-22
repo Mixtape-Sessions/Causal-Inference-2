@@ -42,29 +42,57 @@
 
 \section{Diff-in-Diff with a Designed Checklist}
 
-\subsection{Researcher Bias, Controlled Design and the Checklist}
 
-\begin{frame}{Introductions}
+\subsection{Managing expectations}
+
+
+\begin{frame}{Introduction}
 
 \begin{itemize}
-
-\item My name is Scott Cunningham
-\item I work at Baylor University in the economics department where I am the Ben H. Williams Professor
-\item I live in Waco, Texas, halfway between Dallas and Austin (the state capital)
-\item And I am grateful to be here in such a beautiful country, on this amazing continent, in this beautiful city, and this interesting university
+\item Thank you coming to Mixtape Sessions' Causal Inference 2 workshop on difference-in-differences!  
+\item Scott Cunningham, Ben H. Williams Professor of Economics at Baylor University in Texas USA
+\item 9:00am to 5:00pm CST, 15 min breaks every hour, 1 hour lunch at 12:00
+\item Lecture, discussion, exercises, application with "live coding" exercises
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{What should you expect}
 
-\begin{figure}
-    \centering
-    \includegraphics[height=0.9\textheight]{./lecture_includes/schedule}
-\end{figure}
+\begin{frame}{What my pedagogy is like}
+
+\begin{itemize}
+\item High energy, eclectic approach to teaching
+\item Move between the econometrics, history of thought, videos, applications, code, spreadsheets, exercises
+\item Workshop is intended to take someone from knowing nothing about difference-in-differences to a broad level of competency on advanced topics
+\item Ask questions at any point; I'll do my best to answer them but will sometimes defer it to the break
+\end{itemize}
 
 \end{frame}
 
+
+\begin{frame}{Class goals}
+Pedagogical goal is to break down the procedures into plain English, rebuilding it into something you can and want to use, but also:
+
+  \begin{enumerate}
+    \item \textbf{Confidence}: You will feel like you have a good enough understanding of diff-in-diff, both in its basics and some more contemporary issues, so that it seems like an intuitive and useful tool you could imagine using
+    \item \textbf{Comprehension}: You will have learned a lot both conceptually and in the specifics, particularly with regards to issues around identification and estimation in the diff-in-diff 
+    \item \textbf{Competency}: You will have more knowledge of programming syntax in Stata and R so that later you can apply this in your own work
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Organization of workshop}
+
+\begin{itemize}
+
+\item Check out Baker, Callaway, Cunningham, Goodman-Bacon and Sant'Anna (2025) in Readings
+\item I'm building a workshop based on it, but centered more on a "designed checklist"
+\item Hopefully you find it useful this way!
+\end{itemize}
+
+\end{frame}
+
+\subsection{Researcher Bias, Controlled Design and the Checklist}
 
 
 \begin{frame}{Different Kinds of Biased Studies}
@@ -1272,6 +1300,18 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 \end{frame}
 
 
+\begin{frame}{Why are we doing this?}
+
+\begin{itemize}
+
+\item Slowing down is key to the designing of the process
+\item We should be able to say precisely who is and is not in each period, in each group
+\item Automating this is best, though, and thankfully ChatGPT can help us automate this process in our code
+\item Be sure you count "already treated" because as we will see these are dangerous to have in the sample
+\end{itemize}
+
+\end{frame}
+
 
 
 \begin{frame}
@@ -1283,6 +1323,18 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 
 \end{frame}
 
+\begin{frame}{Step 3: Plot the treatment rollout}
+
+\begin{itemize}
+
+\item Step 2 only allowed us to count the size of our cohorts
+\item But now we need to see how the treatments spread across time for each group
+\item Easy way is to use Yiqing Xu, et al.'s code \texttt{PanelView} available in Stata and R
+\item Syntax is very flexible, but I like to show pre, post and never-treated with the outcome specified so I can check the missingness
+\end{itemize}
+
+\end{frame}
+
 \begin{frame}{Step 3: Plot Treatment Rollout}
 
 \begin{figure}
@@ -1291,6 +1343,22 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 \end{figure}
 
 \end{frame}
+
+
+\begin{frame}{Major missingness problems}
+
+\begin{itemize}
+
+\item Could be we will have to dig a bit into these data to salvage it -- this was in fact one of the criticisms of the county level data
+\item Could be a candidate for chained diff-in-diff
+\item Remember -- if our goal is the county-level target parameter, then simply switching to the state-level crime data would defeat the purpose of the study
+\item But now we are realizing what we are up against
+\item You \textbf{do not} want to be the last one to realize the problem you have -- God forbid Data Colada figures it out first!
+
+\end{itemize}
+
+\end{frame}
+
 \begin{frame}
  
 \begin{figure}
@@ -1310,12 +1378,22 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 	\item Causal inference is hard and easy -- don't confuse the hard with the easy
 	\item If you can't say who the comparison group is, start there because it should be you choosing it, not the model
 	\end{itemize}
-\item These are simple comparisons -- who do you want to be the comparison group? 
-\item For instance, do you want to compare treated units with never treated units?
+\item Parallel trends is about whether your control group is a correct proxy for the missing potential outcome for your treatment group, so it's natural to ask who do you want it to be?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Step 4: Pick Your Control Group}
+
+\begin{itemize}
+
+\item Do you want to compare treated units with never treated units?
 	\begin{itemize}
 	\item Weird that they never got treated though right?
 	\end{itemize}
-\item Or do you want to compare with not-yet-treated?  Share anecdote about driver license law and undocumented workers
+\item Or do you want to compare with not-yet-treated?  After all -- didn't they get treated too?
+\item Share anecdote about driver license law and undocumented workers
+\item No right or wrong answer to this -- the control group could be either and requires thinking about \emph{selection}
 \end{itemize}
 
 \end{frame}
@@ -1323,12 +1401,13 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 
 
 
-\begin{frame}{Potential Outcomes vs Realized Outcomes}
+
+\begin{frame}{Switching equation vs selection}
 
 \begin{itemize}
-\item Potential outcomes define treatment effects, but they are unknown and fixed 
-\item Once the treatment assignment happens, we only observe one of the two potential outcomes
+\item Switching equations \emph{select} between potential outcomes 
  $$Y_{it}=D_{it}Y_{it}^1 + (1-D_{it})Y_{it}^0$$
+\item Treatment assignment versus treatment assignment mechanism mechanisms are distinct concepts
 \item How those treatment get assigned is called the \textbf{treatment assignment mechanism}, or "selection"
 
 \end{itemize}
@@ -1336,26 +1415,54 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 
 \begin{frame}{Selection and Parallel Trends}
 \begin{itemize}
-    \item Treatment assignment versus treatment assignment mechanism mechanisms are distinct concepts
+\item Not all forms of selection are a problem for parallel trends, but some will destroy them, and this is not always detectable -- they must be discerned other ways
     \item When designing a study, it's essential to try to understand not just \emph{who} was treated, but \emph{why} they, and not everyone, were treatd
     \item One must be willing, eager and successful in building a realistic, historical case
-    \item Reason is that Ghanem, Sant'Anna, and Wüthrich (2023) show that parallel trends presupposes only five treatment assignment mechanisms
+    \item Ghanem, Sant'Anna, and Wüthrich (2023) show that parallel trends presupposes only seven treatment assignment mechanisms
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Parallel Trends is Consistent with Certain Assignment Mechanisms}
 \begin{enumerate}
-    \item \textbf{Constant unit-level trends in $Y^0$}
+    \item[1.]  \textbf{Constant unit-level trends in $Y^0$}
 	\begin{itemize}
 	\item Recall that the ATT is missing $Y^0$ for the treatment group
 	\item If every unit in the dataset, even the missing ones, would have changed by the same amount period to period
+	\item See \texttt{selection_y0} in Stata and R in /labs/selection
 	\end{itemize}
-    \item \textbf{Selection on pre-treatment covariates}
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}{Parallel Trends is Consistent with Certain Assignment Mechanisms}
+\begin{enumerate}
+    \item[2. ] \textbf{Selection on pre-treatment covariates}
     \begin{itemize}
         \item Assignment to treatment depends on observed characteristics before treatment, allowing us to condition on these covariates when assessing trends.
+        \item But you will need to address this in your estimation method (more on this later)
+	\item See \texttt{selection_covariates} in Stata and R in /labs/selection
     \end{itemize}
     
-    \item \textbf{Selection on fixed effects}
+    
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/selection_covariates}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Parallel Trends is Consistent with Certain Assignment Mechanisms}
+\begin{enumerate}
+    
+    \item[3. ] \textbf{Selection on fixed effects}
     \begin{itemize}
         \item Treatment is assigned based on characteristics that do not change over time, such as inherent traits or long-term conditions.
     \end{itemize}
@@ -1363,16 +1470,85 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 \end{enumerate}
 \end{frame}
 
+\begin{frame}{Parallel Trends is Consistent with Certain Assignment Mechanisms}
+\begin{enumerate}
+    
+    \item[4. ] \textbf{Selection on Baseline $Y^0$}
+    \begin{itemize}
+        \item Treatment is assigned based on falling above or below some threshold in baseline $Y^0$ does not violate parallel trends
+    \end{itemize}
+    
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/selection_y0b_es}
+\end{figure}
+
+\end{frame}
 
 \begin{frame}{Parallel Trends is Consistent with Certain Assignment Mechanisms}
 \begin{enumerate}
     
-    \item[4. ] \textbf{Selection on imperfect beliefs about returns}
+    \item[5. ] \textbf{Selection on Dips $Y^0$}
     \begin{itemize}
-        \item Units select into treatment based on their expectations, which may not be accurate. This can create an imperfect belief-based selection.
+        \item Workers who see \emph{changes} in baseline $Y^0$ from period to period does not violate parallel trends
+        \item \dots But it will give you weird pre-trends
+        \item See \texttt{selection_dip} in /labs/selection
     \end{itemize}
     
-    \item[5. ] \textbf{Martingale property}
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/ashenfelter_po}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/ashenfelter_y0b}
+\end{figure}
+
+\end{frame}
+
+
+
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/dip_es}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Parallel Trends is Consistent with Certain Assignment Mechanisms}
+\begin{enumerate}
+    
+    \item[46. ] \textbf{Selection on imperfect beliefs about returns}
+    \begin{itemize}
+        \item Units select into treatment based on their expectations, which may not be accurate. 
+        \item This can create an imperfect belief-based selection.
+        \item It's when they sort into treatment based on \emph{perfect} foresight that it is a problem
+    \end{itemize}
+    
+    \item[7. ] \textbf{Martingale property}
     \begin{itemize}
         \item The change in outcomes follows a martingale process, where future changes in unobservable factors are independent of past ones, under certain selection conditions.
     \end{itemize}
@@ -1382,7 +1558,6 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 
 \begin{frame}{What We Should Be Concerned About}
 
-\footnotesize
 \begin{itemize}
     \item \textbf{Time-varying unobservables}
     \begin{itemize}
@@ -1390,14 +1565,58 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
         \item This can lead to violations of the parallel trends assumption if such unobservables are correlated with treatment.
     \end{itemize}
     
-    \item \textbf{Selection based on post-treatment information}
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{What We Should Be Concerned About}
+
+    \begin{itemize}
+    \item \textbf{Selection based on Treatment Effects}
     \begin{itemize}
         \item If individuals select into treatment based on information they gain after the treatment starts (foresight), this undermines the assumption.
         \item Essential heterogeneity means that the potential outcomes vary systematically with unobserved traits, which complicates inference.
+        \item See \texttt{selection_roy} in the /labs/selection for a simulation
+    \end{itemize}
     \end{itemize}
     
-\end{itemize}
 \end{frame}
+
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/selection_te}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/roy_diverging_po}
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/selection_roy}
+\end{figure}
+
+\end{frame}
+
+
+
 
 \begin{frame}{What We Should Be Concerned About}
 

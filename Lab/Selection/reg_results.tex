@@ -1,0 +1,15 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{7}{c}}
+\toprule
+                    &\multicolumn{1}{c}{age}&\multicolumn{1}{c}{white}&\multicolumn{1}{c}{black}&\multicolumn{1}{c}{asian}&\multicolumn{1}{c}{hispanic}&\multicolumn{1}{c}{other}&\multicolumn{1}{c}{male}\\
+\midrule
+Treatment           &       -0.86         &       -0.02         &       -0.02         &       -0.01         &        0.02         &        0.02\sym{*}  &       -0.00         \\
+                    &      (0.84)         &      (0.02)         &      (0.02)         &      (0.02)         &      (0.01)         &      (0.01)         &      (0.02)         \\
+\midrule
+Observations        &       7,500         &       7,500         &       7,500         &       7,500         &       7,500         &       7,500         &       7,500         \\
+Sample Mean         &       18.40         &        0.23         &        0.10         &        0.25         &        0.14         &        0.06         &        0.49         \\
+\bottomrule
+\multicolumn{8}{l}{\footnotesize * p<0.10, ** p<0.05, *** p<0.01}\\
+\end{tabular}
+}

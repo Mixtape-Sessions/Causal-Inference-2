@@ -1,0 +1,130 @@
+* selection_dip.do. Ashenfelter's Dip as a treatment assignment mechanism
+clear all
+set seed 2
+
+* First create the states
+quietly set obs 4
+gen state = _n
+
+* Generate 1000 workers in each state
+expand 1000
+bysort state: gen unit_fe=runiform(1000,2500)
+label variable unit_fe "Unique worker fixed effect per state"
+egen id = group(state unit_fe)
+
+* Generate race variable for different trends
+gen race = mod(_n, 4) + 1
+
+* Generate the years
+expand 6
+sort state
+bysort state unit_fe: gen year = _n
+gen n = year
+replace year = 1987 if year == 1
+replace year = 1988 if year == 2
+replace year = 1989 if year == 3
+replace year = 1990 if year == 4
+replace year = 1991 if year == 5
+replace year = 1992 if year == 6
+
+* Generate potential outcomes
+gen y0 = unit_fe + rnormal(0,10) if year == 1987
+
+* Introduce trend and noise for subsequent years
+gen trend = 5
+bysort state unit_fe: replace y0 = y0[_n-1] + trend + rnormal(0,10) if year == 1988
+bysort state unit_fe: replace y0 = y0[_n-1] + trend + rnormal(0,10) if year == 1989
+bysort state unit_fe: replace y0 = y0[_n-1] + trend + rnormal(0,10) if year == 1990
+bysort state unit_fe: replace y0 = y0[_n-1] + trend + rnormal(0,10) if year == 1991
+bysort state unit_fe: replace y0 = y0[_n-1] + trend + rnormal(0,10) if year == 1992
+
+* Determine treatment status based on negative change from 1989 to 1990
+bysort state unit_fe: gen delta_pre = y0 - y0[_n-1] if year == 1990
+bysort state unit_fe: gen treat = 0
+replace treat = 1 if delta_pre < 0 & year == 1990
+
+
+// Define the labels for each unique value
+label define treat_date_lbl 0 "never treated" ///
+                      1 "Treated"
+
+// Assign the labels to the treat_date variable
+label values treat treat_date_lbl
+
+* Ensure treatment status remains consistent
+bysort id: egen max_treat = max(treat)
+bysort id: replace treat = max_treat
+
+* Plot the treatment group and control group
+kdensity delta_pre, kernel(rectangle) xtitle("Change in earnings from 1989 to 1990") xline(0, lwidth(medthick) lpattern(dash) lcolor(cranberry)) title("Change in Earnings from 1989 to 1990") subtitle("4000 workers") note("Ashenfelter Dip selected group is left of red dashed line.")
+
+graph export "./ashenfelter_dip.png", replace
+
+
+* Post-treatment variable
+gen post = 0
+replace post = 1 if year >= 1991
+
+* Generate y1 by adding treatment effect for treated units
+gen y1 = y0
+replace y1 = y0 + 100 if year == 1991 & treat == 1
+replace y1 = y0 + 300 if year == 1992 & treat == 1
+
+* Treatment effect
+gen delta = y1 - y0
+label var delta "Treatment effect for unit i (unobservable in the real world)"
+
+sum delta if treat==1 & post==1, meanonly
+gen att = `r(mean)'
+su att // ATT is $200
+
+* Generate observed outcome based on treatment assignment
+gen earnings = y0
+qui replace earnings = y1 if post == 1 & treat == 1
+
+* Visualize the evolution of Y(0)
+preserve
+collapse (mean) y0, by(treat year)
+xtset treat year
+
+* Create individual plots with reference lines
+twoway (line y0 year if treat == 1, lcolor(blue) lwidth(medium)) ///
+       (line y0 year if treat == 0, lcolor(red) lwidth(medium)), ///
+       xline(1990.5, lcolor(black) lpattern(dash)) ///
+       legend(order(1 "Treated" 2 "Control")) ///
+       title("Evolution of Y(0) for Treatment and Control Groups") ///
+       xtitle("Year") ytitle("Mean Y(0)") ///
+       xlabel(1987(1)1992)
+
+graph export "./y0_evolution.png", replace
+restore
+
+* Regressions
+estimates clear
+reg earnings post##treat, robust		
+reg earnings treat##ib1990.year, robust
+
+* Event study
+reg earnings treat##ib1990.year, robust
+
+coefplot, keep(1.treat#*) omitted baselevels cirecast(rcap) ///
+    rename(1.treat#([0-9]+).year = \1, regex) at(_coef) ///
+    yline(0, lp(solid)) xline(1990.5, lpattern(dash)) ///
+	title("Event study estimates of job trainings on worker wages") ///
+    xlab(1987(1)1992)
+
+areg earnings treat##ib1990.year, robust a(id)
+
+graph export ./dip_es.png, as(png) replace
+
+* Event study on y0
+areg y0 treat##ib1990.year, robust a(id)
+
+coefplot, keep(1.treat#*) omitted baselevels cirecast(rcap) ///
+    rename(1.treat#([0-9]+).year = \1, regex) at(_coef) ///
+    yline(0, lp(solid)) xline(1990.5, lpattern(dash)) ///
+	title("Event study estimates of parallel trends violations using Y(0)") ///
+	note("Worker fixed effects included") ///
+    xlab(1987(1)1992)
+	
+graph export ./dip_es_y0.png, as(png) replace
