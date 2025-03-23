@@ -2962,7 +2962,7 @@ Five main assumptions
 \begin{enumerate}
 \item No anticipation 
 \item SUTVA (no spillovers)
-\item Conditional parallel trends $$E[Y^0_t - Y^0_b|D=1,X_b] = E[Y^0_t - Y^0_t | D=0, X_b]$$ 
+\item Conditional parallel trends $$E[Y^0_t - Y^0_b|D=1,X_b] = E[Y^0_t - Y^0_b | D=0, X_b]$$ 
 \item Common support $$Pr(D=1)>0; Pr(D=1|X)<1$$ 
 \item Propensity score model is properly specified 
 \end{enumerate}
@@ -3053,7 +3053,7 @@ ATT &=& E[Y^1_t - \textcolor{red}{Y^0_t} |D=1] \\
 \bigskip
 Abadie's inverse probability weighting (IPW) estimator
 \begin{eqnarray*}
-E\bigg [ \frac{Y_t - Y_b}{Pr(D_t=1)} \times \frac{D_t - Pr(D=1|X_b)}{1-Pr(D=1|X_b)} \bigg ]
+E\bigg [ \frac{Y_t - Y_b}{Pr(D=1)} \times \frac{D - Pr(D=1|X_b)}{1-Pr(D=1|X_b)} \bigg ]
 \end{eqnarray*}
 
 \bigskip
