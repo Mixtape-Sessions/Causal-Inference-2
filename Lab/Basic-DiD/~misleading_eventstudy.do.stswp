@@ -72,7 +72,7 @@ gen y1 = y0 + post*treated*(year - 5)*0.6
 gen birth_rate = treated*y1 + (1-treated)*y0
 
 * Long-gap: baseline fixed at T-1
-csdid birth_rate, ivar(county_id) time(year) gvar(treat_date) 
+csdid birth_rate, ivar(county_id) time(year) gvar(treat_date) long2
 csdid_estat event
 csdid_plot, title("Long-gap (T-1 baseline): Event Study")
 
