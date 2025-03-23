@@ -1530,7 +1530,7 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 	\begin{itemize}
 	\item What if we have heterogenous trends in $Y^0$ and the people in the treatment group were "selected" because they had very low values of $Y^0$
 	\item Ex: I went to college because my wages if I hadn't were really low
-	\item Thankfully, this won't violate parallel trends
+	\item Thankfully, this won't violate parallel trends -- but weird event studies!
 	\item See \texttt{selection_y0b} in Stata and R in /labs/selection
 	\end{itemize}
 \end{enumerate}
@@ -1540,7 +1540,7 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
  
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{./lecture_includes/selection_y0b_es.png}
+    \includegraphics[width=\textwidth]{./lecture_includes/selection_y0.png}
 \end{figure}
 
 \end{frame}
@@ -1590,10 +1590,11 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
  
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{./lecture_includes/selection_fe_es.png}
+    \includegraphics[width=\textwidth]{./lecture_includes/selection_fe.png}
 \end{figure}
 
 \end{frame}
+
 
 
 
@@ -1762,6 +1763,7 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 \begin{frame}{Step 5: Is Unconditional Parallel Trends Plausible?}
 
 \begin{itemize}
+\item We drew a bunch of event study graphs, which leads into the next issue regarding "unconditional parallel trends"
 \item Unconditional parallel trends is diff-in-diff on $Y^0$ in which the diff-in-diff equals zero
 	$$\textcolor{red}{\Delta E[Y^0|D=1]} - \Delta E[Y^0|D=0] = 0$$ 
 \item There are two kinds of parallel trends: unconditional and conditional
@@ -1926,7 +1928,7 @@ Under NA, then the $t-1$ period is untreated.  But then so are the other pre-per
 
 \begin{itemize}
 \item \textbf{Bite} -- they will show that the expansion shifted people into Medicaid and out of uninsured status
-\item \textcolor{black}{\textbf{Placebos}} -- they show that there's no effect of Medicaid on a similar group that didn't enroll
+\item \textcolor{black}{\textbf{Falsifications}} -- they show that there's no effect of Medicaid on a similar group that didn't enroll
 \item \textbf{Event study} -- they will lean hard on those dynamic plots
 \item \textcolor{red}{\textbf{Main results}} -- with all of this, they will show Medicaid expansion caused near elderly mortality to fall
 \item \textcolor{black}{\textbf{Mechanisms}} -- they think they can show it's coming from people treating diseases causing mortality declines to compound over time
@@ -2080,7 +2082,7 @@ Under NA, then the $t-1$ period is untreated.  But then so are the other pre-per
 
 \begin{itemize}
 
-\item Some forms of selection that satisfy parallel trends will complicate event study plots
+\item Remember from earlier: some forms of selection that satisfy parallel trends will complicate event study plots
 \item Consider what you hope to find -- something like selection on fixed effects (first event study)
 	\begin{itemize}
 	\item Zip codes in the upper half get treated
@@ -2098,7 +2100,7 @@ Under NA, then the $t-1$ period is untreated.  But then so are the other pre-per
 
 \begin{figure}
     \centering
-    \includegraphics[height=0.30\textheight]{./lecture_includes/selection_fe.png}
+    \includegraphics[height=0.70\textheight]{./lecture_includes/selection_fe.png}
 \end{figure}
 
 \end{frame}
@@ -2107,7 +2109,7 @@ Under NA, then the $t-1$ period is untreated.  But then so are the other pre-per
 
 \begin{figure}
     \centering
-    \includegraphics[height=0.30\textheight]{./lecture_includes/selection_y0.png}
+    \includegraphics[height=0.70\textheight]{./lecture_includes/selection_y0.png}
 \end{figure}
 
 \end{frame}
@@ -2115,11 +2117,20 @@ Under NA, then the $t-1$ period is untreated.  But then so are the other pre-per
 
 
 
-\begin{frame}{Event studies are evidence, not proof}
+\begin{frame}{Don't ask more of event studies than they can give}
 
 \begin{itemize}
 \item Event studies are mandatory -- you must make them
-\item But remember, they are not testable, they are not proof; rather, they are evidence
+\item But remember, parallel trends cannot be seen in event studies -- only \emph{pre-trends} can
+\item Parallel trends can be satisfied and pre-trends be messed up; pre-trends can look good, and parallel trends be violated
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Proof vs Evidence}
+
+\begin{itemize}
+\item Think of event studies as \emph{evidence}, not \emph{proof}
 	\begin{itemize}
 	\item Prosecutor based on police produces fingerprints, eyewitnesses and imprints in mud
 	\end{itemize}
@@ -2127,6 +2138,7 @@ Under NA, then the $t-1$ period is untreated.  But then so are the other pre-per
 \item Falsifications are post-treatment heuristics based on logic and counter-evidence (Popperian reasoning)
 \end{itemize}
 \end{frame}
+
 
 
 \begin{frame}{Falsification 1: same outcome, but untreated groups}
