@@ -1,16 +1,16 @@
-* selection_y0b.do - Heterogeneous trends in Y0 with worker characteristics
+* selection_fe.do - Heterogeneous trends in Y0 and selection on fixed effects
 clear all
 set seed 2
 
-* First create 5 colonies
+* First create 5 states
 quietly set obs 5
-gen colony = _n
+gen state = _n
 
-* Generate 250 workers in each colony
+* Generate 250 workers in each state
 expand 250
-bysort colony: gen unit_fe = runiform(1, 1000)
-label variable unit_fe "Unique worker fixed effect per colony"
-egen id = group(colony unit_fe)
+bysort state: gen unit_fe = runiform(1, 1000)
+label variable unit_fe "Unique worker fixed effect per state"
+egen id = group(state unit_fe)
 
 * Generate group variable for different trends
 gen group = mod(_n, 40) + 1
@@ -21,23 +21,6 @@ gen age = round(rbeta(2, 5) * 65)
 
 * Sex: balanced ratio
 gen male = runiform() > 0.5
-
-* Race: specified proportions
-gen race = .
-replace race = 1 if runiform() < 0.30
-replace race = 2 if runiform() >= 0.30 & runiform() < 0.60
-replace race = 3 if runiform() >= 0.60 & runiform() < 0.85
-replace race = 4 if runiform() >= 0.85 & runiform() < 0.95
-replace race = 5 if runiform() >= 0.95
-
-label define race_lbl 1 "Black" 2 "White" 3 "Asian" 4 "Hispanic" 5 "Other"
-label values race race_lbl
-
-gen black = race==1
-gen white = race==2
-gen asian = race==3
-gen hispanic = race==4
-gen other = race==5
 
 * Generate potential outcomes for the first year (1987)
 gen y0_1987 = unit_fe + rnormal(0, 10)
@@ -54,10 +37,10 @@ gen y0_1992 = y0_1991 + trend + rnormal(0, 10)
 reshape long y0_, i(id) j(year)
 rename y0_ y0
 
-* Determine treatment status in 1990 based on Y0
-su y0 if year == 1990, detail
+* Determine treatment status in 1990 based on fixed effects
+su id if year == 1990, detail
 gen treat = 0
-replace treat = 1 if y0 <= `r(p25)' & year == 1990
+replace treat = 1 if id <= `r(p25)' & year == 1990
 
 * Ensure treatment status remains consistent across years
 bysort id: egen max_treat = max(treat)
@@ -105,8 +88,7 @@ gen ey0_01 = `r(mean)'
 
 gen parallel_trends = (ey0_11 - ey0_10) - (ey0_01 - ey0_00)
 
-reg y0 post##treat, robust
-
+reg y0 post##treat, robust cluster(state)
 su parallel_trends
 
 * Diff-in-diff
@@ -121,21 +103,11 @@ gen ey_01 = `r(mean)'
 
 gen did = (ey_11 - ey_10) - (ey_01 - ey_00)
 
-reg earnings post##treat, robust
-
+reg earnings post##treat, robust cluster(state)
 su did att
 
-* Run regressions
-eststo clear
-eststo: reg earnings post##treat, robust cluster(colony)
-estadd local att_label "Estimated ATT from 1991 to 1992"
-
-eststo: reg earnings treat##ib1990.year, cluster(colony)
-estadd local att_1991 "ATT in 1991"
-estadd local att_1992 "ATT in 1992"
-	
 * Event study regression
-reg earnings treat##ib1990.year, cluster(colony)
+reg earnings treat##ib1990.year, cluster(state)
 
 * Generate the coefficient plot
 coefplot, keep(1.treat#*) omitted baselevels cirecast(rcap) ///
@@ -143,8 +115,8 @@ coefplot, keep(1.treat#*) omitted baselevels cirecast(rcap) ///
     yline(0, lp(solid)) xline(1990.5, lpattern(dash)) ///
     xlab(1987(1)1992) ///
     title("Estimated Effect of Training on Earnings") ///
-    subtitle("Event Study Analysis")
+    subtitle("Selection")
 	
-graph export ./selection_y0b_es.png, as(png) replace
+graph export ./selection_fe_es.png, as(png) replace
 
 

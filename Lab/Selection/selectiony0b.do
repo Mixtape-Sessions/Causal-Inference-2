@@ -125,32 +125,6 @@ reg earnings post##treat, robust
 
 su did att
 
-* Run regressions and store results
-eststo clear
-foreach var in age white black asian hispanic other male {
-    eststo: reg `var' i.treat i.colony, cluster(colony)
-    
-    * Store sample mean
-    sum `var'
-    estadd scalar mean = r(mean)
-}
-
-* Export results to LaTeX
-esttab using "./reg_results.tex", ///
-    keep(1.treat) ///
-    coeflabels(1.treat "Treatment") ///
-    cells("b(star fmt(2))" "se(par fmt(2))") ///
-    star(* 0.10 ** 0.05 *** 0.01) ///
-    label ///
-    stats(N mean, fmt(%9.0fc %9.2fc) labels("Observations" "Sample Mean")) ///
-    booktabs ///
-    replace ///
-    nonumbers ///
-    noobs ///
-    collabels(none) ///
-    note("* p<0.10, ** p<0.05, *** p<0.01")
-	
-	
 * Run regressions
 eststo clear
 eststo: reg earnings post##treat, robust cluster(colony)
@@ -159,27 +133,6 @@ estadd local att_label "Estimated ATT from 1991 to 1992"
 eststo: reg earnings treat##ib1990.year, cluster(colony)
 estadd local att_1991 "ATT in 1991"
 estadd local att_1992 "ATT in 1992"
-
-* Calculate pre-treatment mean
-sum earnings if year < 1991
-local pre_mean = r(mean)
-
-* Export results to LaTeX
-esttab using "main_results.tex", ///
-    cells("b(star fmt(2))" "se(par fmt(2))") ///
-    keep(1.post#1.treat 1.treat#1991.year 1.treat#1992.year) ///
-    order(1.post#1.treat 1.treat#1991.year 1.treat#1992.year) ///
-    coeflabels(1.post#1.treat "Estimated ATT from 1991 to 1992" ///
-               1.treat#1991.year "ATT in 1991" ///
-               1.treat#1992.year "ATT in 1992") ///
-    stats(N pre_mean, fmt(%9.0fc %9.2fc) labels("Observations" "Pre-treatment mean")) ///
-    star(* 0.10 ** 0.05 *** 0.01) ///
-    label booktabs ///
-    replace ///
-    title("Main Results: Estimated total effects and effects by year of Training on Trainees Subsequent Earnings") ///
-    addnotes("* p<0.10, ** p<0.05, *** p<0.01") ///
-    collabels(none) ///
-    scalar(pre_mean)
 	
 * Event study regression
 reg earnings treat##ib1990.year, cluster(colony)
@@ -190,7 +143,7 @@ coefplot, keep(1.treat#*) omitted baselevels cirecast(rcap) ///
     yline(0, lp(solid)) xline(1990.5, lpattern(dash)) ///
     xlab(1987(1)1992) ///
     title("Estimated Effect of Training on Earnings") ///
-    subtitle("Event Study Analysis")
+    subtitle("Selection on Y(0)")
 	
 graph export ./selection_y0b_es.png, as(png) replace
 

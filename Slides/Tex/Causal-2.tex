@@ -1079,51 +1079,116 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 
 \end{frame}
 
-% Slide 6
-\begin{frame}{Introducing Chained Diff-in-Diff}
-  \begin{itemize}
-    \item \textbf{Bellego (2024):} Chained DiD for imbalanced panels.
-    \item Uses overlapping observations to chain short-term DiDs.
-    \item Recovers long-term treatment effects despite dropout.
-  \end{itemize}
+% Slide 0: Introduction and Value
+\begin{frame}
+\frametitle{Introduction and Value}
+\begin{itemize}
+  \item Chained Difference-in-Differences (DiD) (Bellego, Benatia and Dortet-Bernadet 2025) aggregates short-term treatment effects to recover long-term impacts.
+  \item It is valuable when balanced panel data is unavailable.
+  \item It can be applied to rotating panels (e.g., CPS) as well as imbalanced panels with missing data, making efficient use of overlapping observations.
+\end{itemize}
 \end{frame}
 
-% Slide 7
-\begin{frame}{Illustration: NLSY97 Panel}
-  \begin{itemize}
-    \item Youth panel tracked over time with attrition.
-    \item College attendance as treatment.
-    \item Dropout may be correlated with unobservables (e.g., incarceration risk).
-    \item Standard DiD may fail.
-  \end{itemize}
+% Slide 1: Long Difference DID
+\begin{frame}
+\frametitle{Long Difference DID}
+\begin{itemize}
+  \item Chained diff-in-diff compares the change in outcomes from a baseline period to a later period for both treated and control groups.
+  \item It is defined as: 
+    \[
+      \text{ATT}(t) = E[Y_t(1) - Y_1(0) \mid \text{D=1}] - E[Y_t(0) - Y_1(0) \mid \text{D=0}]
+    \]
+  \item This “long difference” cancels out time-invariant characteristics and common trends.
+\end{itemize}
 \end{frame}
 
-% Slide 8
-\begin{frame}{Chaining the Estimates}
-  \begin{itemize}
-    \item Leverages overlap: e.g., 2000--01, 2001--02, 2002--03.
-    \item Estimate short-term DiDs and link them.
-    \item Avoids discarding data to force balance.
-  \end{itemize}
+% Slide 2: Overlapping Units
+\begin{frame}
+\frametitle{Overlapping Units}
+\begin{itemize}
+  \item Overlap refers to units that are observed in consecutive periods, a common feature in rotating panels.
+  \item It is indicated when the sampling indicator satisfies: 
+    \[
+      S_t \times S_{t+1} = 1
+    \]
+  \item Such overlap enables the estimation of short-term effects even without a fully balanced panel.
+\end{itemize}
 \end{frame}
 
-% Slide 9
-\begin{frame}{Assumptions and Limitations}
-  \begin{itemize}
-    \item Assumes conditional parallel trends.
-    \item Requires unobservable types to trend similarly within treatment status.
-    \item Assumes observables capture drivers of missingness.
-  \end{itemize}
+% Slide 3: Exact Calculation (2×2 Formula)
+\begin{frame}
+\frametitle{Exact Calculation (2×2 Formula)}
+\begin{itemize}
+  \item For each pair of consecutive periods, the short-term DiD effect is computed as:
+    \[
+      \text{DiD}_t = E(Y_{t+1} - Y_t \mid \text{treated}) - E(Y_{t+1} - Y_t \mid \text{control})
+    \]
+  \item The long-term effect is obtained by summing these differences:
+    \[
+      \text{Long DiD} = \sum_{t=1}^{T-1} \text{DiD}_t
+    \]
+  \item This formula is consistent with the potential outcomes framework.
+\end{itemize}
 \end{frame}
 
-% Slide 10
-\begin{frame}{Summary}
-  \begin{itemize}
-    \item Imbalance isn't inherently a threat—but must be examined.
-    \item MAR and conditional MAR offer partial safeguards.
-    \item Chained DiD is a flexible, efficient alternative for panels with attrition.
-    \item Beware assumptions on unobservables and sampling.
-  \end{itemize}
+% Slide 4: Final Target Parameter
+\begin{frame}
+\frametitle{Final Target Parameter}
+\begin{itemize}
+  \item The target parameter is the long-run average treatment effect on the treated (ATT).
+  \item It is expressed as:
+    \[
+      \text{ATT}(t) = E[Y_t(1) - Y_t(0) \mid \text{treated}]
+    \]
+  \item This represents the cumulative impact of the treatment over time.
+\end{itemize}
+\end{frame}
+
+% Slide 5: Building Blocks
+\begin{frame}
+\frametitle{Building Blocks}
+\begin{itemize}
+  \item The method builds on estimating one-period DID effects between consecutive time periods.
+  \item Each building block is given by:
+    \[
+      \Delta \text{ATT}(\tau) = E(Y_{\tau+1} - Y_\tau \mid \text{treated}) - E(Y_{\tau+1} - Y_\tau \mid \text{control})
+    \]
+  \item These “chain links” are summed to recover the overall long-term effect.
+\end{itemize}
+\end{frame}
+
+% Slide 6: Weights
+\begin{frame}
+\frametitle{Weights and Sampling Indicators}
+\begin{itemize}
+  \item Recall from earlier \(S_{i,t}\) is an indicator that equals 1 if unit \(i\) is observed in period \(t\) (and 0 otherwise).
+  \item Define the overlap indicator as \(S_{i,\tau,\tau+1} = S_{i,\tau} \times S_{i,\tau+1}\), which is 1 if unit \(i\) is observed in both period \(\tau\) and \(\tau+1\).
+  \item The weight for unit \(i\) for the period pair \(\tau,\tau+1\) is:
+    \[
+      w_{i,\tau} = \frac{S_{i,\tau,\tau+1}}{\sum_{j} S_{j,\tau,\tau+1}},
+    \]
+    ensuring that each short-term DID effect is appropriately scaled based on the number of overlapping observations.
+\end{itemize}
+\end{frame}
+
+% Slide 7: Standard Error Calculation
+\begin{frame}
+\frametitle{Standard Error Calculation}
+\begin{itemize}
+  \item Standard errors are computed by aggregating the variances of the individual short-term DID estimates.
+  \item Analytical derivations use influence functions or a generalized method of moments (GMM) approach to combine errors from each link.
+  \item Bootstrapping methods (e.g., multiplier bootstrap) are often used to account for clustering and the overlap structure, ensuring robust inference.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Code}
+
+\begin{itemize}
+\item R package is available at CRAN as \texttt{cdid}
+\item Documentation: \url{https://cran.r-project.org/web/packages/cdid/cdid.pdf}
+\item Github: \url{https://github.com/joelcuerrier/cdid}
+\end{itemize}
+
 \end{frame}
 
 
@@ -1206,7 +1271,7 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 
 \begin{itemize}
 \item  Notice that users are getting older and poorer -- both of which predict spending less money on music
-\item If these covariates are themselves predictive of trends, then it is suggestive parallel trends could be \emph{mechanically} breaking, so check $$X_{it} = \alpha + \beta_1 D_i + \beta_t Post_t + \delta ( D_i + Post_t ) + \varepsilon_{it}$$ 
+\item If these covariates are themselves predictive of trends, then it is suggestive parallel trends could be \emph{mechanically} breaking, so check $$X_{it} = \alpha + \beta_1 D_i + \beta_t Post_t + \delta ( D_i \times Post_t ) + \varepsilon_{it}$$ 
 \item Or consider the normalized difference in means table we discuss later
 \item If violated, then consider the following fix by Hong (2013) which adjusts for propensity scores in both periods
 \end{itemize}
@@ -1398,8 +1463,22 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 	\item Weird that they never got treated though right?
 	\end{itemize}
 \item Or do you want to compare with not-yet-treated?  After all -- didn't they get treated too?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Selecting your control group}
+
+\begin{itemize}
+\item There's three different control groups you can have in diff-in-diff:
+	\begin{enumerate}
+	\item \textcolor{red}{Already treated group -- Don't do it}
+	\item Never treated group -- maybe do it 
+	\item Not-yet-treated group -- maybe do it
+	\end{enumerate}
+\item Selection is largely shaping which of the second and third ones is more likely to satisfy parallel trends
+\item No way to rank it, but we know the more random the assignment, the more likely (2) and (3) are the same thing
 \item Share anecdote about driver license law and undocumented workers
-\item No right or wrong answer to this -- the control group could be either and requires thinking about \emph{selection}
 \end{itemize}
 
 \end{frame}
@@ -1407,45 +1486,74 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 
 
 
-
-\begin{frame}{Switching equation vs selection}
+\begin{frame}{What does "selection" mean?}
 
 \begin{itemize}
-\item Switching equations \emph{select} between potential outcomes 
- $$Y_{it}=D_{it}Y_{it}^1 + (1-D_{it})Y_{it}^0$$
-\item Treatment assignment versus treatment assignment mechanism mechanisms are distinct concepts
-\item How those treatment get assigned is called the \textbf{treatment assignment mechanism}, or "selection"
-
+\item Selection is a phrase you hear often but what does it mean?
+\item Ex: Some people are in the treatment group and some aren't:
+	\begin{enumerate}
+	\item \textbf{Who} and \textbf{which} people are treated and aren't is observed and coded with $D$
+	\item \textbf{Why} and \textbf{how} is not coded, but matters in causal inference \emph{a lot}
+	\end{enumerate}
+\item Selection has to do with the "why" and "how" the units were chosen to be treated
 \end{itemize}
+
 \end{frame}
 
-\begin{frame}{Selection and Parallel Trends}
+\begin{frame}{Two extreme forms of selection}
+
 \begin{itemize}
-\item Not all forms of selection are a problem for parallel trends, but some will destroy them, and this is not always detectable -- they must be discerned other ways
-    \item When designing a study, it's essential to try to understand not just \emph{who} was treated, but \emph{why} they, and not everyone, were treatd
-    \item One must be willing, eager and successful in building a realistic, historical case
-    \item Ghanem, Sant'Anna, and Wüthrich (2023) show that parallel trends presupposes only seven treatment assignment mechanisms
+\item Randomization.  Ten people, 5 treated and 5 aren't, but the assignment happened with coin flips versus
+\item Sorting.  The 5 people \emph{chose} the treatment and thus \emph{sorted} into the treated by their own volition and planning
+\item Randomization makes causal inference; sorting makes it hard
+\item Diff-in-diff needs parallel trends, and some forms of selection will violate it, and some won't, and it affects your control group (Ghanem, et al. 2024)
 \end{itemize}
+
 \end{frame}
 
-\begin{frame}{Parallel Trends is Consistent with Certain Assignment Mechanisms}
+
+
+\begin{frame}{Constant Trends are fine}
 \begin{enumerate}
     \item[1.]  \textbf{Constant unit-level trends in $Y^0$}
 	\begin{itemize}
-	\item Recall that the ATT is missing $Y^0$ for the treatment group
-	\item If every unit in the dataset, even the missing ones, would have changed by the same amount period to period
+	\item Assume our outcome is earnings and the treatment is college
+	\item Trivial case: if every person in the dataset has the same trend in $Y^0$, then parallel trends \emph{always} holds
 	\item See \texttt{selection_y0} in Stata and R in /labs/selection
 	\end{itemize}
 \end{enumerate}
 \end{frame}
 
-
-
-\begin{frame}{Parallel Trends is Consistent with Certain Assignment Mechanisms}
+\begin{frame}{Selection on $Y^0$ is fine}
 \begin{enumerate}
-    \item[2. ] \textbf{Selection on pre-treatment covariates}
+    \item[2.]  \textbf{Selection on $Y^0$}
+	\begin{itemize}
+	\item What if we have heterogenous trends in $Y^0$ and the people in the treatment group were "selected" because they had very low values of $Y^0$
+	\item Ex: I went to college because my wages if I hadn't were really low
+	\item Thankfully, this won't violate parallel trends
+	\item See \texttt{selection_y0b} in Stata and R in /labs/selection
+	\end{itemize}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/selection_y0b_es.png}
+\end{figure}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Selection on observable covariates is fine}
+\begin{enumerate}
+    \item[3. ] \textbf{Selection on pre-treatment covariates}
     \begin{itemize}
         \item Assignment to treatment depends on observed characteristics before treatment, allowing us to condition on these covariates when assessing trends.
+        \item Ex: I went to college because my parents went to college
         \item But you will need to address this in your estimation method (more on this later)
 	\item See \texttt{selection_covariates} in Stata and R in /labs/selection
     \end{itemize}
@@ -1465,46 +1573,41 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 \end{frame}
 
 
-\begin{frame}{Parallel Trends is Consistent with Certain Assignment Mechanisms}
+\begin{frame}{Selection on fixed characteristics is fine}
 \begin{enumerate}
     
-    \item[3. ] \textbf{Selection on fixed effects}
+    \item[4. ] \textbf{Selection on fixed effects}
     \begin{itemize}
         \item Treatment is assigned based on characteristics that do not change over time, such as inherent traits or long-term conditions.
+        \item Ex: I went to college because I was born in 1975
+        \item See \texttt{selection_fe} in Stata and R in /labs/selection
     \end{itemize}
     
 \end{enumerate}
 \end{frame}
-
-\begin{frame}{Parallel Trends is Consistent with Certain Assignment Mechanisms}
-\begin{enumerate}
-    
-    \item[4. ] \textbf{Selection on Baseline $Y^0$}
-    \begin{itemize}
-        \item Treatment is assigned based on falling above or below some threshold in baseline $Y^0$ does not violate parallel trends
-    \end{itemize}
-    
-\end{enumerate}
-\end{frame}
-
-
 
 \begin{frame}
  
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{./lecture_includes/selection_y0b_es}
+    \includegraphics[width=\textwidth]{./lecture_includes/selection_fe_es.png}
 \end{figure}
 
 \end{frame}
 
-\begin{frame}{Parallel Trends is Consistent with Certain Assignment Mechanisms}
+
+
+
+
+
+\begin{frame}{Even selection on dips in outcomes is fine!}
 \begin{enumerate}
     
     \item[5. ] \textbf{Selection on Dips $Y^0$}
     \begin{itemize}
         \item Workers who see \emph{changes} in baseline $Y^0$ from period to period does not violate parallel trends
         \item \dots But it will give you weird pre-trends
+        \item Ex: I went to college because the year before, I saw my earnings drop by a lot
         \item See \texttt{selection_dip} in /labs/selection
     \end{itemize}
     
@@ -1544,10 +1647,10 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 \end{frame}
 
 
-\begin{frame}{Parallel Trends is Consistent with Certain Assignment Mechanisms}
+\begin{frame}{Some other stuff are also fine}
 \begin{enumerate}
     
-    \item[46. ] \textbf{Selection on imperfect beliefs about returns}
+    \item[6. ] \textbf{Selection on imperfect beliefs about returns}
     \begin{itemize}
         \item Units select into treatment based on their expectations, which may not be accurate. 
         \item This can create an imperfect belief-based selection.
@@ -1583,6 +1686,7 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
     \begin{itemize}
         \item If individuals select into treatment based on information they gain after the treatment starts (foresight), this undermines the assumption.
         \item Essential heterogeneity means that the potential outcomes vary systematically with unobserved traits, which complicates inference.
+        \item Ex: I went to college because I knew it would cause my earnings to go up, but others didn't because they knew it would cause their earnings to fall
         \item See \texttt{selection_roy} in the /labs/selection for a simulation
     \end{itemize}
     \end{itemize}
@@ -1624,7 +1728,7 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 
 
 
-\begin{frame}{What We Should Be Concerned About}
+\begin{frame}{Some other stuff aren't fine}
 
 \footnotesize
 \begin{itemize}
@@ -1645,16 +1749,6 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 
 
 
-\begin{frame}{What is and is not parallel trends?}
-
-\begin{itemize}
-\item Parallel trends does \emph{not} mean treatments were randomly assigned (though random assignment guarantees parallel trends)
-\item Parallel trends does \emph{not} require that the groups be similar at baseline on outcomes (though random assignment guarantees that would be)
-\item Parallel trends \emph{does} require that the comparison group follows a trend in outcomes that is approximately the same as the counterfactual $Y^0$ trend of the treatment group 
-\end{itemize}
-
-\end{frame}
-
 
 \begin{frame}
  
@@ -1670,6 +1764,8 @@ $ATE =  \frac{1-1+0+0+1+1}{6} = 0.33$
 \begin{itemize}
 \item Unconditional parallel trends is diff-in-diff on $Y^0$ in which the diff-in-diff equals zero
 	$$\textcolor{red}{\Delta E[Y^0|D=1]} - \Delta E[Y^0|D=0] = 0$$ 
+\item There are two kinds of parallel trends: unconditional and conditional
+\item Let's look at a couple of spreadsheets to illustrate precisely what unconditional parallel trends mean
 \end{itemize}
 
 \bigskip 

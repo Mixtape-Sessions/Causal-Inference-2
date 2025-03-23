@@ -14,10 +14,11 @@
   label variable unit_fe "Unique worker fixed effect per state"
   egen id = group(state unit_fe)
   
-  * Generate pontential outcomes
+  * Generate pontential outcomes with constant trends in
   gen y0 = unit_fe + rnormal(0,10)
+  label variable y0 "Earnings for high school only"
 
-  * Determine treatment status in 1990
+  * Determine treatment status in 1990 based on having low earnings for high school only
   su y0, detail
   gen treat = 0 
   replace treat = 1 if y0 < `r(p25)'
@@ -38,6 +39,7 @@
 
   gen y1 = y0
   replace y1 = y0 + 7500 if year==1991
+  label variable y1 "Earnings for college grads"
 
   * Treatment effect
   gen delta = y1 - y0
@@ -51,6 +53,7 @@
   * Generate observed outcome based on treatment assignment
   gen         earnings = y0
   qui replace earnings = y1 if post == 1 & treat == 1
+  label variable earnings "Earnings based on switching equation"
 
   * Illustrate parallel trends assumption
   su y0 if treat==1 & post==0
@@ -63,6 +66,8 @@
   gen ey0_01 = `r(mean)'
   
   gen parallel_trends = (ey0_11 - ey0_10) - (ey0_01 - ey0_00) 
+  reg y0 post##treat, robust
+  su parallel_trends
   
   * Diff-in-diff
   su earnings if treat==1 & post==0
@@ -75,13 +80,8 @@
   gen ey_01 = `r(mean)'
   
   gen did = (ey_11 - ey_10) - (ey_01 - ey_00) 
-  
   reg earnings post##treat, robust
   
   su did att
   
-  reg earnings post##treat, robust
-  
-  
-  su parallel_trends
   
