@@ -2039,83 +2039,6 @@ Under NA, then the $t-1$ period is untreated.  But then so are the other pre-per
 
 \end{frame}
 
-\begin{frame}{Event studies can mislead}
-
-\begin{itemize}
-
-\item Parallel trends is \emph{untestable} and to believe me, we will look at an example (inspired by a study of mine later)
-\item Code is called \texttt{misleading_eventstudy.do} and \texttt{misleading_eventstudy.R}
-\item Note how well the unconditional parallel trends assumption appears to be when reviewing the graphs only
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Event studies can mislead}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=0.75\textheight]{./lecture_includes/es_flawed.png}
-\end{figure}
-
-\end{frame}
-
-
-\begin{frame}{Event studies can mislead}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=0.75\textheight]{./lecture_includes/es_correct.png}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}{Time varying trends in $Y^0$ have \emph{nothing} to do with parallel trends}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=0.75\textheight]{./lecture_includes/misleading_eventstudy_code}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}{Selection can also make event studies misleading}
-
-\begin{itemize}
-
-\item Remember from earlier: some forms of selection that satisfy parallel trends will complicate event study plots
-\item Consider what you hope to find -- something like selection on fixed effects (first event study)
-	\begin{itemize}
-	\item Zip codes in the upper half get treated
-	\item Zip codes in the lower half don't
-	\end{itemize}
-\item Then compare that with selection on changes in baseline $Y^0$ (second event study)
-	\begin{itemize}
-	\item Only people who enroll in the program were the ones who saw sudden drops in earnings
-	\end{itemize}
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Selection on fixed effects and event studies}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=0.70\textheight]{./lecture_includes/selection_fe.png}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}{Selection on $Y^0$ and event studies}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=0.70\textheight]{./lecture_includes/selection_y0.png}
-\end{figure}
-
-\end{frame}
-
-
-
 
 \begin{frame}{Don't ask more of event studies than they can give}
 
@@ -2425,284 +2348,6 @@ In /Labs/DDD I have a simulation to illustrate this for us called ddd2.do.  The 
 \end{frame}
 
 
-\begin{frame}{Real world example of questionable unconditional parallel trends}
-
-\begin{itemize}
-\item Me, Christine Durrance, and Melanie Guldi have been working on a project for years looking at online dating's effect on birth rates
-	\begin{itemize}
-	\item Thickening of relationship markets
-	\item Reduced search costs
-	\item Formation of better relationships meant for forming families
-	\end{itemize}
-\item But online dating companies have an incentive to perpetuate dating despite claims to the contrary, which may reduce the formation of families
-\item Plus so many confounders -- websites appeared simultaneously, smart phones, social media, and birth rates plummeted after Great Recession ("demographic transition")
-\end{itemize}
-\end{frame}
-
-
-
-
-
-\begin{frame}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=0.95\textheight]{./lecture_includes/craigslist_online}
-\end{figure}
-
-\end{frame}
-
-
-
-
-
-\begin{frame}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=0.85\textheight]{./lecture_includes/python_births.png}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=0.85\textheight]{./lecture_includes/es_br1544_shortgap.png}
-\end{figure}
-
-\end{frame}
-
-
-\begin{frame}{Scrutinizing that event study}
-
-\begin{itemize}
-\item There are two things going on in that graph
-	\begin{enumerate}
-	\item Notice the decline in coefficients leading into $t-1$ as opposed to $t-1$ being a solid circle -- called "short gap" calculation of event study coefficients, which is possible with new estimators but impossible with regressions
-	\item No covariates
-	\end{enumerate}
-\item We are comparing each period to the period to its left, but OLS used the $t-1$ as its baseline
-\item Plus without controlling for covariates, we are assuming that ordinarily, small and large counties would have evolved similarly, but we know sorting into large vs small counties is not random
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Scrutinizing that event study}
-
-\begin{itemize}
-\item So we do two things: 
-	\begin{enumerate}
-	\item We use the same method as OLS for calculating the event studies ("long difference"), 
-	\item We include a control for how urban the county is with a 9-digit variable (RUCC)
-	\end{enumerate}
-\item Compare the first event study to the last one, and see if you can spot the difference 
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Short Gap vs. Long Difference}
-
-\begin{figure}[htbp]
-    \centering
-    \begin{minipage}[b]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth,height=0.75\textheight,keepaspectratio]{./lecture_includes/es_br1544_shortgap.png}
-        \caption{Short Gap}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[b]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth,height=0.75\textheight,keepaspectratio]{./lecture_includes/es_births2.png}
-        \caption{Long Difference}
-    \end{minipage}
-\end{figure}
-
-\pause
-
-\begin{itemize}
-\item Question 1: how could you have seen that the event study was "short gap" vs "long difference"? \pause
-\item Question 2: What is the relationship between the negative coefficients under short gap and the positive coefficients in long difference?
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Is Unconditional parallel trends plausible?}
-
-\begin{itemize}
-\item Without covariates, we are explicitly assuming that the treatment and control group would have evolved similarly in birth rates
-\item But what if Craigslist entered certain kinds of counties differently than others?
-\item What if the ones it entered earlier had different birth rate trends?
-\item Let's look at the rollout by urban status
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Small numbers are more urban}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=0.85\textheight]{./lecture_includes/pretty_RUCC}
-\end{figure}
-
-\end{frame}
-
-
-
-
-
-
-\begin{frame}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=0.95\textheight]{./lecture_includes/es_br1544_combined.png}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}{Shoeleather and DiD}
-
-\begin{itemize}
-
-\item Do everything you can to understand selection -- shoeleather dominates technical knowledge (Rubin 2008 "Design Trumps Analysis"; Freedman 1991)
-\item John Snow did not just download data and run regressions -- he worked hard to find comparable groups, learn the institutional details, and think carefully about selection
-\item Do everything you can to figure out the treatment assignment mechanism 
-\item Consider interviewing key people!
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}[shrink=20]
-    \centering
-    \begin{center}
-    \begin{figure}
-        \includegraphics[width=\textwidth]{./lecture_includes/craig_dm}
-    \end{figure}
-    \end{center}
-    
-    \vspace{0.5cm} % Add some space between the image and the text
-
-    
-\end{frame}
-
-
-
-\begin{frame}{What happened?}
-
-\begin{itemize}
-\item What happened?  Craigslist tended to target urban counties so treatment were highly urban and control highly rural
-\item Remember that what's missing in the ATT is $\textcolor{red}{E[Y^0|D=1]}$ and we use the control group trends in its $Y^0$ to \emph{impute} the missing $\textcolor{red}{E[Y^0|D=1]}$
-\item It's actually pretty basic -- do you think cities have different birth rate trends than counties?  If so, then that imputation is likely to be bad
-\item But what if you imputed $Y^0$ apples for apples -- use cities in the control to impute cities in the treatment
-
-\end{itemize}
-\end{frame}
-
-
-
-\begin{frame}{You may need to replace PT}
-
-\begin{itemize}
-\item Covariates in diff-in-diff aren't "omitted variable bias"; rather they repair your broken parallel trends
-\item Two parallel trends assumptions
-	\begin{enumerate}
-\item Unconditional parallel trends:  parallel trends holds for treatment and control (think randomized treatment)
-\item Conditional parallel trends: means only units that are similar on covariates would have evolved similarly (think selection on covariates)
-	\end{enumerate}
-\item Kahn-Lang and Lang (2020) say that if your two groups are different at baseline on outcomes, treatment was not random, is likely caused by covariates, and you need to explain why that matters or does not
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Is Unconditional Parallel Trends Plausible?}
-
-\begin{itemize}
-
-\item But what if these two groups are different in ways that predict $Y^0$?
-
-\item Let's say for instance that your study looks at an intervention that primarily effects cities, but your only control group are rural counties
-
-\item These groups differ in a ways that might, depending on your study, not be plausibly suggesting they would've been on the same trends
-
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Conditional parallel trends}
-
-\begin{itemize}
-
-\item While it isn't required that two groups -- group $k$ and group $U$ -- be similar on observables for parallel trends to hold:
-
-	\begin{enumerate}
-	\item Remember, if treatment had been random, then they would have the average covariates
-	\item And if they aren't, then you may need to provide more evidence that these differences are irrelevant
-	\item So you should still check and see and if they aren't, you either adjust or have a good justification for why they're the same on trends in $E[Y^0]$ 
-	\end{enumerate}
-	
-\item Including covariates weakens the unconditional parallel trends assumption by only requiring that units with similar covariate values, as opposed to everyone, follow similar counterfactual trends in $Y^0$
-\item This is means switching out the \emph{unconditional parallel trends} assumption for the \emph{conditional parallel trends} assumption
-
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Why covariates?}
-
-\begin{itemize}
-
-\item The inclusion of covariates in diff-in-diff models is not about trying to find random variation in the treatment within values of the dimension of X
-\item It is based on the claim that the inclusion of covariates is necessary to re-establish parallel trends
-\item This is itself different than how covariates will be used in synthetic control, too
-\end{itemize}
-
-\end{frame}
-
-
-
-
-\begin{frame}{Correcting the missingness problem}
-
-\begin{eqnarray*}
-\text{ATT} &=& E[\delta | D=1] \\
-&=& E[Y^1-\textcolor{red}{Y^0} | D=1] \\
-&=& E[Y^1 | D=1] - \textcolor{red}{E[Y^0|D=1]} \\
-&=& E[Y | D=1] - \textcolor{red}{E[Y^0|D=1]} 
-\end{eqnarray*}
-
-\bigskip
-
-We were always missing $Y^0$ values for the treatment group units, but parallel trends allowed us to impute it using the change in $[Y^0]|D=0]$ as a guide
-
-\bigskip
-
-But if that trend is not a good guide, then we cannot.  
-
-
-\end{frame}
-
-
-\begin{frame}{Conditional parallel trends}
-
-The DiD equation yields:
-
-\begin{eqnarray*}
-\widehat{\delta} &=& \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
-&=& \text{ATT} + \text{Non-parallel trends bias}
-\end{eqnarray*}
-
-\bigskip
-
-If we believe that conditional on covariates, parallel trends holds, but only within values of $X$, then there are methods we can use that incorporate covariates into the DiD equation and unbiasedness returns
-
-\bigskip 
-
-The inclusion of covariates has particular regression specifications, plus there are alternative methods too, and we will review them
-
-\end{frame}
-
-
-
 
 \begin{frame}
  
@@ -2713,99 +2358,63 @@ The inclusion of covariates has particular regression specifications, plus there
 
 \end{frame}
 
-
-
-\begin{frame}{Step 6. Covariate Imbalance}
-    \frametitle{Covariate Balance and Parallel Trends}
-    \begin{itemize}
-        \item The parallel trends assumption is untestable but can be evaluated using observed covariates.
-        \item Balance in key covariates helps assess whether treated and control groups would follow similar trends.
-        \item Differences in demographics or economic conditions between groups can indicate violations of parallel trends.
-        \item Use covariates that are unlikely to be affected by treatment to check balance.
-    \end{itemize}
-\end{frame}
-
-
-\begin{frame}
-    \frametitle{Baseline Covariates and Normalized Difference}
-    \begin{itemize}
-        \item Baseline covariates are measured before treatment ($t-1$). Check for balance between treatment and control groups.
-        \item Report the averages of covariates for both groups in a table.
-        \item The normalized difference is calculated as:
-        $$ \text{Norm. Diff}_\omega = \frac{\overline{X}_{\omega,T} - \overline{X}_{\omega,C}}{\sqrt{(S_{\omega,T}^2 + S_{\omega,C}^2)/2}} $$
-        \item The normalized difference measures imbalance; it should be less than 0.25 to avoid problematic imbalance Imbens and Rubin (2015).
-    \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Normalized Difference vs. Z-Score}
-    \begin{itemize}
-        \item \textbf{Normalized Difference:}
-        \begin{itemize}
-            \item Measures difference in group means (e.g., treatment vs. control)
-            \item Interprets difference relative to pooled variance
-            \item Used for comparing balance between groups
-        \end{itemize}
-        \vspace{0.5em}
-        \item \textbf{Z-Score:}
-        \begin{itemize}
-            \item Measures distance of a single observation from the mean
-            \item Expresses this distance in standard deviation units
-            \item Used for assessing how unusual a single observation is
-        \end{itemize}
-        \vspace{0.5em}
-        \item Both metrics standardize differences using standard deviation, making them unit-free and comparable across variables, but in our case we need to focus on differences between two groups, so we use the normalized difference and focus on a threshold of 0.25.
-    \end{itemize}
-\end{frame}
-
-
-\begin{frame}
-    \centering
-    \includegraphics[width=0.9\textwidth]{./lecture_includes/table_jel_covariates.jpg}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Intuition for Checking Covariate Balance}
-    \begin{itemize}
-    \item Remember that confounders are variables that do two things
-    	\begin{enumerate}
-	\item $X \rightarrow D$. Confounders have different distributions in treatment than control and these balance checks are about seeing if that's true
-	\item $X \rightarrow \Delta E[Y^0]$. But it's only a problem if the imbalance is on variables that also predict potential outcome trends, and we choose covariates based on things we think that's true
-	\end{enumerate}
-\item So you select covariates that you think are theoretically predictive of $Y^0$ trends, but then you check imbalance to see if they are differentially distributed 
-    \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Example: Murder}
+\begin{frame}{Step 5. Is Unconditional Parallel Trends Plausible?}
 
 \begin{itemize}
-\item Consider what an expert on your outcome at that time period as your data would have said was the "ordinary determinants of the outcome" (e.g., birth rates, murders)
-\item Say that there a set of cities pass gun law ordinances but smaller towns don't and you want to know its effect on homicides
-\item Maybe as much as 80\% of homicides are in cities -- the homicides in small towns are rare, and the trends are probably pretty noisy and different
-\item So you might think population size, could be a very important covariate to include or urbanization
+
+\item We have been working with a parallel trends assumption that requires the two \emph{groups} have the same trend in average $Y^0$
+
+\item But what if these two groups were so different from one another that their potential outcomes didn't add up to be the same?
+
+\item What if the workers in the job training program were poor and the control group was rich -- do we think the earnings of those two groups would have been evolved similarly?  Why/why not?
+
+
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{You may need a \emph{different} PT assumption}
+
+\begin{itemize}
+\item Parallel trends for sub-populations, but not the whole population:
+	\begin{enumerate}
+	\item Unconditional parallel trends:  parallel trends holds for the overall average treatment and control groups
+	\item Conditional parallel trends: parallel trends only has to hold for observable sub-groups, but not necessarily the whole group
+	\end{enumerate}
+\item Example: Male versus female earnings growth
+	\begin{itemize}
+	\item Assume male earnings grow by $+2$, female by $+1$, 
+	\item Treatment is 75\% male, control is 25\% is male
+	\item $E[\Delta Y^0|D=1]=1.75$ but $E[\Delta Y^0|D=0]=1.25$
+	\end{itemize}
+\item Unconditional parallel trends won't hold because the groups aren't balanced on the characteristics that cause trends 
 \end{itemize}
 
 \end{frame}
 
 
 
-\begin{frame}{Picking covariates}
+\begin{frame}{Conditional parallel trends}
+Conditional parallel trends (CPT) is a weakened version of the parallel trends assumption requiring that it holds \emph{within} the dimensions of the selected covariates:
+\begin{align*}
+CPT: \textcolor{red}{E[Y^0_k|Post, X]} - E[Y^0_k|Pre, X] = E[Y^0_U|Post, X] - E[Y^0_U|Pre, X]
+\end{align*}
+First time it shows up is Heckman, Ichimura and Todd (1997). Idea can be abstract so let's look at a graph to help us decipher what it means and what we can do. And it's still not directly testable due to still missing the first potential outcome (i.e., counterfactual). 
+\end{frame}
+
+\begin{frame}{Which covariates do you need?}
 
 \begin{itemize}
 \item Conditional parallel trends is tricky because it first assumes you know the covariates you need to satisfy it
+\item But how do we decide which variables do this and which ones don't?
 \item Econometrics is no help here -- you need common sense, theory, logic, and expertise
-\item Ultimately then there will be two steps
-	\begin{enumerate}
-	\item Which covariates \emph{cause} differential trends in $Y^0$ at this time period?
-	\item And do they have different means in your treatment and control group?
-	\end{enumerate}
-\item Let's take them in turn
+\item When selecting covariates, use "confounders" logic -- but confounders of the \emph{trend}?
 \end{itemize}
 
 \end{frame}
 	
-
 
 
 
@@ -2820,49 +2429,62 @@ The inclusion of covariates has particular regression specifications, plus there
     ]
     % Nodes
     \node (X) {Covariates \\ \( X \)};
-    \node (D) [below left of=X, xshift=-1cm, yshift=-1cm] {\( CCL \)};
-    \node (DeltaY0) [below right of=X, xshift=1cm, yshift=-1cm] {\( \Delta E\left[Murder^0\right] \)};
+    \node (D) [below left of=X, xshift=-1cm, yshift=-1cm] {\( D \)};
+    \node (DeltaY0) [below right of=X, xshift=1cm, yshift=-1cm] {\( \Delta E\left[Y^0\right] \)};
     % Arrows
     \draw[line] (X) -- (DeltaY0);
     \draw[line] (X) -- (D);
     \end{tikzpicture}
-\caption{DAG representing differences in county-level covariate composition (\(X\)) across treatment and control groups (\(D\)) and their determination of the untreated potential \emph{murder rate} trends (\(\Delta E\left[Murder^0\right]\)).}
-\label{fig:covariates_pathway1}
+\caption{DAG representing differences in county-level covariate composition (\(X\)) across treatment and control groups (\(D\)) and their determination of the untreated potential outcome trends (\(\Delta E\left[Y^0\right]\)).}
 \end{figure}
 
 \end{frame}
 
-\begin{frame}{Picking covariates}
+
+
+\begin{frame}{Example: Concealed Carry Gun Laws and Murder}
 
 \begin{itemize}
-\item Since you are missing $Y^0$, ask yourself, "what are the ordinary determinants of US murder from 1977 to 1992?"
+\item Become an expert on your left-hand-side variable because you need to know $X \rightarrow \Delta Y^0$
 	\begin{itemize}
-	\item Drugs and gangs (crack cocaine)
+	\item Drugs and gangs (i.e., crack cocaine epidemic)
 	\item Cities had different homicide rates than rural counties
 	\item Police, incarceration
 	\item Demographics (e.g., race shares, age shares) and economic things (e.g., poverty, per capital income, AFDC rolls)
 	\item Maybe throw it all into LASSO using only the $Y^0$ values (maybe pre-treatment murders)
 	\end{itemize}
-\item Become an expert on your left-hand-side variable because you need to know $X \rightarrow \Delta Y^0$
-\item But just because some $X \rightarrow Y^0$ does not mean you have to control for it -- only if the two groups are \emph{imbalanced}
 \end{itemize}
 
 \end{frame}
 
 
 
-\begin{frame}{Checking Covariate Imbalance}
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
 
-\begin{itemize}
-\item How do you know if you need to control for the covariates that cause $\Delta Y^0$?
-\item Think about the RCT 
-	\begin{itemize}
-	\item Lots of things cause the outcome, not just the treatment
-	\item You don't \emph{need} to control for them though, but why?
-	\item Because in an RCT, covariates are on average the same in both groups
-	\end{itemize}
+\end{frame}
+
+\begin{frame}{Step 6. Covariate Imbalance}
+    \begin{itemize}
+	\item Kahn-Lang and Lang (2020) say that if your two groups are different at baseline on outcomes, treatment was not random, is likely caused by covariates, and you need to explain why that matters or does not
+	\item Randomized treatment will balance covariates, hence why we don't need to include them as controls in RCT \emph{even though they cause the outcome}
+	\item But if they aren't balanced in your diff-in-diff, and they cause \emph{trends}, then parallel trends won't hold
 \item So, next you focus on $X \rightarrow D$, which is to say, check the imbalance in covariates you need for conditional parallel trends
 \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Create a balance table}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.80\textheight]{./lecture_includes/step6_imbalance}
+\end{figure}
 
 \end{frame}
 
@@ -2878,18 +2500,69 @@ The inclusion of covariates has particular regression specifications, plus there
 \end{frame}
 
 
-\begin{frame}{}
+\begin{frame}
+    \frametitle{Summarizing}
+    \begin{itemize}
+    \item So, when choosing covariates, remember that there are two steps involved
+    	\begin{enumerate}
+	\item $X \rightarrow \Delta E[Y^0]$. Pick covariates that are needed to satisfying conditional parallel trends 
+	\item $X \rightarrow D$. Check for imbalance using the normalized difference in means equation to determine if you have "problematic imbalance"
+	\end{enumerate}
+\item And the heuristic I am suggesting is to select covariates that are the "ordinary determinants of $Y^0$" (i.e., become an expert on your left-hand-side variable)
+    \end{itemize}
+\end{frame}
 
+\begin{frame}
+ 
 \begin{figure}
     \centering
-    \includegraphics[height=0.80\textheight]{./lecture_includes/step6_imbalance}
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
 \end{figure}
 
 \end{frame}
 
 
 
-\begin{frame}{Estimators}
+
+
+\begin{frame}{Step 7: Plot Average Outcomes Across Cohorts}
+
+\begin{itemize}
+\item We are literally \textbf{seven} steps into the checklist and this is the first time we are looking at the outcomes (except for baseline)
+\item You want to avoid "peeking" at the outcome because you're not wanting to bias yourself and you want this to mimic the RCT as best as you can
+\item This is another reason I get frustrated with TWFE -- you can't separate the design from the estimation because the left-hand-side and right-hand-side are both there 
+\item Plot the evolution of the mean homicides over time \emph{for each cohort}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.85\textheight]{./lecture_includes/step7_outcomes}
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+\subsection{Four Estimators for Covariates}
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}{Step 8. Estimators for Covariates}
 
 \begin{itemize}
 
@@ -2913,7 +2586,7 @@ Three papers (though sometimes you see others) about covariate adjustment in DiD
 \begin{enumerate}
 \item Abadie (2005) on semiparametric DiD -- reweights the comparison group part of the DID equation using a propensity score based on X
 \item Heckman, Ichimura and Todd (1997) on outcome regression uses baseline X and control group only to impute the missing counterfactual $Y^0$ for treatment group units in a DiD equation
-\item Sant'Anna and Zhou (2020) is double robust which means the method does both of these at the same time so that you don't have to choose between them
+\item Sant'Anna and Zhao (2020) is double robust which means the method does both of these at the same time so that you don't have to choose between them
 \end{enumerate}
 
 \bigskip
@@ -2923,7 +2596,6 @@ We will discuss both of them and then compare their performance with the more st
 \end{frame}
 
 
-\subsection{Four Estimators for Covariates}
 
 
 
@@ -3226,7 +2898,7 @@ where $\widehat{p}(X)$ is an estimator for the true propensity score. Reduces th
 \item Two papers:
 	\begin{enumerate}
 	\item Chang (2020) incorporates DR with double/debiased ML
-	\item Sant'Anna and Zhau (2020) is based on the IPW (Abadie 2005) and OR (Heckman, Ichimura and Todd 1997)
+	\item Sant'Anna and Zhao (2020) is based on the IPW (Abadie 2005) and OR (Heckman, Ichimura and Todd 1997)
 	\end{enumerate}
 \item For now, I've prepped the latter, but will soon get Chang (2020) incorporated -- I just have been relying on Brigham Frandsen to teach the DML material
 \end{itemize}
@@ -3493,6 +3165,290 @@ Remember -- it's for 2x2 with covariates (i.e., one treatment group).
 \end{frame}
 
 
+
+\begin{frame}{Event studies can mislead}
+
+\begin{itemize}
+
+\item People mistakenly equate parallel trends with parallel pretrends, but you can have one without the other, both or neither
+\item One of the ways you can have parallel pre-trends but violate parallel trends is if the trends change differentially by covariate over time (called x-specific trends)
+\item Code is called \texttt{misleading_eventstudy.do} and \texttt{misleading_eventstudy.R}
+\item Note how well the unconditional parallel trends assumption appears to be when reviewing the graphs only
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Event studies can mislead}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.75\textheight]{./lecture_includes/es_flawed.png}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Event studies can mislead}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.75\textheight]{./lecture_includes/es_correct.png}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Time varying trends in $Y^0$ have \emph{nothing} to do with parallel trends}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.75\textheight]{./lecture_includes/misleading_eventstudy_code}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Selection can also make event studies misleading}
+
+\begin{itemize}
+
+\item Remember from earlier: some forms of selection that satisfy parallel trends will nonetheless complicate event study plots
+\item Selection on baseline $Y^0$, for instance, can cause the pre-trends to break but not parallel trends
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Selection on $Y^0$ and event studies}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.70\textheight]{./lecture_includes/selection_y0.png}
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+\begin{frame}{What is the event study for?}
+
+\begin{itemize}
+
+\item The purpose of the event study is as a \emph{falsification}, not as a proof of the parallel trends
+\item Falsifications should be the \emph{same} model used for estimation but applied to something that it cannot cause -- "same group, different outcome"
+\item In this case, future treatments under no anticipation cannot affect the past
+\item Since the estimation of post-treatment ATT use $t-1$ for "pre" period, the falsifications in the event studies should too 
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Short vs Long Difference Calculation}
+
+\begin{itemize}
+\item OLS always drops a single $t-1$ baseline year which means event studies are calculated using "long differences"
+\item But the newer methods are not regression based, and therefore open the door for two ways to do the calculation
+	\begin{enumerate}
+	\item \textbf{Long differences}: each event study will be a simple 2x2 using the same baseline as used in the post-treatment calculations
+	\item \textbf{Short gaps}: pre-treatment coefficients will be calculated using a "moving" baseline, usually the one right next to it
+	\end{enumerate}
+\item You can tell this one is using short gaps, for instance, because otherwise how is there a $t-1$ coefficient?
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.5\textheight]{./lecture_includes/magic_johnson_eventstudy}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}{Example}
+
+\begin{itemize}
+
+\item Has become a source of confusion due in part to documentation in some software being vague on this point
+\item Appears to be very little awareness of this as you will see it done both ways, but they cannot both be the correct representation as it's possible to reject trends in one but not the other 
+\item Let's look at an example from my project
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Real world example of questionable unconditional parallel trends}
+
+\begin{itemize}
+\item Me, Christine Durrance, and Melanie Guldi have been working on a project for years looking at online dating's effect on birth rates
+	\begin{itemize}
+	\item Thickening of relationship markets
+	\item Reduced search costs
+	\item Formation of better relationships meant for forming families
+	\end{itemize}
+\item But online dating companies have an incentive to perpetuate dating despite claims to the contrary, which may reduce the formation of families
+\item Plus so many confounders -- websites appeared simultaneously, smart phones, social media, and birth rates plummeted after Great Recession ("demographic transition")
+\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.95\textheight]{./lecture_includes/craigslist_online}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.85\textheight]{./lecture_includes/es_br1544_shortgap.png}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Scrutinizing that event study}
+
+\begin{itemize}
+\item There are two things going on in that graph
+	\begin{enumerate}
+	\item Notice the decline in coefficients leading into $t-1$ as opposed to $t-1$ being a solid circle -- called "short gap" calculation of event study coefficients, which is possible with new estimators but impossible with regressions
+	\item No covariates
+	\end{enumerate}
+\item We are comparing each period to the period to its left, but OLS used the $t-1$ as its baseline
+\item Plus without controlling for covariates, we are assuming that ordinarily, small and large counties would have evolved similarly, but we know sorting into large vs small counties is not random
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Scrutinizing that event study}
+
+\begin{itemize}
+\item So we do two things: 
+	\begin{enumerate}
+	\item We use the same method as OLS for calculating the event studies ("long difference"), 
+	\item We include a control for how urban the county is with a 9-digit variable (RUCC)
+	\end{enumerate}
+\item Compare the first event study to the last one, and see if you can spot the difference 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Short Gap vs. Long Difference}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth,height=0.75\textheight,keepaspectratio]{./lecture_includes/es_br1544_shortgap.png}
+        \caption{Short Gap}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth,height=0.75\textheight,keepaspectratio]{./lecture_includes/es_births2.png}
+        \caption{Long Difference}
+    \end{minipage}
+\end{figure}
+
+\pause
+
+\begin{itemize}
+\item Question 1: how could you have seen that the event study was "short gap" vs "long difference"? \pause
+\item Question 2: What is the relationship between the negative coefficients under short gap and the positive coefficients in long difference?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Is Unconditional parallel trends plausible?}
+
+\begin{itemize}
+\item Without covariates, we are explicitly assuming that the treatment and control group would have evolved similarly in birth rates
+\item But what if Craigslist entered certain kinds of counties differently than others?
+\item What if the ones it entered earlier had different birth rate trends?
+\item Let's look at the rollout by urban status
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Small numbers are more urban}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.85\textheight]{./lecture_includes/pretty_RUCC}
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.95\textheight]{./lecture_includes/es_br1544_combined.png}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Shoeleather and DiD}
+
+\begin{itemize}
+
+\item Do everything you can to understand selection -- shoeleather dominates technical knowledge (Rubin 2008 "Design Trumps Analysis"; Freedman 1991)
+\item John Snow did not just download data and run regressions -- he worked hard to find comparable groups, learn the institutional details, and think carefully about selection
+\item Do everything you can to figure out the treatment assignment mechanism 
+\item Consider interviewing key people!
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[shrink=20]
+    \centering
+    \begin{center}
+    \begin{figure}
+        \includegraphics[width=\textwidth]{./lecture_includes/craig_dm}
+    \end{figure}
+    \end{center}
+    
+    \vspace{0.5cm} % Add some space between the image and the text
+
+    
+\end{frame}
+
+
+
+\begin{frame}{What happened?}
+
+\begin{itemize}
+\item What happened?  Craigslist tended to target urban counties so treatment were highly urban and control highly rural
+\item Remember that what's missing in the ATT is $\textcolor{red}{E[Y^0|D=1]}$ and we use the control group trends in its $Y^0$ to \emph{impute} the missing $\textcolor{red}{E[Y^0|D=1]}$
+\item It's actually pretty basic -- do you think cities have different birth rate trends than counties?  If so, then that imputation is likely to be bad
+\item But what if you imputed $Y^0$ apples for apples -- use cities in the control to impute cities in the treatment
+
+\end{itemize}
+\end{frame}
+
+
+
+
 \begin{frame}{Application using real data}
 
 \begin{itemize}
@@ -3685,68 +3641,20 @@ Together let's do questions 1 and 2a-c
 \end{frame}
 
 
-\begin{frame}
- 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
-\end{figure}
 
-\end{frame}
+\subsection{Estimators for differential timing} 
 
-
-
-
-
-\begin{frame}{Step 7: Plot Average Outcomes Across Cohorts}
+\begin{frame}{Step 8: Estimator Selection for Differential Timing}
 
 \begin{itemize}
-\item We are literally \textbf{seven} steps into the checklist and this is the first time we are looking at the outcomes (except for baseline)
-\item You want to avoid "peeking" at the outcome because you're not wanting to bias yourself and you want this to mimic the RCT as best as you can
-\item This is another reason I get frustrated with TWFE -- you can't separate the design from the estimation because the left-hand-side and right-hand-side are both there 
-\item Plot the evolution of the mean homicides over time \emph{for each cohort}
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=0.85\textheight]{./lecture_includes/step7_outcomes}
-\end{figure}
-
-\end{frame}
-
-
-\begin{frame}
- 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
-\end{figure}
-
-\end{frame}
-
-
-
-
-
-\begin{frame}{Step 8: Estimator Selection and Assumptions}
-
-\begin{itemize}
-\item Some options with simple diff-in-diff
+\item What if there had not been just one treatment cohort, but several? 
+\item Think of there being three options with differential timing 
 	\begin{enumerate}
-	\item TWFE with or without covariates (you'll need additional assumptions for TWFE with controls)
-	\item Regression adjustment (Heckman, Ichimura and Todd 1997), inverse probability weighting (Abadie 2005) or double robust (Sant'Anna and Zhou 2020)
-	\item Double debiased machine learning (Chang 2020)
-	\end{enumerate}
-\item Think of there being two options with differential timing 
-	\begin{enumerate}
+	\item Traditional twoway fixed effects (TWFE)
 	\item Aggregating ATT(g,t) using Callaway and Sant'Anna or Sun and Abraham
 	\item Imputation using Borusyak, Jaravel and Speiss, Gardner or Wooldridge
 	\end{enumerate}
-\item Which one do you want? Let's review now the differential timing
+\item  Let's review now the differential timing literature with an aim to making a decision among them
 \end{itemize}
 
 \end{frame}
@@ -3765,53 +3673,11 @@ Together let's do questions 1 and 2a-c
 \begin{frame}{Choosing between them}
 
 \begin{itemize}
-\item First goal is to understand them, their assumptions, their mechanics
-\item Second goal is to present a simple criteria for selecting between them
+\item First goal is to understand them, their assumptions, their mechanics and their code
+\item Second goal is to present a simple criteria for selecting between them so that you aren't "cherry picking your diff-in-diff"
 \end{itemize}
 
 \end{frame}
-
-
-
-
-\begin{frame}{Two Regression Models}
-
-\begin{eqnarray}
-Y_{ist} &=& \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \delta (Treat_{is} \times Post_t) + \varepsilon_{ist} \\
-Y_{ist} &=& \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}
-\end{eqnarray}
-
-\bigskip
-
-First equation is used for simple designs when everyone is treated at once; second equation was used when different groups were treated at different times (``differential timing'')
-
-\bigskip
-
-First equation works; second one only sometimes works
-
-\end{frame}
-
-
-\begin{frame}{Equivalence}
-$$Y_{ist} = \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \textcolor{blue}{\delta} (Treat_{is} \times Post_t) + \varepsilon_{ist} $$
-
-\bigskip
-
-$$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overline{y}_k^{pre(k)} \bigg ) - \bigg ( \overline{y}_U^{post(k)} - \overline{y}_U^{pre(k)} \bigg ) $$
-
-\begin{itemize}
-\item Regression estimates of $\delta$ and the ``four averages and three subtractions'' are the same thing numerically (show code)
-\item And under a particular assumption, they are also unbiased estimates of an aggregate causal parameter
-\item But this is in the case of a 2x2 -- one group treated in time period $t$, and another group that isn't. 
-\item What would people do when it wasn't a 2x2?  They'd use a different specification of TWFE.
-\end{itemize}
-
-\end{frame}
-
-
-
-
-
 
 
 
@@ -3827,28 +3693,6 @@ $$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overl
 \end{frame}
 
 
-\begin{frame}{Types of repeating data}
-
-	\begin{itemize}
-	\item Panel datasets follow the same units (individuals, firms, countries, schools, etc.) over several time periods
-	\item Repeated cross-sections will sample a population for a given area, but not be the same people or units in that area
-	\item Difference-in-differences accommodates either, but panel estimators are about the first 
-	\end{itemize}
-\end{frame}
-
-
-
-\begin{frame}{Panel estimators}
-
-	\begin{itemize}
-	\item Panel estimators estimate causal effects in situations where there are unobserved factors associated with the treatment variable creating endogeneity problems
-	\item Less about identification under parallel trends and more about modeling unobservables as unchanging over time (``time invariant'')
-	\item Fixed effects estimation eliminate the unobserved confounder through a demeaning process while retaining the identification of the treatment parameter under constant treatment efects
-	\item Heterogenous treatment effects are part of the problem after that
-	\end{itemize}
-\end{frame}
-
-
 
 
 \begin{frame}{Discussion of estimate}
@@ -3859,24 +3703,13 @@ $$Y_{ist} = \beta_0 + \delta D_{ist} + \tau_t + \sigma_s + \varepsilon_{ist}$$
 
 \begin{itemize}
 \item If you estimate with OLS with differential timing, what does $\widehat{\delta}$ correspond to?
-\item It also corresponds to the previous ``four averages and three subtractions'' -- but it's numerous of them, not just one
+\item It is a weighted average of all possible ``four averages and three subtractions'' 
+\item So similar to the 2x2 regression, except the coefficient is a weighted average over several -- including one that we should have avoided all along
 
 \end{itemize}
 
 \end{frame}
 
-
-
-\begin{frame}{Bacon Decomposition Preview}
-
-
-\begin{itemize}
-\item Andrew Goodman-Bacon (2021) decomposed $\widehat{\delta}$ and showed it is numerically identical to a weighted average of all ``four averages and three subtractions''
-\item But, even before we get to causality there are unusual features
-\item TWFE model assigns its own weights which are a function of the size of a ``group'' and the variance of group treatment dummies
-\end{itemize}
-
-\end{frame}
 
 
 
@@ -3907,8 +3740,8 @@ Let's return to a simpler example with only two groups -- a $k$ group treated at
 \begin{frame}{Terms and notation}
 
 \begin{itemize}
-\item Let there be two treatment groups (k,l) and one untreated group (U)
-\item k,l define the groups based on when they receive treatment (differently in time) with k receiving it earlier than l
+\item Let there be two treatment groups ($k,l$) and one untreated group ($U$)
+\item $k,l$ define the groups based on when they receive treatment (differently in time) with k receiving it earlier than $l$
 \item Denote $\overline{D}_k$ as the share of time each group spends in treatment status
 \item Denote $\widehat{\delta}_{jb}^{2x2}$ as the canonical $2\times 2$ DD estimator for groups $j$ and b where $j$ is the treatment group and $b$ is the comparison group
 \end{itemize}
@@ -4221,33 +4054,16 @@ While large weight on the ``late to early 2x2'' is \emph{suggestive} of an issue
 
 \begin{frame}{Callaway and Sant'Anna 2020}
 
-CS is a DiD estimator used for estimating and then summarizing smaller ATT parameters under differential timing and conditional parallel trends into more policy relevant ATT parameters (either dynamic or static)
+CS is a DiD estimator used with differential timing to estimate "building block" parameters called group-time $ATT(g,t)$ parameters and is used in situations like this:
 
-
-\begin{figure}
-\includegraphics[scale=0.25]{./lecture_includes/pedro_cites}
-\end{figure}
-
-\end{frame}
-
-
-\begin{frame}{When is CS used}
-
-Just some examples of when you'd want to consider it:
 \begin{enumerate}
 \item When treatment effects differ depending on when it was adopted
 \item When treatment effects change over time
 \item When shortrun treatment effects are different than longrun effects
-\item When treatment effect dynamics differ if people are first treated in a recession relative to expansion years
 \end{enumerate}
 
-\bigskip
-
-CS estimates the ATT by identifying smaller causal effects and aggregating them using non-negative weights
 
 \end{frame}
-
-
 
 
 
@@ -4300,17 +4116,15 @@ Group-time ATT is the ATT for a specific group and time
 
 \begin{frame}{Assumptions}
 
-Assumption 1: Sampling is iid (panel data, but repeated cross-sections are possible) \\
-\bigskip
+Assumption 1: Irreversible treatment \\
 Assumption 2: Conditional parallel trends (for either never treated or not yet treated) \\
 \begin{eqnarray*}
 E[Y_t^0 - Y_{t-1}^0 | X,G_g=1] = [Y_t^0 - Y_{t-1}^0 | X,C=1] 
 \end{eqnarray*}
 \bigskip
-Assumption 3: Irreversible treatment \\
-Assumption 4: Common support (propensity score) \\
+Assumption 3: Common support (propensity score) \\
 \bigskip
-Assumption 5: Limited treatment anticipation (i.e., treatment effects are zero pre-treatment)
+Assumption 4: No Anticipation
 
 \end{frame}
 
@@ -4389,7 +4203,7 @@ TWFE is no longer negative, interestingly, once we eliminate the last group (giv
 
 
 
-\begin{frame}{Bias of TWFE Event Study Specificaiton}
+\begin{frame}{Bias of TWFE Event Study Specification}
 
 \begin{itemize}
 \item Bacon only focused on the static specification, and that's where the biases due to dynamics revealed itself
