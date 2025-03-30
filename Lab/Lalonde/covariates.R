@@ -2,7 +2,7 @@
 set.seed(20200403)
 
 # Load necessary packages
-devtools::install_github("pedrohcgs/DRDID")
+remotes::install_github("pedrohcgs/DRDID")
 library(DRDID) 
 library(ggplot2)
 library(dplyr)

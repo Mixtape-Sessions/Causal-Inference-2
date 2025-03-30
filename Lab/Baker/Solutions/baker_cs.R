@@ -39,7 +39,7 @@ atts <- att_gt(
 # ------------------------------------------------------------------------------
 
 # Calculate group-time ("group") ATTs and overall ("simple") ATT
-agg_effects <- aggte(atts, type = "simple", balance_e=TRUE)
+agg_effects <- aggte(atts, type = "group", balance_e=TRUE)
 summary(agg_effects)
 
 # Group-time ATTs

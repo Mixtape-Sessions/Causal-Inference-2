@@ -1,7 +1,7 @@
 **********************************************************************
 * na.do
 * description: illustrating a no anticipation violation with diff in diff
-**********************************************************************
+**************
 
 clear
 capture log close
@@ -85,3 +85,7 @@ regress y_d group##post, robust // did = 20
 * Incorrect specification
 regress y_c group##post_na if year>=1991, robust // did = 0
 regress y_d group##post_na if year>=1991, robust // did = 15
+
+
+
+
