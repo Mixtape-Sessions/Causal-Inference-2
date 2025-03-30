@@ -4706,55 +4706,33 @@ Assuming SUTVA, no anticipation and the strong PT, then let $\delta$ be the TWFE
 
 \begin{itemize}
 \item So once you run that specification, $\widehat{\delta}$ is going to recover a ``non-convex average'' over all unit level treatment effects (weights can be negative, more on this). 
-\item Not sure who came first, because there were working papers before publications, but my understanding is dCdH was the first to prove this
 \item Very important theorem -- established the ``no sign flip property'' for OLS with differential timing in the canonical static specification
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}{Negative weights}
+
+
+
+\begin{frame}{OLS Weighting}
 
 \begin{itemize}
-\item Very common now to hear about negative weights, and furthermore, that negative weights wipe out any causal interpretation, but why?
-\item Thought experiment: imagine every unit gained from the treatment, but their treatment effect when estimated was multiplied by a negative number
-\item It's possible it could flip the sign, but it would definitely at least pull the estimate away from the true effect
-\item This is dangerous -- and it's caused by the forbidden contrasts (comparing treated to already treated) which is what the canonical TWFE static specification is doing (for many of us unknowingly)
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}{Negative weights}
-
-\begin{itemize}
-\item Doesn't always pose a problem, but no proofs for this intuition known yet
-\item A large number of never-treated seems to make this less an issue
-\item Shrinking the spacing between treatment dates also can drive it down
-\item But does that mean that TWFE works, and what does it mean to work?
-\item TWFE still even when all the weights are positive the weighted average may not aggregate to what we think it does
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Weighting}
-
-\begin{itemize}
-\item The weights in OLS all come out of the model itself, \emph{not the economic question}
 \item The economic question is ``what parameter do you want? What does it look like? Who is in it?''
 \item And when you define the parameter up front, you've more or less defined the economic question you're asking
 \item But OLS sort of ignores your question and just gives you what it wants
+\item The weights in OLS all come out of the model itself, \emph{not the economic question}
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Weighting}
+\begin{frame}{OLS Weighting}
 
 \begin{itemize}
 \item What makes something a good vs a bad weight?
 \item Not being negative is the absolute minimal requirement
-\item But it's also not a good sign if you can't really explain the weights
+\item But that's the minimum -- we mainly are trying to weight to the target parameter, not justify the use of a model
+\item It is also not a good sign if you can't really explain the weights
 \end{itemize}
 
 \end{frame}
@@ -4772,97 +4750,91 @@ Assuming SUTVA, no anticipation and the strong PT, then let $\delta$ be the TWFE
 
 
 
-
-
-
-\begin{frame}{Different ways}
-
+\begin{frame}{DID\textsubscript{M} Estimator -- Introduction}
 \begin{itemize}
-
-\item In CS and dCDH, there are two ways to calculate the pre-treatment coefficients once you have obtained the ATT(g,t) parameter estimates:
-	\begin{enumerate}
-	\item \textbf{Short gap}. Uses a "rolling" method in which a new baseline is used for each 2x2 comparison.
-	
-	\begin{eqnarray*}
-	 \widehat{\delta}_{t-3} = \left( E[Y|D=1, t-3] - E[Y|D=1, t-2] \right) \\
-	 - \left( E[Y|D=0, t-3] - E[Y|D=0, t-2] \right)
-	 \end{eqnarray*}
-	 
-	\item \textbf{Long difference}. Uses a "universal baseline" with a fixed baseline at \( t-1 \).
-	
-	\begin{eqnarray*}
-	 \widehat{\delta}_{t-3} = \left( E[Y|D=1, t-3] - E[Y|D=1, t-1] \right) \\
-	 - \left( E[Y|D=0, t-3] - E[Y|D=0, t-1] \right)
-	 \end{eqnarray*}
-
-	\end{enumerate}
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{TWFE, Imputation, and CS}
-
-TWFE and imputation methods (discussed next) always use a fixed universal baseline. To ensure comparability with CS or dCDH, be sure to use the universal baseline syntax in Stata, R, or Python.
-
-\end{frame}
-
-
-\begin{frame}{Short Gaps and Long Differences}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\linewidth, height=0.8\textheight, keepaspectratio]{./lecture_includes/shortgap}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}{Recommendations}
-
-\begin{quote}
-"A natural follow-up question is to what extent the event-study plots for these alternative methods can be modified to be more comparable to conventional event-study plots. For CS/dCDH, there is a straightforward solution, which is to use “long-diﬀerences” for the pre-treatment coeﬃcients as well as the post-treatment coeﬃcients (i.e. always use the period before treatment as the baseline). This can be implemented, for example, in the \texttt{did} R and Stata packages using the options $\texttt{base_period = “universal”}$ and \texttt{long2}, respectively.  Using the default options in the \texttt{did_multiplegt} Stata package also yields comparisons using “long diﬀerences”, in contrast to the results for the R package shown above. Using these settings, the event-study estimates are numerically equivalent to the dynamic TWFE specification in the non-staggered setting considered here." - Roth (2024)
-\end{quote}
-
-\end{frame}
-
-\begin{frame}[fragile]{Short vs long2 syntax in \texttt{csdid}}
-\tiny
-
-\textbf{Short-gap method}
-\begin{lstlisting}[basicstyle=\ttfamily]
-csdid lemp lpop, ivar(countyreal) time(year) gvar(first_treat) method(dripw)
-estat event
-csdid_plot
-\end{lstlisting}
-
-
-\textbf{Long differences method}
-\begin{lstlisting}[basicstyle=\ttfamily]
-csdid lemp lpop, ivar(countyreal) time(year) gvar(first_treat) method(dripw) long2
-estat event
-csdid_plot
-\end{lstlisting}
-\end{frame}
-
-
-\begin{frame}{Short Gaps and Long Differences}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\linewidth, height=0.8\textheight, keepaspectratio]{./lecture_includes/short_long}
-\end{figure}
-
-\end{frame}
-
-
-\begin{frame}{Warning}
-
+\item DID\textsubscript{M} estimator from dCdH (de Chaisemartin and D'Haultfoeulle, 2020) estimates treatment effects around each treatment transition.
+\item Separately captures effects for:
 \begin{itemize}
-\item Unfortunately the \textcolor{red}{default} syntax for \texttt{csdid} and \texttt{did} in R uses short-gap
-\item So you \emph{must} use \texttt{long2} or \texttt{base_period = universal} to get the event study coefficient that will correctly illustrate the pre-treatment coefficients
-\item In addition to Roth (2024), Brantly Callaway has a note on his website about it \url{https://bcallaway11.github.io/posts/event-study-universal-v-varying-base-period}
+    \item "Joiners" (entering treatment)
+    \item "Leavers" (exiting treatment)
 \end{itemize}
-
+\item Defined as weighted average:
+\[
+DID_M = \text{weighted average of DID}_{+,t} \text{ and DID}_{-,t}
+\]
+\item Avoids TWFE negative weighting problem.
+\end{itemize}
 \end{frame}
+
+\begin{frame}{Estimating DID\textsubscript{+,t} ("Turning On")}
+\begin{itemize}
+\item For units that begin treatment at time \( t \):
+\[
+DID_{+,t} = \underbrace{(Y_{t}^{newly\ treated} - Y_{t-1}^{newly\ treated})}_{\text{Change for joiners}} - \underbrace{(Y_{t}^{untreated} - Y_{t-1}^{untreated})}_{\text{Change for untreated}}
+\]
+\item Compares outcomes of "joiners" to those never treated.
+\item Similar conceptually to Callaway \& Sant'Anna and Sun \& Abraham in scenarios where treatment turns on.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Estimating DID\textsubscript{-,t} ("Turning Off")}
+\begin{itemize}
+\item For units exiting treatment at time \( t \):
+\[
+DID_{-,t} = \underbrace{(Y_{t}^{leavers} - Y_{t-1}^{leavers})}_{\text{Change for leavers}} - \underbrace{(Y_{t}^{continuously\ treated} - Y_{t-1}^{continuously\ treated})}_{\text{Change for continuously treated}}
+\]
+\item Isolates effect of stopping treatment.
+\item Key assumption: treatment effect ceases immediately ("no carryover").
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Combining DID\textsubscript{+,t} and DID\textsubscript{-,t}}
+\begin{itemize}
+\item DID\textsubscript{M} combines these into a single estimate:
+\[
+DID_M = \sum_t \left(\text{weights}_t \cdot DID_{+,t}\right) + \sum_t \left(\text{weights}_t \cdot DID_{-,t}\right)
+\]
+\item Weights typically based on group size or variance.
+\item Simplifies to weighted average of DID\textsubscript{+,t} when no units revert (staggered adoption without exit).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Key Assumption: No Carryover}
+\begin{itemize}
+\item Important assumption: treatment effects disappear immediately after treatment stops.
+\item Violation biases DID\textsubscript{-,t}:
+\begin{itemize}
+    \item If treatment effects linger, estimator will underestimate the true effect of exiting treatment.
+\end{itemize}
+\item Practical consideration: Is turning off treatment truly reverting to baseline, or is it moving into a different state?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Comparison to Callaway \& Sant'Anna and Sun \& Abraham}
+\begin{itemize}
+\item CS and SA primarily handle staggered adoption (no exits).
+\item DID\textsubscript{M} extends naturally to reversible treatments (on and off transitions).
+\item All three methods avoid negative weighting problems inherent in traditional TWFE.
+\item dCdH is particularly useful for dynamic treatments (multiple state changes).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Summary and Diagnostics}
+\begin{itemize}
+\item dCdH offers diagnostic-driven approach:
+\begin{itemize}
+    \item Check fraction of negative weights (should be minimal).
+    \item Evaluate necessary heterogeneity to flip signs.
+\end{itemize}
+\item Transparent, flexible, interpretable alternative to TWFE.
+\item Particularly recommended when treatment is dynamic (switching on/off).
+\end{itemize}
+\end{frame}
+
+
+
+
+
 
 
 \begin{frame}{Borusyak, Jaravel and Speiss (2024)}
@@ -5140,7 +5112,7 @@ Using A1' to A4, we get the ``efficient estimator'' which is for all linear unbi
 
 \end{frame}
 
-\begin{frame}{Returning to the minimum wage}
+\begin{frame}{Example from minimum wage}
 
 \begin{itemize}
 \item Clemens and Strain (2021) implemented the BJS imputation estimator to estimate the effect of the minimum wage (post Great Recession) on employment
@@ -5191,6 +5163,86 @@ Using A1' to A4, we get the ``efficient estimator'' which is for all linear unbi
 \end{itemize}
 
 \end{frame}
+
+\begin{frame}{Comment on Event Studies}
+
+\begin{itemize}
+
+\item In CS and dCDH, there are two ways to calculate the pre-treatment coefficients once you have obtained the ATT(g,t) parameter estimates:
+	\begin{enumerate}
+	\item \textbf{Short gap}. Uses a "rolling" method in which a new baseline is used for each 2x2 comparison.
+	
+	\begin{eqnarray*}
+	 \widehat{\delta}_{t-3} = \left( E[Y|D=1, t-3] - E[Y|D=1, t-2] \right) \\
+	 - \left( E[Y|D=0, t-3] - E[Y|D=0, t-2] \right)
+	 \end{eqnarray*}
+	 
+	\item \textbf{Long difference}. Uses a "universal baseline" with a fixed baseline at \( t-1 \).
+	
+	\begin{eqnarray*}
+	 \widehat{\delta}_{t-3} = \left( E[Y|D=1, t-3] - E[Y|D=1, t-1] \right) \\
+	 - \left( E[Y|D=0, t-3] - E[Y|D=0, t-1] \right)
+	 \end{eqnarray*}
+
+	\end{enumerate}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{TWFE, Imputation, and CS}
+
+TWFE and imputation methods (discussed next) always use a fixed universal baseline. To ensure comparability with CS or dCDH, be sure to use the universal baseline syntax in Stata, R, or Python.
+
+\end{frame}
+
+
+\begin{frame}{Short Gaps and Long Differences}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth, height=0.8\textheight, keepaspectratio]{./lecture_includes/shortgap}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Recommendations}
+
+\begin{quote}
+"A natural follow-up question is to what extent the event-study plots for these alternative methods can be modified to be more comparable to conventional event-study plots. For CS/dCDH, there is a straightforward solution, which is to use “long-diﬀerences” for the pre-treatment coeﬃcients as well as the post-treatment coeﬃcients (i.e. always use the period before treatment as the baseline). This can be implemented, for example, in the \texttt{did} R and Stata packages using the options $\texttt{base_period = “universal”}$ and \texttt{long2}, respectively.  Using the default options in the \texttt{did_multiplegt} Stata package also yields comparisons using “long diﬀerences”, in contrast to the results for the R package shown above. Using these settings, the event-study estimates are numerically equivalent to the dynamic TWFE specification in the non-staggered setting considered here." - Roth (2024)
+\end{quote}
+
+\end{frame}
+
+\begin{frame}[fragile]{Short vs long2 syntax in \texttt{csdid}}
+\tiny
+
+\textbf{Short-gap method}
+\begin{lstlisting}[basicstyle=\ttfamily]
+csdid lemp lpop, ivar(countyreal) time(year) gvar(first_treat) method(dripw)
+estat event
+csdid_plot
+\end{lstlisting}
+
+
+\textbf{Long differences method}
+\begin{lstlisting}[basicstyle=\ttfamily]
+csdid lemp lpop, ivar(countyreal) time(year) gvar(first_treat) method(dripw) long2
+estat event
+csdid_plot
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}{Short Gaps and Long Differences}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth, height=0.8\textheight, keepaspectratio]{./lecture_includes/short_long}
+\end{figure}
+
+\end{frame}
+
+
 
 
 \begin{frame}
