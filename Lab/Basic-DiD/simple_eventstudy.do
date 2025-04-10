@@ -24,9 +24,6 @@ reg l_homicide treat##post, cluster(state)
 
 * Event study: interacts the treat dummy with calendar year but drops a single pre-treatment year. I will choose 2005 as my baseline. Every regression coefficient, both the post-treatment estimates of the ATT by year and the pre-treatment coefficients also by year will be calculated as DID coefficients using 2005 as the "pre" period. 
 
-gen 	treated=0
-replace treated=1 if effyear==2006 & year>=2006
-
 reg l_homicide treat##ib2005.year, cluster(state)
 
 matrix b = r(table)
