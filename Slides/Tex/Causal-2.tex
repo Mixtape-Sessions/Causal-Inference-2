@@ -3975,7 +3975,7 @@ p\text{ }lim\text{ } \widehat{\delta}^{TWFE}_{n\to\infty} &=& VWATT + VWPT - \De
            \column{0.48\linewidth}
 		\begin{itemize}
 \item Heterogenous treatment effects across time and across groups
-\item Cells are called ``group-time ATT'' (Callaway and Sant'anna 2020) or ``cohort ATT'' (Sun and Abraham 2020)
+\item Cells are called ``group-time ATT'' (Callaway and Sant'Anna 2021) or ``cohort ATT'' (Sun and Abraham 2021)
 \item ATT is weighted average of all cells and $+82$ with uniform weights $1/60$
 		\end{itemize}
          \end{columns} 
@@ -4230,12 +4230,12 @@ We will focus on the coefficient $\widehat{\mu_g}$ when estimated with TWFE
 
 
 
-\begin{frame}{Sun and Abraham 2020}
+\begin{frame}{Sun and Abraham 2021}
 
 	\begin{enumerate}
 	\item SA shows a decomposition of the population regression coefficient on event study leads and lags with differential timing estimated with TWFE
-	\item They show that the population regression coefficient is ``contaminated'' by information from other leads and lags (which is then later generalized by Goldsmith-Pinkham, Hull and Kolsar 2022)
-	\item SA presents an alternative estimator that is a version of CS only using the ``last cohort'' as the treatment group (not the not-yet-treated)
+	\item They show that the population regression coefficient is ``contaminated'' by information from other leads and lags (which is then later generalized by Goldsmith-Pinkham, Hull and Kolesar 2022)
+	\item SA presents an alternative estimator that is a version of CS only using the ``last cohort'' as the comparison group (not the not-yet-treated)
 	\item Derives the variance of the estimator instead of bootstrapping, handles covariates differently than CS, but otherwise identical
 	\end{enumerate}
 
@@ -4257,7 +4257,7 @@ We will focus on the coefficient $\widehat{\mu_g}$ when estimated with TWFE
 \begin{itemize}
 \item As people often \textbf{bin} the data, we allow a lead or lag $l$ to appear in bin $g$ so sometimes they use $g$ instead of $l$ or $l \in g$
 \item Building block is the ``cohort-specific ATT'' or $CATT_{e,l}$ -- same as ATT(g,t)
-\item Our goal is to estimate $CATT_{e,l}$ with population regression coefficient $\mu_l$
+\item Our goal is to estimate $CATT_{l}$ with population regression coefficient $\mu_l$
 \item They focus on irreversible treatment where treatment status is non-decreasing sequence of zeroes and ones
 \end{itemize}
 
@@ -4496,8 +4496,8 @@ Balanced panel $T=2$ with cohorts $E_i \in \{1,2 \}$. For illustrative purposes,
 
 \begin{itemize}
 \item All the robust estimators under differential timing have solutions and they all skip over forbidden contrasts. 
-\item Sun and Abraham (2020) propose a 3-step interacted weighted estimator (IW) using last treated group as control group
-\item Callaway and Sant'anna (2020) estimate group-time ATT which can be a weighted average over relative time periods too but uses ``not-yet-treated'' as control
+\item Sun and Abraham (2021) propose a 3-step interacted weighted estimator (IW) using last treated group as control group
+\item Callaway and Sant'anna (2021) estimate group-time ATT which can be a weighted average over relative time periods too but uses ``not-yet-treated'' as control
 \end{itemize}
 
 \end{frame}
