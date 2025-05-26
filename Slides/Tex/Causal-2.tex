@@ -4778,14 +4778,21 @@ DID_{+,t} = \underbrace{(Y_{t}^{newly\ treated} - Y_{t-1}^{newly\ treated})}_{\t
 
 \begin{frame}{Estimating DID\textsubscript{-,t} ("Turning Off")}
 \begin{itemize}
-\item For units exiting treatment at time \( t \):
-\[
-DID_{-,t} = \underbrace{(Y_{t}^{leavers} - Y_{t-1}^{leavers})}_{\text{Change for leavers}} - \underbrace{(Y_{t}^{continuously\ treated} - Y_{t-1}^{continuously\ treated})}_{\text{Change for continuously treated}}
-\]
-\item Isolates effect of stopping treatment.
-\item Key assumption: treatment effect ceases immediately ("no carryover").
+  \item For units exiting treatment at time \( t \):
+  \begin{equation*}
+    \small
+    \text{DID}_{-,t} = 
+    \underbrace{(Y_{t}^{\text{leavers}} - Y_{t-1}^{\text{leavers}})}_{\text{Change for leavers}} 
+    - 
+    \underbrace{(Y_{t}^{\text{continuously treated}} - Y_{t-1}^{\text{continuously treated}})}_{\text{Change for continuously treated}}
+  \end{equation*}
+  \item Isolates effect of stopping treatment.
+  \item Notice that your control group, though, must be "continuously treated" -- you are now imputing the missing $Y^1$ using their change in $Y^1$ (guess on the parallel trends)
+  \item Key assumption: treatment effect ceases immediately ("no carryover").
 \end{itemize}
 \end{frame}
+
+
 
 \begin{frame}{Combining DID\textsubscript{+,t} and DID\textsubscript{-,t}}
 \begin{itemize}
