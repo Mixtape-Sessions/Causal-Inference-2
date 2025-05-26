@@ -1,0 +1,1648 @@
+\documentclass{beamer}
+
+\input{preamble.tex}
+\usepackage{breqn} % Breaks lines
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\usepackage{pdfpages} % \includepdf
+
+\usepackage{listings} % R code
+\usepackage{verbatim} % verbatim
+
+% Video stuff
+\usepackage{media9}
+
+% packages for bibs and cites
+\usepackage{natbib}
+\usepackage{har2nat}
+\newcommand{\possessivecite}[1]{\citeauthor{#1}'s \citeyearpar{#1}}
+\usepackage{breakcites}
+\usepackage{alltt}
+
+% Setup math operators
+\DeclareMathOperator{\E}{E} \DeclareMathOperator{\tr}{tr} \DeclareMathOperator{\se}{se} \DeclareMathOperator{\I}{I} \DeclareMathOperator{\sign}{sign} \DeclareMathOperator{\supp}{supp} \DeclareMathOperator{\plim}{plim}
+\DeclareMathOperator*{\dlim}{\mathnormal{d}\mkern2mu-lim}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+   \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand*\colvec[1]{\begin{pmatrix}#1\end{pmatrix}}
+
+\newcommand{\myurlshort}[2]{\href{#1}{\textcolor{gray}{\textsf{#2}}}}
+
+
+\begin{document}
+
+\imageframe{./lecture_includes/mixtape_did_cover.png}
+
+
+
+
+
+
+
+\section{Violations of Parallel Trends}
+
+\subsection{Event Study Plots}
+\begin{frame}{Step 5: Is Unconditional Parallel Trends Plausible?}
+
+\begin{itemize}
+\item We drew a bunch of event study graphs, which leads into the next issue regarding "unconditional parallel trends"
+\item Unconditional parallel trends is diff-in-diff on $Y^0$ in which the diff-in-diff equals zero
+	$$\textcolor{red}{\Delta E[Y^0|D=1]} - \Delta E[Y^0|D=0] = 0$$ 
+\item There are two kinds of parallel trends: unconditional and conditional
+\item Let's look at a couple of spreadsheets to illustrate precisely what unconditional parallel trends mean
+\end{itemize}
+
+\bigskip 
+
+\url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
+
+\end{frame}
+
+
+
+\begin{frame}{Unconditional Parallel Trends}
+
+\begin{itemize}
+\item Unconditional parallel trends is very close to assuming that the the treatment was as good as random
+\item It is not testable, but suspicion is raised when pre-treatment levels are very different as that implies non-random treatment assignment mechanisms
+\item Typically, people will evaluate their parallel trends assumptions using two things:
+	\begin{enumerate}
+	\item Event study graphical plots of pre-trends and post-trends
+	\item Falsifications on same outcomes, and similar, but untreated, groups
+	\item Falsifications on different impossible outcomes, but same treatment groups
+	\end{enumerate}
+\item Think of these are more like 'preponderance of evidence' than proof as parallel trends \emph{cannot} be tested and graphs can be misleading
+\end{itemize}
+
+
+\end{frame}
+
+
+
+\begin{frame}{Intuition behind event studies}
+
+\begin{itemize}
+
+	\item We cannot directly verify parallel trends, so for a long time researchers have focused on the pre-trends (e.g., Ashenfelter's Dip)
+	\item \textcolor{blue}{Parallel pre-trends} are not the same as \textcolor{red}{parallel counterfactual post-trends}, but this is the smoking gun we typically look for nonetheless
+	\item Think of it as a type of check for selection bias, but imperfect with false positives and false negatives
+	\item Even if pre-trends are the same one still has to worry about other policies changing at the same time (omitted variable bias is a parallel trends violation)
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Creating event studies}
+
+\begin{itemize}
+
+\item You want to visualize a particularly set of regression coefficients which we will show
+\item But if you can show the raw data, do that too as that will show difference in levels as well which will matter for the next section on covariates
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}
+
+	\begin{figure}
+	\includegraphics[scale=2.5]{./lecture_includes/waldinger_dd_6.pdf}
+	\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Event study regression}
+	
+	\begin{itemize}
+	\item Alternatively, present estimated coefficients from a dynamic regression specification:
+ $$Y_{its} = \alpha + \sum_{\tau=-2}^{-q}\mu_{\tau} (D_s \times \tau_t) + \sum_{\tau=0}^m\delta_{\tau} (D_s \times \tau_t) + \tau_t + D_s + \varepsilon_{ist}$$
+		\begin{itemize}
+		\item With a simple 2x2, you are interacting treatment indicator with calendar year dummies
+		\item Includes $q$ leads (dropping the $t-1$ as baseline) and $m$ lags 
+		\item Since treatment did not happen until $\tau=0$, then pre-treatment coefficients only capture differential trends
+		\end{itemize}
+	\item Estimated $\widehat{\delta}_\tau$ coefficients are estimated ATT for each year under parallel trends but $\widehat{\mu}_\tau$ is your smoking gun evidence 
+	\item Just remember that $\mu=0$ is not the same as parallel trends as parallel trends is \textcolor{red}{untestable}.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Reviewing previous slide for emphasis}
+
+
+\begin{itemize}
+\item Under NA, SUTVA and parallel pre-trends, then mechanically $\widehat{\mu_{\tau}}$ will be zero as everything cancels out
+	\begin{itemize}
+\item There are still specification and power issues that Jon Roth has written about, but I will skip that
+	\end{itemize}
+\item But also under NA, SUTVA and parallel trends (post trends), then $\widehat{\delta}$ are estimates of the ATT at points in time
+\item  Typically you'll plot the coefficients and 95\% CI on all leads and lags
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Normal DiD coefficient}
+
+\begin{eqnarray*}
+\widehat{\delta} &=& \underbrace{E[Y^1_k | Post] - \textcolor{red}{E[Y^0_k | Post]}}_{\mathclap{\text{ATT}}} \\
+&& + \bigg [  \underbrace{\textcolor{red}{E[Y^0_k | Post]} - E[Y^0_k | Pre] \bigg ] - \bigg [ E[Y^0_U | Post] - E[Y_U^0 | Pre] }_{\mathclap{\text{Non-parallel trends bias in 2x2 case}}} \bigg ]
+\end{eqnarray*}
+
+\bigskip
+
+But this was \emph{post}-treatment.  Still, put that aside -- diff-in-diff equations \emph{always} identify the sum of those terms, even in the pre-period
+
+
+\end{frame}
+
+\begin{frame}{Pre-treatment DiD coefficient}
+
+\begin{eqnarray*}
+\widehat{\delta}_{t-2} &=& \bigg [  \underbrace{\textcolor{black}{E[Y^0_k | t-2]} - E[Y^0_k | t-1] \bigg ] - \bigg [ E[Y^0_U | t-2] - E[Y_U^0 | t-1] }_{\mathclap{\text{Non-parallel trends bias in 2x2 case}}} \bigg ]
+\end{eqnarray*}
+
+\bigskip
+
+Under NA, then the $t-1$ period is untreated.  But then so are the other pre-periods so the ATT is implicitly zero and the \emph{only} thing that you can be measuring with pre-trend DiD coefficients is differential trends.  
+
+
+\end{frame}
+
+
+
+\begin{frame}{Event study coefficients}
+
+\begin{itemize}
+\item Remember that the OLS specification we discuss collapses to ATT plus parallel trends bias
+\item This is \emph{always} true because it's an identity and holds even in the pre-period as much in the post
+\item It's just in the pre period, you do not have the missing $E[Y^0|D=1]$ term as no one and nothing is treated in pre-period under NA
+\item This means pre-period is basically an opportunity to directly verify parallel pre-trends -- but it's the past's pre-trends, not the counterfactual pre-trend of the present/future
+\item And that's how people use the pre-period -- they use the pre-period to evaluate whether they think this is a good control group
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Event study example}
+
+\begin{itemize}
+\item The notion is really simple: if PT held then, you'll argue that it's reasonable it would've still held
+\item But this is an assertion, and you need to build the case as we said
+\item At this point, it's a lot easier to show you what I'm talking about -- where the art and the science meet -- with a great paper
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Medicaid and Affordable Care Act example}
+
+\begin{figure}
+\includegraphics[scale=0.25]{./lecture_includes/medicaid_qje}
+\end{figure}
+
+\end{frame}
+\begin{frame}{Their Evidence versus Their Result}
+
+\begin{itemize}
+\item \textbf{Bite} -- they will show that the expansion shifted people into Medicaid and out of uninsured status
+\item \textcolor{black}{\textbf{Falsifications}} -- they show that there's no effect of Medicaid on a similar group that didn't enroll
+\item \textbf{Event study} -- they will lean hard on those dynamic plots
+\item \textcolor{red}{\textbf{Main results}} -- with all of this, they will show Medicaid expansion caused near elderly mortality to fall
+\item \textcolor{black}{\textbf{Mechanisms}} -- they think they can show it's coming from people treating diseases causing mortality declines to compound over time
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Bite}
+
+\begin{itemize}
+\item Bite is a labor economist's phrase, often used with the minimum wage, to say that the minimum wage actually was binding in the first place
+\item Here it means when US states made Medicaid more generous, people got on Medicaid who would not have been on it otherwise
+\item And as a bonus, would not have been insured at all without it
+\item Not the most exciting result, but imagine if the main results on mortality were shown but there was no evidence for bite -- is it believable?
+\end{itemize}
+
+\end{frame}
+
+
+\imageframe{./lecture_includes/Miller_Medicaid1.png}
+
+\imageframe{./lecture_includes/Miller_Medicaid2.png}
+
+\imageframe{./lecture_includes/Miller_Medicaid3.png}
+
+
+\begin{frame}{Falsification}
+
+\begin{itemize}
+
+\item Their study focuses on ``near elderly'', which means just under 65
+\item They choose just under 65 because in the US, 65 and older are eligible for Medicare so more generous Medicaid is irrelevant
+\item \emph{But} probably the near elderly and the elderly are equally susceptible to unobserved factors correlated with the treatment
+\item So they painstakingly examine the effects on elderly as a falsification as this will strengthen the parallel trends assumption on the near elderly
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Falsifications on elderly}
+
+	\begin{figure}
+\includegraphics[scale=0.425]{./lecture_includes/placebo_medicaid}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Main result}
+
+\begin{itemize}
+
+\item Finally they focus on the main result -- and there's more in the paper than I'm showing
+\item Event study plots with same specification as the rest allowing us to look at the pre-trends and the post-treatment coefficients
+\item If parallel trends holds, then the post-treatment coefficients are interpreted as ATT parameter estimates for each time period
+\item The result alone isn't nearly as strong the result in combination with the rest, but it could still be wrong as parallel trends is ultimately not verfiable
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Near elderly mortality and Medicaid expansion}
+
+	\begin{figure}
+	\includegraphics[scale=0.3]{./lecture_includes/Miller_Medicaid4.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Summarizing evidence and results}
+
+\begin{itemize}
+\item \textbf{Bite}: Increases in enrollment and reductions in uninsured support that there is adoption of the treatment
+\item \textbf{Event studies}: Compelling graphics showing similarities between treatment and control
+\item \textbf{Falsifications}: no effect on a similar group who isn't eligible
+\item \textcolor{red}{Main results}: 9.2\% reduction in mortality among the near-elderly
+\item \textcolor{red}{Mechanism}: ``The effect is driven by a reduction in disease-related deaths and grows over time.''
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Making event study}
+
+\begin{itemize}
+\item When there is only one treatment group and one comparison group, then you run a regression with an interaction of the treatment group dummy and the calendar year dummies (plus both separately)
+\item You must drop $t-\tau$ as the baseline (e.g., $t-1$) and it must be $Y^0$ untreated comparisons (No Anticipation)
+\item I have included in a do file that will do it for you either manually or using coefplot in \texttt{simple\_eventstudy.do} at the shared github labs directory
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Don't ask more of event studies than they can give}
+
+\begin{itemize}
+\item Event studies are mandatory -- you must make them
+\item But remember, parallel trends cannot be seen in event studies -- only \emph{pre-trends} can
+\item Parallel trends can be satisfied and pre-trends be messed up; pre-trends can look good, and parallel trends be violated
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Event studies can mislead}
+
+\begin{itemize}
+
+\item People mistakenly equate parallel trends with parallel pretrends, but you can have one without the other, both or neither
+\item One of the ways you can have parallel pre-trends but violate parallel trends is if the trends change differentially by covariate over time (called x-specific trends)
+\item Code is called \texttt{misleading_eventstudy.do} and \texttt{misleading_eventstudy.R}
+\item Note how well the unconditional parallel trends assumption appears to be when reviewing the graphs only
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Event studies can mislead}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.75\textheight]{./lecture_includes/es_flawed.png}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Event studies can mislead}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.75\textheight]{./lecture_includes/es_correct.png}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Time varying trends in $Y^0$ have \emph{nothing} to do with parallel trends}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.75\textheight]{./lecture_includes/misleading_eventstudy_code}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Selection can also make event studies misleading}
+
+\begin{itemize}
+
+\item Remember from earlier: some forms of selection that satisfy parallel trends will nonetheless complicate event study plots
+\item Selection on baseline $Y^0$, for instance, can cause the pre-trends to break but not parallel trends
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Selection on $Y^0$ and event studies}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.70\textheight]{./lecture_includes/selection_y0.png}
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+
+\subsection{Falsifications}
+
+\begin{frame}{Proof vs Evidence}
+
+\begin{itemize}
+\item Think of event studies as \emph{evidence}, not \emph{proof}
+	\begin{itemize}
+	\item Prosecutor based on police produces fingerprints, eyewitnesses and imprints in mud
+	\end{itemize}
+\item Event studies are evidence of pre-trends only, but they are consistent with various forms (but not all) forms of selection
+\item Falsifications are post-treatment heuristics based on logic and counter-evidence (Popperian reasoning)
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Falsification 1: same outcome, but untreated groups}
+		
+		\begin{figure}
+		\includegraphics[scale=0.425]{./lecture_includes/placebo_medicaid}
+		\end{figure}
+
+\end{frame}
+
+\begin{frame}{Falsification 2: different outcomes, same treatment group}
+	\begin{itemize}
+	\item Good falsifications make logical sense:  
+		\begin{itemize}
+		\item They are a similar enough group (near elderly versus elderly) 
+		\item They are an outcome that would be susceptible to some omitted variable you're worried about
+		\end{itemize}
+	\item Two examples
+		\begin{itemize}
+		\item Cheng and Hoekstra (2013) examine the effect of a gun laws on non-gun related offenses like grand theft auto and find no evidence of an effect 
+		\item Cunningham, DeAngelo and Tripp (2024) examine effect of a sex worker platform on irrelevant crime categories
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Rational addiction as a placebo critique}
+
+
+Sometimes, an empirical literature may be criticized using nothing more than placebo analysis
+
+\begin{quote}``A majority of [our] respondents believe the literature is a success story that demonstrates the power of economic reasoning.  At the same time, they also believe the empirical evidence is weak, and they disagree both on the type of evidence that would validate the theory and the policy implications. Taken together, this points to an interesting gap.  On the one hand, most of the respondents claim that the theory has valuable real world implications.  On the other hand, they do not believe the theory has received empirical support.''
+\end{quote}
+
+\end{frame}
+
+\begin{frame}{Placebo as critique of empirical rational addiction}
+
+\begin{itemize}
+	\item Auld and Grootendorst (2004) estimated standard ``rational addiction'' models (Becker and Murphy 1988) on data with milk, eggs, oranges and apples.  
+	\item They find these plausibly non-addictive goods are addictive, which casts doubt on the empirical rational addiction models.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Placebo as critique of peer effects}
+
+\begin{itemize}
+	\item Several studies found evidence for ``peer effects'' involving inter-peer transmission of smoking, alcohol use and happiness tendencies
+	\item Christakis and Fowler (2007) found significant network effects on outcomes like obesity
+	\item Cohen-Cole and Fletcher (2008) use similar models and data and find similar network ``effects'' for things that \emph{aren't} contagious like acne, height and headaches
+	\item Maybe tall people have tall friends because basketball players are friends with one another?
+\end{itemize}
+
+\end{frame}
+
+
+
+\subsection{Triple Differences}
+
+\begin{frame}{Triple differences is a research design}
+
+\begin{itemize}
+
+\item Many people equate triple differences with falsification exercise, but actually it isn't that -- it is it's own design
+\item You use triple differences when you have a parallel trends violation -- that is, when your diff-if-diff is biased
+\item Triple differences may sound like a falsification, but it isn't -- it's a research design you use when parallel trends is violated
+\item Miller, Johnson and Wherry (2021) didn't use triple differences with near elderly because they didn't think they had a parallel trends violation -- they used a falsification
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Biased diff-in-diff \#1}
+
+\begin{table}\centering
+\scriptsize
+		\caption{Biased diff-in-diff \#1: comparing states}
+		\begin{center}
+		\begin{tabular}{lll|lc}
+		\toprule
+		\multicolumn{1}{l}{\textbf{States}}&
+		\multicolumn{1}{c}{\textbf{Period}}&
+		\multicolumn{1}{c}{\textbf{Outcomes}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}\\
+		\midrule
+		Experimental states & Before & $Y=NJ$ \\
+		& After & $Y=NJ + NJ_t + D$ & $\textcolor{red}{NJ_t}+D$\\
+		\midrule
+		& & & & $D + (\textcolor{red}{NJ_t}- PA_t)$ \\
+		\midrule
+		Non-experimental  & Before & $Y=PA$ \\
+		states& After & $Y=PA + PA_t$ & $PA_t$\\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{eqnarray*}
+\widehat{\delta}^{true}_{did} = D + (\textcolor{red}{NJ_t}- PA_t)
+\end{eqnarray*}The ATT is D. Assume, though, that parallel trends does not hold, $(\textcolor{red}{NJ_t} \neq PA_t)$
+
+\end{frame}
+
+
+\begin{frame}{Biased Placebo diff-in-diff}
+
+\begin{table}\centering
+\scriptsize
+		\caption{Biased placebo diff-in-diff: comparing states but single men and older women}
+		\begin{center}
+		\begin{tabular}{lll|lc}
+		\toprule
+		\multicolumn{1}{l}{\textbf{States}}&
+		\multicolumn{1}{c}{\textbf{Period}}&
+		\multicolumn{1}{c}{\textbf{Outcomes}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}\\
+		\midrule
+		Experimental states & Before & $Y=NJ$ \\
+		& After & $Y=NJ + NJ_t $ & $\textcolor{red}{NJ_t}$\\
+		\midrule
+		& & & & $ (\textcolor{red}{NJ_t}- PA_t)$ \\
+		\midrule
+		Non-experimental  & Before & $Y=PA$ \\
+		states& After & $Y=PA + PA_t$ & $PA_t$\\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{eqnarray*}
+\widehat{\delta}^{placebo}_{did} = (\textcolor{red}{NJ_t}- PA_t)
+\end{eqnarray*}Assume that parallel trends does not hold, $(\textcolor{red}{NJ_t} \neq PA_t)$
+
+\end{frame}
+
+
+\begin{frame}{Two biased diff-in-diffs}
+
+\begin{itemize}
+
+
+\item Parallel trends does not hold, $(\textcolor{red}{NJ_t} \neq PA_t)$, but what if that's the same bias in our placebo DiD?
+\item Then we can subtract the second from the first: $$ \widehat{\delta}_{ddd} = \widehat{\delta}^{true}_{did} - \widehat{\delta}^{placebo}_{did}$$
+\item Triple differences is a ``real design'' with one parallel trends assumption: $$(\textcolor{red}{NJ_t}^{true}- PA_t^{true}) = (\textcolor{red}{NJ_t}^{placebo}- PA_t^{placebo})$$
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Triple differences by Gruber (1995)}
+	
+	\begin{figure}
+	\includegraphics{./lecture_includes/gruber_ddd_3.pdf}
+	\end{figure}
+	
+\end{frame}
+
+\begin{frame}{Triple differences commentary}
+
+\begin{itemize}
+\item Some people think that it requires that the placebo DiD be zero, but that's incorrect
+
+\item In Gruber's 1995 article, it isn't clear why he needed triple differences in the first place -- his triple differences yielded -0.054 which is almost the same as what he found with his first diff-in-diff (-0.062)
+\item The main value of triple differences is that you use it when you believe the parallel trends assumption doesn't hold
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[shrink=20]
+
+\begin{table}\centering
+		\caption{Difference-in-Difference-in-Differences (Gruber version)}
+		\tiny
+		\begin{center}
+		\begin{tabular}{lll|l|lll}
+		\toprule
+		\multicolumn{1}{l}{\textbf{Groups}}&
+		\multicolumn{1}{c}{\textbf{States}}&
+		\multicolumn{1}{c}{\textbf{Period}}&
+		\multicolumn{1}{c}{\textbf{Outcomes}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}&
+		\multicolumn{1}{c}{$D_3$}\\
+		\midrule
+		&&After	&$NJ+MW+\textcolor{blue}{NJ_t}+\textcolor{red}{MW_t}+D$					\\
+	&Experimental			&&&$\textcolor{blue}{NJ_t}+MW_t + D$			\\
+		&states&Before	&$NJ+MW$					\\
+Married women 					&&&&&$D+\textcolor{blue}{NJ_t} -PA_t 	$	\\
+20-40							&&&&&$$\\
+    		&&After	&$PA+MW+PA_t+MW_t$					\\
+	&Non-experimental		&&	&$PA_t+MW_t$				\\
+		&states&Before	&$PA+MW$					\\
+								\\
+&&&&&&$\textcolor{black}{D}$
+\\
+		&&After	&$NJ+SO+NJ_t+SO_t$				\\
+	&Experimental 			&&&$NJ_t+SO_t$ \\				
+		&states&Before	&$NJ+SO$					\\
+Single men 					&&&&&$NJ_t  - PA_t$		\\
+Older women					&&&&&$$		\\
+	     	&&After	&$PA+SO+PA_t+SO_t$					\\
+	&Non-experimental		&&&	$PA_t+SO_t$				\\
+		&states&Before	&$PA+SO$					\\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{center}
+\textbf{Triple diff assumption}
+\end{center}
+
+$\widehat{\delta}_{DDD}= D + \underbrace{[(\textcolor{blue}{NJ^{MW}_t} - PA^{MW}_t) -( NJ^{SO}_t - PA^{SO}_t )]}_{\mathclap{\text{Equally biased  DiD \#1 and \# 2}}}$
+
+\bigskip
+Triple differences requires two diff-in-diff, from different groups, with the same bias. Parallel bias
+
+
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{DDD in Regression}
+	
+	\begin{eqnarray*}
+	Y_{ijt} &=&\alpha +  \beta_2 \tau_t + \beta_3 \delta_j  + \beta_4 D_i + \beta_5(\delta \times \tau)_{jt} \\
+	&& +\ \beta_6(\tau \times D)_{ti} +  \beta_7(\delta \times D)_{ij} +  \textcolor{red}{\beta_8(\delta \times \tau \times  D)_{ijt}}+  \varepsilon_{ijt}
+	\end{eqnarray*}
+	
+	\begin{itemize}
+	\item Your dataset will be stacked by group $j$ and state $i$
+	\item $\widehat{\beta_8}$ estimates the ATT
+	\item Parallel bias, NA and SUTVA necessary and sufficient for identification
+	\end{itemize}
+	
+\end{frame}
+
+
+
+\begin{frame}{Simulation}
+
+In /Labs/DDD I have a simulation to illustrate this for us called ddd2.do.  The ATT is -\$5,000 but the biased DiD is -\$7487.  The non-parallel trends bias is -\$2,487.  So I replicate Gruber (with simulated data) where the placebo DiD is close (-\$2,507).  I then present a triple differences which gives us -\$4,972. Let's look at the final product.
+
+\end{frame}
+
+\begin{frame}{Triple differences event study}
+
+\begin{figure}
+\includegraphics[scale=0.25]{./lecture_includes/ddd_simulation}
+\end{figure}
+
+
+
+\end{frame}  
+
+\begin{frame}{Great new paper to learn more}
+
+\begin{figure}
+\includegraphics[scale=0.25]{./lecture_includes/olden_moen_2022_ddd.png}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Summarizing DDD}
+
+\begin{itemize}
+\item Used to be people thought DDD required two parallel trends assumptions but it does not -- it is a real design and requires one parallel trends assumption
+\item Parallel trends assumption is ``parallel bias'' -- that the bias of the true DiD is the same as the bias of the placebo DiD
+\item The ladder of evidence still holds -- you'll want to present the event study plot, and my code provides it for you, because you need to evaluate the parallel bias assumption
+\item Given the lack of triple diff literacy, you may have to write this anticipating reader and maybe editor confusion and so "educate" as you go -- overlaying all three plots could be help
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\section{Covariates}
+
+\subsection{Compositional Change}
+
+\begin{frame}{Repeated cross-sections and compositional change}
+	
+	\begin{itemize}
+	\item One of the risks of a repeated cross-section is that the composition of the sample may have changed between the pre and post period in ways that are correlated with treatment
+	\item Hong (2013) uses repeated cross-sectional data from the Consumer Expenditure Survey (CEX) containing music expenditure and internet use for a random sample of households
+	\item Study exploits the emergence of Napster (first file sharing software widely used by Internet users) in June 1999 as a natural experiment
+	\item Study compares internet users and internet non-users before and after emergence of Napster
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Introduction of Napster and spending on music}
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/hong_napster}
+	\end{figure}
+	
+\end{frame}
+
+
+\begin{frame}[plain]
+	\begin{figure}
+	\includegraphics{./lecture_includes/Hong_1.pdf}
+	\end{figure}
+	
+\end{frame}
+
+
+
+\begin{frame}{Repeated Cross Section Risks}
+
+\begin{itemize}
+\item Repeated cross sections have their own challenges that panels don't in that the group could be shifting compositionally
+\item Detect using a balance table with covariates highly predictive of the missing $E[Y^0|D=1]$ for this exercise 
+	\begin{itemize}
+	\item Percent of cat owners is probably irrelevant to trends in potential outcomes
+	\item But age and income is probably relevant for spending habits
+	\item We'll discuss covariates more later, but for now just consider what characteristics are relevant to your outcome
+	\end{itemize}
+\item Documenting covariates that are cannot be affected by the treatment like this table is a way to check for \emph{compositional changes} in the sample
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Changes Between Internet and Non-Internet Users Over Time}
+
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/hong_table.png}
+	\end{figure}
+
+
+
+\end{frame}
+
+
+
+\begin{frame}{What was this table about?}
+
+\begin{itemize}
+\item  Notice that users are getting older and poorer -- both of which predict spending less money on music
+\item If these covariates are themselves predictive of trends, then it is suggestive parallel trends could be \emph{mechanically} breaking, so estimate $$X_{it} = \alpha + \beta_1 D_i + \beta_t Post_t + \delta ( D_i \times Post_t ) + \varepsilon_{it}$$ 
+\item Or consider the normalized difference in means table we discuss later
+\item If violated, then consider the following fix by Hong (2013) which adjusts for propensity scores in both periods
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Step 1. Estimate Propensity Scores}
+\begin{itemize}
+  \item Estimate two separate propensity scores -- one for each time period
+  \item Pre-treatment period ($T = 0$) uses both treated and control units (as $Y=Y^0$ for both)
+  \begin{equation*}
+    P_b = \Pr(D=1 \mid T=0, X)
+  \end{equation*}
+  \item Post-treatment period ($T = 1$) using only control group units (as $Y=Y^0$ for control only)
+  \begin{equation*}
+    P_a = \Pr(D=1 \mid T=1, X)
+  \end{equation*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Step 2. Weight Observations Using Propensity Scores}
+\begin{itemize}
+  \item Use inverse probability weighting (IPW) to balance samples:
+    \item For the pre-treatment period (\( T = 0 \)):
+  \begin{align*}
+        E_w[Y \mid D = 1, T = 0] &= \frac{\sum_{i \in T=0, D=1} Y_i / P_b(X_i)}{\sum_{i \in T=0, D=1} 1 / P_b(X_i)} \\
+        E_w[Y \mid D = 0, T = 0] &= \frac{\sum_{i \in T=0, D=0} Y_i / (1 - P_b(X_i))}{\sum_{i \in T=0, D=0} 1 / (1 - P_b(X_i))}
+  \end{align*}
+    \item For the post-treatment period (\( T = 1 \)):
+  \begin{align*}
+        E_w[Y \mid D = 1, T = 1] &= \frac{\sum_{i \in T=1, D=1} Y_i / P_a(X_i)}{\sum_{i \in T=1, D=1} 1 / P_a(X_i)} \\
+        E_w[Y \mid D = 0, T = 1] &= \frac{\sum_{i \in T=1, D=0} Y_i / (1 - P_a(X_i))}{\sum_{i \in T=1, D=0} 1 / (1 - P_a(X_i))}
+  \end{align*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Step 3. Calculate the Adjusted Difference-in-Differences}
+\begin{itemize}
+  \item Use the weighted averages to compute the adjusted DiD estimator:
+  \begin{align*}
+    \text{Adjusted DiD} &= \left( E_w[Y \mid D = 1, T = 1] - E_w[Y \mid D = 0, T = 1] \right) \nonumber \\
+    &\quad - \left( E_w[Y \mid D = 1, T = 0] - E_w[Y \mid D = 0, T = 0] \right)
+  \end{align*}
+  \item This accounts for compositional change and enhances credibility of ATT estimation in repeated cross-sections.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Reweighted regressions}
+
+\begin{itemize}
+\item It's a reweighted 2x2 estimator which we know how as an OLS equivalence
+\item You're going to use as analytical weights the IPW formulas and one of the regressions with WLS
+\item But make sure you are using \emph{both} IPW expressions -- it is two propensity score formulas, not one
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Value of the method}
+
+\begin{itemize}
+\item Panel datasets are expensive because following the same people over time is expensive
+	\begin{itemize}
+	\item Tracking respondents, maintaining contact, managing attrition
+	\item Many countries, particularly in the Global South, have fewer of them than in highly developed countries
+	\end{itemize}
+\item Repeated cross sections are often more common -- rich, nationally representative datasets collected in waves, but with different individuals each time
+\item Hong's estimator was developed precisely for this context -- an estimator that can account for the changing compositional changes (a problem that happens often, but is rarely addressed)
+\item Diagnostic tools are also very intuitive -- balance tables, seemingly unrelated regressions on multiple covariates
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+\subsection{Conditional Parallel Trends}
+
+\begin{frame}{Step 5. Is Unconditional Parallel Trends Plausible?}
+
+\begin{itemize}
+
+\item We have been working with a parallel trends assumption that requires the two \emph{groups} have the same trend in average $Y^0$
+
+\item But what if these two groups were so different from one another that their potential outcomes didn't add up to be the same?
+
+\item What if the workers in the job training program were poor and the control group was rich -- do we think the earnings of those two groups would have been evolved similarly?  Why/why not?
+
+
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{You may need a \emph{different} PT assumption}
+
+\begin{itemize}
+\item Parallel trends for sub-populations, but not the whole population:
+	\begin{enumerate}
+	\item Unconditional parallel trends:  parallel trends holds for the overall average treatment and control groups
+	\item Conditional parallel trends: parallel trends only has to hold for observable sub-groups, but not necessarily the whole group
+	\end{enumerate}
+\item Example: Male versus female earnings growth
+	\begin{itemize}
+	\item Assume male earnings grow by $+2$, female by $+1$, 
+	\item Treatment is 75\% male, control is 25\% is male
+	\item $E[\Delta Y^0|D=1]=1.75$ but $E[\Delta Y^0|D=0]=1.25$
+	\end{itemize}
+\item Unconditional parallel trends won't hold because the groups aren't balanced on the characteristics that cause trends 
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Conditional parallel trends}
+Conditional parallel trends (CPT) is a weakened version of the parallel trends assumption requiring that it holds \emph{within} the dimensions of the selected covariates:
+\begin{align*}
+CPT: \textcolor{red}{E[Y^0_k|Post, X]} - E[Y^0_k|Pre, X] = E[Y^0_U|Post, X] - E[Y^0_U|Pre, X]
+\end{align*}
+First time it shows up is Heckman, Ichimura and Todd (1997). Idea can be abstract so let's look at a graph to help us decipher what it means and what we can do. And it's still not directly testable due to still missing the first potential outcome (i.e., counterfactual). 
+\end{frame}
+
+\begin{frame}{Which covariates do you need?}
+
+\begin{itemize}
+\item Conditional parallel trends is tricky because it first assumes you know the covariates you need to satisfy it
+\item But how do we decide which variables do this and which ones don't?
+\item Econometrics is no help here -- you need common sense, theory, logic, and expertise
+\item When selecting covariates, use "confounders" logic -- but confounders of the \emph{trend}?
+\end{itemize}
+
+\end{frame}
+	
+
+
+
+\begin{frame}{Graphs Can Help Pick Covariates}
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[
+        node distance=2.5cm,
+        every node/.style={align=center},
+        line/.style={->, thick},
+    ]
+    % Nodes
+    \node (X) {Covariates \\ \( X \)};
+    \node (D) [below left of=X, xshift=-1cm, yshift=-1cm] {\( D \)};
+    \node (DeltaY0) [below right of=X, xshift=1cm, yshift=-1cm] {\( \Delta E\left[Y^0\right] \)};
+    % Arrows
+    \draw[line] (X) -- (DeltaY0);
+    \draw[line] (X) -- (D);
+    \end{tikzpicture}
+\caption{DAG representing differences in county-level covariate composition (\(X\)) across treatment and control groups (\(D\)) and their determination of the untreated potential outcome trends (\(\Delta E\left[Y^0\right]\)).}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}{Example: Concealed Carry Gun Laws and Murder}
+
+\begin{itemize}
+\item Become an expert on your left-hand-side variable because you need to know $X \rightarrow \Delta Y^0$
+	\begin{itemize}
+	\item Drugs and gangs (i.e., crack cocaine epidemic)
+	\item Cities had different homicide rates than rural counties
+	\item Police, incarceration
+	\item Demographics (e.g., race shares, age shares) and economic things (e.g., poverty, per capital income, AFDC rolls)
+	\item Maybe throw it all into LASSO using only the $Y^0$ values (maybe pre-treatment murders)
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Step 6. Covariate Imbalance}
+    \begin{itemize}
+	\item Kahn-Lang and Lang (2020) say that if your two groups are different at baseline on outcomes, treatment was not random, is likely caused by covariates, and you need to explain why that matters or does not
+	\item Randomized treatment will balance covariates, hence why we don't need to include them as controls in RCT \emph{even though they cause the outcome}
+	\item But if they aren't balanced in your diff-in-diff, and they cause \emph{trends}, then parallel trends won't hold
+\item So, next you focus on $X \rightarrow D$, which is to say, check the imbalance in covariates you need for conditional parallel trends
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Create a balance table}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.80\textheight]{./lecture_includes/step6_imbalance}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Baseline Covariates and Normalized Difference}
+    \begin{itemize}
+        \item Baseline covariates are measured before treatment ($t-1$). 
+        \item Report the averages of covariates for both groups in a table and the "normalized difference in means" calculated as:
+        $$ \text{Norm. Diff}_\omega = \frac{\overline{X}_{\omega,T} - \overline{X}_{\omega,C}}{\sqrt{(S_{\omega,T}^2 + S_{\omega,C}^2)/2}} $$
+        \item The normalized difference measures imbalance; it should be less than 0.25 in absolute value to avoid problematic imbalance (Imbens and Rubin 2015).
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Summarizing}
+    \begin{itemize}
+    \item So, when choosing covariates, remember that there are two steps involved
+    	\begin{enumerate}
+	\item $X \rightarrow \Delta E[Y^0]$. Pick covariates that are needed to satisfying conditional parallel trends 
+	\item $X \rightarrow D$. Check for imbalance using the normalized difference in means equation to determine if you have "problematic imbalance"
+	\end{enumerate}
+\item And the heuristic I am suggesting is to select covariates that are the "ordinary determinants of $Y^0$" (i.e., become an expert on your left-hand-side variable)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Step 7: Plot Average Outcomes Across Cohorts}
+
+\begin{itemize}
+\item We are literally \textbf{seven} steps into the checklist and this is the first time we are looking at the outcomes (except for baseline)
+\item You want to avoid "peeking" at the outcome because you're not wanting to bias yourself and you want this to mimic the RCT as best as you can
+\item This is another reason I get frustrated with TWFE -- you can't separate the design from the estimation because the left-hand-side and right-hand-side are both there 
+\item Plot the evolution of the mean homicides over time \emph{for each cohort}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.85\textheight]{./lecture_includes/step7_outcomes}
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+\subsection{Four Estimators for Covariates}
+
+\begin{frame}
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}{Step 8. Estimators for Covariates}
+
+\begin{itemize}
+
+\item But, let's say that we feel we have to assume conditional parallel trends
+\item What estimators can accomodate that assumption with the least amount of assumptions?
+\item We will review four now:
+	\begin{enumerate}
+	\item Inverse probability weighting
+	\item Outcome regression
+	\item Double robust
+	\item Regressions
+	\end{enumerate}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Three key covariate estimators in diff-in-diff}
+
+Three papers (though sometimes you see others) about covariate adjustment in DiD:
+\begin{enumerate}
+\item Abadie (2005) on semiparametric DiD -- reweights the comparison group part of the DID equation using a propensity score based on X
+\item Heckman, Ichimura and Todd (1997) on outcome regression uses baseline X and control group only to impute the missing counterfactual $Y^0$ for treatment group units in a DiD equation
+\item Sant'Anna and Zhao (2020) is double robust which means the method does both of these at the same time so that you don't have to choose between them
+\end{enumerate}
+
+\bigskip
+
+We will discuss both of them and then compare their performance with the more straightforward fixed effects model
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Inverse probability weighting}
+
+
+ Abadie (2005) proposed a model that simply reweights the control group in the DiD equation using a particular specification (``semiparametric'') of the propensity score on pretreatment covariates
+ 
+	\begin{enumerate}
+	\item Calculate each unit's ``after minus before'' (DiD equation)
+	\item Estimate the conditional probability of treatment based on baseline covariates (propensity score estimation)
+	\item Weight the comparison group's DiD equation with the propensity score 
+	\end{enumerate}
+
+Remember -- ATT is only missing $Y^0$ for treatment, so we only have to apply weights to the comparison group units
+
+\end{frame}
+
+\begin{frame}{Novel elements of time in Abadie's model}
+
+\begin{itemize}
+\item There is only one treatment group so therefore there is only one relevant treatment date, $t$
+\item The period prior to treatment is called the baseline, or $b$, period and it is when treated units were not treated 
+\item $X_b$ are ``baseline'' covariates meaning the value of $X$ in the pre-treatment period for either the treated or comparison group units
+\item Propensity scores are estimated off the $b$ period \emph{only} 
+\item Abadie ``throws away'' covariates after treatment because this is all about re-establishing parallel trends which is a \emph{baseline} concept recall
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Assumptions}
+
+Five main assumptions
+
+\begin{enumerate}
+\item No anticipation 
+\item SUTVA (no spillovers)
+\item Conditional parallel trends $$E[Y^0_t - Y^0_b|D=1,X_b] = E[Y^0_t - Y^0_b | D=0, X_b]$$ 
+\item Common support $$Pr(D=1)>0; Pr(D=1|X)<1$$ 
+\item Propensity score model is properly specified 
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Propensity scores as dimension reduction}
+
+\begin{itemize}
+
+\item Propensity scores are ways of dealing with a conditioning set $X$ that has large dimensions
+\item Dimensions are not the same as covariates -- if you have continuous $X$, then it has infinite dimensions
+\item Common support means that \emph{within} all combinations of the covariates (e.g., white male 47yo versus whites, males, age) there are units in treatment and control
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Common support example}
+
+Think of common support like ``exact matches'' but on the propensity score
+
+\bigskip
+
+I'm a white male 47 years old with a PhD; can I find a white male 47 years old without a PhD
+
+\bigskip
+
+If I can, that's common support; if I cannot that's off support
+
+\end{frame}
+
+
+\begin{frame}{Propensity scores as dimension reduction}
+
+\begin{itemize}
+
+\item Propensity score theorem (Rosenbaum and Rubin 1983) showed that if you need $X$ to satisfy some assumption, the propensity score will satisfy too
+\item Propensity scores essentially transform your large dimensional problem into a single scalar called the propensity score, which is the conditional probability of treatment (conditional on $X$)
+\item But we need to estimate the propensity score because we don't usually know it (only an experimentalist ``knows'' the true propensity score)
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Common support and the propensity score}
+
+\begin{itemize}
+\item Exact matches mean you have people who are identical on covariate values in both treatment and control
+\item Common support and the propensity score means you have people nearly identical on their probability of treatment
+\item I am 47yo white male with a PhD with a propensity score of 0.75, but you are an Asian female 27yo without a PhD and have a propensity score of 0.75
+\item Same idea, but for this to work, we need to have ``matches'' like that (just on the propensity score)
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{How do these work together?}
+
+Since we are identifying the ATT, and the ATT is missing $Y^0$ for the treated group, we are using the control group $Y^0$ in its place 
+
+\bigskip
+
+Under conditional parallel trends and common support, some of the comparison group units are recovering the parallel trends because of their $X$ values creating projections that in their differences perfectly aligned in expectation with the missing $\Delta E[Y^0|D=1]$
+
+\bigskip
+
+But we have to have all three for it to work
+
+\end{frame}
+
+\begin{frame}{Visualizing propensity score to get common support}
+
+	\begin{figure}
+	\includegraphics[scale=0.05]{./lecture_includes/common_support_abadie.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Definition and estimation}
+
+Defining the ATT parameter of interest
+\begin{eqnarray*}
+ATT &=& E[Y^1_t - \textcolor{red}{Y^0_t} |D=1] \\
+&=&E[Y^1_t  | D = 1 ] - \textcolor{red}{E[Y^0_t | D=1]}
+\end{eqnarray*}
+
+\bigskip
+Abadie's inverse probability weighting (IPW) estimator
+\begin{eqnarray*}
+E\bigg [ \frac{Y_t - Y_b}{Pr(D=1)} \times \frac{D - Pr(D=1|X_b)}{1-Pr(D=1|X_b)} \bigg ]
+\end{eqnarray*}
+
+\bigskip
+
+The first is our causal parameter; the second is our reweighted DiD equation that \emph{estimates} our causal parameter, but we need to estimate that propensity score
+
+
+\end{frame}
+
+\begin{frame}{Abadie's IPW estimator}
+
+Look closely; what happens mathematically when you substitute $D=1$ vs $D=0$?
+
+\begin{eqnarray*}
+E\bigg [ \frac{Y_t - Y_b}{Pr(D_t=1)} \times \frac{D_t - Pr(D=1|X_b)}{1-Pr(D=1|X_b)} \bigg ]
+\end{eqnarray*}
+
+\bigskip
+
+The reweighting with the propensity only happens to the comparison group's first differences -- not the treatment groups!  Why?  Because it's the $Y^0$ that is missing, not the $Y^1$
+
+\end{frame}
+
+
+
+\begin{frame}{Propensity scores}
+
+\begin{itemize}
+\item It's common to hear people say that we don't know the propensity score; we can only estimate it. Same here -- we approximate it with regressions
+\item Paper is titled ``Semi-parametric DiD'' because Abadie imposes structure on the polynomials used to construct the propensity score (``series logit'')
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Doubly Robust Difference-in-differences}
+
+\begin{itemize}
+\item DR models control for covariates twice -- once using the propensity score, once using outcomes adjusted by regression -- and are unbiased so long as:
+	\begin{itemize}
+	\item The regression specification for the outcome is correctly specified
+	\item The propensity score specification is correctly specified
+	\end{itemize}
+\item Sant'Anna and Zhao (2020) incorporated DR into DiD by combining inverse probability weighting and outcome regression into a single DiD model
+\item It's in the engine of Callaway and Sant'Anna (2020) that we discuss later so it merits close study
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Identification assumptions I: Data}
+
+Assumption 1: Assume panel data or repeated cross-sectional data
+
+\bigskip
+
+Handling repeated cross-sectional data is possible but assumes stationarity which is a kind of stability assumption, but I'll use panel representation. 
+
+\bigskip
+
+Cross-sections will be potentially violated with changing sample compositions (e.g., the Napster example). 
+
+\end{frame}
+
+\begin{frame}{Identification assumptions II: Modification to parallel trends}
+
+Assumption 2: Conditional parallel trends
+
+\bigskip
+
+Counterfactual trends for the treatment group are the same as the control group for all values of $X$
+
+\begin{eqnarray*}
+E[Y_1^0 - Y_0^0 | X, D=1] = E[Y^0_1 - Y^0_0 | X, D=0]
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{Identification assumptions III: Common support}
+
+Assumption 3: Common support
+
+\bigskip
+
+For some $e>0$, the probability of being in the treatment group is greater than $e$ and the probability of being in the treatment group conditional on $X$ is $\leq1-e$. 
+
+\bigskip
+
+Heckman, et al doesn't use the propensity score so we need a more general expression of support
+
+\end{frame}
+
+\begin{frame}{Estimating DD with Assumptions 1-3}
+
+\begin{itemize}
+\item Assumptions 1-3 gives us a couple of options of estimating the DiD
+\item We can either use the outcome regression (OR) approach of Heckman, et al 1997 (will require correct model too)
+\item Or we can use the inverse probability weighting (IPW) approach of Abadie (2005) (will require correct model too)
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Outcome regression}
+
+This is the Heckman, et al. (1997) approach where the potential outcome evolution for the treatment group is imputed with a regression based only on $X_b$ for the control group \emph{only}
+
+\bigskip
+
+\begin{eqnarray*}
+\widehat{\delta}^{OR} = \bigg [ \overline{Y}_{1,1} -  \overline{Y}_{1,0} \bigg ] -  \bigg [ \frac{1}{n^T} \sum_{i|D_i=1} ( \widehat{\mu}_{0,1}(X_i) - \widehat{\mu}_{0,0}(X_i)) \bigg ]
+\end{eqnarray*}
+
+where $\overline{Y}$ is the sample average of $Y$ among units in the treatment group at time $t$ and $\widehat{\mu}(X)$ is an estimator of the true, but unknown, $m_{d,t}(X)$ which is by definition equal to $E[Y_t|D=d,X=x]$.
+
+\end{frame}
+
+
+
+
+\begin{frame}{Outcome regression}
+
+\begin{eqnarray*}
+\widehat{\delta}^{OR} = \bigg [ \overline{Y}_{1,1} -  \overline{Y}_{1,0} \bigg ] -  \bigg [ \frac{1}{n^T} \sum_{i|D_i=1} ( \widehat{\mu}_{0,1}(X_i) - \widehat{\mu}_{0,0}(X_i)) \bigg ]
+\end{eqnarray*}
+
+\begin{enumerate}
+\item Regress changes $\Delta Y$ on $X$ among untreated groups using baseline covariates only
+\item Get fitted values of the regression using all $X$ from $D=1$ only.  Average those
+\item Calculate change in this fitted $Y$ among treated with the average fitted values
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Inverse probability weighting}
+
+This is the Abadie (2005) approach where we use weighting
+
+\begin{eqnarray*}
+\widehat{\delta}^{ipw} = \frac{1}{E_N[D]} E \bigg [ \frac{D-\widehat{p}(X)}{1-\widehat{p}(X)} (Y_1-Y_0) \bigg ]
+\end{eqnarray*}
+
+where $\widehat{p}(X)$ is an estimator for the true propensity score. Reduces the dimensionality of $X$ into a single scalar.
+
+\end{frame}
+
+\begin{frame}{These models cannot be ranked}
+
+\begin{itemize}
+\item Outcome regression needs $\widehat{\mu}(X)$ to be correctly specified, whereas
+\item Inverse probability weighting needs $\widehat{p}(X)$ to be correctly specified
+\item It's hard to ``rank'' these two in practice with regards to model misspecification because each is inconsistent when their own models are misspecified
+\item But what if you could do both of them at the same time and not pay for it?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Double Robust DR}
+
+\begin{itemize}
+\item Doubly robust combines them to give us insurance; we now get two chances to be wrong, as opposed to just one
+\item Two papers:
+	\begin{enumerate}
+	\item Chang (2020) incorporates DR with double/debiased ML
+	\item Sant'Anna and Zhao (2020) is based on the IPW (Abadie 2005) and OR (Heckman, Ichimura and Todd 1997)
+	\end{enumerate}
+\item For now, I've prepped the latter, but will soon get Chang (2020) incorporated -- I just have been relying on Brigham Frandsen to teach the DML material
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Double Robust DiD}
+\begin{eqnarray*}
+\delta^{dr} = E \bigg [ \bigg ( \frac{D}{E[D]} -\frac{ \frac{p(X)(1-D)}{(1-p(X))} }{E \bigg [\frac{p(X)(1-D)}{(1-p(X))} \bigg ]} \bigg  )( \Delta Y - \mu_{0,\Delta}(X)) \bigg ]
+\end{eqnarray*}
+
+\begin{eqnarray*}
+&&p(x): \text{propensity score model} \\
+&& \Delta Y = Y_1 - Y_0 = Y_{post} - Y_{pre} \\
+&& \mu_{d,\Delta} = \mu_{d,1}(X) - \mu_{d,0}(X), \text{ where } \mu(X) \text{ is a model for} \\
+&& m_{d,t} = E[Y_t|D=d,X=x]
+\end{eqnarray*}So that means $\mu_{0,\Delta}$ is just the control group's change in average $Y$ for each $X=x$
+
+\end{frame}
+
+\begin{frame}{Double Robust DiD}
+
+\begin{eqnarray*}
+\delta^{dr} = E \bigg [ \bigg ( \frac{D}{E[D]} -\frac{ \frac{p(X)(1-D)}{(1-p(X))} }{E \bigg [\frac{p(X)(1-D)}{(1-p(X))} \bigg ]} \bigg  )( \Delta Y - \mu_{0,\Delta}(X)) \bigg ]
+\end{eqnarray*}
+
+Notice how the model controls for $X$: you're weighting the adjusted outcomes using the propensity score
+
+\bigskip
+
+The reason you control for $X$ twice is because you don't know which model is right.  DR DiD frees you from making a choice without making you pay too much for it
+
+
+\end{frame}
+
+\begin{frame}{Efficiency}
+
+\begin{itemize}
+\item Authors exploit all the restrictions implied by the assumptions to construct semiparametric bounds
+\item This is where the influence function comes in, which those who have studied the DID code closely may have noticed
+\item One of the main results of the paper is that the DR DiD estimator is also DR for inference
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Standard TWFE Model}
+
+Consider our earlier TWFE specification:
+
+\begin{eqnarray*}
+Y_{it} = \alpha_1  + \alpha_2 T_t + \alpha_3 D_i +  \delta (T_i \times D_t)  + \varepsilon_{it}
+\end{eqnarray*}
+
+\bigskip
+
+Just add in covariates then right?
+
+\begin{eqnarray*}
+Y_{it} = \alpha_1  + \alpha_2 T_t + \alpha_3 D_i  + \delta (T_i \times D_t) + \theta \cdot X_{it} + \varepsilon_{it}
+\end{eqnarray*}
+
+Sure! If you're willing to impose three \emph{more} assumptions
+
+\end{frame}
+
+
+
+
+\begin{frame}{Decomposing TWFE with covariates}
+
+TWFE places restrictions on the DGP. Previous TWFE regression under assumptions 1-3 implies the following:
+
+\bigskip
+
+\begin{eqnarray*}
+E[Y^1_1|D=1,X] = \alpha_1 + \alpha_2 + \alpha_3 + \delta + \theta X
+\end{eqnarray*}
+
+\bigskip
+
+Conditional parallel trends implies
+
+\small
+\begin{eqnarray*}
+&&E[Y^0_{1} - Y^0_{0}|D=1,X]= E[Y^0_{1} - Y^0_{0}|D=0,X] \\
+&&E[Y^0_{1}|D=1,X] - E[Y^0_{0}|D=1,X]= E[Y^0_{1}|D=0,X] - E[Y^0_{0}|D=0,X] \\
+&&E[Y^0_{1}|D=1,X] = E[Y^0_{0}|D=1,X] + E[Y^0_{1}|D=0,X] - E[Y^0_{0}|D=0,X] \\
+&&E[Y^0_{1}|D=1,X] = E[Y_{0}|D=1,X] + E[Y_{1}|D=0,X] - E[Y_{0}|D=0,X] \\
+\end{eqnarray*}
+
+
+\end{frame}
+
+\begin{frame}{Switching equation substitution}
+
+Last line from the switching equation. This gives us:
+
+\begin{eqnarray*}
+E[Y^0_{1}|D=1,X] = \alpha_1  + \alpha_2 + \alpha_3 + \theta X
+\end{eqnarray*}
+
+Now compare this with our earlier $Y^1$ expression
+
+\begin{eqnarray*}
+E[Y^1_1|D=1,X] = \alpha_1 + \alpha_2 + \alpha_3 + \delta + \theta X
+\end{eqnarray*}
+
+We can define our target parameter, the ATT, now in terms of the fixed effects representation
+
+\end{frame}
+
+
+\begin{frame}{Collecting terms}
+
+TWFE representation of our conditional expectations of the potential outcomes
+\begin{eqnarray*}
+&&E[Y^1_1|D=1,X] = \alpha_1 + \alpha_2 + \alpha_3 + \delta + \theta_1 X \\
+&&E[Y^0_{1}|D=1,X] = \alpha_1  + \alpha_2 + \alpha_3 + \theta_2 X \\
+\end{eqnarray*}
+
+Substitute these into our target parameter
+
+\begin{eqnarray*}
+ATT &=& E[Y^1_1|D=1,X]  - E[Y^0_{1}|D=1,X]   \\
+&&=(\alpha_1 + \alpha_2 + \alpha_3 + \delta + \theta_1 X) - ( \alpha_1  + \alpha_2 + \alpha_3 + \theta_2 X )\\
+&&=\delta + (\theta_1 X - \theta_2 X)
+\end{eqnarray*}
+
+\bigskip
+
+What if $\theta_1 X \neq \theta_2 X$?
+
+\end{frame}
+
+\begin{frame}{Assumption 4: Homogeneous treatment effects in X}
+
+
+TWFE requires homogenous treatment effects in $X$ (i.e., the treatment effect is the same for all $X$)
+
+\bigskip
+
+If $X$ is sex, then effects are the same for males and females.
+
+\bigskip
+
+  If $X$ is continuous, like income, then the effect is the same whether someone makes \$1 or \$1 million.
+
+\end{frame}
+
+\begin{frame}{X-specific trends}
+
+TWFE also places restrictions on covariate trends for the two groups too.  Take conditional expectations of our TWFE equation. 
+
+\begin{eqnarray*}
+E[Y_1|D=1] &=& \alpha_1 + \alpha_2 + \alpha_3 + \delta + \theta X_{11} \\
+E[Y_0|D=1] &=& \alpha_1 + \alpha_3 + \theta X_{10} \\
+E[Y_1|D=0] &=& \alpha_1 + \alpha_2 + \theta X_{01} \\
+E[Y_0|D=0] &=& \alpha_1 + \theta X_{00}
+\end{eqnarray*}
+
+
+\end{frame}
+
+
+\begin{frame}{X-specific trends}
+
+Now take the DiD formula:
+
+\begin{eqnarray*}
+\delta^{DD} = &&\bigg ( (\alpha_1 + \alpha_2 + \alpha_3 + \delta + \theta X_{11} ) - (\alpha_1 + \alpha_3 + \theta X_{10} ) \bigg )- \\
+&& \bigg ( (\alpha_1 + \alpha_2 + \theta X_{01}) - (\alpha_1 + \theta X_{00}) \bigg )
+\end{eqnarray*}
+
+\bigskip
+
+Eliminating terms, we get:
+
+\begin{eqnarray*}
+\delta^{DD} = &&\delta + \\
+&& (\theta X_{11} - \theta X_{10} ) - (\theta X_{01} - \theta X_{00} )
+\end{eqnarray*}
+
+\bigskip
+
+Second line requires that trends in X for treatment group equal trends in X for control group.
+
+\end{frame}
+
+
+\begin{frame}{Assumption 5 and 6}
+
+We need ``no X-specific trends'' for the treatment group (assumption 5) and comparison group (assumption 6)
+
+\bigskip
+
+\textbf{Intuition}: No X-specific trends means the evolution of potential outcome $Y^0$ is the same regardless of $X$. This would mean you cannot allow rich people to be on a different trend than poor people, for instance.
+
+\bigskip
+
+Without these six, in general TWFE will not identify ATT. 
+
+\end{frame}
+
+\begin{frame}{Why not both?}
+
+\begin{itemize}
+\item Let's review the problem.  What if you claim you need $X$ for conditional parallel trends?
+\item You have three options:
+	\begin{enumerate}
+	\item Outcome regression (Heckman, et al. 1997) -- needs Assumptions 1-3
+	\item Inverse probability weighting (Abadie 2005) -- needs Assumptions 1-3
+	\item TWFE (everybody everywhere all the time) -- needs Assumptions 1-6
+	\end{enumerate}
+\item Problem is 1 and 2 need the models to be correctly specified
+\item Let's look at a couple of Monte Carlos -- one by Pedro Sant'Anna, and then one by me
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{R and Stata Code}
+
+There is code in R and Stata (all DiD estimators are now beautifully arranged at a website hosted by Asjad Naqvi)
+\begin{itemize}
+\item Stata: \textbf{drdid}
+\item R: \textbf{drdid}
+\end{itemize}
+
+\bigskip
+
+\url{https://asjadnaqvi.github.io/DiD/docs/01_stata/}
+
+\bigskip
+
+Remember -- it's for 2x2 with covariates (i.e., one treatment group). 
+
+\end{frame}
+
+
+\begin{frame}{Monte Carlo Simulations}
+
+\begin{itemize}
+
+\item First we will look at the use of these estimators using a simulation named \texttt{covariates.do} and \texttt{covariates.R}
+
+\item We will do it both with a single run, as that's faster, and then run a simulation of 1,000 simulated regenerated data (i.e., Monte Carlo simulation) to get a distribution
+
+\item We will examine all four estimators: (1) OLS, (2) IPW, (3) OR and (4) DR
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Simulation}
+    \centering
+    \includegraphics[width=0.6\textwidth]{./lecture_includes/covariates.jpg}
+\end{frame}
+
+
+
+
+
+
+\end{document}

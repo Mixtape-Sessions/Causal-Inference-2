@@ -6,6 +6,9 @@ clear all
 capture log close
 
 * Load files
+* ssc install csdid, replace
+* ssc install drdid, replace
+
 * net install grc1leg, from(http://www.stata.com/users/vwiggins) replace
 * net install gr0075, from(http://www.stata-journal.com/software/sj18-4) replace
 * ssc install labutil, replace

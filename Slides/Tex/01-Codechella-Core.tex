@@ -1,0 +1,1068 @@
+\PassOptionsToPackage{table}{xcolor}
+\documentclass{beamer}
+
+\input{preamble.tex}
+\usepackage{breqn} % Breaks lines
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\usepackage{pdfpages} % \includepdf
+
+\usepackage{listings} % R code
+\usepackage{verbatim} % verbatim
+
+% Video stuff
+\usepackage{media9}
+
+% packages for bibs and cites
+\usepackage{natbib}
+\usepackage{har2nat}
+\newcommand{\possessivecite}[1]{\citeauthor{#1}'s \citeyearpar{#1}}
+\usepackage{breakcites}
+\usepackage{alltt}
+
+% Setup math operators
+\DeclareMathOperator{\E}{E} \DeclareMathOperator{\tr}{tr} \DeclareMathOperator{\se}{se} \DeclareMathOperator{\I}{I} \DeclareMathOperator{\sign}{sign} \DeclareMathOperator{\supp}{supp} \DeclareMathOperator{\plim}{plim}
+\DeclareMathOperator*{\dlim}{\mathnormal{d}\mkern2mu-lim}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+   \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand*\colvec[1]{\begin{pmatrix}#1\end{pmatrix}}
+
+\newcommand{\myurlshort}[2]{\href{#1}{\textcolor{gray}{\textsf{#2}}}}
+
+
+\begin{document}
+
+\imageframe{./lecture_includes/mixtape_did_cover.png}
+
+
+% ---- Content ----
+
+\section{Introduction}
+
+\subsection{Managing expectations}
+
+
+\begin{frame}{Introduction}
+
+\begin{itemize}
+\item Welcome to 2nd Annual CodeChella 2025 (hosted by Mixtape Sessions and CUNEF)!
+\item Speakers are Scott Cunningham (Baylor) Kyle Butts (University of Arkansas), Dan Rees (UC3M) and Mark Anderson (Montana State University)
+\item Four days of difference-in-differences and other panel estimators!
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{What my pedagogy is like}
+
+\begin{itemize}
+\item Workshop is intended to take someone from knowing nothing about difference-in-differences to a broad level of competency on advanced topics
+\item Lecture, discussion, exercises, application with "live coding" exercises
+\item Ask questions at any point; I'll do my best to answer them but will sometimes defer it to the break
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Class goals}
+Pedagogical goal is to break down the procedures into plain English, rebuilding it into something you can and want to use, but also:
+
+  \begin{enumerate}
+    \item \textbf{Confidence}: You will feel like you have a good enough understanding of diff-in-diff, both in its basics and some more contemporary issues, so that it seems like an intuitive and useful tool you could imagine using
+    \item \textbf{Comprehension}: You will have learned a lot both conceptually and in the specifics, particularly with regards to issues around identification and estimation in the diff-in-diff 
+    \item \textbf{Competency}: You will have more knowledge of programming syntax in Stata and R so that later you can apply this in your own work
+  \end{enumerate}
+
+\end{frame}
+
+
+
+\begin{frame}{Day 1 outline}
+
+Basics of difference-in-differences (Beginners but also my own personal take on this)
+	\begin{itemize}
+	\item The Core -- what is difference-in-differences, how do you calculate it, what does it mean, what are its assumptions
+	\item Why do we weight?
+	\item Four Means or One Regression?
+	\item Testing for parallel trends -- event studies, falsifications
+
+	\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Day 2 outline}
+
+Violations of parallel trends
+	\begin{itemize}
+	\item Repeated cross sections and compositional change
+	\item Why do we include covariates?
+		\begin{itemize}
+		\item Heckman, Ichimura and Todd (1997)
+		\item Abadie (2005)
+		\item Sant’Anna and Zhao (2020)
+		\item Twoway fixed effects with time varying controls	
+		\end{itemize}
+	\item Lalonde coding exercise
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Day 3 outline}
+
+Pathologies of and Solutions to Twoway Fixed Effects with Differential Timing
+	\begin{itemize}
+	\item Panel fixed effects and strict exogeneity (Cunningham 2021) 
+	\item ``Old school'' example using Cheng and Hoekstra (2013) “Castle Doctrine” paper
+	\item Bacon decomposition (Goodman-Bacon 2021)
+	\item Aggregate ATT(g,t) method (Callaway and Sant’Anna 2021)
+	\item Simple illustrations in simulations
+	\item Walk through R shiny app
+	\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Day 4 outline}
+
+Event studies and staggered, Imputation estimators
+
+\begin{itemize}
+\item Decomposition event study leads and lags under staggered adoption (Sun and Abraham 2021)
+\item Imputation estimators
+		\begin{itemize}
+		\item Borusyak, et al. (2023) “robust efficient imputation estimator”
+		\item Gardner, et al. (2023) two stage difference in differences
+		\end{itemize}
+\item Bringing it together with an application from my research 
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\subsection{Origins of diff-in-diff in public health}
+
+\begin{frame}{Growing popularity in economics}
+
+	\begin{figure}
+	\caption{Currie, et al. (2020)}
+	\includegraphics[scale=0.25]{./lecture_includes/currie_did.png}
+	\end{figure}
+
+\bigskip
+
+\footnotesize
+
+With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertrand, Duflo and Mullainthan 2004), econometricians had not given it much notice
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}{What is difference-in-differences (DiD)}
+
+\begin{itemize}
+\item DiD is when a group of units are assigned some treatment and then compared to a group of units that weren't before and after
+\item One of the most widely used quasi-experimental methods in economics and increasingly in industry
+\item Predates the randomized experiment by 80 years, but uses basic experimental ideas about treatment and control groups (just not randomized)
+\item Uses panel or repeated cross section datasets, binary treatments usually, and often covariates
+\item We'll do a quick run through the social history of diff-in-diff to set the stage for our workshop this week
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}{Ignaz Semmelweis and washing hands}
+
+\begin{itemize}
+\item Early 1820s, Vienna passed legislation requiring that if a pregnant women giving birth went to a public hospital (free care), then depending on the day of week and time of day, she would be routed to either the midwife wing or the physician wing (most likely resulting in random assignment)
+\item But by the 1840s, Ignaz Semmelweis noticed that pregnant women died after delivery in the (male) wing at a rate of 13-18\%, but only 3\% in the (female) midwife wing -- cause was puerperal or “childbed” fever
+\item Somehow this was also we known -- women would give birth in the street rather than go to the physician if they were unlucky enough to have their water break on the wrong day and time
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Ignaz Semmelweis and washing hands}
+
+\begin{itemize}
+\item Ignaz Semmelweis conjectures after a lot of observation that the cause is the teaching faculty teaching anatomy using cadavers and then delivering babies \emph{without washing hands}
+\item New training happens to one but not the other and Semmelweis thinks the mortality is caused by working with cadavers
+\item Convinced the hospital to have physicians wash their hands in chlorine but not the midwives, creating a type of difference-in-differences design 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Semmelweis diff-in-diff evidence}
+
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/semmelweis_graphic.png}
+	\end{figure}
+
+
+\end{frame}
+
+\begin{frame}{Evidence Rejected}
+
+\begin{itemize}
+
+\item Diff-in-diff evidence was rejected by Semmelweis' superiors claiming it was the hospital's new ventilation system
+\item Dominant theory of disease spread was caused by "odors" or miasma or "humors"
+\item Semmelweis began showing signs of irritability, perhaps onset of dementia, became publicly abusive, was committed to a mental hospital and within two weeks died from wounds he received while in residence
+\item Despite the strength of evidence, difference-in-differences was rejected -- a theme we will see continue
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{John Snow and cholera}
+
+\begin{itemize}
+\item Three major waves of cholera in the early to mid 1800s in London, largely thought to be spread by miasma (``dirty air'')
+\item John Snow believed cholera was spread through the Thames water supply through an invisible creature that entered the body through food and drink, caused the body to expel water, placing the creature back in the Thames and causing epidemic waves
+\item London passes ordinance requiring water utility companies to move inlet pipe further up the Thames, above the city center, but not everyone complies
+\item Natural experiment: Lambeth water company moves its pipe between 1849 and 1854; Southwark and Vauxhall water company delayed
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+
+	\begin{figure}
+	\caption{Two water utility companies in London 1854}
+	\includegraphics[scale=0.225]{./lecture_includes/lambeth.png}
+	\end{figure}
+
+
+\end{frame}
+
+
+
+\begin{frame}{Difference-in-differences}
+
+\begin{table}\centering
+\scriptsize
+		\caption{Lambeth and Southwark and Vauxhall, 1849 and 1854}
+		\begin{center}
+		\begin{tabular}{lll|lc}
+		\toprule
+		\multicolumn{1}{l}{\textbf{Companies}}&
+		\multicolumn{1}{c}{\textbf{Time}}&
+		\multicolumn{1}{c}{\textbf{Outcome}}&
+		\multicolumn{1}{c}{$D_1$}&
+		\multicolumn{1}{c}{$D_2$}\\
+		\midrule
+		Lambeth & Before & $Y=L$ \\
+		& After & $Y=L + L_t + D$ & $\textcolor{red}{L_t}+D$\\
+		\midrule
+		& & & & $D + (\textcolor{red}{L_t}- SV_t)$ \\
+		\midrule
+		Southwark and Vauxhall & Before & $Y=SV$ \\
+		& After & $Y=SV + SV_t$ & $SV_t$\\
+		\bottomrule
+		\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{eqnarray*}
+\widehat{\delta}_{did} = D + (\textcolor{red}{L_t}- SV_t)
+\end{eqnarray*}This method yields an unbiased estimate of D if $\textcolor{red}{L_t} = SV_t$, but note that $\textcolor{red}{L_t}$ is a counterfactual trend and therefore not known
+
+\end{frame}
+
+\section{Diff-in-Diff Fundamentals}
+
+\subsection{Average Treatment Effect on the Treated}
+
+\begin{frame}{Introducing Potential Outcomes to DiD}
+
+\begin{itemize}
+\item Research question versus causal question -- not the same thing
+	\begin{itemize}
+	\item Research question would be you are wanting to know effect of job training programs on earnings
+	\item Causal question is expressed using potential outcomes
+	\end{itemize}
+\item Causal questions are usually averages of individual treatment effects for a specific population of units
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Identification vs Estimation}
+
+\begin{itemize}
+\item We must start by making a distinction between the parameter we are attempting to identify and the manner in which we will estimate it
+\item Identification requires first stating explicitly our goal expressed using potential outcomes
+\item But often people skip this step and go directly to the numerical calculation like Orley was doing so let's do that
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Potential outcomes notation}
+	
+	\begin{itemize}
+	\item Let the treatment be a binary variable: $$D_{i,t} =\begin{cases} 1 \text{ if in job training program $t$} \\ 0 \text{ if not in job training program at time $t$} \end{cases}$$where $i$ indexes an individual observation, such as a person
+
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Potential outcomes notation}
+	
+	\begin{itemize}
+
+	\item Potential outcomes: $$Y_{i,t}^j =\begin{cases} 1 \text{: wages at time $t$ if trained} \\ 0 \text{: wages at time $t$ if not trained} \end{cases}$$where $j$ indexes a state of the world where the treatment happened or did not happen
+
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Treatment effect definitions}
+
+
+	\begin{block}{Individual treatment effect}
+	    The individual treatment effect,  $\delta_i$, equals $Y_i^1-Y_i^0$
+	\end{block}
+
+Missing data problem:  No data on the counterfactual 
+	
+\end{frame}
+
+
+\begin{frame}{Average Treatment Effects for the Treated Subpopulation}	
+	\begin{block}{Average Treatment Effect on the Treated (ATT)}
+	The average treatment effect on the treatment group is equal to the average treatment effect conditional on being a treatment group member:
+		\begin{eqnarray*}
+		E[\delta|D=1]&=&E[Y^1-Y^0|D=1] \nonumber \\
+		&=&E[Y^1|D=1]-\textcolor{red}{E[Y^0|D=1]}
+		\end{eqnarray*}
+	\end{block}
+	
+	\bigskip
+
+It's the average causal effect but only for the people exposed to some intervention; notice we can't calculate it, also, because we are missing the red term
+
+	
+\end{frame}
+
+\begin{frame}{ATT vs ATE}
+
+\begin{itemize}
+\item Let's look at the "Potential Outcomes" tab at our Diff-in-Diff Worksheet 
+\item \url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
+\item Follow instructions and fill all of it out
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\subsection{Core Diff-in-Diff Assumptions}
+
+\begin{frame}{Deriving identification assumptions}
+
+\begin{itemize}
+
+\item Diff-in-diff is two things 
+	\begin{enumerate}
+	\item It's a calculation (i.e., four averages)
+	\item It sometimes has a causal interpretation
+	\end{enumerate}
+\item I'm going to walk us through two main assumptions using potential outcomes and algebra
+\item Then we will look at what happens when our control group has been treated
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{DiD equation is the 2x2}
+
+\begin{itemize}
+\item The building block of diff-in-diff is ``four averages and three subtractions'' 
+\item Needs two groups, two time periods, which is four averages
+\item Often called the $2 \times 2$ for that reason
+\end{itemize}
+
+\begin{eqnarray*}
+\widehat{\delta} = \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
+\end{eqnarray*}$k$ are the people in the job training program, $U$ are the untreated people not in the program, $Post$ is after the trainees took the class, $Pre$ is the period just before they took the class, and $E[y]$ is mean earnings. 
+
+\end{frame}
+
+
+
+\begin{frame}{Replace with potential outcomes and add a zero}
+
+\begin{eqnarray*}
+\widehat{\delta} &=& \bigg ( \underbrace{E[Y^1_k|Post] - E[Y^0_k|Pre] \bigg ) - \bigg ( E[Y^0_U | Post ] - E[ Y^0_U | Pre]}_{\mathclap{\text{Switching equation}}} \bigg)  \\
+&&+ \underbrace{\textcolor{red}{E[Y_k^0 |Post] - E[Y^0_k | Post]}}_{\mathclap{\text{Adding zero}}} 
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{Parallel trends bias}
+
+\begin{eqnarray*}
+\widehat{\delta} &=& \underbrace{E[Y^1_k | Post] - \textcolor{red}{E[Y^0_k | Post]}}_{\mathclap{\text{ATT}}} \\
+&& + \bigg [  \underbrace{\textcolor{red}{E[Y^0_k | Post]} - E[Y^0_k | Pre] \bigg ] - \bigg [ E[Y^0_U | Post] - E[Y_U^0 | Pre] }_{\mathclap{\text{Non-parallel trends bias in 2x2 case}}} \bigg ]
+\end{eqnarray*}
+
+
+\end{frame}
+
+\begin{frame}{Identification through parallel trends}
+	
+
+	\begin{block}{Parallel trends}
+	Assume two groups, treated and comparison group, then we define parallel trends as:	 $$\textcolor{red}{E(}\textcolor{red}{\Delta Y^0_k)} = E(\Delta Y^0_U)$$
+	\end{block}
+
+\textbf{In words}: ``The \textcolor{red}{evolution of earnings for our trainees \emph{had they not trained}} is the same as the evolution of mean earnings for non-trainees''.  
+
+\bigskip
+
+It's in \textcolor{red}{red} because parallel trends is untestable and critically important to estimation of the ATT using any method, OLS or ``four averages and three subtractions''
+
+\end{frame}
+
+\begin{frame}{No Anticipation}
+
+\begin{itemize}
+\item ``No anticipation'' simply means that the unit is not treated until it is treated (and that can be violated with rational forward looking agents but not always)
+	\begin{itemize}
+	\item \textbf{Example 1}: Tomorrow I win the lottery, but don't get paid yet. I decide to buy a new house today. That violates NA
+	\item \textbf{Example 2}: Next year, a state lets you drive without a driver license and you know it. But you can't drive without a driver license today.  This satisfies NA.
+	\end{itemize}
+\item Violations in simple 2x2 where baseline is treated creates attenuation bias that can be severe 
+\item Just make sure your baseline is untreated and you satisfy this (be aware of "announcement dates" vs "implementation dates" of laws)
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{No Anticipation Violation}
+
+
+\begin{eqnarray*}
+\widehat{\delta} &=& \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
+\end{eqnarray*}What if the $k$ group had been treated at the baseline ``pre'' period in our 2x2?  
+
+\bigskip
+
+Add in \textbf{two zeroes} instead of one, substitute and rearrange.
+
+\begin{eqnarray*}
+&+& \textcolor{red}{E[Y^0_k|Post] - E[Y^0_k|Post]} \\
+&+& \textcolor{blue}{E[Y^0_k|Pre] - E[Y^0_k|Pre]} 
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{No Anticipation Violation}
+
+If the baseline period is treated, then the simple 2x2 identifies the following three terms:
+
+\begin{eqnarray*}
+\delta &=& ATT_k(Post) \\&&+ \text{Non PT bias} \\&&- \textcolor{blue}{ATT_k(Pre)}
+\end{eqnarray*}
+
+First row is the ATT in the post period; middle row is parallel trends; third row subtracts the baseline ATT from the calculation. If treatment effects are constant, then the DiD coefficient will be zero despite positive treatment effects.  Let's look in \texttt{na.do}.
+
+\end{frame}
+
+\begin{frame}{Do not use already treated controls}
+
+
+\begin{eqnarray*}
+\widehat{\delta} &=& \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
+\end{eqnarray*}What if the $U$ group had always been treated in both periods? Is parallel trends enough to identify the ATT?
+
+\bigskip
+
+Add in \textbf{three zeroes} instead of one, substitute and rearrange.
+
+\begin{eqnarray*}
+&+& \textcolor{red}{E[Y^0_k|Post] - E[Y^0_k|Post]} \\
+&+& \textcolor{blue}{E[Y^0_U|Post] - E[Y^0_U|Post]}  \\
+&+& \textcolor{blue}{E[Y^0_U|Pre] - E[Y^0_U|Pre]} 
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{Already Treated Control Group}
+
+If the baseline period is treated, then the simple 2x2 identifies the sum of the following three terms:
+
+\begin{eqnarray*}
+\delta &=& ATT_k(Post) \\&&+ \text{Non PT bias} \\&&- \textcolor{red}{\Delta ATT_U}
+\end{eqnarray*}
+
+Again, first row is the target parameter, plus parallel trends term, \textcolor{red}{minus} the changing ATT in our control group
+
+\end{frame}
+
+\subsection{Data Requirements}
+
+\begin{frame}{Longitudinal Data}
+
+\begin{itemize}
+
+\item Diff-in-diff requires four means -- pre and post for two groups
+\item Traditionally, the "pre" is a baseline mean at year just prior to treatment, $t-1$ or $b$ depending on author
+	\begin{itemize}
+	\item Though sometimes you will see people present any interaction as diff-in-diff I will stick to time
+	\item Just remember the interaction regression we presented is calculating four means and three subtractions
+	\item Interpreting parallel trends is a bit stranger otherwise
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Longitudinal Data}
+
+\begin{itemize}
+
+\item Two types of longitudinal data:
+    \begin{itemize}
+      \item Panel Data: same units tracked over time (e.g., National Longitudinal Survey of Youth 1997)
+      \item Repeated Cross-Sections: different units sampled at each time (e.g., Census, Current Population Survey)
+    \end{itemize}
+    \item Violations of parallel trends can arise differently across data types.
+\end{itemize}
+
+\end{frame}
+
+
+% Slide 2
+\begin{frame}{What is an Imbalanced Panel?}
+  \begin{itemize}
+    \item Balanced panel is when all units observed in every period.
+    \item Imbalanced panel is when units missing in some periods.
+		\begin{itemize}
+		\item Anthony is in waves 1-3, 
+		\item Bob is in waves 1-3, 
+		\item Inez is in waves 1 and 3 only, 
+		\item Dignan is in waves 1 and 2 only
+		\end{itemize}
+    \item Missingness alone does not violate parallel trends, though it does change the parameter.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Example of Balanced ATE}
+  \centering
+  \includegraphics[height=0.85\textheight,keepaspectratio]{./lecture_includes/balanced.png}
+\end{frame}
+
+
+\begin{frame}{How does it change the parameter?}
+
+\begin{itemize}
+\item Remember -- in the potential outcomes framework, a treatment effect is defined at the individual level, $\delta_{it}$
+\item So if you are missing a person, $i$,  in a period, $t$, then it does not contribute
+\item The more heterogeneity in the treatment effects, the more the broken panel will shift away from what you think you're after
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Imbalanced ATE}
+  \centering
+  \includegraphics[height=0.85\textheight,keepaspectratio]{./lecture_includes/imbalanced.png}
+\end{frame}
+
+% Slide 3
+\begin{frame}{Missing at Random (MAR)}
+  \begin{itemize}
+    \item \textbf{Wooldridge (2010):} MAR does not bias estimation under constant treatment effects.
+    \item If missingness is independent of $E[\Delta Y^0]$, then parallel trends will still hold in the large sample.
+    \item Wooldridge calls this \emph{Missing At Random (MAR)}
+    \item But maybe this is not plausible always so is there anything else we can do?
+  \end{itemize}
+\end{frame}
+
+
+% Slide 5
+\begin{frame}{Conditional Missing at Random}
+  \begin{itemize}
+	\item What if the missing is conditionally random $$Y^0  \perp M \mid X$$
+    \item This implies:
+    $$E[Y^0|M=1,X] = E[Y^0|M=0,X]$$
+	\item So you can impute $\widehat{Y^0}$ for missing units using $Y^0 \sim X$ with your non-missing data with a regression estimator
+	\item More needs to be done to think about the $Y^1$ imputation so I'll just focus on this for now
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Conditional Missing at Random}
+
+\begin{itemize}
+    \item Note though -- this is a "missing based on observables" type of unconfoundedness assumption
+    \item I haven't worked this out yet, but you'll need I'm sure an additional overlap assumption or some functional form assumption
+    \item You might explore whether there is something here for you, as it was an idea I had but I haven't worked it out
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{Weighting and Target Parameters}
+
+
+
+\begin{frame}{Choosing Target Parameter}
+
+\begin{itemize}
+\item Lott and Mustard (1997) found that concealed carry gun laws \textbf{reduced murders} using county-level data 1977-1992
+\item Subsequent analysis by John Donohue and others would criticize the study on several grounds
+	\begin{itemize}
+	\item County-level data had problems due to flawed imputation by the FBI
+	\item Lack of robustness -- results differed when using state-level data
+	\end{itemize}
+\item Causal parameters are \emph{averaged treatment effects} and that has two elements
+	\begin{itemize}
+	\item What population's treatment effects are you averaging
+	\item What weight are you using to do that averaging?
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Average Treatment Effects}
+
+\begin{table}[htbp]\centering
+\caption{Illustration of Potential Outcomes and Treatment Effects}\label{tab:step1_table}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Name} & \textbf{$Y^1$} & \textbf{$Y^0$} & \textbf{$\delta$} & \textbf{D}  \\
+\midrule
+Alan    & 1 & 0 & 1  & 1  \\
+Betty   & 0 & 1 & -1 & 1  \\
+Chad    & 1 & 1 & 0  & 1  \\
+Daniel  & 0 & 0 & 0  & 0  \\
+Edith   & 1 & 0 & 1  & 0  \\
+Frank   & 1 & 0 & 1  & 0  \\
+\midrule
+$ATE =$&&& 0.33 \\
+$ATT =$&&&0 \\
+\bottomrule
+\end{tabular}
+\end{table}  
+
+\end{frame}
+
+\begin{frame}{Average Treatment Effects}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.8\textheight]{./lecture_includes/step1_y1y0}
+\end{figure}
+
+
+\end{frame}
+
+\begin{frame}{Average Treatment Effect on the Treated}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.8\textheight]{./lecture_includes/step1_att}
+\end{figure}
+
+
+\end{frame}
+
+
+
+\begin{frame}{Which causal effect do you want?}
+
+\begin{itemize}
+\item Solon, Haider and Wooldridge (2015) ask "what are we weighting for?"
+\item Why you weight in surveys and why you weight in causal inference are different
+	\begin{itemize}
+	\item Survey weights are to make estimates nationally representative
+	\item Population weighting in causal inference is because you want a different parameter
+	\end{itemize}
+\item Which causal effect do you want?
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Different Levels of Aggregation, Different Weights}
+
+\begin{table}[htbp]\centering
+\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Individuals} & \textbf{Y\textsubscript{1}} & \textbf{Y\textsubscript{0}} & \textbf{$\delta$} & \textbf{County} \\
+\midrule
+Alan    & 1 & 0 & 1  & \cellcolor{yellow!30}1 \\
+Betty   & 1 & 1 & 0  & \cellcolor{yellow!30}1 \\
+Chad    & 1 & 1 & 0  & \cellcolor{yellow!30}1 \\
+Daniel  & 0 & 0 & 0  & \cellcolor{yellow!30}1 \\
+Edith   & 1 & 0 & 1  & \cellcolor{yellow!30}1 \\
+Frank   & 1 & 0 & 1  & \cellcolor{yellow!30}1 \\
+George  & 0 & 0 & 0  & \cellcolor{yellow!30}1 \\
+Hank    & 1 & 0 & 1  & \cellcolor{yellow!30}1 \\
+Ida     & 0 & 1 & -1 & \cellcolor{green!20}2 \\
+Janet   & 0 & 1 & -1 & \cellcolor{green!20}2 \\
+\midrule
+\textbf{County} & & & \textbf{ATE\textsubscript{c}} & \\
+\cellcolor{yellow!30}1 & & & \cellcolor{yellow!30}0.5 & \\
+\cellcolor{green!20}2 & & & \cellcolor{green!20}-1 & \\
+\midrule
+\multicolumn{3}{l}{ATE for average county} & -0.25 & \\
+\multicolumn{3}{l}{ATE for average person}   & 0.2 & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\end{frame}
+
+\begin{frame}{Weighting formula}
+
+\begin{itemize}
+\item What if you have city or county level data but you want the ATE for the average person? 
+\item Then that is when you weight by population -- because you want to know the effect for the \emph{average person}
+\end{itemize}
+
+\begin{equation}
+ATE_{\text{people}} = \frac{\sum_c ATE_c \cdot N_c}{\sum_c N_c}
+\end{equation}
+
+\begin{eqnarray*}
+ATE_p &=& \frac{(0.5 \times 8) + (-1 \times 2)}{8 + 2} \\
+      &=& \frac{4 - 2}{10} \\
+      &=& 0.2
+\end{eqnarray*}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Different Levels of Aggregation, Different Weights}
+
+
+\begin{itemize}
+\item Heterogenous treatment effects is causing this, but so is weighting
+\item Consider Texas
+	\begin{itemize}
+	\item Texas has 31 million residents
+	\item Texas 254 counties
+	\end{itemize}
+\item Where do they live?
+	\begin{itemize}
+	\item 13 million live in Harris, Dallas, Fort Worth, San Antonio and Austin, or rather 41\% 
+	\end{itemize}
+\item What if concealed carry increases firearm deaths in cities, but reduces them in counties, because of sorting by treatment effects?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Simulation}
+
+\begin{itemize}
+\item Assume a state with 30 million people and 254 counties
+	\begin{itemize}
+	\item 15 million live in 5 counties
+	\item 15 million live equally spread in the other 249 counties (around 60,000 each)
+	\end{itemize}
+\item Assume that $\delta_i$ varies, sometimes positive and sometimes negative and $E[Y^1 - Y^0] = 2$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Selection into Counties is Random}
+
+\begin{itemize}
+\item People choose where to live in Texas, but the mechanism by which they do so will have implications for our datasets
+\item What if they sort into counties (i.e., where they live) by lottery
+\item Every county will therefore have the same distribution of $Y^1$ and $Y^0$
+\item Every county will have an ATE of $2$
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Average County ATE and Overall ATE Are the Same }
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.7\textheight]{./lecture_includes/tiebout_roy1}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Selection into Counties is Based on Potential Outcomes}
+
+\begin{itemize}
+\item Now assume that people sort into five largest counties have the highest treatment effects ($\delta_i$)
+\item Thus the five largest counties are those people for whom concealed carry guns law cause homicides
+\item Remaining 249 small counties, in decreasing order, get residents with lower treatment effects (i.e., for whom concealed carry reduces murders)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Average County ATE and Overall ATE Differ }
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.7\textheight]{./lecture_includes/tiebout_roy2}
+\end{figure}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Both Are Valid, But Not Necessarily Your Research Question}
+
+\begin{itemize}
+\item This has implications for what to learn from your dataset which is likely to be aggregated at some level (e.g., individual, city, county, state, country)
+\item Do you want to know the ATT for the \emph{average person} or the \emph{average county}?
+	\begin{itemize}
+	\item It depends on what your study is about
+	\item If it about the average person, then you want the overall ATT (i.e., the first case)
+	\item If it is about the average county, then you want the county average ATT (i.e., the second case)
+	\end{itemize}
+\item Since you're averaging over \emph{units} in \emph{data}, it's imperative you make a decision early on as it changes what you decide
+\item You can always use population weights but in causal inference, you ask what your target parameter is, and then decide your weights
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Choosing your ATT parameter}
+
+\begin{itemize}
+
+\item This means that even diff-in-diff has more than one ATT -- the \emph{average county} or \emph{average person}
+\item As a rule, I think your goal is probably to imagine who your audience is, and what you both agree the policy levers are
+\item In the US, local municipalities have a lot of discretion to pass their own laws -- even in areas where you might think it was impossible to imagine like the decriminalization of drugs
+\item It may be \emph{local} policy makers want to know the causal effect on \emph{local communities} in which case you \textbf{don't weight}
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Choosing your ATT parameter}
+
+\begin{itemize}
+\item But the argument isn't to weight to make it nationally representative -- it's "is the average effect on the average county theoretically important, policy relevant and how one is planning to use it
+\item Others are also possible
+\item Quantile treatment effects (Athey and Imbens 2006; Callaway and Li 2019) and distribution regression target features of the marginal distributions of $Y^1_{i,t}$ and $Y^0_{i,t}$(Fernandez-Val, Meier, van Vuuren and Vella 2024a)
+\end{itemize}
+
+\end{frame}
+
+\section{Four Means or One Regression}
+
+
+
+
+\begin{frame}{Why do Diff-in-Diff}
+
+\begin{itemize}
+\item Appeal of diff-in-diff has been its simplicity, its transparency, and its ease of conveying analysis to an audience 
+	\begin{itemize}
+	\item Orley Ashenfelter used it in the 1970s to explain regressions with fixed effects to Bureaucrats in DC 
+	\end{itemize}
+\item Diff-in-diff is four averages and three subtractions and everyone knows what those are
+$$\widehat{\textcolor{blue}{\delta}} = \bigg ( \overline{y}_k^{post(k)} - \overline{y}_k^{pre(k)} \bigg ) - \bigg ( \overline{y}_U^{post(k)} - \overline{y}_U^{pre(k)} \bigg ) $$
+\item But $\widehat{\delta}$ is just the OLS coefficient in this regression:
+$$Y_{ist} = \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \textcolor{blue}{\delta} (Treat_{is} \times Post_t) + \varepsilon_{ist} $$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Minimum wages}
+
+\begin{itemize}
+\item Card and Krueger (1994) have a famous study estimating causal effect of minimum wages on employment
+\item  New Jersey raises its minimum wage in April 1992 (between February and November) but neighboring Pennsylvania does not
+\item Using DiD, they do not find a negative effect of the minimum wage on employment leading to complex reactions from economists
+\item Orley's describes his understanding of people's reaction to the paper.  \\ \url{https://youtu.be/MOtbuRX4eyQ?t=1882}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+	\begin{figure}
+	\includegraphics[scale=0.5]{./lecture_includes/minwage_whore}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{Reaction to the paper}
+
+
+Lots of anecdotes in this interview with Card, but here are just two.  First, Card and Krueger received a lot of personal hostility from their peers (1:07 to 1:10)
+
+\bigskip
+
+\url{https://youtu.be/1soLdywFb_Q?si=laAVYf_E2KBZKywG&t=4020}
+
+\bigskip
+
+Later Card says Sherwin Rosen accused them of having an agenda.  But the worst is what happens to Alan Krueger maybe (1:16 to 1:17)
+
+\bigskip
+
+\url{https://youtu.be/1soLdywFb_Q?si=jsb8h50ZosGDnKrv&t=4556}
+
+
+
+
+\end{frame}
+
+\begin{frame}{Card on that study}
+
+\begin{quote}
+``I’ve subsequently stayed away from the minimum wage literature for a number of reasons. First, it cost me a lot of friends. People that I had known for many years, for instance, some of the ones I met at my first job at the University of Chicago, became very angry or disappointed. They thought that in publishing our work we were being traitors to the cause of economics as a whole.''
+\end{quote}
+
+
+\end{frame}
+
+
+
+\begin{frame}{OLS specification of the DiD equation}
+	
+	\begin{itemize}
+	\item The correctly specified OLS regression is an interaction with time and group fixed effects:$$Y_{its} = \alpha + \gamma NJ_s + \lambda d_t + \delta (NJ \times d)_{st} + \varepsilon_{its}$$
+		\begin{itemize}
+		\item NJ is a dummy equal to 1 if the observation is from NJ
+		\item d is a dummy equal to 1 if the observation is from November (the post period)
+		\end{itemize}
+	\item This equation takes the following values
+		\begin{itemize}
+		\item PA Pre: $\alpha$
+		\item PA Post: $\alpha + \lambda$
+		\item NJ Pre: $\alpha + \gamma$
+		\item NJ Post: $\alpha + \gamma + \lambda + \delta$
+		\end{itemize}
+	\item DiD equation: (NJ Post - NJ Pre) - (PA Post - PA Pre) $= \delta$
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[plain]
+	$$Y_{ist} = \alpha + \gamma NJ_s + \lambda d_t + \delta(NJ\times d)_{st} + \varepsilon_{ist}$$
+	\begin{figure}
+	\includegraphics[scale=0.90]{./lecture_includes/waldinger_dd_5.pdf}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}[plain]
+	$$Y_{ist} = \alpha + \gamma NJ_s + \lambda d_t + \delta(NJ\times d)_{st} + \varepsilon_{ist}$$
+	\begin{figure}
+	\includegraphics[scale=0.90]{./lecture_includes/waldinger_dd_5.pdf}
+	\end{figure}
+
+Notice how OLS is ``imputing'' $E[Y^0|D=1,Post]$ for the treatment group in the post period? It is only ``correct'', though, if parallel trends is a good approximation
+
+\end{frame}
+
+
+\begin{frame}{Data example}
+
+\begin{itemize}
+\item Medicaid is a US policy for the poor -- provides access to healthcare to the poor -- and it's been a research question whether it has any effect on mortality
+	\begin{itemize}
+	\item Finkelstein, et al. (2012) found no effect on mortality from RCT, but it was probably underpowered to find small effects
+	\item Borgschulte and Vogler (2020) used county level publicly available mortality data and found evidence that it did
+	\item Miller, Johnson and Wherry (2022) used linked administrative data and also found it did
+	\end{itemize}
+\item Let's review the Borgschulte and Vogler (2020) approach
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Simple 2x2 DD}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.5\textheight]{./lecture_includes/simple2x2.png}
+\end{figure}
+
+
+\end{frame}
+
+\begin{frame}{Three Regressions}
+
+\begin{itemize}
+\item Three regression specifications give you those exact same numbers
+	\begin{enumerate}
+	\item Regress mortality onto treatment dummy, post dummy and interaction (no fixed effects)
+	\item Regress mortality onto interaction with county and year fixed effects (but no constant)
+	\item Regress long difference (i.e., post value minus pre) onto a treatment dummy
+	\end{enumerate}
+\item Those are all numerically identical to "four averages and three subtractions"
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.7\textheight]{./lecture_includes/regression2x2.png}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Equivalence}
+
+\begin{itemize}
+
+\item Equivalence between calculating these 2x2s by hand or with a regression has appealing features
+\item Regressions are simple to run, and they do the averaging behind the scenes
+\item They also allow us to use statistical inference tools from OLS like clustering decisions
+\item  Bertrand, Duflo and Mullainathan (2004) show that conventional standard errors will often severely understate the standard deviation of the estimators and propose clustering standard errors at the aggregate unit level of treatment
+\end{itemize}
+
+\end{frame}
+
+
+
+\end{document}
+
+
