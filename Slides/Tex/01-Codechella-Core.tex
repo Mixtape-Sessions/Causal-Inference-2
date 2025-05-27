@@ -59,15 +59,16 @@
 
 \begin{itemize}
 \item Workshop is intended to take someone from knowing nothing about difference-in-differences to a broad level of competency on advanced topics
-\item Lecture, discussion, exercises, application with "live coding" exercises
-\item Ask questions at any point; I'll do my best to answer them but will sometimes defer it to the break
+\item My stuff will mix basic things with subtle interpretation, my own subjective beliefs about "good science" (but not necessarily good papers), and developments
+\item Lecture, discussion, exercises, application, coding along the way
+\item Ask questions at any point; I'll do my best to answer them but will sometimes defer it to the break (or I may just ask Kyle, Mark and/or Dan what they think)
 \end{itemize}
 
 \end{frame}
 
 
 \begin{frame}{Class goals}
-Pedagogical goal is to break down the procedures into plain English, rebuilding it into something you can and want to use, but also:
+Pedagogical goal is to explain diff-in-diff and other panel estimators, but as a secondary objective to help foster in you:
 
   \begin{enumerate}
     \item \textbf{Confidence}: You will feel like you have a good enough understanding of diff-in-diff, both in its basics and some more contemporary issues, so that it seems like an intuitive and useful tool you could imagine using
@@ -83,11 +84,19 @@ Pedagogical goal is to break down the procedures into plain English, rebuilding 
 
 Basics of difference-in-differences (Beginners but also my own personal take on this)
 	\begin{itemize}
-	\item The Core -- what is difference-in-differences, how do you calculate it, what does it mean, what are its assumptions
-	\item Why do we weight?
-	\item Four Means or One Regression?
+	\item The Core -- 
+		\begin{itemize}
+		\item what is difference-in-differences, how do you calculate it, what does it mean, what are its assumptions
+		\item Why do we weight?
+		\item Four Means or One Regression?
+		\end{itemize}
 	\item Testing for parallel trends -- event studies, falsifications
-
+	\item Violations of parallel trends and solutions:
+		\begin{itemize}
+		\item Compositional change and corrections
+		\item Triple differences
+		\item Handling covariates with regression adjustment, IPW, double robust vs traditional OLS specifications
+		\end{itemize}
 	\end{itemize}
 
 \end{frame}
@@ -95,52 +104,35 @@ Basics of difference-in-differences (Beginners but also my own personal take on 
 
 \begin{frame}{Day 2 outline}
 
-Violations of parallel trends
 	\begin{itemize}
-	\item Repeated cross sections and compositional change
-	\item Why do we include covariates?
-		\begin{itemize}
-		\item Heckman, Ichimura and Todd (1997)
-		\item Abadie (2005)
-		\item Sant’Anna and Zhao (2020)
-		\item Twoway fixed effects with time varying controls	
-		\end{itemize}
-	\item Lalonde coding exercise
+	\item Continuous treatments in diff-in-diff framework (Kyle Butts)
+	\item Traditional fixed effects regressions and Bacon decomposition
 	\end{itemize}
 
 \end{frame}
+
 
 \begin{frame}{Day 3 outline}
 
-Pathologies of and Solutions to Twoway Fixed Effects with Differential Timing
-	\begin{itemize}
-	\item Panel fixed effects and strict exogeneity (Cunningham 2021) 
-	\item ``Old school'' example using Cheng and Hoekstra (2013) “Castle Doctrine” paper
-	\item Bacon decomposition (Goodman-Bacon 2021)
-	\item Aggregate ATT(g,t) method (Callaway and Sant’Anna 2021)
-	\item Simple illustrations in simulations
-	\item Walk through R shiny app
-	\end{itemize}
-
-\end{frame}
-
-
-\begin{frame}{Day 4 outline}
-
-Event studies and staggered, Imputation estimators
 
 \begin{itemize}
+\item Callaway and Sant'Anna (2020) for differential timing
 \item Decomposition event study leads and lags under staggered adoption (Sun and Abraham 2021)
-\item Imputation estimators
-		\begin{itemize}
-		\item Borusyak, et al. (2023) “robust efficient imputation estimator”
-		\item Gardner, et al. (2023) two stage difference in differences
-		\end{itemize}
-\item Bringing it together with an application from my research 
+\item Mark and Dan "hidden curriculum" applied research workshop
 \end{itemize}
 
 \end{frame}
 
+\begin{frame}{Day 4 outline}
+
+\begin{itemize}
+
+\item Imputation methods and synthetic control (Kyle Butts)
+\item Mark and Dan "hidden curriculum" applied research workshop and Q\&A
+
+\end{itemize}
+
+\end{frame}
 
 
 
@@ -152,12 +144,6 @@ Event studies and staggered, Imputation estimators
 	\caption{Currie, et al. (2020)}
 	\includegraphics[scale=0.25]{./lecture_includes/currie_did.png}
 	\end{figure}
-
-\bigskip
-
-\footnotesize
-
-With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertrand, Duflo and Mullainthan 2004), econometricians had not given it much notice
 
 \end{frame}
 
@@ -210,7 +196,7 @@ With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertran
 \begin{frame}{Semmelweis diff-in-diff evidence}
 
 	\begin{figure}
-	\includegraphics[scale=0.5]{./lecture_includes/semmelweis_graphic.png}
+	\includegraphics[scale=0.4]{./lecture_includes/semmelweis_graphic.png}
 	\end{figure}
 
 
@@ -315,7 +301,7 @@ With some exception (e.g., Heckman, Ichimura and Todd 1997; Abadie 2005; Bertran
 \begin{itemize}
 \item We must start by making a distinction between the parameter we are attempting to identify and the manner in which we will estimate it
 \item Identification requires first stating explicitly our goal expressed using potential outcomes
-\item But often people skip this step and go directly to the numerical calculation like Orley was doing so let's do that
+\item But often people skip this step and go directly to the  $2 \times 2$ calculation
 
 \end{itemize}
 
@@ -376,6 +362,8 @@ It's the average causal effect but only for the people exposed to some intervent
 \begin{frame}{ATT vs ATE}
 
 \begin{itemize}
+\item Potential outcomes is weirdly intuitive and complicated at the same time
+\item Simple exercises tend to help bring some of that confusion to the surface
 \item Let's look at the "Potential Outcomes" tab at our Diff-in-Diff Worksheet 
 \item \url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
 \item Follow instructions and fill all of it out
@@ -394,11 +382,11 @@ It's the average causal effect but only for the people exposed to some intervent
 
 \item Diff-in-diff is two things 
 	\begin{enumerate}
-	\item It's a calculation (i.e., four averages)
-	\item It sometimes has a causal interpretation
+	\item It's \textcolor{blue}{always} a calculation (i.e., four averages)
+	\item It \textcolor{red}{sometimes} has a causal interpretation
 	\end{enumerate}
 \item I'm going to walk us through two main assumptions using potential outcomes and algebra
-\item Then we will look at what happens when our control group has been treated
+\item Then we will look at what happens when our control group has been treated (not an assumption, more like a promise)
 \end{itemize}
 
 \end{frame}
@@ -407,9 +395,9 @@ It's the average causal effect but only for the people exposed to some intervent
 \begin{frame}{DiD equation is the 2x2}
 
 \begin{itemize}
-\item The building block of diff-in-diff is ``four averages and three subtractions'' 
+\item The building block of diff-in-diff calculations is ``four averages and three subtractions''
 \item Needs two groups, two time periods, which is four averages
-\item Often called the $2 \times 2$ for that reason
+\item Often called the $2 \times 2$ for that reason (Goodman-Bacon 2021)
 \end{itemize}
 
 \begin{eqnarray*}
@@ -454,20 +442,49 @@ It's in \textcolor{red}{red} because parallel trends is untestable and criticall
 
 \end{frame}
 
-\begin{frame}{No Anticipation}
+\begin{frame}{Don't Need More Than Two Periods}
 
 \begin{itemize}
-\item ``No anticipation'' simply means that the unit is not treated until it is treated (and that can be violated with rational forward looking agents but not always)
-	\begin{itemize}
-	\item \textbf{Example 1}: Tomorrow I win the lottery, but don't get paid yet. I decide to buy a new house today. That violates NA
-	\item \textbf{Example 2}: Next year, a state lets you drive without a driver license and you know it. But you can't drive without a driver license today.  This satisfies NA.
-	\end{itemize}
-\item Violations in simple 2x2 where baseline is treated creates attenuation bias that can be severe 
-\item Just make sure your baseline is untreated and you satisfy this (be aware of "announcement dates" vs "implementation dates" of laws)
+
+\item Notice that diff-in-diff identifies the ATT \emph{with only} two time periods
+\item Diff-in-diff does not "need" a long pre-treatment time series (unlike synthetic control which does) -- two periods and two groups is enough
+\item But there is another assumption aside from parallel trends we want to learn
 
 \end{itemize}
 
 \end{frame}
+
+\begin{frame}{No Anticipation}
+
+\begin{itemize}
+\item First interpretation of No Anticipation (NA) is this:
+	\begin{eqnarray*}
+	Y_{i,t-1}=Y^0_{i,t-1} 
+	\end{eqnarray*}
+\item Future treatments do not spill over to the past -- that is, a unit is not treated until the day it is treated
+\item A better word might be "no pre-treatment", rather than "no anticipation" because "anticipation" is a behavior and that confuses things
+\item What if a government announces a minimum wage increase that will take place in one year?
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{No Anticipation}
+
+\begin{itemize}
+\item Second interpretation of NA means this:
+	\begin{eqnarray*}
+	Y^1_{i,t-1} - Y^0_{i,t-1}=0
+	\end{eqnarray*}which means "all pre-treatment treatment effects are zero.  
+\item This means even if future minimum wage increases were known, their pre-treatment treatment effects were zero
+\item So no -- knowing that something is going to happen does not automatically violate NA (but it absolutely could)
+\item Let's formalize what happens when NA is violated
+
+\end{itemize}
+
+\end{frame}
+
+
 
 
 \begin{frame}{No Anticipation Violation}
@@ -483,7 +500,7 @@ Add in \textbf{two zeroes} instead of one, substitute and rearrange.
 
 \begin{eqnarray*}
 &+& \textcolor{red}{E[Y^0_k|Post] - E[Y^0_k|Post]} \\
-&+& \textcolor{blue}{E[Y^0_k|Pre] - E[Y^0_k|Pre]} 
+&+& \textcolor{red}{E[Y^0_k|Pre] - E[Y^0_k|Pre]} 
 \end{eqnarray*}
 
 \end{frame}
@@ -501,7 +518,7 @@ First row is the ATT in the post period; middle row is parallel trends; third ro
 \end{frame}
 
 \begin{frame}{Do not use already treated controls}
-
+Using already treated units as controls is bad practice and here's why:
 
 \begin{eqnarray*}
 \widehat{\delta} &=& \bigg ( E[Y_k|Post] - E[Y_k|Pre] \bigg ) - \bigg ( E[Y_U | Post ] - E[ Y_U | Pre] \bigg) \\
@@ -513,8 +530,8 @@ Add in \textbf{three zeroes} instead of one, substitute and rearrange.
 
 \begin{eqnarray*}
 &+& \textcolor{red}{E[Y^0_k|Post] - E[Y^0_k|Post]} \\
-&+& \textcolor{blue}{E[Y^0_U|Post] - E[Y^0_U|Post]}  \\
-&+& \textcolor{blue}{E[Y^0_U|Pre] - E[Y^0_U|Pre]} 
+&+& \textcolor{red}{E[Y^0_U|Post] - E[Y^0_U|Post]}  \\
+&+& \textcolor{red}{E[Y^0_U|Pre] - E[Y^0_U|Pre]} 
 \end{eqnarray*}
 
 \end{frame}
@@ -528,6 +545,80 @@ If the baseline period is treated, then the simple 2x2 identifies the sum of the
 \end{eqnarray*}
 
 Again, first row is the target parameter, plus parallel trends term, \textcolor{red}{minus} the changing ATT in our control group
+
+\end{frame}
+
+\subsection{Clearly Defined Control Status}
+
+\begin{frame}{Clearly Defined Control Status}
+
+Look again at the result when you have NA and no treated control group:
+
+\begin{eqnarray*}
+\widehat{\delta} &=& \underbrace{E[Y^1_k | Post] - \textcolor{red}{E[Y^0_k | Post]}}_{\mathclap{\text{ATT}}} \\
+&& + \bigg [  \underbrace{\textcolor{red}{E[Y^0_k | Post]} - E[\textcolor{blue}{Y^0_k} | Pre] \bigg ] - \bigg [ E[Y^0_U | Post] - E[\textcolor{blue}{Y_U^0} | Pre] }_{\mathclap{\text{Non-parallel trends bias in 2x2 case}}} \bigg ]
+\end{eqnarray*}
+
+What does the zero mean exactly?  At baseline, before $k$ was treated, it was in the $Y^0$ state of the world -- that wasn't "not treated", it was rather a different treatment status.  What was it?  Whatever it was, group $U$ had the same one
+
+\end{frame}
+
+\begin{frame}{Clearly Defined Control Status}
+
+\begin{itemize}
+\item Researcher wants to know the effect of \emph{recreational marijuana} on opiate addiction
+\item Write down the treatment effect $$\delta_i = Y^1_i - \textcolor{blue}{Y^0_i}$$
+\item I know what $Y^1$ is -- that's a person exposed recreational cannabis regime; but what is $\textcolor{blue}{Y^0_i}$?
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Clearly Defined Control Status}
+
+\begin{itemize}
+\item Texas prohibits all cannabis -- last week passed a bill even reversing a 2018 Farm Bill that had inadvertently legalized hemp-based THC
+\item But Oklahoma has medical marijuana, which is neither recreational marijuana nor is it prohibited cannabis use -- it's a \emph{third treatment regime}
+\item Look closely again though at the form of the $2 \times 2$ identification and assumptions
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}{Clearly Defined Control Status}
+
+\begin{eqnarray*}
+\widehat{\delta} &=& \underbrace{E[Y^1_k | Post] - \textcolor{red}{E[Y^0_k | Post]}}_{\mathclap{\text{ATT}}} \\
+&& + \bigg [  \underbrace{\textcolor{red}{E[Y^0_k | Post]} - E[\textcolor{blue}{Y^0_k} | Pre] \bigg ] - \bigg [ E[Y^0_U | Post] - E[\textcolor{blue}{Y_U^0} | Pre] }_{\mathclap{\text{Non-parallel trends bias in 2x2 case}}} \bigg ]
+\end{eqnarray*}
+
+\begin{itemize}
+\item Diff-in-diff has a limitation that not all the other designs suffer from -- the control group \emph{must} have the same control status as the treatment group at baseline
+\item No state in the US has ever gone from "prohibition" to "recreational" marijuana
+\item Which means the best you can do with diff-in-diff is identify the effect of recreational marijuana compared to medical marijuana since every US state transitioned in that order
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Target Parameter}
+
+\begin{itemize}
+\item Diff-in-diff can \emph{only} in the United States identify the "relative to medical marijuana" because recreational cannabis states have medical marijuana at baseline -- so control groups must too (not prohibition states)
+\item $\delta_i=Y^1_i - Y^0_i$ might be the causal effect of recreational marijuana on opiate addiction when $Y^0_i$ is "prohibition" or it may be "medical marijuana"
+\item Either is fine -- but they are not the same $Y^0$, is my point, and therefore they are not the same parameter
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Summarizing the basics}
+
+\begin{itemize}
+\item With two time periods (before and after treatment), and two groups (one treated and one not), then the $2 \times 2$ identifies the ATT if parallel trends and no anticipation holds so long as you do not have an already treated group as a control
+\item Let's now look at some basic data requirements and what happens when you don't meet those basic things
+
+\end{itemize}
 
 \end{frame}
 
@@ -642,17 +733,12 @@ Again, first row is the target parameter, plus parallel trends term, \textcolor{
 \begin{frame}{Choosing Target Parameter}
 
 \begin{itemize}
-\item Lott and Mustard (1997) found that concealed carry gun laws \textbf{reduced murders} using county-level data 1977-1992
-\item Subsequent analysis by John Donohue and others would criticize the study on several grounds
-	\begin{itemize}
-	\item County-level data had problems due to flawed imputation by the FBI
-	\item Lack of robustness -- results differed when using state-level data
-	\end{itemize}
 \item Causal parameters are \emph{averaged treatment effects} and that has two elements
 	\begin{itemize}
 	\item What population's treatment effects are you averaging
 	\item What weight are you using to do that averaging?
 	\end{itemize}
+\item I'll use as an example a gun law in the United States called "concealed carry" or "right to carry" that lets people carry weapons "concealed" on their bodies or in their vehicles 
 \end{itemize}
 
 \end{frame}
@@ -662,7 +748,7 @@ Again, first row is the target parameter, plus parallel trends term, \textcolor{
 
 \begin{table}[htbp]\centering
 \caption{Illustration of Potential Outcomes and Treatment Effects}\label{tab:step1_table}
-\begin{tabular}{lccccc}
+\begin{tabular}{lccc|c}
 \toprule
 \textbf{Name} & \textbf{$Y^1$} & \textbf{$Y^0$} & \textbf{$\delta$} & \textbf{D}  \\
 \midrule
@@ -706,13 +792,14 @@ $ATT =$&&&0 \\
 \begin{frame}{Which causal effect do you want?}
 
 \begin{itemize}
-\item Solon, Haider and Wooldridge (2015) ask "what are we weighting for?"
+\item We know diff-in-diff identifies the ATT not the ATE but there are still more than one ATT!
+\item Solon, Haider and Wooldridge (2015), "What are we weighting for?"
 \item Why you weight in surveys and why you weight in causal inference are different
 	\begin{itemize}
 	\item Survey weights are to make estimates nationally representative
 	\item Population weighting in causal inference is because you want a different parameter
 	\end{itemize}
-\item Which causal effect do you want?
+\item How do we interpret adjustments made with population weights versus not?
 \end{itemize}
 
 \end{frame}
@@ -914,49 +1001,12 @@ $$Y_{ist} = \alpha_0 + \alpha_1 Treat_{is} + \alpha_2 Post_{t} + \textcolor{blue
 \begin{itemize}
 \item Card and Krueger (1994) have a famous study estimating causal effect of minimum wages on employment
 \item  New Jersey raises its minimum wage in April 1992 (between February and November) but neighboring Pennsylvania does not
-\item Using DiD, they do not find a negative effect of the minimum wage on employment leading to complex reactions from economists
-\item Orley's describes his understanding of people's reaction to the paper.  \\ \url{https://youtu.be/MOtbuRX4eyQ?t=1882}
+\item Using diff-in-diff, they do not find a negative effect of the minimum wage on employment leading to complex reactions from economists
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}
-	\begin{figure}
-	\includegraphics[scale=0.5]{./lecture_includes/minwage_whore}
-	\end{figure}
-\end{frame}
 
-
-\begin{frame}{Reaction to the paper}
-
-
-Lots of anecdotes in this interview with Card, but here are just two.  First, Card and Krueger received a lot of personal hostility from their peers (1:07 to 1:10)
-
-\bigskip
-
-\url{https://youtu.be/1soLdywFb_Q?si=laAVYf_E2KBZKywG&t=4020}
-
-\bigskip
-
-Later Card says Sherwin Rosen accused them of having an agenda.  But the worst is what happens to Alan Krueger maybe (1:16 to 1:17)
-
-\bigskip
-
-\url{https://youtu.be/1soLdywFb_Q?si=jsb8h50ZosGDnKrv&t=4556}
-
-
-
-
-\end{frame}
-
-\begin{frame}{Card on that study}
-
-\begin{quote}
-``I’ve subsequently stayed away from the minimum wage literature for a number of reasons. First, it cost me a lot of friends. People that I had known for many years, for instance, some of the ones I met at my first job at the University of Chicago, became very angry or disappointed. They thought that in publishing our work we were being traitors to the cause of economics as a whole.''
-\end{quote}
-
-
-\end{frame}
 
 
 

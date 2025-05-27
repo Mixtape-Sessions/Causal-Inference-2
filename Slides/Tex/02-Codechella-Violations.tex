@@ -1,5 +1,5 @@
+\PassOptionsToPackage{table}{xcolor}
 \documentclass{beamer}
-
 \input{preamble.tex}
 \usepackage{breqn} % Breaks lines
 
@@ -44,19 +44,16 @@
 \section{Violations of Parallel Trends}
 
 \subsection{Event Study Plots}
-\begin{frame}{Step 5: Is Unconditional Parallel Trends Plausible?}
+
+\begin{frame}{Unconditional Parallel Trends}
 
 \begin{itemize}
-\item We drew a bunch of event study graphs, which leads into the next issue regarding "unconditional parallel trends"
 \item Unconditional parallel trends is diff-in-diff on $Y^0$ in which the diff-in-diff equals zero
 	$$\textcolor{red}{\Delta E[Y^0|D=1]} - \Delta E[Y^0|D=0] = 0$$ 
 \item There are two kinds of parallel trends: unconditional and conditional
-\item Let's look at a couple of spreadsheets to illustrate precisely what unconditional parallel trends mean
+\item What is the difference between them?
 \end{itemize}
 
-\bigskip 
-
-\url{https://docs.google.com/spreadsheets/d/1onabpc14JdrGo6NFv0zCWo-nuWDLLV2L1qNogDT9SBw/edit?usp=sharing}
 
 \end{frame}
 
@@ -67,12 +64,6 @@
 \begin{itemize}
 \item Unconditional parallel trends is very close to assuming that the the treatment was as good as random
 \item It is not testable, but suspicion is raised when pre-treatment levels are very different as that implies non-random treatment assignment mechanisms
-\item Typically, people will evaluate their parallel trends assumptions using two things:
-	\begin{enumerate}
-	\item Event study graphical plots of pre-trends and post-trends
-	\item Falsifications on same outcomes, and similar, but untreated, groups
-	\item Falsifications on different impossible outcomes, but same treatment groups
-	\end{enumerate}
 \item Think of these are more like 'preponderance of evidence' than proof as parallel trends \emph{cannot} be tested and graphs can be misleading
 \end{itemize}
 
@@ -80,15 +71,25 @@
 \end{frame}
 
 
+\begin{frame}{Different Falsifications}
+
+	\begin{enumerate}
+	\item Falsifications on same outcomes, and similar, but untreated, groups
+	\item Falsifications on different impossible outcomes, but same treatment groups
+	\item Event study graphical plots of pre-trends and post-trends
+	\end{enumerate}
+
+
+\end{frame}
+
 
 \begin{frame}{Intuition behind event studies}
 
 \begin{itemize}
 
-	\item We cannot directly verify parallel trends, so for a long time researchers have focused on the pre-trends (e.g., Ashenfelter's Dip)
+	\item We cannot directly verify parallel trends, so for a long time researchers have focused on the pre-trends
 	\item \textcolor{blue}{Parallel pre-trends} are not the same as \textcolor{red}{parallel counterfactual post-trends}, but this is the smoking gun we typically look for nonetheless
-	\item Think of it as a type of check for selection bias, but imperfect with false positives and false negatives
-	\item Even if pre-trends are the same one still has to worry about other policies changing at the same time (omitted variable bias is a parallel trends violation)
+	\item Pre-period falsifications are common in causal inference, even outside of diff-in-diff, because the pre-period probably has the same confounder structure, but no treatment
 
 \end{itemize}
 
@@ -96,41 +97,16 @@
 
 
 
-\begin{frame}{Creating event studies}
-
-\begin{itemize}
-
-\item You want to visualize a particularly set of regression coefficients which we will show
-\item But if you can show the raw data, do that too as that will show difference in levels as well which will matter for the next section on covariates
-
-\end{itemize}
-
-\end{frame}
-
-
-
-\begin{frame}
-
-	\begin{figure}
-	\includegraphics[scale=2.5]{./lecture_includes/waldinger_dd_6.pdf}
-	\end{figure}
-
-\end{frame}
 
 
 \begin{frame}{Event study regression}
 	
-	\begin{itemize}
-	\item Alternatively, present estimated coefficients from a dynamic regression specification:
  $$Y_{its} = \alpha + \sum_{\tau=-2}^{-q}\mu_{\tau} (D_s \times \tau_t) + \sum_{\tau=0}^m\delta_{\tau} (D_s \times \tau_t) + \tau_t + D_s + \varepsilon_{ist}$$
 		\begin{itemize}
 		\item With a simple 2x2, you are interacting treatment indicator with calendar year dummies
 		\item Includes $q$ leads (dropping the $t-1$ as baseline) and $m$ lags 
 		\item Since treatment did not happen until $\tau=0$, then pre-treatment coefficients only capture differential trends
 		\end{itemize}
-	\item Estimated $\widehat{\delta}_\tau$ coefficients are estimated ATT for each year under parallel trends but $\widehat{\mu}_\tau$ is your smoking gun evidence 
-	\item Just remember that $\mu=0$ is not the same as parallel trends as parallel trends is \textcolor{red}{untestable}.
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{Reviewing previous slide for emphasis}
@@ -298,24 +274,12 @@ Under NA, then the $t-1$ period is untreated.  But then so are the other pre-per
 \begin{itemize}
 \item When there is only one treatment group and one comparison group, then you run a regression with an interaction of the treatment group dummy and the calendar year dummies (plus both separately)
 \item You must drop $t-\tau$ as the baseline (e.g., $t-1$) and it must be $Y^0$ untreated comparisons (No Anticipation)
-\item I have included in a do file that will do it for you either manually or using coefplot in \texttt{simple\_eventstudy.do} at the shared github labs directory
+\item When you drop $t-\tau$ as the baseline, then all estimates become "long differences" compared to that point
 \end{itemize}
 
 \end{frame}
 
 
-
-
-
-\begin{frame}{Don't ask more of event studies than they can give}
-
-\begin{itemize}
-\item Event studies are mandatory -- you must make them
-\item But remember, parallel trends cannot be seen in event studies -- only \emph{pre-trends} can
-\item Parallel trends can be satisfied and pre-trends be messed up; pre-trends can look good, and parallel trends be violated
-
-\end{itemize}
-\end{frame}
 
 \begin{frame}{Event studies can mislead}
 
@@ -834,7 +798,7 @@ In /Labs/DDD I have a simulation to illustrate this for us called ddd2.do.  The 
 
 \subsection{Conditional Parallel Trends}
 
-\begin{frame}{Step 5. Is Unconditional Parallel Trends Plausible?}
+\begin{frame}{Is Unconditional Parallel Trends Plausible?}
 
 \begin{itemize}
 
@@ -927,7 +891,7 @@ First time it shows up is Heckman, Ichimura and Todd (1997). Idea can be abstrac
 	\item Cities had different homicide rates than rural counties
 	\item Police, incarceration
 	\item Demographics (e.g., race shares, age shares) and economic things (e.g., poverty, per capital income, AFDC rolls)
-	\item Maybe throw it all into LASSO using only the $Y^0$ values (maybe pre-treatment murders)
+	\item Consider LASSO in the pre-periods only to select covariates predictive of pre-treatment \emph{untreated potential outcome} trends (i.e., $\Delta Y^0$)
 	\end{itemize}
 \end{itemize}
 
@@ -935,16 +899,8 @@ First time it shows up is Heckman, Ichimura and Todd (1997). Idea can be abstrac
 
 
 
-\begin{frame}
- 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
-\end{figure}
 
-\end{frame}
-
-\begin{frame}{Step 6. Covariate Imbalance}
+\begin{frame}{Covariate Imbalance}
     \begin{itemize}
 	\item Kahn-Lang and Lang (2020) say that if your two groups are different at baseline on outcomes, treatment was not random, is likely caused by covariates, and you need to explain why that matters or does not
 	\item Randomized treatment will balance covariates, hence why we don't need to include them as controls in RCT \emph{even though they cause the outcome}
@@ -988,57 +944,14 @@ First time it shows up is Heckman, Ichimura and Todd (1997). Idea can be abstrac
     \end{itemize}
 \end{frame}
 
-\begin{frame}
  
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
-\end{figure}
-
-\end{frame}
-
-
-
-
-
-\begin{frame}{Step 7: Plot Average Outcomes Across Cohorts}
-
-\begin{itemize}
-\item We are literally \textbf{seven} steps into the checklist and this is the first time we are looking at the outcomes (except for baseline)
-\item You want to avoid "peeking" at the outcome because you're not wanting to bias yourself and you want this to mimic the RCT as best as you can
-\item This is another reason I get frustrated with TWFE -- you can't separate the design from the estimation because the left-hand-side and right-hand-side are both there 
-\item Plot the evolution of the mean homicides over time \emph{for each cohort}
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=0.85\textheight]{./lecture_includes/step7_outcomes}
-\end{figure}
-
-\end{frame}
-
 
 
 
 
 \subsection{Four Estimators for Covariates}
 
-\begin{frame}
- 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{./lecture_includes/checklist}
-\end{figure}
-
-\end{frame}
-
-
-
-\begin{frame}{Step 8. Estimators for Covariates}
+\begin{frame}{Estimators for Covariates}
 
 \begin{itemize}
 
@@ -1105,11 +1018,10 @@ Remember -- ATT is only missing $Y^0$ for treatment, so we only have to apply we
 
 \begin{frame}{Assumptions}
 
-Five main assumptions
+Four main assumptions
 
 \begin{enumerate}
 \item No anticipation 
-\item SUTVA (no spillovers)
 \item Conditional parallel trends $$E[Y^0_t - Y^0_b|D=1,X_b] = E[Y^0_t - Y^0_b | D=0, X_b]$$ 
 \item Common support $$Pr(D=1)>0; Pr(D=1|X)<1$$ 
 \item Propensity score model is properly specified 
@@ -1242,7 +1154,7 @@ The reweighting with the propensity only happens to the comparison group's first
 
 
 
-\begin{frame}{Doubly Robust Difference-in-differences}
+\begin{frame}{Outcome regression and double robust}
 
 \begin{itemize}
 \item DR models control for covariates twice -- once using the propensity score, once using outcomes adjusted by regression -- and are unbiased so long as:
@@ -1412,15 +1324,6 @@ The reason you control for $X$ twice is because you don't know which model is ri
 
 \end{frame}
 
-\begin{frame}{Efficiency}
-
-\begin{itemize}
-\item Authors exploit all the restrictions implied by the assumptions to construct semiparametric bounds
-\item This is where the influence function comes in, which those who have studied the DID code closely may have noticed
-\item One of the main results of the paper is that the DR DiD estimator is also DR for inference
-\end{itemize}
-
-\end{frame}
 
 
 \begin{frame}{Standard TWFE Model}
@@ -1442,7 +1345,6 @@ Y_{it} = \alpha_1  + \alpha_2 T_t + \alpha_3 D_i  + \delta (T_i \times D_t) + \t
 Sure! If you're willing to impose three \emph{more} assumptions
 
 \end{frame}
-
 
 
 
@@ -1597,28 +1499,6 @@ Without these six, in general TWFE will not identify ATT.
 
 \end{frame}
 
-
-
-
-
-
-\begin{frame}{R and Stata Code}
-
-There is code in R and Stata (all DiD estimators are now beautifully arranged at a website hosted by Asjad Naqvi)
-\begin{itemize}
-\item Stata: \textbf{drdid}
-\item R: \textbf{drdid}
-\end{itemize}
-
-\bigskip
-
-\url{https://asjadnaqvi.github.io/DiD/docs/01_stata/}
-
-\bigskip
-
-Remember -- it's for 2x2 with covariates (i.e., one treatment group). 
-
-\end{frame}
 
 
 \begin{frame}{Monte Carlo Simulations}
