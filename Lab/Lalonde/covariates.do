@@ -66,7 +66,7 @@ program define dgp
 
   * Covariate-based treatment effect heterogeneity
   gen         y1 = y0
-  qui replace y1 = y0 + 1000 + 100 * age + 500 * gpa if year == 1991
+  qui replace y1 = y0 + 1000  if year == 1991
 
   * Treatment effect
   gen delta = y1 - y0
