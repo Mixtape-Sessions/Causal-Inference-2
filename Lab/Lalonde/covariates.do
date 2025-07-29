@@ -136,6 +136,29 @@ gen dripw_bias = dripw - `true_att'
 gen regadjust_bias = regadjust - `true_att'
 gen ipw_bias = ipw - `true_att'
 
+* Generate the combined plot
+twoway (kdensity ols_bias, lcolor(black) lpattern(solid) lwidth(thick)) ///
+       (kdensity dripw_bias, lcolor(gs8) lpattern(solid) lwidth(medthick)) ///
+       (kdensity regadjust_bias, lcolor(gs4) lpattern(solid) lwidth(thin)) ///
+       (kdensity ipw_bias, lcolor(gs12) lpattern(solid) lwidth(vthick)), ///
+       legend(order(1 "OLS" 2 "DRIPW" 3 "Reg. Adjust" 4 "IPW") cols(1) position(3) ring(0) size(small) ///
+              symplacement(center) symxsize(7) keygap(1) ///
+              label(1 "OLS (black, thick)") label(2 "DRIPW (dark gray, medium)") ///
+              label(3 "Reg. Adjust (medium gray, thin)") label(4 "IPW (light gray, very thick)")) ///
+       xtitle("Bias in Estimated ATT") ytitle("Density") ///
+       title("Distribution of Bias in ATT Estimates by Method") ///
+       subtitle("Comparison of Different Estimators") ///
+       xline(0, lcolor(gray) lpattern(dash) lwidth(medthick)) ///
+       xlabel(-750(250)500) ylabel(, angle(horizontal)) ///
+       note("Vertical dashed line at 0 represents unbiased estimates")
+
+graph export ./covariates.png, as(png) name("Graph") replace
+
+capture log close
+exit
+	   
+	   
+
 
 * Generate the combined plot
 twoway (kdensity ols_bias, lcolor(navy%70) lpattern(solid) lwidth(medthick)) ///
@@ -154,6 +177,8 @@ twoway (kdensity ols_bias, lcolor(navy%70) lpattern(solid) lwidth(medthick)) ///
        note("Vertical dashed line at 0 represents unbiased estimates")
 
 graph export ./covariates.png, as(png) name("Graph") replace
+
+
 
 capture log close
 exit
