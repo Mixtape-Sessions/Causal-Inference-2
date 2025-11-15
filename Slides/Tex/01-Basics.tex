@@ -913,6 +913,56 @@ Again, first row is the target parameter, plus parallel trends term, \textcolor{
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Four Ways to Estimate a 2x2 DiD}
+There are actually \textbf{four} ways to estimate this simple 2x2 design:
+
+\begin{enumerate}
+    \item \textbf{Manually}, using the four sample means and the three subtractions.
+    \item \textbf{OLS regression with a constant}:
+        $Y_{it} = \beta_0 + \beta_1 \text{treat}_i + \beta_2 \text{post}_t + 
+        \beta_3 (\text{treat}_i \times \text{post}_t) + \varepsilon_{it}$
+    \item \textbf{OLS with fixed effects}, absorbing the treatment main effect.
+    \item \textbf{First differences}: 
+        $\Delta Y_i = \gamma_0 + \gamma_1 \text{treat}_i + u_i$
+\end{enumerate}
+
+\vspace{0.25cm}
+
+The advantage of OLS is that we can lean on its well-known 
+\textbf{statistical properties} — inference, standard errors, clustering, and extensions all come along for free.
+\end{frame}
+
+\begin{frame}{The Three Regression Versions}
+Here are the three regression specifications for the same 2x2 DiD:
+
+\small
+\begin{enumerate}
+    \item \textbf{Canonical OLS with a constant} \\
+    $Y_{it} = \beta_0 + \beta_1 \text{treat}_i + 
+    \beta_2 \text{post}_t + 
+    \beta_3 (\text{treat}_i \times \text{post}_t) + \varepsilon_{it}$
+
+    \item \textbf{OLS with unit and time fixed effects} \\
+    $Y_{it} = \alpha_i + \delta_t + 
+    \beta_{\text{DID}} (\text{treat}_i \times \text{post}_t) + \varepsilon_{it}$
+
+    \item \textbf{First differences} \\
+    $\Delta Y_i = \gamma_0 + \gamma_1 \text{treat}_i + u_i$
+\end{enumerate}
+
+\normalsize
+
+All three give the same ATT in this simple 2x2 setting.
+\end{frame}
+
+\begin{frame}{A Visual Summary}
+\centering
+\includegraphics[width=\textwidth]{lecture_includes/jel_figure}
+
+\vspace{0.3cm}
+We will review all four estimators together in both Stata and R.
+\end{frame}
+
 \begin{frame}{Minimum wages}
 
 \begin{itemize}

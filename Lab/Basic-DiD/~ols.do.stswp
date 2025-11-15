@@ -19,7 +19,7 @@ drop  post
 gen   post  = year==2006
 gen   treat = effyear==2006
 
-xtset sid year
+xtset state year
 *******************************************************************************
 /// 1. Manual 2x2 DiD using group means
 *******************************************************************************
@@ -55,7 +55,7 @@ restore
 ///    b3 is the DiD
 *******************************************************************************
 
-reg l_homicide i.treat##i.post, cluster(sid)
+reg l_homicide i.treat##i.post, cluster(state)
 
 *******************************************************************************
 /// 3. Regression with unit fixed effects and post + interaction
@@ -64,7 +64,7 @@ reg l_homicide i.treat##i.post, cluster(sid)
 ///    b_DID is again the DiD
 *******************************************************************************
 
-xtreg l_homicide i.post##i.treat, fe cluster(sid)
+xtreg l_homicide i.post##i.treat, fe cluster(state)
 
 * (Stata will drop the main effect for treat since it's collinear with the FE;
 * the coefficient on 1.treat#1.post is your DiD.)
@@ -77,7 +77,7 @@ xtreg l_homicide i.post##i.treat, fe cluster(sid)
 
 preserve
     * Sort within state and take first difference over time
-    bysort state (year): gen dl_homicide = l_homicide - l_homicide[_n-1]
+    by state (year): gen dl_homicide = l_homicide - l_homicide[_n-1]
 
     * Keep only the post-period row so each state appears once
     keep if year==2006
