@@ -47,7 +47,7 @@
 
 \begin{itemize}
 \item Thank you coming to Mixtape Sessions' Causal Inference 2 workshop on difference-in-differences!  
-\item Scott Cunningham, Ben H. Williams Professor of Economics at Baylor University in Texas USA
+\item Scott Cunningham, Ben H. Williams Professor of Economics at Baylor University in Texas USA (on loan for a year at Harvard)
 \item 9:00am to 5:00pm CST, 15 min breaks every hour, 1 hour lunch at 12:00
 \item Lecture, discussion, exercises, application with "live coding" exercises
 \end{itemize}
@@ -58,9 +58,9 @@
 \begin{frame}{What my pedagogy is like}
 
 \begin{itemize}
-\item High energy, eclectic approach to teaching
-\item Move between the econometrics, history of thought, videos, applications, code, spreadsheets, exercises
 \item Workshop is intended to take someone from knowing nothing about difference-in-differences to a broad level of competency on advanced topics
+\item High energy, eclectic approach to teaching based largely on what I need in order to learn things
+\item Technical econometrics, history of thought, videos, applications, code, spreadsheets, exercises
 \item Ask questions at any point; I'll do my best to answer them but will sometimes defer it to the break
 \end{itemize}
 
@@ -82,10 +82,10 @@ Pedagogical goal is to break down the procedures into plain English, rebuilding 
 
 \begin{frame}{Day 1 outline}
 
-Basics of difference-in-differences (Beginners but also my own personal take on this)
+Basics of difference-in-differences
 	\begin{itemize}
 	\item Potential outcomes review and the ATT parameter
-	\item DiD equation (``four averages and three differences''), parallel trends and estimation with OLS specification and inference
+	\item DiD equation as 2x2 (``four averages and three differences'', 2x2), parallel trends and estimation with OLS specification and inference
 	\item Simple exercises illustrating potential outcomes, parameters, diff-in-diff and parallel trends
 	\item Five step evidence of difference-in-differences
 	\item Event study
@@ -117,12 +117,10 @@ Violations of parallel trends
 
 Pathologies of and Solutions to Twoway Fixed Effects with Differential Timing
 	\begin{itemize}
-	\item Panel fixed effects and strict exogeneity (Cunningham 2021) 
-	\item ``Old school'' example using Cheng and Hoekstra (2013) “Castle Doctrine” paper
+	\item Panel fixed effects and strict exogeneity
 	\item Bacon decomposition (Goodman-Bacon 2021)
 	\item Aggregate ATT(g,t) method (Callaway and Sant’Anna 2021)
 	\item Simple illustrations in simulations
-	\item Walk through R shiny app
 	\end{itemize}
 
 \end{frame}
@@ -134,12 +132,12 @@ Event studies and staggered, Imputation estimators
 
 \begin{itemize}
 \item Decomposition event study leads and lags under staggered adoption (Sun and Abraham 2021)
-\item Imputation estimators
-		\begin{itemize}
-		\item Borusyak, et al. (2023) “robust efficient imputation estimator”
-		\item Gardner, et al. (2023) two stage difference in differences
-		\end{itemize}
-\item Bringing it together with an application from my research 
+\item Borusyak, et al. (2023) “robust efficient imputation estimator”
+\item Applications with data
+	\begin{itemize}
+	\item Brazilian mental health reform
+	\item Covariates and staggered adoption
+	\end{itemize}
 \end{itemize}
 
 \end{frame}
@@ -693,10 +691,6 @@ It's in \textcolor{red}{red} because parallel trends is untestable and criticall
         \item Units select into treatment based on their expectations, which may not be accurate. This can create an imperfect belief-based selection.
     \end{itemize}
     
-    \item \textbf{Martingale property}
-    \begin{itemize}
-        \item The change in outcomes follows a martingale process, where future changes in unobservable factors are independent of past ones, under certain selection conditions.
-    \end{itemize}
 \end{enumerate}
 \end{frame}
 
@@ -710,7 +704,7 @@ It's in \textcolor{red}{red} because parallel trends is untestable and criticall
         \item This can lead to violations of the parallel trends assumption if such unobservables are correlated with treatment.
     \end{itemize}
     
-    \item \textbf{Selection based on post-treatment information}
+    \item \textbf{Selection based on beliefs about post-treatment information}
     \begin{itemize}
         \item If individuals select into treatment based on information they gain after the treatment starts (foresight), this undermines the assumption.
         \item Essential heterogeneity means that the potential outcomes vary systematically with unobserved traits, which complicates inference.
@@ -719,24 +713,6 @@ It's in \textcolor{red}{red} because parallel trends is untestable and criticall
 \end{itemize}
 \end{frame}
 
-\begin{frame}{What We Should Be Concerned About}
-
-\footnotesize
-\begin{itemize}
-    
-    \item \textbf{Non-stationarity}
-    \begin{itemize}
-        \item Non-stationarity refers to changing relationships between covariates and outcomes over time, which can lead to inconsistent treatment effect estimates.
-        \item Trends in the data that are not stable or stationary across time are particularly problematic.
-    \end{itemize}
-    
-    \item \textbf{Martingale property violation}
-    \begin{itemize}
-        \item If the unobservable shocks affecting outcomes do not follow a martingale process, meaning future changes are not independent of past outcomes, the model's assumptions may fail.
-        \item This can result in time-dependent correlations in unobservable factors that distort trend comparisons.
-    \end{itemize}
-\end{itemize}
-\end{frame}
 
 
 
@@ -793,13 +769,8 @@ Before we move into regression, let's go through a simple exercise to really pin
 	\item \textbf{Example 1}: Tomorrow I win the lottery, but don't get paid yet. I decide to buy a new house today. That violates NA
 	\item \textbf{Example 2}: Next year, a state lets you drive without a driver license and you know it. But you can't drive without a driver license today.  This satisfies NA.
 	\end{itemize}
-\item Violations in simple 2x2 where baseline is treated creates problems that I discuss here: \bigskip
+\item Violations in simple 2x2 where baseline is treated and this creates problems in part because parallel trends embeds untreated baselines
 
- \url{https://causalinf.substack.com/p/difference-in-differences-no-anticipation}
- 
- \bigskip
- 
- \url{https://causalinf.substack.com/p/mixtape-mailbag-7-what-happens-in}
 \end{itemize}
 
 \end{frame}
