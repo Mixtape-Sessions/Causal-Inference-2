@@ -1,36 +1,32 @@
----
-title: "Tennessee Valley Authority Empirical Application"
-format: gfm
----
+# Tennessee Valley Authority Empirical Application
 
 ## Intro
 
-This exercise is going to work with data from Kline and Moretti (2014). This
-paper aims to analyze the impacts of the "Tennessee Valley Authority" (TVA)
-on local agriculture and manufacturing employment. The TVA was a huge federal
-spending program in the 1940s that aimed at electrification of the region,
-building hundreds of large dams (in Scott's terms, a ton of 'bite').
+This exercise is going to work with data from Kline and Moretti (2014).
+This paper aims to analyze the impacts of the “Tennessee Valley
+Authority” (TVA) on local agriculture and manufacturing employment. The
+TVA was a huge federal spending program in the 1940s that aimed at
+electrification of the region, building hundreds of large dams (in
+Scott’s terms, a ton of ‘bite’).
 
-The region was centered in Tennessee and surrounding other southern states.
-The region had a large agriculture industry, but very little manufacturing.
-Electrification brought in a lot industry, moving the economy away from
-agriculture. We are going to test for this in the data using census data
-(recorded every 10 years).
+The region was centered in Tennessee and surrounding other southern
+states. The region had a large agriculture industry, but very little
+manufacturing. Electrification brought in a lot industry, moving the
+economy away from agriculture. We are going to test for this in the data
+using census data (recorded every 10 years).
 
 ![Tennessee Valley Authority Dam](img/tva_map.jpeg)
 
 ![Tennessee Valley Authority Map](img/tva_dam.jpeg)
 
-
 ```{r}
-#| warning: false
 library(tidyverse)
 library(fixest)
 library(DRDID)
 library(did)
 
 options(readr.show_progress = FALSE, readr.show_col_types = FALSE)
-setFixest_etable(markdown = TRUE)
+setFixest_etable(markdown = FALSE)
 ```
 
 First, we will load our dataset:
@@ -42,99 +38,216 @@ head(df)
 
 ## Question 1
 
-We will perform the basic 2x2 DID using just the years 1940 and 1960.
-We will use as outcomes `ln_agriculture` and `ln_manufacturing`.
+We will perform the basic 2x2 DID using just the years 1940 and 1960. We
+will use as outcomes `ln_agriculture` and `ln_manufacturing`.
 
-First, run the "classic" version using an indicator for treatment, `tva`,
-and indicator for being the post-period, `post`, and the product of the two.
-I recommend the package `fixest` for regression analysis. I'll be using it
-in the solutions.
-
+First, for `ln_agriculture`, we will manually calculate the means and
+form the difference-in-differences.
 
 ```{r}
-est_40_60 <- feols(
-  c(ln_agriculture, ln_manufacturing) ~ i(tva) + i(post) + i(tva * post),
-  df |> filter(year == 1940 | year == 1960),
-  cluster = ~county_code
+m_d1_y1960 <- mean(df[df$year == 1960 & df$tva == 1, ]$ln_agriculture)
+m_d1_y1940 <- mean(df[df$year == 1940 & df$tva == 1, ]$ln_agriculture)
+m_d0_y1960 <- mean(df[df$year == 1960 & df$tva == 0, ]$ln_agriculture)
+m_d0_y1940 <- mean(df[df$year == 1940 & df$tva == 0, ]$ln_agriculture)
+
+(m_d1_y1960 - m_d1_y1940) - (m_d0_y1960 - m_d0_y1940)
+# -0.2281978
+```
+
+Second, run the “classic” version using an indicator for treatment,
+`tva`, and indicator for being the post-period, `post`, and the product
+of the two. I recommend the package `fixest` for regression analysis.
+I’ll be using it in the solutions.
+
+```{r}
+# `reghdfe`
+df_2by2 <- df |>
+  filter(year == 1940 | year == 1960)
+
+did_2by2 = feols(
+  c(ln_agriculture, ln_manufacturing) ~ 
+    i(post) + i(tva) + i(post * tva),
+  data = df_2by2, 
+  cluster = ~ county_code
+)
+```
+
+Second, we will see in the 2x2 DID case, using county and time fixed
+effects is equivalent:
+
+```{r}
+did_2by2_fixed_effects = feols(
+  c(ln_agriculture, ln_manufacturing) ~ 
+    i(post * tva) | county_code + year,
+  data = df_2by2, 
+  cluster = ~ county_code
 )
 
-```
-```{r}
-#| results: asis
-etable(est_40_60)
-```
-
-Second, we will see in the 2x2 DID case, using county and time fixed effects is equivalent:
-
-
-```{r}
-est_40_60_full <- feols(
-  c(ln_agriculture, ln_manufacturing) ~ i(tva * post) | county_code + year,
-  df |> filter(year == 1940 | year == 1960),
-  cluster = ~county_code
+etable(
+  did_2by2, did_2by2_fixed_effects
 )
 
-```
-```{r}
-#| results: asis
-etable(est_40_60, est_40_60_full)
 ```
 
 ## Question 2
 
-Moretti and Kline were nervous that the parallel trends assumption is
-a bit of a strong assumption in the context. Why might that be in the
+Moretti and Kline were nervous that the parallel trends assumption is a
+bit of a strong assumption in the context. Why might that be in the
 context of the Tennessee Valley Authority?
 
-Answer: The TVA was built in the Tenneessee area precisely because the area
-was not developing a strong manufacturing base. It is unlikely in the
-absence of treatment that counties in the TVA area were going to grow in
-manufacturing the same as outside counties
+Answer: The TVA was built in the Tenneessee area precisely because the
+area was not developing a strong manufacturing base. It is unlikely in
+the absence of treatment that counties in the TVA area were going to
+grow in manufacturing the same as outside counties
 
-Let's run a placebo analysis to test for this using 1920 as the pre-treatment
-period and 1930 as the post-treatment period. What does this tell us about
-the plausability of a parallel trends type assumption?
-
+Let’s run a placebo analysis to test for this using 1920 as the
+pre-treatment period and 1930 as the post-treatment period. What does
+this tell us about the plausability of a parallel trends type
+assumption?
 
 ```{r}
-df$is_1930 <- (df$year == 1930)
-est_20_30 <- feols(
-  c(ln_agriculture, ln_manufacturing) ~
+df_1920_1930 = df |>
+  filter(year == 1920 | year == 1930) |>
+  mutate(is_1930 = (year == 1930))
+
+# 1930 = "treatment period"
+# 1920 = "control period"
+feols(
+  c(ln_agriculture, ln_manufacturing) ~ 
     i(tva * is_1930) | county_code + year,
-  df |> filter(year == 1920 | year == 1930),
+  data = df_1920_1930,
   cluster = ~county_code
 )
 
 ```
-```{r}
-#| results: asis
-etable(est_20_30)
-```
 
 ## Question 3
 
-Let's put this analysis together and run an event-study regression using
+Let’s put this analysis together and run an event-study regression using
 the full dataset
 
 To do this, create a set of dummy variables that interact year with
 treatment status. Estimate the TWFE model with these dummy variables.
 
-
 ```{r}
-df$rel_year <- ifelse(df$tva == TRUE, df$year, 1940)
+# Duflo, Mullinathan, and Bertrand (2004)
+df = df |>
+  mutate(
+    rel_year = ifelse(tva == 0, 1940, year)
+  )
 
-est_event_study <- feols(
-  c(ln_agriculture, ln_manufacturing) ~
-    i(rel_year, ref = 1940) | county_code + year,
-  df,
-  cluster = ~county_code
+es_agriculture = feols(
+  ln_agriculture ~ i(rel_year, ref = c(1940)) | county_code + year,
+  data = df,
+  cluster = ~ county_code
 )
-
-iplot(est_event_study[[1]])
-iplot(est_event_study[[2]])
+iplot(es_agriculture)
 ```
 
+```{r}
+es_manufacturing = feols(
+  ln_manufacturing ~ i(rel_year, ref = c(1940)) | county_code + year,
+  data = df,
+  cluster = ~ county_code
+)
+iplot(es_manufacturing)
+```
+
+
 ## Question 4
+
+We see some evidence of pre-trends for `ln_manufacturing` which makes us
+concerned about the plausability of parallel counterfactual trends in
+the post-period. Let’s show this visually by extending a linear
+regression through the pre-period estimates.
+
+```{r}
+est = broom::tidy(es_manufacturing)
+est = est |> 
+  mutate(
+    rel_year = as.numeric(str_replace(est$term, "rel_year::", ""))
+  )
+est = est |>
+  bind_rows(tibble(rel_year = 1940, estimate = 0))
+
+pre_trend_line = lm(
+  estimate ~ rel_year, 
+  data = est |> filter(rel_year <= 1930)
+)
+
+ggplot(est) +
+  geom_errorbar(
+    aes(
+      x = rel_year,
+      ymin = estimate - 1.96 * std.error,
+      ymax = estimate + 1.96 * std.error
+    ),
+    width = 1
+  ) + 
+  geom_point(aes(x = rel_year, y = estimate)) + 
+  geom_abline(
+    intercept = coef(pre_trend_line)[1],
+    slope = coef(pre_trend_line)[2],
+    color = "red"
+  )
+```
+
+
+This exercise, assumes that changes in outcomes in the pre-period will
+extend linearly into the future. However, this is a strong assumption;
+instead we will use Jon Roth and Ashesh Rambachan’s work. First, we will
+calculate the “the largest violations of parallel trends in the
+pre-treatment period”. We measure a violation of parallel trends as the
+change in pre-trend estimates $\hat{\delta}_t - \hat{\delta}_{t-1}$. In
+our case, we only have two pre-period estimates so it’s the max.
+
+Lets use the `HonestDiD` package to assess robustness to
+violations of parallel trends. The function
+`HonestDiD::createSensitivityResults_relativeMagnitudes` will calculate
+the largest violation of parallel trends and then intuitively gauge “if
+we have violations of similar magnitude, could our results go away”. We
+can control the “magnitude” of violations by a value of $\bar{M}$ with a
+value of 1 being equal to the largest violation and 0 being no bias. The
+code is kind of complicated, so I include it here:
+
+
+```{r}
+library(HonestDiD)
+
+# need in time order, without reference group
+betahat = coef(es_manufacturing)
+sigma = vcov(es_manufacturing)
+
+# first post period effect
+first_l_vec <- basisVector(1, size = 2)
+# second post period effect
+second_l_vec <- basisVector(2, size = 2)
+# average of event-study estimates
+avg_l_vec <- matrix(c(0.5, 0.5), nrow = 2, ncol = 1)
+
+delta_rm_results <- HonestDiD::createSensitivityResults_relativeMagnitudes(
+  betahat = betahat,
+  sigma = sigma,
+  numPrePeriods = 2,
+  numPostPeriods = 2,
+  Mbarvec = seq(0.25, 1.5, by = 0.25), 
+  l_vec = avg_l_vec
+)
+
+originalResults <- HonestDiD::constructOriginalCS(
+  betahat = betahat,
+  sigma = sigma,
+  numPrePeriods = 2,
+  numPostPeriods = 2, 
+  l_vec = avg_l_vec
+)
+
+HonestDiD::createSensitivityPlot_relativeMagnitudes(
+  delta_rm_results, originalResults
+)
+```
+
+## Question 5
 
 Let's use some controls to weaken the assumption to conditional
 parallel trends. In particular, we are going to use a few covariates:
@@ -144,15 +257,14 @@ parallel trends. In particular, we are going to use a few covariates:
 What happens if we add those controls in linearly to our original estimate?
 
 ```{r}
-feols(
-  c(ln_agriculture, ln_manufacturing) ~
-    i(rel_year, ref = 1940) +
-      agriculture_share_1920 + agriculture_share_1930 +
-      manufacturing_share_1920 + manufacturing_share_1930 |
-      county_code + year,
-  df,
+did_covariates = feols(
+  c(ln_agriculture, ln_manufacturing) ~ 
+    i(tva * post) + agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930 | county_code + year, 
+  data = df |> filter(year == 1940 | year == 1960), 
   cluster = ~county_code
 )
+
+etable(did, did_covariates)
 ```
 
 *Answer:* The covariates are dropped because they are collinear with the
@@ -170,7 +282,9 @@ $$
  X_i \beta_t - X_i \beta_{t-1} = X_i (\beta_t - \beta_{t-1}),
 $$
 which says changes in outcome over time depend on your value of $X_i$.
-## Question 5
+
+
+## Question 6
 
 This question shows different weighs to incorporate covariates in a 2x2 difference-in-differences estimator. The goal is to relax our parallel trends assumption to be conditional on X:
 $$
@@ -186,13 +300,14 @@ Note: Some of the data contains missing values for the covariates. Subset the da
 df <- filter(df, county_has_no_missing == TRUE)
 
 # First-differenced data
-first_diff <- df |>
+first_diff = df |>
   arrange(county_code, year) |>
   filter(year == 1940 | year == 1960) |>
   mutate(
     D_ln_manufacturing = ln_manufacturing - lag(ln_manufacturing, 1),
     D_ln_agriculture = ln_agriculture - lag(ln_agriculture, 1),
-  ) |>
+    .by = "county_code"
+  ) |> 
   filter(year == 1960)
 ```
 
@@ -202,17 +317,22 @@ Take first-differences of the outcome variable to form $\Delta Y$. Create a new 
 In part a, estimate the normal difference-in-differences estimate. Additionally, run a second model that linearly controls for `agriculture_share_1920`, `agriculture_share_1930`, `manufacturing_share_1920`, and `manufacturing_share_1930`.
 
 ```{r}
-feols(
-  D_ln_manufacturing ~ i(tva),
-  data = first_diff
-)
-
 setFixest_fml(
   ..X = ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
 )
 feols(
+  # Y_i1 - Y_i0 ~ D
+  D_ln_manufacturing ~ i(tva),
+  data = first_diff, cluster = ~county_code
+)
+# Unconfoundeness assumption: (Y_i1 - Y_i0) \indep D_i
+# E(Y_i1 - Y_i0 | D_i = 1) = E(Y_i1 - Y_i0 | D_i = 0)
+
+# Conditional unconfoundeness "selection on observables"
+# (Y_i1 - Y_i0) \indep D_i | X_i
+feols(
   D_ln_manufacturing ~ i(tva) + ..X,
-  data = first_diff
+  data = first_diff, cluster = ~county_code
 )
 ```
 
@@ -225,37 +345,24 @@ Instead, we want to use outcome regression when doing covariate adjustment in th
 Second, predict out of sample this model for the full dataset. Let's call this `D_ln_y0_hat`. Last, take the difference between `D_ln_y` and the predicted `D_ln_y0_hat` and average this for the treated group (`tva == 1`). This is our outcome regression estimate.
 
 ```{r}
-# Estimate E[Y_{i1} - Y_{i0} | D = 0, X] as a linear function of X
-dy_est_0 <- feols(
-  D_ln_manufacturing ~ ..X,
-  data = first_diff |> filter(tva == 0)
+or = feols(
+  # Y_i1(0) - Y_i0(0) = \Delta Y_i(0)
+  D_ln_manufacturing ~ 1 + ..X,
+  data = first_diff |> filter(tva == 0), cluster = ~county_code
 )
 
-# Use our estimate of E[Y_{i1} - Y_{i0} | D = 0, X] to predict for each observation given their value of x
-Dy0_hat <- predict(dy_est_0, newdata = first_diff)
+D_y0_hat = predict(or, newdata = first_diff)
+D_y = first_diff$D_ln_manufacturing
+D = first_diff$tva
 
-# Outcome regression estimate
-Dy <- first_diff$D_ln_manufacturing
-D <- first_diff$tva
-N <- nrow(first_diff)
+# Y_i1 - Y_i0 = Y_i1(1) - Y_i0(0) = 
+#             = Y_i1(1) - Y_i1(0) + Y_i1(0) - Y_i0(0)
+#             = \tau              + \Delta Y_i(0)
+D_y_diff = D_y - D_y0_hat
+mean(D_y_diff[D == 1])
 
-w1 <- 1 / mean(D) * D
-mean(w1 * Dy) - mean(w1 * Dy0_hat)
-```
-
-With correct standard errors:
-
-```{r}
-X <- with(
-  df[df$year == 1940, ],
-  cbind(agriculture_share_1920, agriculture_share_1930, manufacturing_share_1920, manufacturing_share_1930)
-)
-DRDID::reg_did_panel(
-  y1 = df$ln_manufacturing[df$year == 1960],
-  y0 = df$ln_manufacturing[df$year == 1940],
-  D = df$tva[df$year == 1960],
-  covariates = X
-)
+w1 = D / mean(D)
+mean(w1 * D_y_diff)
 ```
 
 ### Part 3: Inverse Probability of Treatment Weighting
@@ -265,32 +372,29 @@ Now, lets use a propensity score method. Estimate a logistic regression of $D$ o
 Form the weights $w_1$ and $w_0$ as written in the appendix and form the IPTW estimate.
 
 ```{r}
-# Fit propensity scores for treatment
-ps <- predict(feglm(
+logit = feglm(
   tva ~ ..X,
   data = first_diff, family = binomial()
-))
-# Avoid dividing by 0
-ps <- pmin(ps, 1 - 1e-16)
+)
+ps = predict(logit, newdata = first_diff)
 
-# Generate propensity score weights for units
-w1 <- 1 / mean(D) * D
-w0 <- 1 / mean(D) * (1 - D) * ps / (1 - ps)
+w1 = D / mean(D)
+w0 = 1 / mean(D) * (1-D) * ps / (1 - ps)
 
-# This is our IPW estimate
-mean(w1 * Dy) - mean(w0 * Dy)
+# ~ E(y_i1 - y_i0 | D = 1) - E(y_i1 - y_i0 | D = 0)
+mean(w1 * D_y) - mean(w0 * D_y)
 ```
-
-With correct standard errors:
 
 ```{r}
-DRDID::ipw_did_panel(
-  y1 = df$ln_manufacturing[df$year == 1960],
-  y0 = df$ln_manufacturing[df$year == 1940],
-  D = df$tva[df$year == 1960],
-  covariates = X
-)
+first_diff$ps = predict(logit, newdata = first_diff)
+library(ggplot2)
+ggplot(first_diff) +
+  geom_density(
+    aes(x = ps, color = as.factor(tva), fill = as.factor(tva), group = as.factor(tva)),
+    alpha = 0.1
+  )
 ```
+
 
 > [!WARNING]  
 > The weights are the ones proposed originally in Abadie (2005). They are based on Horvitz-Thompson weights (1952, JASA). These are sensitive when there is problems with the overlap conditions. Sant'Anna and Zhao (2020) (amongst others) suggest using Hajek weights, normalizing the Horvitz-Thompson weights by the sample mean of $w$. This is the default with `drdid::ipwdid`.
@@ -300,13 +404,8 @@ DRDID::ipw_did_panel(
 > (h/t to Pedro Sant'Anna for bringing this up)
 
 ```{r}
-mean(w1 * Dy) - mean(w0 / mean(w0) * Dy)
-DRDID::std_ipw_did_panel(
-  y1 = df$ln_manufacturing[df$year == 1960],
-  y0 = df$ln_manufacturing[df$year == 1940],
-  D = df$tva[df$year == 1960],
-  covariates = X
-)
+mean(w1 * D_y) - mean(w0 * D_y)
+mean(w1/mean(w1) * D_y) - mean(w0/mean(w0) * D_y)
 ```
 
 ### Part 4: Doubly-Robust DID Estimator
@@ -314,33 +413,18 @@ DRDID::std_ipw_did_panel(
 From the previous questions, you have all the parts to estimate the doubly-robust DID estimator. Do this.
 
 ```{r}
-mean(w1 * (Dy - Dy0_hat)) - mean(w0 / mean(w0) * (Dy - Dy0_hat))
+w1 = D / mean(D)
+w0 = 1 / mean(D) * (1-D) * ps / (1 - ps)
+
+# Doubly robust DID
+mean(w1/mean(w1) * (D_y - D_y0_hat)) - mean(w0/mean(w0) * (D_y - D_y0_hat))
+
+(mean(w1/mean(w1) * D_y) - mean(w0/mean(w0) * D_y)) - 
+  (mean(w1/mean(w1) * D_y0_hat) - mean(w0/mean(w0) * D_y0_hat))
 ```
 
-With correct standard errors:
 
-```{r}
-DRDID::drdid_panel(
-  y1 = df$ln_manufacturing[df$year == 1960],
-  y0 = df$ln_manufacturing[df$year == 1940],
-  D = df$tva[df$year == 1960],
-  covariates = X
-)
-
-df$county_code_numeric <- to_integer(df$county_code)
-X_fml <- ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
-DRDID::drdid(
-  yname = "ln_manufacturing",
-  tname = "year",
-  idname = "county_code_numeric",
-  dname = "tva",
-  xformla = X_fml,
-  data = df |> filter(year == 1940 | year == 1960),
-  estMethod = "trad"
-)
-```
-
-## Question 6
+## Question 7
 
 Now, let’s try using the `DRDID` package to do this more simply.
 
@@ -348,35 +432,32 @@ Note: DRDID requires the `idname` to be a numeric, so you need to create a new v
 
 ```{r}
 # DRDID requires a numeric id
-df$county_code_numeric <- to_integer(df$county_code)
+df$county_code_numeric <- as.numeric(as.factor(df$county_code))
 X_fml <- ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930
 
 DRDID::drdid(
   yname = "ln_manufacturing",
   tname = "year",
   idname = "county_code_numeric",
-  dname = "tva",
-  xformla = X_fml,
+  dname = "tva", 
+  xformla = ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930,
   data = df |> filter(year == 1940 | year == 1960),
   estMethod = "trad"
 )
-```
 
-Note: I passed `estMethod = "trad"` to use the standard weights from Abadie (2005). Sant'Anna and Zhao propose an improved estimator that can be called `estMethod = "imp"`. This improvement is especially important when overlap is not perfect.
-
-```{r}
 DRDID::drdid(
   yname = "ln_manufacturing",
   tname = "year",
   idname = "county_code_numeric",
-  dname = "tva",
-  xformla = X_fml,
+  dname = "tva", 
+  xformla = ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930,
   data = df |> filter(year == 1940 | year == 1960),
   estMethod = "imp"
 )
 ```
 
-## Question 7
+
+## Question 8
 
 We are going to now use `did` to estimate an event study.
 As a default, `did` calls `DRDID` under the hood. Let's see this using
@@ -386,16 +467,18 @@ that group = 0 for never-treated group.
 
 
 ```{r}
-# = 0 for never-treated, = 1950 for TVA counties
+# = 0 for never-treated, = 1945 for TVA counties
 df$g <- df$tva * 1945
+
 (attgt_man <- did::att_gt(
   yname = "ln_manufacturing",
   tname = "year",
   idname = "county_code_numeric",
   gname = "g",
-  xformla = X_fml,
+  xformla = ~ agriculture_share_1920 + agriculture_share_1930 + manufacturing_share_1920 + manufacturing_share_1930,
   data = df
 ))
-did::ggdid(attgt_man)
+
+ggdid(attgt_man, group = 1945)
 ```
 

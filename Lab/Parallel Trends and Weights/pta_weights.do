@@ -155,9 +155,6 @@ gen y0_t2 = y0_t1 + trend + rnormal(0, 5)
 
 * Since small counties have few people, population-weighting downweights the violation
 
-* Check parallel trends (similar code as before)
-* ... [checking code]
-
 restore
 
 ********************************************************************************

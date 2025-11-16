@@ -22,7 +22,7 @@
 * 
 * First, we will load our dataset:
 
-  cd "~/Desktop/GESIS_Training/Exercise-1/"
+  * cd "~/Desktop/Madrid-2024/Labs/Kline-Moretti/"
 
   use data/tva.dta, clear
   sum
@@ -123,8 +123,29 @@
 
   est table *_es
 
-
 * ## Question 4
+
+  gen tva_x_year = cond(tva, year, 1940)
+  reghdfe ln_manufacturing ///
+    ib1940.tva_x_year, ///
+    absorb(county_code year) noconstant
+  
+  * I don't know how to add the 0 for 1940 or the line extension on stata :-) 
+  coefplot, vertical yline(0) ciopts(recast(rcap)) xlabel(,angle(45))
+
+  * Using HonestDiD: https://github.com/mcaceresb/stata-honestdid#honestdid
+  honestdid, pre(1/2) post(3/4) mvec(0.25(0.5)1.5)
+  honestdid, coefplot cached
+
+  matrix avg_l_vec = 0.5 \ 0.5
+  matrix first_l_vec = 1 \ 0
+  matrix second_l_vec = 0 \ 1
+  * honestdid, pre(1/2) post(3/4) mvec(0.25(0.5)1.5) l_vec(avg_l_vec) coefplot
+  * honestdid, pre(1/2) post(3/4) mvec(0.25(0.5)1.5) l_vec(first_l_vec) coefplot
+  * honestdid, pre(1/2) post(3/4) mvec(0.25(0.5)1.5) l_vec(second_l_vec) coefplot
+
+
+* ## Question 5
 * 
 * Let's use some controls to weaken the assumption to conditional
 * parallel trends. In particular, we are going to use a few covariates: 
@@ -155,7 +176,7 @@
 * which says changes in outcome over time depend on your value of $X_i$.
 
 
-* ## Question 5
+* ## Question 6
 * 
 * This question shows different weighs to incorporate covariates in a 2x2 difference-in-differences estimator. The goal is to relax our parallel trends assumption to be conditional on X:
 * $$
@@ -230,7 +251,7 @@
   gen t_dr = (w1 * (Dy - Dy0_hat)) -(w0 * (Dy - Dy0_hat))
   sum t_dr
 
-* ## Question 6
+* ## Question 7
 * 
 * Now, let’s try using the `DRDID` package to do this more simply.
 * 
@@ -265,7 +286,7 @@
     ivar(county_code_numeric) time(year) treatment(tva) ///
     dripw
 
-* ## Question 7
+* ## Question 8
 * 
 * We are going to now use `did` to estimate an event study.
 * As a default, `did` calls `DRDID` under the hood. Let's see this using 

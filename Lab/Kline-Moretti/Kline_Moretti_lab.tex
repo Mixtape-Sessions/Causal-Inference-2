@@ -1,0 +1,124 @@
+\documentclass[t]{beamer}
+\input{preamble.tex}
+\usepackage{math}
+\begin{document}
+
+\begin{frame}{Kline and Moretti (2014)}
+  Kline and Moretti (2014) analyzes the impacts of the ``Tennessee Valley Authority'' (TVA) on local agriculture and manufacturing employment.
+
+
+  \begin{itemize}
+    \item The TVA was a huge federal spending program in the 1940s that aimed at
+    electrification of the region, building hundreds of large dams (in Scott's terms, a ton of `bite')
+  \end{itemize}
+
+  \bigskip
+  Large Electrification brought in a lot industry, moving the economy away from agriculture. We are going to test for this in the data using census data (recorded every 10 years).
+\end{frame}
+
+\imageframe{img/tva_dam.jpeg}
+\imageframe{img/tva_map.jpeg}
+
+\begin{frame}{Parallel Trends}
+  The region had a large agriculture industry, but very little
+  manufacturing.
+
+  \bigskip
+  In urban economics, we have a concept of `regional convergence' that suggests places with low manufacturing employment will grow faster than places with high manufacturing employment.
+  \begin{itemize}
+    \item Parallel counterfactual trends is implausible
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Conditional Parallel Trends}
+  But, perhaps conditional on 1930 manufacturing (in 1930), we might believe that the trends are parallel.
+
+  \bigskip
+  The thought experiment is:
+
+  \begin{tcolorbox}[boxrule = 0pt, frame hidden, sharp corners, enhanced, borderline west = {2pt}{0pt}{alice}, interior hidden]
+    Take two counties with similar manufacturing employment in 1930, one that gets TVA and one that does not. The counterfactual trends in manufacturing employment for these two counties should be parallel.
+  \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Estimators}{Diff-in-diff}
+  First, we will estimate DID parameters.
+  An equivalent way of estimating a $2 \times 2$ DID is using \emph{first-differenced} data, $\Delta y_i \equiv y_{i1} - y_{i0}$
+
+  \bigskip
+  The DID parameter can be estimated as
+  $$
+    \Delta y_i = \alpha + D_i \delta + u_i
+  $$
+
+  \pause
+  \bigskip
+  \bigskip
+  Since $D_i$ is an indicator, $\delta$ is the difference in means of $\Delta y_i$:
+  $$
+    \hat{\delta} = \expechat{\Delta y_i}{D_i = 1} - \expechat{\Delta y_i}{D_i = 0}
+  $$
+  \medskip
+  \emph{This is the DID estimate!}
+\end{frame}
+
+\begin{frame}{Outcome Regression}
+  Now, we want to include covariates.
+  Let's use the outcome regression method
+
+  Our procedure is:
+  \begin{enumerate}
+    \item Estimate $\Delta Y_i = X_i \beta + u_i$ using the untreated group $D_i = 0$.
+    \begin{itemize}
+      \item This is how we predict $\Delta Y_i(0)$ for the treated units
+    \end{itemize}
+
+    \bigskip
+    \item Predict $\widehat{\Delta Y_i(0)} = X_i \hat{\beta}$ for treated units.
+  \end{enumerate}
+
+  \bigskip
+  \bigskip
+  Take
+  \begin{align*}
+    \delta_{\text{OR}} &=
+      \expechat{\Delta Y_i}{D_i = 1} - \expechat{\widehat{\Delta Y_i(0)}}{D_i = 1}
+  \end{align*}
+\end{frame}
+
+\begin{frame}{IPW}
+  Let's use the IPW method.
+
+  Our procedure is:
+  \begin{enumerate}
+    \item Estimate a logistic regression of $D_i$ on $X_i$.
+
+    \bigskip
+    \item Predict the propensity scores $\hat{p}_i$ using the results from the logistic regression
+
+    \bigskip
+    \item Form $w_1 = \frac{D_i}{\expec{D_i}}$ and $w_0 = \frac{1 - D_i}{\expec{D_i}} * \frac{p_i}{1 - p_i}$
+  \end{enumerate}
+
+  \bigskip
+  \bigskip
+  Take
+  \begin{align*}
+    \delta_{\text{IPW}} &=
+      \expechat{w_1 * \Delta Y_i}{D_i = 1} - \expechat{w_0 * \Delta Y_i}{D_i = 0}
+  \end{align*}
+\end{frame}
+
+\begin{frame}{DRDID}
+  Or we can combine them and use the doubly-robust estimator (what Callaway and Sant'anna use):
+
+  \begin{align*}
+    \delta_{\text{DRDID}} &=
+      \expechat{w_1 * \left(\Delta Y_i - \widehat{\Delta Y_i(0)} \right)}{D_i = 1} - \\[1em]
+    &\quad\quad
+      \expechat{w_0 * \left(\Delta Y_i - \widehat{\Delta Y_i(0)} \right)}{D_i = 0}
+  \end{align*}
+\end{frame}
+
+\end{document}

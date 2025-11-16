@@ -1,6 +1,6 @@
 ********************************************************************************
 * name: baker.do
-* author: scott cunningham (baylor) adapting andrew baker (stanford)
+* author: scott cunningham (baylor) adapting andrew baker (berkeley)
 * description: illustrate TWFE with differential timing and
 *              heterogenous treatment effects over time
 * last updated: jan 5, 2022
@@ -101,7 +101,7 @@ gen y0 = firms + n + e // parallel trends (unit level) in y0. Everyone's Y0 grow
 gen y2 = firms + n + te*treat + e // UNIT LEVEL parallel trends IN EVERY PERIOD and NO ANTICIPATION
 
 * Data generating process with dynamic treatment effects over time
-gen y  = firms + n + te*treat*(year - treat_date + 1) + e 
+gen y = firms + n + te*treat*(year - treat_date + 1) + e 
 
 * For group 1, the ATT in 1986 is 10
 * For group 1, the ATT in 1987 is 20
@@ -113,17 +113,17 @@ gen y  = firms + n + te*treat*(year - treat_date + 1) + e
 areg y2 i.year treat, a(id) robust 
 
 * Estimation using TWFE - dynamic treatment effects over time
-areg y  i.year treat, a(id) robust 
+areg y i.year treat, a(id) robust 
 
 
 ** Sun and Abraham event study commentary
 * Leads and lags
-gen     time_til=year-treat_date // recentering the data from calendar time to "relative event time"
-ta 		time_til, gen(dd) // dummy out every "time til" value
+gen     time_til=year-treat_date
+ta 		time_til, gen(dd)
 
 
 * Event study with heterogeneity, dropping two leads
-areg y i.year dd1 - dd23 dd25-dd48, a(id) robust 
+areg y i.year dd1 -dd23 dd25-dd48, a(id) robust 
 
 coefplot, keep(dd1 dd2 dd3 dd4 dd5 dd6 dd7 dd8 dd9 dd10 dd11 dd12 dd13 dd14 dd15 dd16 dd17 dd18 dd19 dd20 dd22 dd23 dd25 dd26 dd27 dd28 dd29 dd30 dd31 dd32 dd33 dd34 dd35 dd36 dd37 dd38 dd39 dd40 dd41 dd42) xlabel(, angle(vertical)) yline(0) vertical msymbol(D) mfcolor(white) ciopts(lwidth(*3) lcolor(*.6)) grid(between) mlabel format(%9.3f) mlabposition(12) mlabgap(*2) title(Baker simulation) 
 
@@ -159,10 +159,6 @@ net install ddtiming, from(https://raw.githubusercontent.com/tgoldring/ddtiming/
 areg y2 i.year treat, a(id) robust 
 ddtiming y2 treat, i(id) t(year)
 
-* Or use the new command in Stata 17 on as a post-estimation 
-xtdidregress (y) (treat), group(id) time(year)
-estat bdecomp, graph
-
 * Bacon decomposition shows the problem -- notice all those late to early 2x2s!
 preserve
 drop if year>2003
@@ -178,7 +174,7 @@ save ./baker.dta, replace
 **************************************************************************************************************************************
 **************************************************************************************************************************************
 **************************************************************************************************************************************
-* Callaway and Sant'anna (2021)
+* Callaway and Sant'anna (2018)
 * When there are no coariates X and everybody eventually gets treated, Callaway & Sant'Anna (2018) suggest to estimate ATT(g,t) using
 * ATT(g,t) = E [ (Gg/E[Gg] - ( 1-Dt)p/1-p/E[1-Dt] )( Yt - Y_{g-1}) ]
 **************************************************************************************************************************************
@@ -237,7 +233,7 @@ egen att_00 = mean(w0*ypre)
 
 * Get the ATT(1986,1986)
 gen att1986_1986 = (att_11 - att_10) - (att_01 - att_00)
-* ATT(1986,1986)=10.0258 
+* ATT(1986,1986)=10.00096
 
 * Drop variable so I can copy paste this code!
 capture drop ypost ypre g1_mean g1_cont_1991mean w1 w0 att_*
@@ -273,7 +269,7 @@ egen att_00 = mean(w0*ypre)
 * Get the ATT(1986,1987)
 **************************************************************************************************************************************
 gen att1986_1987 = (att_11-att_10) -(att_01 -att_00)
-* ATT(1986,1987)=20.04393
+* ATT(1986,1987)=19.96895
 * Drop variable so I can copy paste this code!
 **************************************************************************************************************************************
 capture drop ypost ypre g1_mean g1_cont_1991mean w1 w0 att_*

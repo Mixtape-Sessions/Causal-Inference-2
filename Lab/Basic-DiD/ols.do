@@ -83,5 +83,5 @@ preserve
     keep if year==2006
 
     * 2x2 DiD via first differences:
-    reg dl_homicide treat, cluster(state)
+    reg dl_homicide treat, cluster(sid)
 restore

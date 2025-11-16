@@ -28,8 +28,8 @@ atts <- att_gt(
   control_group = "notyettreated", # set the comparison group which is either "nevertreated" or "notyettreated" 
   bstrap = TRUE, # if TRUE compute bootstrapped SE
   biters = 1000, # number of bootstrap iterations
-  print_details = FALSE, # if TRUE, print detailed results
   base_period="universal", # long-differences
+  print_details = FALSE, # if TRUE, print detailed results
   clustervars = "state", # cluster level
   panel = TRUE # whether the data is panel or repeated cross-sectional
 ) 
@@ -39,7 +39,7 @@ atts <- att_gt(
 # ------------------------------------------------------------------------------
 
 # Calculate group-time ("group") ATTs and overall ("simple") ATT
-agg_effects <- aggte(atts, type = "simple", balance_e=TRUE)
+agg_effects <- aggte(atts, type = "group", balance_e=TRUE)
 summary(agg_effects)
 
 # Group-time ATTs

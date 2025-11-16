@@ -142,7 +142,8 @@ reg earnings treated1##ib2014.year, cluster(state)
 coefplot, keep(1.treated1#*) omitted baselevels cirecast(rcap) ///
     rename(1.treated1#([0-9]+).year = \1, regex) at(_coef) ///
     yline(0, lp(solid)) yline(-5000, lp(dot)) xline(2014.5, lpattern(dash)) ///
-    xlab(2010(1)2019) title("Biased Diff-in-Diff")
+    xlab(2010(1)2019)
+
 
 **************************************************************************** 
 ** Biased DiD Case 2: Placebo DiD using Single Men and Older Women
@@ -182,7 +183,7 @@ reg earnings treated_placebo##ib2014.year, cluster(state)
 coefplot, keep(1.treated_placebo#*) omitted baselevels cirecast(rcap) ///
     rename(1.treated_placebo#([0-9]+).year = \1, regex) at(_coef) ///
     yline(0, lp(solid)) yline(-5000, lp(dot)) xline(2014.5, lpattern(dash)) ///
-    xlab(2010(1)2019)  title("Control Diff-in-Diff With Same Bias")
+    xlab(2010(1)2019)
 
 
 **************************************************************************** 
