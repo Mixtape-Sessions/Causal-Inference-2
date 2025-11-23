@@ -11,7 +11,7 @@ library(dplyr)
 library(tidyr)  
 
 # Set working directory
-setwd("/Users/scunning/St-Gallen/labs/abortion clinic")
+setwd("/Users/scott_cunningham/Documents/Causal-Inference-2/Lab/abortion clinic")
 
 # Load data
 # Use 3+ years to give more pre-treatment periods

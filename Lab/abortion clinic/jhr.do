@@ -1,6 +1,6 @@
 * abortion_jhr.do 
 clear all
-cd "/Users/scunning/collegio-carlo-alberto/labs/abortion clinic"
+cd "/Users/scott_cunningham/Documents/Causal-Inference-2/Lab/abortion clinic"
 use ./abortion_jhr.dta, clear
 
 * First, a version of the old result with BOTH counts and rates
